@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>π颗糖 - 资源与教程分享</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        /* 页面容器：背景图铺满 + 居中内容 */
+        .container {
+            width: 100vw;
+            height: 100vh;
+            /* 同目录下的背景图路径，若在Images文件夹可改为 ./sp/your-background-image.jpg/
+            background: url("background.jpg") no-repeat center center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* 背景暗化，突出文字和按钮 */
+            background-color: rgba(0,0,0,0.5);
+            background-blend-mode: darken;
+        }
+
+        /* 标题样式 */
+        .site-title {
+            color: #ffffff;
+            font-size: 48px;
+            margin-bottom: 60px;
+            text-shadow: 0 0 10px #00a1ff, 0 0 20px #00a1ff;
+            letter-spacing: 5px;
+            /* 标题闪烁特效 */
+            animation: titleFlash 3s infinite alternate;
+        }
+
+        /* 按钮组布局 */
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        /* 按钮基础样式 */
+        .custom-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #00a1ff, #00ff9d);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            /* 按钮发光特效 */
+            box-shadow: 0 0 15px #00a1ff;
+            /* 过渡动画：让特效更丝滑 */
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        /* 按钮 hover 特效：放大 + 变色 + 阴影增强 */
+        .custom-btn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(45deg, #00ff9d, #00a1ff);
+            box-shadow: 0 0 25px #00ff9d;
+        }
+
+        /* 按钮点击特效：缩小回弹 */
+        .custom-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 标题闪烁动画 */
+        @keyframes titleFlash {
+            from {
+                opacity: 0.8;
+                text-shadow: 0 0 10px #00a1ff;
+            }
+            to {
+                opacity: 1;
+                text-shadow: 0 0 25px #00a1ff, 0 0 35px #00a1ff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 站点标题 -->
+        <h1 class="site-title">π颗糖 - 资源与教程分享</h1>
+
+        <!-- 按钮组：修改 href 为你的本地 HTML 路径 -->
+        <div class="btn-group">
+            <a href="mian.html" class="custom-btn">资源分享</a>
+            <a href="mian2.html" class="custom-btn">教程中心</a>
+            <a href="mian3.html" class="custom-btn">工具下载</a>
+            <a href="mian4.html" class="custom-btn">关于我</a>
+            <a href="mian5.html" class="custom-btn">联系交流</a>
+        </div>
+
+        <!-- 背景音乐：引用同目录下 Music 文件夹内的音频文件 -->
+        <!-- 替换为你的 MP3 文件名，例如 bgm.mp3 -->
+        <audio src="./sp/music.mp3" autoplay loop hidden>
+    </div>
+</body>
+</html>
