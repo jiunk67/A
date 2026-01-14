@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>感谢捐赠 - π颗糖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #fdf2f8;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* 页面标题 */
+        .page-title {
+            font-size: 36px;
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* 感谢文案 */
+        .thanks-text {
+            text-align: center;
+            color: #4a5568;
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        /* 捐赠按钮 */
+        .donate-btn {
+            padding: 18px 45px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ed4264, #ffedbc);
+            color: #2d3748;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(237, 66, 100, 0.3);
+        }
+
+        .donate-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(237, 66, 100, 0.5);
+            filter: brightness(1.05);
+        }
+
+        /* 遮罩层：弹窗背景 */
+        .modal-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        /* 弹窗容器 */
+        .modal-content {
+            width: 90%;
+            max-width: 350px;
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        /* 弹窗图片 */
+        .modal-img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        /* 关闭按钮 */
+        .close-btn {
+            margin-top: 15px;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            background: #ed4264;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* 小字备注 */
+        <small>
+        .tips {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #718096;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="page-title">❤️ 感谢您的支持 ❤️</h1>
+    
+    <div class="thanks-text">
+        每一份捐赠都是对我创作的认可与鼓励<br>
+        您的支持将帮助我产出更多优质的教程与资源<br>
+        万分感谢，愿我们一起在技术的路上并肩前行！
+    </div>
+
+    <button class="donate-btn" onclick="showModal()">点击查看捐赠方式</button>
+
+    <div class="tips">
+        小小心意，不限金额，感谢您的慷慨解囊~
+    </div>
+
+    <!-- 弹窗遮罩层 -->
+    <div class="modal-mask" id="modalMask">
+        <div class="modal-content">
+            <!-- 引用同目录下 images 文件夹内的 donate.jpg -->
+            <img src="./sp/K.jpg" alt="捐赠码" class="modal-img">
+            <button class="close-btn" onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+
+    <script>
+        // 获取弹窗元素
+        const modalMask = document.getElementById("modalMask");
+
+        // 显示弹窗
+        function showModal() {
+            modalMask.style.display = "flex";
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            modalMask.style.display = "none";
+        }
+
+        // 点击遮罩层空白处关闭弹窗
+        modalMask.addEventListener("click", function(e) {
+            if (e.target === modalMask) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
