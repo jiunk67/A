@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公益网盘</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        .page-container {
+            width: 100vw;
+            height: 100vh;
+            background: url("./sp/your-background-image.jpg") no-repeat center center fixed;
+            background-size: cover;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(30, 30, 60, 0.7)), url("./sp/your-background-image.jpg");
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .page-title {
+            color: #ffffff;
+            font-size: 36px;
+            margin-bottom: 50px;
+            text-shadow: 0 0 15px #00ccff;
+            letter-spacing: 3px;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        .btn-item {
+            padding: 18px 0;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 204, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .btn-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 204, 255, 0.6);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-item:active::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: ripple 0.6s ease-out;
+        }
+
+        @keyframes ripple {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 28px;
+                margin-bottom: 30px;
+            }
+            .btn-item {
+                padding: 15px 0;
+                font-size: 14px;
+            }
+            .btn-grid {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1 class="page-title">公益网盘（名称跟密码）</h1>
+        <div class="btn-grid">
+            <!-- 替换 href 里的网址为你需要跳转的目标网站 -->
+            <a href="https://wwr.lanzoui.com/b03kpzn5c" class="btn-item" target="_blank">橘子内核 6666</a>
+            <a href="https://jiunk67.github.io/A/ly.html" class="btn-item" target="_blank">落叶</a>
+            <a href="https://www.github.com" class="btn-item" target="_blank">按钮3-GitHub</a>
+            <a href="https://www.qq.com" class="btn-item" target="_blank">按钮4-腾讯网</a>
+            <a href="https://www.163.com" class="btn-item" target="_blank">按钮5-网易</a>
+            <a href="https://www.csdn.net" class="btn-item" target="_blank">按钮6-CSDN</a>
+            <a href="https://www.zhihu.com" class="btn-item" target="_blank">按钮7-知乎</a>
+            <a href="https://www.youtube.com" class="btn-item" target="_blank">按钮8-Youtube</a>
+            <a href="https://www.microsoft.com" class="btn-item" target="_blank">按钮9-微软</a>
+            <a href="https://www.apple.com" class="btn-item" target="_blank">按钮10-苹果</a>
+        </div>
+    </div>
+</body>
+</html>
