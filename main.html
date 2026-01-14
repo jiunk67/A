@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频播放页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            padding: 30px 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 40px;
+            font-size: 32px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* 按钮网格布局 */
+        .video-btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* 按钮样式 */
+        .video-btn {
+            padding: 20px 0;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #e53e3e, #ed8936);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 悬浮特效 */
+        .video-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(229, 62, 62, 0.5);
+            filter: brightness(1.1);
+        }
+
+        /* 点击波纹特效 */
+        .video-btn:active::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: btnRipple 0.6s ease-out;
+        }
+
+        @keyframes btnRipple {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        /* 视频播放容器 */
+        .video-container {
+            max-width: 800px;
+            margin: 40px auto 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* 播放状态提示 */
+        .playing-tip {
+            text-align: center;
+            margin-top: 30px;
+            color: #4a5568;
+            font-size: 16px;
+            height: 24px;
+        }
+
+        /* 手机端适配 */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 24px;
+                margin-bottom: 25px;
+            }
+            .video-btn {
+                font-size: 16px;
+                padding: 16px 0;
+            }
+            .video-btn-group {
+                gap: 15px;
+            }
+            .video-container {
+                margin-top: 25px;
+                border-radius: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="page-title">教程类</h1>
+    
+    <div class="video-btn-group">
+        <button class="video-btn" onclick="playVideo('A.mp4')">shizuku</button>
+        <button class="video-btn" onclick="playVideo('B.mp4')">改文件</button>
+        <button class="video-btn" onclick="playVideo('C.mp4')">Root</button>
+        <button class="video-btn" onclick="playVideo('D.mp4')">端口制作</button>
+        <button class="video-btn" onclick="playVideo('E.mp4')">shizuku 电脑激活</button>
+        <button class="video-btn" onclick="playVideo('F.mp4')">挖掘机（无用）</button>
+        <button class="video-btn" onclick="playVideo('G.mp4')">改比例</button>
+        <button class="video-btn" onclick="playVideo('H.mp4')">端口使用</button>
+        <button class="video-btn" onclick="playVideo('i.mp4')">直登号使用</button>
+        <button class="video-btn" onclick="playVideo('J.mp4')">直登号失败</button>
+    </div>
+
+    <div class="playing-tip" id="playingTip">点击按钮播放视频</div>
+
+    <!-- 视频播放容器 -->
+    <div class="video-container" id="videoContainer">
+        <video id="videoPlayer" controls></video>
+    </div>
+
+    <script>
+        // 获取视频播放器、容器和提示框
+        const videoPlayer = document.getElementById("videoPlayer");
+        const videoContainer = document.getElementById("videoContainer");
+        const playingTip = document.getElementById("playingTip");
+        // 视频文件夹路径：同目录下的 video 文件夹，可自行修改
+        const videoFolderPath = "./sp/";
+
+        // 播放视频函数
+        function playVideo(filename) {
+            // 拼接完整视频路径
+            const videoSrc = videoFolderPath + filename;
+            // 设置视频源
+            videoPlayer.src = videoSrc;
+            // 显示视频容器
+            videoContainer.style.display = "block";
+            // 播放视频
+            videoPlayer.play();
+            // 更新提示文字
+            playingTip.innerText = `正在播放：${filename}`;
+        }
+    </script>
+</body>
+</html>
