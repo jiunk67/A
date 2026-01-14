@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>落叶</title>
+    <style>
+        /* 按钮美化 */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        .download-btn {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 8px;
+            background-color: #2196F3;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .download-btn:hover {
+            background-color: #1976D2;
+            transform: scale(1.05);
+        }
+
+        .download-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <!-- 核心下载按钮：修改 href 为你的 APK 实际路径 -->
+    <a href="./rj/ly.apk" class="download-btn" download>
+        点击下载落叶
+    </a>
+</body>
+</html>
