@@ -3,45 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>点击跳转</title>
+    <title>购买</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
         }
+
         body {
             min-height: 100vh;
+            background-color: #f5f7fa;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #f5f5f5;
+            padding: 20px;
         }
+
+        .page-title {
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 50px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 600px;
+        }
+
         .jump-btn {
-            padding: 18px 45px;
+            padding: 20px 0;
             border: none;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #4285f4, #34a853);
+            border-radius: 10px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
+            text-align: center;
+            text-decoration: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            position: relative;
+            overflow: hidden;
         }
+
         .jump-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 18px rgba(66, 133, 244, 0.5);
+            transform: translateY(-6px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.5);
+            filter: brightness(1.1);
         }
-        .jump-btn:active {
-            transform: translateY(1px);
+
+        .jump-btn:active::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: ripple 0.6s ease-out;
+        }
+
+        @keyframes ripple {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        /* 每个按钮不同渐变颜色 */
+        .btn-1 { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .btn-2 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .btn-3 { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .btn-4 { background: linear-gradient(135deg, #f39c12, #d35400); }
+        .btn-5 { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+
+        @media (max-width: 500px) {
+            .page-title {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+            .jump-btn {
+                font-size: 16px;
+                padding: 16px 0;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 替换 href 为目标网站地址 -->
-    <a href="https://kk12.antc.cn/" class="jump-btn" target="_blank">
-        点击前往目标网站
-    </a>
+    <h1 class="page-title">数据号购买</h1>
+    <div class="btn-group">
+        <!-- 替换 href 中的网址为目标网站 -->
+        <a href="https://kk12.antc.cn/" class="jump-btn btn-1" target="_blank">通道1</a>
+        <a href="" class="jump-btn btn-2" target="_blank">通道2</a>
+        <a href="" class="jump-btn btn-3" target="_blank">通道3</a>
+        <a href="" class="jump-btn btn-4" target="_blank">通道4</a>
+        <a href="" class="jump-btn btn-5" target="_blank">通道5</a>
+    </div>
 </body>
 </html>
