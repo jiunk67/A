@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>π颗糖</title>
     <style>
-        /* 全局样式重置 */
         * {
             margin: 0;
             padding: 0;
@@ -13,25 +12,20 @@
             font-family: "Helvetica Neue", "Microsoft YaHei", sans-serif;
         }
 
-        /* 页面容器：背景图 + 渐变蒙版 + 全屏 */
         .container {
             width: 100vw;
             height: 100vh;
-            /* 引用同目录 Images 文件夹内的背景图 */
-            background: url("./Images/bg.jpg") no-repeat center center fixed;
+            background: url("./sp/your-background-image.jpg") no-repeat center center fixed;
             background-size: cover;
-            /* 渐变蒙版：让文字按钮更清晰，提升高级感 */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(15, 23, 42, 0.7)), url("./Images/bg.jpg");
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(15, 23, 42, 0.8)), url("./sp/your-background-image.jpg");
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            /* 防止内容溢出 */
             overflow: hidden;
             position: relative;
         }
 
-        /* 装饰元素：动态光点 */
         .container::before {
             content: "";
             position: absolute;
@@ -42,21 +36,17 @@
             z-index: 0;
         }
 
-        /* 标题样式：立体发光 + 动画 */
         .site-title {
             color: #ffffff;
             font-size: 52px;
             margin-bottom: 80px;
             letter-spacing: 8px;
             text-shadow: 0 0 15px rgba(0, 200, 255, 0.8), 0 2px 20px rgba(0, 0, 0, 0.5);
-            /* 标题上浮动画 */
             animation: titleFloat 4s ease-in-out infinite alternate;
             z-index: 1;
-            /* 文字描边：增强辨识度 */
             -webkit-text-stroke: 0.5px rgba(0, 200, 255, 0.5);
         }
 
-        /* 按钮组布局：响应式，适配手机 */
         .btn-group {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -66,16 +56,13 @@
             z-index: 1;
         }
 
-        /* 按钮样式：玻璃拟态 + 渐变 + 多重特效 */
         .custom-btn {
             padding: 18px 35px;
             border: none;
             border-radius: 12px;
-            /* 玻璃磨砂效果 */
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            /* 渐变文字 */
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -85,22 +72,18 @@
             cursor: pointer;
             text-decoration: none;
             text-align: center;
-            /* 边框发光 */
             box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.3), 0 8px 25px rgba(0, 0, 0, 0.15);
-            /* 过渡动画：所有变化 0.4s 完成 */
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
         }
 
-        /* 按钮 hover 特效：上浮 + 阴影增强 + 文字渐变反转 */
         .custom-btn:hover {
             transform: translateY(-8px);
             box-shadow: 0 0 0 2px rgba(126, 87, 194, 0.5), 0 12px 30px rgba(0, 0, 0, 0.2);
             background-image: linear-gradient(90deg, #7e57c2, #00e5ff);
         }
 
-        /* 按钮点击特效：波纹扩散 */
         .custom-btn:active::after {
             content: "";
             position: absolute;
@@ -114,7 +97,23 @@
             animation: btnRipple 0.6s ease-out;
         }
 
-        /* 标题上浮动画 */
+        .footer-info {
+            margin-top: 50px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            z-index: 1;
+        }
+
+        .footer-info p {
+            margin-bottom: 5px;
+        }
+
+        .footer-info small {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
         @keyframes titleFloat {
             from {
                 transform: translateY(0);
@@ -126,7 +125,6 @@
             }
         }
 
-        /* 按钮波纹动画 */
         @keyframes btnRipple {
             0% {
                 transform: translate(-50%, -50%) scale(0);
@@ -138,7 +136,6 @@
             }
         }
 
-        /* 适配手机端 */
         @media (max-width: 768px) {
             .site-title {
                 font-size: 36px;
@@ -158,24 +155,22 @@
 </head>
 <body>
     <div class="container">
-        <!-- 站点标题 -->
         <h1 class="site-title">资源分享</h1>
 
-        <!-- 按钮组：跳转本地页面 -->
         <div class="btn-group">
             <a href="main.html" class="custom-btn">辅助教程</a>
             <a href="main2.html" class="custom-btn">辅助网盘</a>
             <a href="main3.html" class="custom-btn">数据号</a>
-            <a href="main4.html" class="custom-btn"></a>
-            <a href="juanzeng.html" class="custom-btn">片</a>
-            <p>π颗糖 - 资源分享站点</p>
-<small>最后更新:2026.1.16</small>
+            <a href="tools.html" class="custom-btn">工具软件下载</a>
+            <a href="juanzeng.html" class="custom-btn">捐赠支持</a>
         </div>
 
-        <!-- 背景音乐：引用同目录 Music 文件夹内的音频 -->
-        <audio src="./sp/music.mp3" autoplay loop hidden>
-        <p>π颗糖 - 资源分享站点</p>
-<small>© 最后更新:26.1.14 19:28 </small>
+        <div class="footer-info">
+            <p>π颗糖 - 资源分享站点</p>
+            <small>最后更新: 2026.2.28</small>
+        </div>
+
+        <script src="music-player.js"></script>
     </div>
 </body>
 </html>

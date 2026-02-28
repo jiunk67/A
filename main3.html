@@ -14,19 +14,22 @@
 
         body {
             min-height: 100vh;
-            background-color: #f5f7fa;
+            background: url("./sp/your-background-image.jpg") no-repeat center center fixed;
+            background-size: cover;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(15, 23, 42, 0.85)), url("./sp/your-background-image.jpg");
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 80px 20px 40px;
         }
 
         .page-title {
             font-size: 32px;
-            color: #2c3e50;
+            color: #ffffff;
             margin-bottom: 50px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 0 0 15px rgba(0, 200, 255, 0.8), 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
         }
 
         .btn-group {
@@ -40,24 +43,26 @@
         .jump-btn {
             padding: 20px 0;
             border: none;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #ffffff;
             font-size: 18px;
             font-weight: bold;
             text-align: center;
             text-decoration: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.3), 0 4px 15px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
         }
 
         .jump-btn:hover {
             transform: translateY(-6px);
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.5);
-            filter: brightness(1.1);
+            box-shadow: 0 0 0 2px rgba(126, 87, 194, 0.5), 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .jump-btn:active::after {
@@ -67,7 +72,7 @@
             left: 50%;
             width: 150%;
             height: 150%;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             transform: translate(-50%, -50%) scale(0);
             animation: ripple 0.6s ease-out;
@@ -78,12 +83,29 @@
             100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
         }
 
-        /* 每个按钮不同渐变颜色 */
-        .btn-1 { background: linear-gradient(135deg, #3498db, #2980b9); }
-        .btn-2 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
-        .btn-3 { background: linear-gradient(135deg, #2ecc71, #27ae60); }
-        .btn-4 { background: linear-gradient(135deg, #f39c12, #d35400); }
-        .btn-5 { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.3);
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
 
         @media (max-width: 500px) {
             .page-title {
@@ -94,18 +116,24 @@
                 font-size: 16px;
                 padding: 16px 0;
             }
+            .back-btn {
+                padding: 10px 18px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 <body>
+    <a href="index.html" class="back-btn">← 返回首页</a>
+    
     <h1 class="page-title">数据号购买</h1>
     <div class="btn-group">
-        <!-- 替换 href 中的网址为目标网站 -->
-        <a href="https://kk12.antc.cn/" class="jump-btn btn-1" target="_blank">通道1(较高质量)</a>
-        <a href="https://xx.youxi186.com/shop/NIE9VG67" class="jump-btn btn-2" target="_blank">通道2</a>
-        <a href="https://sc.ymy9.com/shop/LNK" class="jump-btn btn-3" target="_blank">通道3</a>
-        <a href="https://shop.zmfaka.cn/shop/VJYJEK36" class="jump-btn btn-4" target="_blank">通道4</a>
-        <a href="https://new.687faka.com/shop/sjhsy" class="jump-btn btn-5" target="_blank">通道5</a>
+        <a href="https://kk12.antc.cn/" class="jump-btn" target="_blank">通道1(较高质量)</a>
+        <a href="https://xx.youxi186.com/shop/NIE9VG67" class="jump-btn" target="_blank">通道2</a>
+        <a href="https://sc.ymy9.com/shop/LNK" class="jump-btn" target="_blank">通道3</a>
+        <a href="https://shop.zmfaka.cn/shop/VJYJEK36" class="jump-btn" target="_blank">通道4</a>
+        <a href="https://new.687faka.com/shop/sjhsy" class="jump-btn" target="_blank">通道5</a>
     </div>
+    <script src="music-player.js"></script>
 </body>
 </html>

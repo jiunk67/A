@@ -14,51 +14,56 @@
 
         body {
             min-height: 100vh;
-            background-color: #f0f2f5;
+            background: url("./sp/your-background-image.jpg") no-repeat center center fixed;
+            background-size: cover;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(15, 23, 42, 0.85)), url("./sp/your-background-image.jpg");
             padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .page-title {
             text-align: center;
-            color: #2d3748;
+            color: #ffffff;
             margin-bottom: 40px;
             font-size: 32px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 0 0 15px rgba(0, 200, 255, 0.8), 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
         }
 
-        /* 按钮网格布局 */
         .video-btn-group {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
             max-width: 1000px;
-            margin: 0 auto;
+            width: 100%;
         }
 
-        /* 按钮样式 */
         .video-btn {
-            padding: 20px 0;
+            padding: 18px 0;
             border: none;
             border-radius: 12px;
-            background: linear-gradient(135deg, #e53e3e, #ed8936);
-            color: white;
-            font-size: 18px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #ffffff;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+            box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.3), 0 4px 15px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
+            text-align: center;
         }
 
-        /* 悬浮特效 */
         .video-btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(229, 62, 62, 0.5);
-            filter: brightness(1.1);
+            box-shadow: 0 0 0 2px rgba(126, 87, 194, 0.5), 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.15);
         }
 
-        /* 点击波纹特效 */
         .video-btn:active::after {
             content: "";
             position: absolute;
@@ -66,7 +71,7 @@
             left: 50%;
             width: 150%;
             height: 150%;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             transform: translate(-50%, -50%) scale(0);
             animation: btnRipple 0.6s ease-out;
@@ -77,14 +82,15 @@
             100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
         }
 
-        /* 视频播放容器 */
         .video-container {
             max-width: 800px;
+            width: 100%;
             margin: 40px auto 0;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
             display: none;
+            background: rgba(0, 0, 0, 0.5);
         }
 
         video {
@@ -93,36 +99,65 @@
             display: block;
         }
 
-        /* 播放状态提示 */
         .playing-tip {
             text-align: center;
             margin-top: 30px;
-            color: #4a5568;
+            color: rgba(255, 255, 255, 0.8);
             font-size: 16px;
             height: 24px;
+            text-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
         }
 
-        /* 手机端适配 */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.3);
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
             .page-title {
                 font-size: 24px;
                 margin-bottom: 25px;
             }
             .video-btn {
-                font-size: 16px;
-                padding: 16px 0;
+                font-size: 14px;
+                padding: 14px 0;
             }
             .video-btn-group {
-                gap: 15px;
+                gap: 12px;
             }
             .video-container {
                 margin-top: 25px;
                 border-radius: 8px;
             }
+            .back-btn {
+                padding: 10px 18px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 <body>
+    <a href="index.html" class="back-btn">← 返回首页</a>
+    
     <h1 class="page-title">教程类(点击按钮后往下滑)</h1>
     
     <div class="video-btn-group">
@@ -140,30 +175,22 @@
 
     <div class="playing-tip" id="playingTip">点击按钮播放视频</div>
 
-    <!-- 视频播放容器 -->
     <div class="video-container" id="videoContainer">
         <video id="videoPlayer" controls></video>
     </div>
 
+    <script src="music-player.js"></script>
     <script>
-        // 获取视频播放器、容器和提示框
         const videoPlayer = document.getElementById("videoPlayer");
         const videoContainer = document.getElementById("videoContainer");
         const playingTip = document.getElementById("playingTip");
-        // 视频文件夹路径：同目录下的 video 文件夹，可自行修改
         const videoFolderPath = "./sp/";
 
-        // 播放视频函数
         function playVideo(filename) {
-            // 拼接完整视频路径
             const videoSrc = videoFolderPath + filename;
-            // 设置视频源
             videoPlayer.src = videoSrc;
-            // 显示视频容器
             videoContainer.style.display = "block";
-            // 播放视频
             videoPlayer.play();
-            // 更新提示文字
             playingTip.innerText = `正在播放：${filename}`;
         }
     </script>

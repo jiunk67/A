@@ -14,15 +14,15 @@
 
         .page-container {
             width: 100vw;
-            height: 100vh;
+            min-height: 100vh;
             background: url("./sp/your-background-image.jpg") no-repeat center center fixed;
             background-size: cover;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(30, 30, 60, 0.7)), url("./sp/your-background-image.jpg");
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(15, 23, 42, 0.85)), url("./sp/your-background-image.jpg");
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 80px 20px 40px;
             overflow: auto;
         }
 
@@ -30,13 +30,13 @@
             color: #ffffff;
             font-size: 36px;
             margin-bottom: 50px;
-            text-shadow: 0 0 15px #00ccff;
+            text-shadow: 0 0 15px rgba(0, 200, 255, 0.8), 0 2px 10px rgba(0, 0, 0, 0.5);
             letter-spacing: 3px;
         }
 
         .btn-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             width: 90%;
             max-width: 1000px;
@@ -45,11 +45,12 @@
         .btn-item {
             padding: 18px 0;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: #ffffff;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             text-align: center;
@@ -57,15 +58,15 @@
             overflow: hidden;
             text-overflow: ellipsis;
             transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 204, 255, 0.3);
+            box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.3), 0 4px 15px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
             text-decoration: none;
         }
 
         .btn-item:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 204, 255, 0.6);
+            transform: translateY(-5px);
+            box-shadow: 0 0 0 2px rgba(126, 87, 194, 0.5), 0 8px 20px rgba(0, 0, 0, 0.3);
             background: rgba(255, 255, 255, 0.15);
         }
 
@@ -87,6 +88,30 @@
             100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
         }
 
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.3);
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
             .page-title {
                 font-size: 28px;
@@ -94,30 +119,33 @@
             }
             .btn-item {
                 padding: 15px 0;
-                font-size: 14px;
+                font-size: 13px;
             }
             .btn-grid {
                 gap: 15px;
+            }
+            .back-btn {
+                padding: 10px 18px;
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
+    <a href="index.html" class="back-btn">← 返回首页</a>
+    
     <div class="page-container">
         <h1 class="page-title">公益网盘(名称跟密码)</h1>
         <div class="btn-grid">
-            <!-- 替换 href 里的网址为你需要跳转的目标网站 -->
-            <a href="https://wwr.lanzoui.com/b03kpzn5c" class="btn-item" target="_blank">橘子内核 6666</a>
+            <a href="" class="btn-item" target="_blank"></a>
             <a href="https://jiunk67.github.io/A/ly.html" class="btn-item" target="_blank">落叶内核 落叶 123456</a>
             <a href="https://wwr.lanzoui.com/b00od5fxwj" class="btn-item" target="_blank">葫芦娃内核 6666</a>
             <a href="https://jiunk67.github.io/A/xiaoyue.html" class="btn-item" target="_blank">小月改文件</a>
             <a href="http://xn--5nq123a1lhvw3d.top/" class="btn-item" target="_blank">小黄改文件</a>
             <a href="https://lanzout.com/b01okhhvg" class="btn-item" target="_blank">A内核 Anhnb666</a>
             <a href="https://www.123912.com/s/MtZIjv-dTzi3?notoken=1" class="btn-item" target="_blank">六花</a>
-            <a href="" class="btn-item" target="_blank"></a>
-            <a href="" class="btn-item" target="_blank"></a>
-            <a href="" class="btn-item" target="_blank"></a>
         </div>
     </div>
+    <script src="music-player.js"></script>
 </body>
 </html>
