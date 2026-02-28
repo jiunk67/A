@@ -170,7 +170,257 @@
             <small>最后更新: 2026.2.28</small>
         </div>
 
-        <script src="music-player.js"></script>
+        <script>
+            class GlobalMusicPlayer {
+                constructor() {
+                    this.audio = null;
+                    this.isPlaying = false;
+                    this.currentTime = 0;
+                    this.volume = 0.5;
+                    this.isMuted = false;
+                    this.init();
+                }
+
+                init() {
+                    if (this.audio) return;
+                    this.audio = new Audio('./music/music.mp3');
+                    this.audio.loop = true;
+                    this.audio.volume = this.volume;
+                    this.loadState();
+                    this.audio.addEventListener('timeupdate', () => {
+                        this.currentTime = this.audio.currentTime;
+                        this.saveState();
+                    });
+                    this.audio.addEventListener('play', () => {
+                        this.isPlaying = true;
+                        this.saveState();
+                    });
+                    this.audio.addEventListener('pause', () => {
+                        this.isPlaying = false;
+                        this.saveState();
+                    });
+                    this.audio.addEventListener('ended', () => {
+                        this.isPlaying = false;
+                        this.saveState();
+                    });
+                    this.createPlayerUI();
+                    if (this.isPlaying) {
+                        this.audio.currentTime = this.currentTime;
+                        this.audio.play().catch(() => {});
+                    }
+                }
+
+                loadState() {
+                    const savedState = localStorage.getItem('musicPlayerState');
+                    if (savedState) {
+                        const state = JSON.parse(savedState);
+                        this.currentTime = state.currentTime || 0;
+                        this.volume = state.volume || 0.5;
+                        this.isMuted = state.isMuted || false;
+                        this.isPlaying = state.isPlaying || false;
+                    }
+                }
+
+                saveState() {
+                    const state = {
+                        currentTime: this.audio.currentTime,
+                        volume: this.audio.volume,
+                        isMuted: this.audio.muted,
+                        isPlaying: !this.audio.paused
+                    };
+                    localStorage.setItem('musicPlayerState', JSON.stringify(state));
+                }
+
+                createPlayerUI() {
+                    const existingPlayer = document.getElementById('global-music-player');
+                    if (existingPlayer) return;
+                    const player = document.createElement('div');
+                    player.id = 'global-music-player';
+                    player.innerHTML = `
+                        <style>
+                            #global-music-player {
+                                position: fixed;
+                                bottom: 20px;
+                                right: 20px;
+                                z-index: 1000;
+                                display: flex;
+                                align-items: center;
+                                gap: 10px;
+                                padding: 12px 20px;
+                                background: rgba(255,255,255, 0.1);
+                                backdrop-filter: blur(10px);
+                                -webkit-backdrop-filter: blur(10px);
+                                border-radius: 50px;
+                                box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.3), 0 4px 15px rgba(0, 0, 0, 0.2);
+                                transition: all 0.3s ease;
+                            }
+                            #global-music-player:hover {
+                                box-shadow: 0 0 0 2px rgba(126, 87, 194, 0.5), 0 6px 20px rgba(0, 0, 0, 0.3);
+                                background: rgba(255,255,255, 0.15);
+                            }
+                            .music-icon {
+                                width: 24px;
+                                height: 24px;
+                                fill: #ffffff;
+                                animation: pulse 2s ease-in-out infinite;
+                            }
+                            .music-icon.paused {
+                                animation: none;
+                                opacity: 0.5;
+                            }
+                            @keyframes pulse {
+                                0%, 100% { transform: scale(1); }
+                                50% { transform: scale(1.1); }
+                            }
+                            .music-btn {
+                                width: 44px;
+                                height: 44px;
+                                border: 2px solid rgba(0, 229, 255, 0.5);
+                                border-radius: 50%;
+                                background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(126, 87, 194, 0.2));
+                                color: #ffffff;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                                font-size: 18px;
+                                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                                position: relative;
+                                overflow: hidden;
+                            }
+                            .music-btn::before {
+                                content: '';
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                width: 0;
+                                height: 0;
+                                border-radius: 50%;
+                                background: rgba(255, 255, 255, 0.3);
+                                transform: translate(-50%, -50%);
+                                transition: width 0.3s ease, height 0.3s ease;
+                            }
+                            .music-btn:hover {
+                                border-color: rgba(126, 87, 194, 0.7);
+                                background: linear-gradient(135deg, rgba(0, 229, 255, 0.3), rgba(126, 87, 194, 0.3));
+                                transform: scale(1.15) translateY(-2px);
+                                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                            }
+                            .music-btn:active {
+                                transform: scale(1.05) translateY(0);
+                            }
+                            .music-btn:active::before {
+                                width: 200%;
+                                height: 200%;
+                            }
+                            .volume-slider {
+                                width: 80px;
+                                height: 4px;
+                                -webkit-appearance: none;
+                                appearance: none;
+                                background: rgba(255, 255, 255, 0.3);
+                                border-radius: 2px;
+                                outline: none;
+                                cursor: pointer;
+                            }
+                            .volume-slider::-webkit-slider-thumb {
+                                -webkit-appearance: none;
+                                appearance: none;
+                                width: 12px;
+                                height: 12px;
+                                border-radius: 50%;
+                                background: #00e5ff;
+                                cursor: pointer;
+                                transition: all 0.2s ease;
+                            }
+                            .volume-slider::-webkit-slider-thumb:hover {
+                                transform: scale(1.2);
+                                box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+                            }
+                            .volume-slider::-moz-range-thumb {
+                                width: 12px;
+                                height: 12px;
+                                border-radius: 50%;
+                                background: #00e5ff;
+                                cursor: pointer;
+                                border: none;
+                            }
+                            @media (max-width: 768px) {
+                                #global-music-player {
+                                    bottom: 15px;
+                                    right: 15px;
+                                    padding: 10px 15px;
+                                }
+                                .volume-slider {
+                                    width: 60px;
+                                }
+                                .music-btn {
+                                    width: 40px;
+                                    height: 40px;
+                                    font-size: 16px;
+                                }
+                            }
+                        </style>
+                        <svg class="music-icon ${this.isPlaying ? '' : 'paused'}" viewBox="0 0 24 24">
+                            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                        </svg>
+                        <button class="music-btn" id="playPauseBtn">
+                            ${this.isPlaying ? '⏸' : '▶'}
+                        </button>
+                        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="${this.volume}">
+                    `;
+                    document.body.appendChild(player);
+                    const playPauseBtn = document.getElementById('playPauseBtn');
+                    const volumeSlider = document.getElementById('volumeSlider');
+                    const musicIcon = player.querySelector('.music-icon');
+                    playPauseBtn.addEventListener('click', () => {
+                        this.togglePlay();
+                    });
+                    volumeSlider.addEventListener('input', (e) => {
+                        this.setVolume(e.target.value);
+                    });
+                    this.playPauseBtn = playPauseBtn;
+                    this.musicIcon = musicIcon;
+                }
+
+                togglePlay() {
+                    if (this.audio.paused) {
+                        this.audio.play();
+                        this.playPauseBtn.textContent = '⏸';
+                        this.musicIcon.classList.remove('paused');
+                    } else {
+                        this.audio.pause();
+                        this.playPauseBtn.textContent = '▶';
+                        this.musicIcon.classList.add('paused');
+                    }
+                }
+
+                setVolume(value) {
+                    this.audio.volume = value;
+                    this.volume = value;
+                    this.saveState();
+                }
+
+                play() {
+                    this.audio.play();
+                    this.playPauseBtn.textContent = '⏸';
+                    this.musicIcon.classList.remove('paused');
+                }
+
+                pause() {
+                    this.audio.pause();
+                    this.playPauseBtn.textContent = '▶';
+                    this.musicIcon.classList.add('paused');
+                }
+            }
+
+            let globalMusicPlayer;
+
+            document.addEventListener('DOMContentLoaded', () => {
+                globalMusicPlayer = new GlobalMusicPlayer();
+            });
+        </script>
     </div>
 </body>
 </html>
