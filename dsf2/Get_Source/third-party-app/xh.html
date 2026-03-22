@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>极客匣 · 超级工具箱</title>
+<style>
+:root{
+  --bg:#f5f7fa;
+  --card:#ffffff;
+  --line:#e2e8f0;
+  --text:#1e293b;
+  --text2:#64748b;
+  --accent:#3b82f6;
+  --transition:.25s cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  background:var(--bg);color:var(--text);padding:20px 0;
+}
+
+/* 时间会员容器 */
+.time-vip-container {
+  width: 92%;
+  max-width: 360px;
+  margin: 0 auto 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, #e6f7ff 0%, #d1e9fa 100%);
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 120, 255, 0.15);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.time-vip-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+  z-index: -1;
+  animation: float 15s infinite linear;
+}
+
+@keyframes float {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.datetime {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #0055a8;
+  text-align: center;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.vip-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #3b82f6;
+}
+
+.vip-tag {
+  background: linear-gradient(45deg, #ffd700, #ffa000);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 标题区域 */
+.title-container {
+  text-align: center;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 8px;
+}
+
+.title-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.title-container h1 {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #1e293b;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.title-container p {
+  font-size: 16px;
+  color: #64748b;
+  max-width: 300px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* 功能网格 */
+.grid-container {
+  width: 92%;
+  max-width: 360px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.grid-item {
+  aspect-ratio: 1/1;
+  background: var(--card);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  /* 拟态效果 */
+  box-shadow: 
+    8px 8px 16px rgba(163,177,198,0.2),
+    -8px -8px 16px rgba(255,255,255,0.7);
+  
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.grid-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    12px 12px 24px rgba(163,177,198,0.25),
+    -12px -12px 24px rgba(255,255,255,0.8);
+}
+
+.grid-item:active {
+  transform: translateY(0);
+  box-shadow: 
+    4px 4px 8px rgba(163,177,198,0.2),
+    -4px -4px 8px rgba(255,255,255,0.7);
+}
+
+.grid-item svg {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 15px;
+  fill: var(--accent);
+  transition: transform 0.3s ease;
+}
+
+.grid-item:hover svg {
+  transform: scale(1.1);
+}
+
+.grid-title {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text);
+}
+</style>
+</head>
+<body>
+
+<!-- 时间会员容器 -->
+<div class="time-vip-container">
+  <div class="datetime" id="datetime">--</div>
+  <div class="vip-status">
+    <span>会员状态:</span>
+    <div class="vip-tag" id="vip-tag">普通用户</div>
+  </div>
+</div>
+
+<!-- 标题区域 -->
+<div class="title-container">
+  <div class="title-header">
+    <img src="jkx.jpeg" alt="极客匣头像" class="title-avatar">
+    <h1>极客匣</h1>
+  </div>
+  <p>专注收集海量全网资源</p>
+</div>
+
+<!-- 功能网格 -->
+<div class="grid-container">
+  <div class="grid-item" onclick="location.href='2.html'">
+    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-.01L12 2z"/></svg>
+    <div class="grid-title">实用工具</div>
+  </div>
+  
+  <div class="grid-item" onclick="location.href='3.html'">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+    <div class="grid-title">娱乐功能</div>
+  </div>
+  
+  <div class="grid-item" onclick="location.href='888.html'">
+    <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+    <div class="grid-title">聚合空间</div>
+  </div>
+  
+  <div class="grid-item" onclick="location.href='AI888.html'">
+    <svg viewBox="0 0 24 24"><path d="M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/></svg>
+    <div class="grid-title">AI空间</div>
+  </div>
+  
+  <div class="grid-item" onclick="location.href='zy.html'">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+    <div class="grid-title">资源空间</div>
+  </div>
+  
+<div class="grid-item" onclick="parent.location.href='jjj.html'">
+  <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  <div class="grid-title">返回主页</div>
+</div>
+
+<script>
+/* ---------- 实时时间 ---------- */
+function setDateTime(){
+  const now = new Date();
+  const MM = (now.getMonth()+1).toString().padStart(2,'0');
+  const DD = now.getDate().toString().padStart(2,'0');
+  const hh = now.getHours().toString().padStart(2,'0');
+  const mm = now.getMinutes().toString().padStart(2,'0');
+  const ss = now.getSeconds().toString().padStart(2,'0');
+  
+  // 创建更精致的显示格式
+  const timeString = `${hh}<span style="font-size: 0.7em; opacity:0.7;">:</span>${mm}<span style="font-size: 0.7em; opacity:0.7;">:</span><span style="font-size:0.85em;">${ss}</span>`;
+  const dateString = `${MM}月${DD}日`;
+  
+  document.getElementById('datetime').innerHTML = `<div style="font-size: 0.6em; margin-bottom: 5px; letter-spacing: 1px; opacity: 0.9;">${dateString}</div>${timeString}`;
+}
+setDateTime();
+setInterval(setDateTime, 1000);
+
+/* ---------- 会员状态 ---------- */
+function updateUserStatus(){
+  const data = JSON.parse(localStorage.getItem('memberStatus') || '{}');
+  const isVIP = data.isActive && (data.isPermanent || new Date(data.expiryDate) > new Date());
+  
+  const tag = document.getElementById('vip-tag');
+  if(isVIP){
+    tag.textContent = 'VIP会员';
+    tag.style.background = 'linear-gradient(45deg, #ff6b6b, #ff8e53)';
+  } else {
+    tag.textContent = '普通用户';
+    tag.style.background = 'linear-gradient(45deg, #64748b, #94a3b8)';
+  }
+}
+
+// 模拟会员状态
+localStorage.setItem('memberStatus', JSON.stringify({
+  isActive: true,
+  isPermanent: false,
+  expiryDate: "9999-12-31"
+}));
+
+updateUserStatus();
+
+/* ---------- 拦截返回键 ---------- */
+(function () {
+  history.pushState(null, null, location.href);
+  window.addEventListener('popstate', function () {
+    history.pushState(null, null, location.href);
+    try { window.close(); } catch (_) {}
+    if (navigator.app && navigator.app.exitApp) {
+      navigator.app.exitApp();
+    }
+  });
+})();
+</script>
+</body>
+</html>
