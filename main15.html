@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分类</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9)), url('sp/your-background-image.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #ffffff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .category-section {
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .category-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #60a5fa;
+            border-bottom: 2px solid #60a5fa;
+            padding-bottom: 10px;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .custom-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .custom-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #64748b, #475569);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            background: linear-gradient(135deg, #475569, #334155);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">返回首页</a>
+        <h1>分类页面</h1>
+
+        <div class="category-section">
+            <h2 class="category-title">游戏娱乐</h2>
+            <div class="btn-group">
+                <a href="dsf/game_01_wuziqi.html" class="custom-btn">MD3 五子棋</a>
+                <a href="dsf/game_02_nickname_generator.html" class="custom-btn">游戏网名生成器</a>
+                <a href="dsf/game_03_scratch_card.html" class="custom-btn">刮刮乐</a>
+                <a href="dsf/game_04_slot_machine.html" class="custom-btn">老虎机</a>
+                <a href="dsf/game_05_brain_game.html" class="custom-btn">脑力游戏</a>
+                <a href="dsf/game_06_puzzle_game.html" class="custom-btn">解谜游戏</a>
+                <a href="dsf/game_07_tictactoe.html" class="custom-btn">井字棋</a>
+                <a href="dsf/game_08_rhythm_game.html" class="custom-btn">节奏大师/钢琴块</a>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2 class="category-title">游戏相关</h2>
+            <div class="btn-group">
+                <a href="dsf/game_related_01_4399_generator.html" class="custom-btn">4399小白号生成器</a>
+                <a href="dsf/game_related_02_honor_kings_hero.html" class="custom-btn">王者荣耀英雄查询</a>
+                <a href="dsf/game_related_03_honor_kings_power.html" class="custom-btn">王者荣耀战力查询</a>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2 class="category-title">媒体工具</h2>
+            <div class="btn-group">
+                <a href="dsf/media_01_vip_parser.html" class="custom-btn">全网VIP影视解析</a>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2 class="category-title">安全工具</h2>
+            <div class="btn-group">
+                <a href="dsf/security_01_antifraud_test.html" class="custom-btn">防诈骗意识测试</a>
+                <a href="dsf/security_02_hacker_tools.html" class="custom-btn">黑客工具</a>
+                <a href="dsf/security_03_alert_system.html" class="custom-btn">预警系统</a>
+                <a href="dsf/security_04_root_detector.html" class="custom-btn">Root检测器</a>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2 class="category-title">实用工具</h2>
+            <div class="btn-group">
+                <a href="dsf/tool_01_website_nav.html" class="custom-btn">300+实用网站导航</a>
+                <a href="dsf/tool_02_password_generator.html" class="custom-btn">密码生成器</a>
+                <a href="dsf/tool_03_website_check.html" class="custom-btn">网站检测</a>
+                <a href="dsf/tool_04_random_wheel.html" class="custom-btn">幸运转盘</a>
+                <a href="dsf/tool_05_color_extractor.html" class="custom-btn">颜色提取器</a>
+                <a href="dsf/tool_06_answer_book.html" class="custom-btn">答案之书</a>
+                <a href="dsf/tool_07_css_obfuscator.html" class="custom-btn">CSS混淆器</a>
+                <a href="dsf/tool_08_base64_converter.html" class="custom-btn">Base64转换器</a>
+                <a href="dsf/tool_09_image_base64.html" class="custom-btn">图片转Base64</a>
+                <a href="dsf/tool_10_china_chairmen.html" class="custom-btn">中国领导人列表</a>
+                <a href="dsf/tool_11_multitool.html" class="custom-btn">多功能工具</a>
+                <a href="dsf/tool_12_calculator.html" class="custom-btn">计算器</a>
+                <a href="dsf/tool_13_link_generator.html" class="custom-btn">短链接生成</a>
+                <a href="dsf/tool_14_wifi_detector.html" class="custom-btn">WiFi检测</a>
+                <a href="dsf/tool_15_hand_speed.html" class="custom-btn">手速测试</a>
+                <a href="dsf/tool_16_html_encryptor.html" class="custom-btn">HTML加密</a>
+                <a href="dsf/tool_17_daily_quote.html" class="custom-btn">每日一言</a>
+                <a href="dsf/tool_18_nav_website.html" class="custom-btn">导航网站</a>
+                <a href="dsf/tool_19_population_stats.html" class="custom-btn">人口统计</a>
+                <a href="dsf/tool_20_what_to_eat.html" class="custom-btn">今天吃什么</a>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2 class="category-title">其他工具</h2>
+            <div class="btn-group">
+                <a href="dsf/other_01_jade_feet.html" class="custom-btn">品玉足</a>
+                <a href="dsf/other_02_data_account.html" class="custom-btn">数据号生成</a>
+                <a href="dsf/other_03_sms_tool.html" class="custom-btn">短信验证码</a>
+                <a href="dsf/other_04_web_source.html" class="custom-btn">网站源码分析</a>
+                <a href="dsf/other_05_email_tool.html" class="custom-btn">临时邮箱</a>
+                <a href="dsf/other_06_earthquake.html" class="custom-btn">全球地震统计</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
