@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>小海工具箱</title>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;      
+            background-size: cover;
+            background-position: center;
+            overflow-y: auto;
+        }
+
+        .container {
+            padding: 20px 10px 10px;
+            margin-top: 20px; /* 调整为轮播卡片高度+间距 */
+        }
+
+        /* 轮播卡片样式 */
+        .carousel-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .carousel-card {
+            width: 90%;
+            max-width: 600px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 4px solid rgba(0, 0, 0, 0.7); /* 厚边框 */
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .carousel-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .carousel-card .caption {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 1em;
+        }
+
+        .category {
+            background-color: rgba(255, 255, 255, 0.3); /* 功能框改为更透明 */
+            border: 1px solid rgba(0, 0, 0, 0.7); /* 边框颜色加深 */
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .category:hover {
+            background-color: rgba(255, 255, 255, 0.5); /* 鼠标悬停时的透明度增加 */
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .category h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .sub-functions {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .sub-functions.show {
+            display: block;
+        }
+
+        .sub-functions ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .sub-functions li {
+            background-color: rgba(255, 255, 255, 0); /* 功能框改为更透明 */
+            border: 1px solid rgba(0, 0, 0, 0.7); /* 边框颜色加深 */
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .sub-functions li:hover {
+            background-color: rgba(255, 255, 255, 0); /* 鼠标悬停时的透明度增加 */
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sub-functions a {
+            color: black;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sub-functions a:hover {
+            text-decoration: none;
+        }
+
+        /* 新增动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 为每个分类卡片设置不同的延迟时间 */
+        .category:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+        .category:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+        .category:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        .category:nth-child(4) {
+            animation-delay: 0.8s;
+        }
+        .category:nth-child(5) {
+            animation-delay: 1s;
+        }
+        .category:nth-child(6) {
+            animation-delay: 1.2s;
+        }
+    </style>
+<body>
+    <!-- 轮播卡片图片 -->
+    <div class="carousel-container">
+        <div class="carousel-card" id="carousel-card-1">
+            <img src="Screenshot_2025_0216_205516.png" alt="Image 1">
+            <div class="caption">小海工具箱欢迎您！</div>
+        </div>
+        <div class="carousel-card" id="carousel-card-2" style="display: none;">
+            <img src="Screenshot_2025_0216_205504.png" alt="Image 2">
+            <div class="caption">功能丰富，等你探索！</div>
+        </div>
+        <div class="carousel-card" id="carousel-card-3" style="display: none;">
+            <img src="Screenshot_2025_0216_205516.png" alt="Image 3">
+            <div class="caption">感谢您的支持！</div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="category" onclick="toggleFunctions(this)">
+            <h3>基础功能</h3>
+            <div class="sub-functions">
+                <ul>
+                  <li><a href="0.html" target="_blank">快捷中心</a></li> 
+                    <li><a href="AI.html" target="_blank">小海机器人</a></li>  
+                    <li><a href="14.html" target="_blank">粒子时钟</a></li>
+                    <li><a href="15.html" target="_blank">计算器</a></li> 
+                    <li><a href="16.html" target="_blank">计时器</a></li>   
+                    <li><a href="19.html" target="_blank">天气预报</a></li> 
+                     <li><a href="22.html" target="_blank">记账本</a></li>
+                    <li><a href="23.html" target="_blank">备忘录</a></li>
+                     <li><a href="36.html" target="_blank">年龄检测</a></li> 
+                     <li><a href="37.html" target="_blank">干支年转换</a></li>
+                      <li><a href="38.html" target="_blank">指南针</a></li> 
+                      <li><a href="43.html" target="_blank">鸡兔同笼</a></li>
+                      <li><a href="44.html" target="_blank">日期计算器</a></li> 
+                       <li><a href="48.html" target="_blank">进制转换</a></li>
+                      <li><a href="69.html" target="_blank">重要的电话</a></li>
+                     <li><a href="70.html" target="_blank">本机信息</a></li>
+                     <li><a href="https://m.baike.com/" target="_blank">头条百科</a></li>                     
+                </ul>
+            </div>            
+        </div>    
+        <div class="category" onclick="toggleFunctions(this)">
+            <h3>实用功能</h3>
+            <div class="sub-functions">
+                <ul>
+                    <li><a href="2.html" target="_blank">二维码生成器</a></li>
+                    <li><a href="3.html" target="_blank">浏览器</a></li>
+                    <li><a href="4.html" target="_blank">前端编译器</a></li>
+                    <li><a href="5.html" target="_blank">文本朗读器</a></li>
+                    <li><a href="6.html" target="_blank">文本生成器</a></li> 
+                    <li><a href="cc.html" target="_blank">cc测压</a></li> 
+                    <li><a href="7.html" target="_blank">身份证🆔补齐后一位</a></li>              
+                    <li><a href="8.html" target="_blank">生辰八字转换</a></li>  
+                    <li><a href="9.html" target="_blank">摩斯密码翻译器</a></li> 
+                    <li><a href="12.html" target="_blank">随机壁纸</a></li>                                                                              
+                    <li><a href="13.html" target="_blank">文案馆</a></li> 
+                    <li><a href="17.html" target="_blank">网页快照</a></li>  
+                    <li><a href="18.html" target="_blank">邮箱轰炸</a></li>   
+                    <li><a href="20.html" target="_blank">短链接生成</a></li>                                        
+                    <li><a href="21.html" target="_blank">网站测速</a></li>
+                    <li><a href="24.html" target="_blank">世纪年代计算器</a></li>
+                    <li><a href="jm.html" target="_blank">加密</a></li>
+                    <li><a href="31.html" target="_blank">身份证二要素核验</a></li>
+                    <li><a href="32.html" target="_blank">三要素核验</a></li>
+                    <li><a href="33.html" target="_blank">跳转QQ小世界</a></li>
+                   <li><a href="45.html" target="_blank">css混淆</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="category" onclick="toggleFunctions(this)">
+            <h3>查询功能</h3>
+            <div class="sub-functions">
+                <ul>
+                    <li><a href="1.html" target="_blank">QQ查绑</a></li>
+                    <li><a href="10.html" target="_blank">身份证查询</a></li>
+                    <li><a href="11.html" target="_blank">手机号查询</a></li>
+                    <li><a href="25.html" target="_blank">企业查询</a></li>
+                    <li><a href="26.html" target="_blank">车牌号查询</a></li>
+                    <li><a href="27.html" target="_blank">ip查询</a></li>
+                    <li><a href="28.html" target="_blank">大学查询</a></li>
+                    <li><a href="29.html" target="_blank">百科查询</a></li>
+                    <li><a href="34.html" target="_blank">QQ价格查询</a></li>
+                    <li><a href="35.html" target="_blank">手机号价格查询</a></li>
+                   <li><a href="40.html" target="_blank">王者人物查询</a></li>
+                   <li><a href="41.html" target="_blank">水墨诗词</a></li>
+             
+                </ul>
+            </div>
+        </div>
+        <div class="category" onclick="toggleFunctions(this)">
+            <h3>娱乐功能</h3>
+            <div class="sub-functions">
+                <ul>
+                    <li><a href="yy.html" target="_blank">小海音乐</a></li>
+                    <li><a href="yy2.html" target="_blank">小海影视</a></li>
+                    <li><a href="sgmn.html" target="_blank">小海视频</a></li>
+                    <li><a href="30.html" target="_blank">短剧查询</a></li>
+                     <li><a href="39.html" target="_blank">文章生成器</a></li>
+                     <li><a href="42.html" target="_blank">2048</a></li>
+                     <li><a href="46.html" target="_blank">爱心一封信</a></li>  
+                     <li><a href="47.html" target="_blank">像素画</a></li>  
+                     <li><a href="49.html" target="_blank">小海抽签</a></li>  
+                     <li><a href="52.html" target="_blank">举牌</a></li>  
+                   <li><a href="71.html" target="_blank">AI绘图</a></li>                                     
+                </ul>
+            </div>
+        </div>       
+            <div class="category" onclick="toggleFunctions(this)">
+            <h3>其它合集</h3>
+            <div class="sub-functions">
+                <ul>
+                    <li><a href="ys.html" target="_blank">影视合集</a></li>
+                    <li><a href="rjk.html" target="_blank">软件库合集</a></li> 
+                    <li><a href="jm0.html" target="_blank">接码合集</a></li> 
+                    <li><a href="wz.html" target="_blank">网站合集</a></li>                                                              
+                </ul>
+            </div>
+        </div>
+        <div class="category" onclick="toggleFunctions(this)">
+            <h3>关于我们</h3>
+            <div class="sub-functions">
+                <ul>
+                    <li><a href="wm.html" target="_blank">关于我们</a></li>
+                    <li><a href="mz.html" target="_blank">免责声明</a></li>                                       
+                    <li><a href="http://qrshare.chat1v1.cn/randomdeskrynew782dfabc123.html?touserid=80a5ac58d4f0ec8c0a086ccf7109df5&tousername=Deskry%e5%8c%bf%e5%90%8d%e7%94%a8%e6%88%b7" target="_blank">官方客服</a></li>
+                    <li><a href="https://support.qq.com/embed/phone/671000" target="_blank">交流社区</a></li>                    
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleFunctions(category) {
+            const subFunctions = category.querySelector('.sub-functions');
+            subFunctions.classList.toggle('show'); // 切换显示状态
+        }
+
+        // 自动轮播功能
+        let currentCard = 1;
+        function showCard(cardNumber) {
+            document.getElementById('carousel-card-1').style.display = 'none';
+            document.getElementById('carousel-card-2').style.display = 'none';
+            document.getElementById('carousel-card-3').style.display = 'none';
+            document.getElementById('carousel-card-' + cardNumber).style.display = 'block';
+            currentCard = cardNumber;
+        }
+
+        function nextCard() {
+            let nextCard = currentCard % 3 + 1;
+            showCard(nextCard);
+        }
+
+        setInterval(nextCard, 3000); // 每3秒自动切换到下一张卡片
+    </script>
+    <div style="text-align: center; font-size: 1rem; color: #666; margin-top: 20px;">
+        <p>您已启动页面<span id="count">0</span>次</p>
+        <script>
+            // 获取当前访问次数
+            let count = localStorage.getItem("pageCount");
+
+            // 如果没有访问过该网页，则设置访问次数为1
+            if (!count) {
+                localStorage.setItem("pageCount", 1);
+                count = 1;
+            } else {
+                // 否则，将访问次数加1
+                count++;
+                localStorage.setItem("pageCount", count);
+            }
+
+            // 将访问次数显示到页面上
+            document.getElementById("count").textContent = count;
+        </script>
+    </div>
+</body>
+</html>
+

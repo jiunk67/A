@@ -1,0 +1,73 @@
+<html lang="zh-CN">
+ <head> 
+  <meta charset="utf-8"> 
+  <meta http-equiv="X-UA-Compatible" content="Chrome=1,IE=Edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <meta name="applicable-device" content="pc,mobile"> 
+  <meta name="renderer" content="webkit"> 
+  <title>摩斯密码翻译器</title> 
+  <meta name="keywords" content="摩斯密码翻译器"> 
+  <meta name="description" content="摩斯密码翻译器是一款在线摩斯密码翻译"> 
+  <link href="https://wjccx.com/css/style.css" rel="stylesheet" type="text/css"> 
+  <script src="https://hm.baidu.com/hm.js?3abbf369313bd6f71d39b5e3c8b43605"></script>
+  <script src="https://hm.baidu.com/hm.js?3abbf369313bd6f71d39b5e3c8b43605"></script> 
+  <script src="https://hm.baidu.com/hm.js?3abbf369313bd6f71d39b5e3c8b43605"></script> 
+  <script src="https://hm.baidu.com/hm.js?3abbf369313bd6f71d39b5e3c8b43605"></script> 
+  <script src="https://hm.baidu.com/hm.js?3abbf369313bd6f71d39b5e3c8b43605"></script> 
+  <script src="https://wjccx.com/js/jquery-3.3.1.min.js" type="text/javascript"></script> 
+  <script src="https://wjccx.com/js/gw_func.js" type="text/javascript"></script> 
+  <link rel="shortcut icon" href="https://wjccx.com/favicon.ico"> 
+  <!--[if lt IE 9]>
+<script src="http://wjccx.com/html5css3/html5.js"></script>
+<script src="http://wjccx.com/html5css3/css3.js"></script>
+<![endif]--> 
+  <script src="https://wjccx.com/js/tj_bd.js" type="text/javascript"></script> 
+ </head> 
+ <body id="v1"> 
+  <header id="v2"> 
+   <div id="v3" class=""> 
+    <div id="v6" class="cx_right cxx_weba1"> 
+     <script>gwweba1();</script> 
+    </div> 
+    <div id="v7" class="cx_clear"></div> 
+   </div> 
+  </header> 
+  <style id="v8">
+.cxx_tablems { width: 100%; line-height: 25px; border-spacing: 0; border-collapse: collapse; text-align: center; }
+.cxx_tablems thead tr th:nth-child(odd) { background: #F5FCFF; }
+.cxx_tablems tbody tr th { background: #F5FCFF; }
+.cxx_tablems tr th { padding: 3px 5px; }
+.cxx_tablems tr td { padding: 3px 5px; }
+</style> 
+  <main id="v9"> 
+   <div id="v10" class="ccx_box1"> 
+    <div id="v11" class="title"> 
+    </div> 
+    <div id="v14" class="conbt"> 
+     <img id="v15" src="http://wjccx.com/uploadfile/image/tools/mosi.png" alt="摩斯密码翻译器"> 
+     <h1 id="v16">摩斯密码翻译器</h1> 
+    </div> 
+    <div id="v17" class="connav">
+      在线摩斯密码编码 
+    </div> 
+    <div id="v18" class="content"> 
+     <textarea name="txt" id="txt" placeholder="请输入或粘贴您要编码的明文" class="textarea1" style=" height: 200px; ">小海牛逼</textarea> 
+     <p id="v19" class="mtop20 c"> <input type="button" value="摩斯密码编码" class="btn1" id="encode"> <input type="button" value="摩斯密码解码" class="btn1" id="decode"> </p> 
+     <div id="v236" class="cx_la"> 
+     </div> 
+    </div> 
+    <script src="https://mosi.wjccx.com/js.js" type="text/javascript"></script> 
+    <script>
+$("#encode").on("click", function () {
+	var code = xmorse.encode($("#txt").val());
+	$("#txt").val(code);
+});
+$("#decode").on("click", function () {
+	var code = xmorse.decode($("#txt").val());
+	$("#txt").val(code);
+});
+</script> 
+   </div> 
+  </main>  
+ </body>
+</html>

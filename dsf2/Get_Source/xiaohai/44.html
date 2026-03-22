@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日期天数计算器</title>
+<style>
+    body {
+        font-family: '微软雅黑', Arial, sans-serif;
+        background-color: #f0f4f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .container {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+    }
+    h2 {
+        text-align: center;
+        color: #1a202c;
+    }
+    .form-control {
+        margin-bottom: 1rem;
+    }
+    label {
+        display: block;
+        color: #4b5563;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    input[type="date"] {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    button {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+    button:hover {
+        background-color: #1d4ed8;
+    }
+    .result {
+        margin-top: 1rem;
+        text-align: center;
+        color: #10b981;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>日期天数计算器</h2>
+    <div class="form-control">
+        <label for="startDate">起始日期:</label>
+        <input type="date" id="startDate" required>
+    </div>
+    <div class="form-control">
+        <label for="endDate">结束日期:</label>
+        <input type="date" id="endDate" required>
+    </div>
+    <button onclick="calculateDays()">计算天数和年数</button>
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+function calculateDays() {
+    var start = document.getElementById('startDate').value;
+    var end = document.getElementById('endDate').value;
+    if (start === '' || end === '') {
+        alert('请填写完整的日期信息。');
+        return;
+    }
+    var startDate = new Date(start);
+    var endDate = new Date(end);
+    var timeDiff = endDate - startDate;
+    var daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    var yearsDiff = endDate.getFullYear() - startDate.getFullYear();
+
+    var resultHTML = `
+        <p>两个日期之间相差 ${daysDiff} 天。</p>
+        <p>两个日期之间相差 ${yearsDiff} 年。</p>
+    `;
+    document.getElementById('result').innerHTML = resultHTML;
+}
+
+function isLeapYear(year) {
+    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+}
+</script>
+</body>
+</html>

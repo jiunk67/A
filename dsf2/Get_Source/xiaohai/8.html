@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生辰八字计算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #bazi-result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>生辰八字计算器</h1>
+    <div>
+        <label for="year">年：</label>
+        <input type="number" id="year" placeholder="年">
+        <label for="month">月：</label>
+        <input type="number" id="month" placeholder="月">
+        <label for="day">日：</label>
+        <input type="number" id="day" placeholder="日">
+        <label for="hour">时：</label>
+        <input type="number" id="hour" placeholder="时">
+        <label for="minute">分：</label>
+        <input type="number" id="minute" placeholder="分">
+        <button onclick="generateBazi()">计算生辰八字</button>
+    </div>
+    <div id="bazi-result"></div>
+    <canvas id="particle-canvas"></canvas>
+    <script>
+        // 生辰八字生成与计算
+        function generateBazi() {
+            const year = parseInt(document.getElementById('year').value);
+            const month = parseInt(document.getElementById('month').value);
+            const day = parseInt(document.getElementById('day').value);
+            const hour = parseInt(document.getElementById('hour').value);
+            const minute = parseInt(document.getElementById('minute').value);
+
+            // 天干地支
+            const heavenlyStems = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+            const earthlyBranches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+
+            // 年柱计算
+            const yearStemIndex = (year - 4) % 10; // 以1900年为基准
+            const yearBranchIndex = (year - 4) % 12;
+            const yearColumn = heavenlyStems[yearStemIndex] + earthlyBranches[yearBranchIndex];
+
+            // 月柱计算
+            const monthStemIndex = (yearStemIndex * 2 + month) % 10;
+            const monthBranchIndex = (yearBranchIndex * 2 + month) % 12;
+            const monthColumn = heavenlyStems[monthStemIndex] + earthlyBranches[monthBranchIndex];
+
+            // 日柱计算
+            const dayStemIndex = (yearStemIndex * 3 + month * 2 + day) % 10;
+            const dayBranchIndex = (yearBranchIndex * 3 + month * 2 + day) % 12;
+            const dayColumn = heavenlyStems[dayStemIndex] + earthlyBranches[dayBranchIndex];
+
+            // 时柱计算
+            const hourStemIndex = (yearStemIndex * 4 + month * 3 + day * 2 + hour) % 10;
+            const hourBranchIndex = (yearBranchIndex * 4 + month * 3 + day * 2 + hour) % 12;
+            const hourColumn = heavenlyStems[hourStemIndex] + earthlyBranches[hourBranchIndex];
+
+            const bazi = `年柱: ${yearColumn}\n月柱: ${monthColumn}\n日柱: ${dayColumn}\n时柱: ${hourColumn}`;
+
+            document.getElementById('bazi-result').innerText = bazi;
+        }
+
+        // 粒子爆炸效果
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 5 + 1;
+                this.speedX = Math.random() * 4 - 2;
+                this.speedY = Math.random() * 4 - 2;
+                this.color = color;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.05;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 100; i++) {
+                particlesArray.push(new Particle(x, y, color));
+            }
+        }
+
+        function handleParticles() {
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                if (particlesArray[i].size <= 0.3) {
+                    particlesArray.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const color = `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
+            createParticles(x, y, color);
+        });
+
+        // 动画循环
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            handleParticles();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // 主题切换
+        function switchTheme(themeNumber) {
+            const body = document.body;
+            switch (themeNumber) {
+                case 1:
+                    body.style.backgroundColor = '#2c3e50';
+                    break;
+                case 2:
+                    body.style.backgroundColor = '#16a085';
+                    break;
+                case 3:
+                    body.style.backgroundColor = '#8e44ad';
+                    break;
+                case 4:
+                    body.style.backgroundColor = '#f39c12';
+                    break;
+                case 5:
+                    body.style.backgroundColor = '#c0392b';
+                    break;
+                default:
+                    body.style.backgroundColor = '#2c3e50';
+            }
+        }
+    </script>
+</body>
+</html>

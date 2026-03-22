@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>备忘录</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --hover-color: #4338CA;
+            --bg-color: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-color: #1F2937;
+            --error-color: #EF4444;
+            --success-color: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-color);
+            font-size: 1.875rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background: var(--hover-color);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        button:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(100, 100);
+                opacity: 0;
+            }
+        }
+
+        .memo-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #F9FAFB;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        .memo-content {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .delete-button {
+            background-color: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .delete-button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>小海备忘录</h1>
+        <form id="memoForm">
+            <div class="form-group">
+                <label for="title">标题</label>
+                <input type="text" id="title" required placeholder="请输入标题">
+            </div>
+            <div class="form-group">
+                <label for="content">内容</label>
+                <textarea id="content" required placeholder="请输入内容"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="date">日期</label>
+                <input type="date" id="date" required>
+            </div>
+            <button type="submit">保存备忘录</button>
+        </form>
+        <div id="memos">         
+            <ul id="memoList"></ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('memoForm');
+            const memoList = document.getElementById('memoList');
+
+            // 加载备忘录
+            loadMemos();
+
+            // 表单提交事件
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const title = document.getElementById('title').value;
+                const content = document.getElementById('content').value;
+                const date = document.getElementById('date').value;
+
+                if (title && content && date) {
+                    const memo = { title, content, date };
+                    saveMemo(memo);
+                    addMemoToDOM(memo);
+                    form.reset();
+                } else {
+                    alert("请输入所有字段！");
+                }
+            });
+
+            // 保存备忘录到 localStorage
+            function saveMemo(memo) {
+                let memos = JSON.parse(localStorage.getItem('memos')) || [];
+                memos.push(memo);
+                localStorage.setItem('memos', JSON.stringify(memos));
+            }
+
+            // 将备忘录添加到页面中
+            function addMemoToDOM(memo) {
+                const li = document.createElement('li');
+                li.className = `memo-item`;
+                li.innerHTML = `
+                    <strong>${memo.title}</strong>
+                    <button class="delete-button" data-date="${memo.date}">🗑️</button>
+                    <div class="memo-content">
+                        <p>日期：${memo.date}</p>
+                        <p>内容：${memo.content}</p>
+                    </div>
+                `;
+                li.addEventListener('click', function() {
+                    const content = this.querySelector('.memo-content');
+                    content.style.display = content.style.display === 'block' ? 'none' : 'block';
+                });
+
+                // 添加删除按钮的点击事件
+                const deleteButton = li.querySelector('.delete-button');
+                deleteButton.addEventListener('click', function () {
+                   deleteMemo(memo.date);
+               });
+
+                memoList.appendChild(li);
+            }
+
+            // 删除单个备忘录记录
+            function deleteMemo(date) {
+                if (confirm('确定要删除这条备忘录吗？')) {
+                    let memos = JSON.parse(localStorage.getItem('memos')) || [];
+                    memos = memos.filter(memo => memo.date !== date);
+                    localStorage.setItem('memos', JSON.stringify(memos));
+                    refreshMemos();
+                }
+            }
+
+            // 刷新备忘录列表
+            function refreshMemos() {
+                memoList.innerHTML = '';
+                loadMemos();
+            }
+
+            // 加载并显示所有备忘录记录
+            function loadMemos() {
+                let memos = JSON.parse(localStorage.getItem('memos')) || [];
+                memos.forEach(addMemoToDOM);
+            }
+        });
+    </script>
+</body>
+</html>

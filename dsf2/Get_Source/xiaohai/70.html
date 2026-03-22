@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本机信息</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .info-table th, .info-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .info-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>本机信息</h1>
+
+    <div class="section">
+        <h2>手机信息</h2>
+        <table class="info-table">
+            <tr>
+                <th>手机品牌</th>
+                <td id="deviceBrand"></td>
+            </tr>
+            <tr>
+                <th>手机型号</th>
+                <td id="deviceModel"></td>
+            </tr>
+            <tr>
+                <th>操作系统</th>
+                <td id="os"></td>
+            </tr>
+            <tr>
+                <th>屏幕大小</th>
+                <td id="screenSize"></td>
+            </tr>
+            <tr>
+                <th>分辨率</th>
+                <td id="resolution"></td>
+            </tr>
+            <tr>
+                <th>SDK版本</th>
+                <td id="sdkVersion"></td>
+            </tr>
+            <tr>
+                <th>Android版本</th>
+                <td id="androidVersion"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>电池信息</h2>
+        <table class="info-table">
+            <tr>
+                <th>健康状况</th>
+                <td id="batteryHealth"></td>
+            </tr>
+            <tr>
+                <th>电池容量</th>
+                <td id="batteryCapacity"></td>
+            </tr>
+            <tr>
+                <th>电压</th>
+                <td id="voltage"></td>
+            </tr>
+            <tr>
+                <th>电池状态</th>
+                <td id="batteryStatus"></td>
+            </tr>
+            <tr>
+                <th>充电状态</th>
+                <td id="chargingStatus"></td>
+            </tr>
+            <tr>
+                <th>电池温度</th>
+                <td id="batteryTemp"></td>
+            </tr>
+            <tr>
+                <th>电池类型</th>
+                <td id="batteryType"></td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('deviceBrand').textContent = navigator.vendor || '未知';
+        document.getElementById('deviceModel').textContent = navigator.userAgent || '未知';
+        document.getElementById('os').textContent = navigator.platform || '未知';
+        document.getElementById('screenSize').textContent = window.innerWidth + 'x' + window.innerHeight;
+        document.getElementById('resolution').textContent = window.screen.width + 'x' + window.screen.height;
+        document.getElementById('sdkVersion').textContent = navigator.appVersion;
+        document.getElementById('androidVersion').textContent = navigator.userAgent.match(/Android (\d+\.\d+)/)[1] || '未知';
+
+        if (navigator.getBattery) {
+            navigator.getBattery().then(function(battery) {
+                document.getElementById('batteryHealth').textContent = battery.level * 100 + '%';
+                document.getElementById('batteryCapacity').textContent = battery.capacity * 100 + '%';
+                document.getElementById('voltage').textContent = battery.charging ? '正在充电' : '未充电';
+                document.getElementById('batteryStatus').textContent = battery.charging ? '正在充电' : '未充电';
+                document.getElementById('chargingStatus').textContent = battery.charging ? '交流电充电' : '未充电';
+                document.getElementById('batteryTemp').textContent = battery.temperature + '℃';
+                document.getElementById('batteryType').textContent = 'Li-ion';
+            });
+        } else {
+            console.log('Battery API not supported');
+        }
+    </script>
+</body>
+</html>

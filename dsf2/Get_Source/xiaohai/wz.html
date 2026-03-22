@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.feature-card {
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06);
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+}
+.feature-card h3 {
+  font-size: 1.25rem;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+.feature-card p {
+  font-size: 1rem;
+  color: #666;
+}
+.sponsor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 每行两个按钮 */
+  gap: 1rem;
+}
+.sponsor-card {
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06);
+  width: 100%; /* 设置固定的宽度 */
+  height: 100px; /* 设置固定的高度 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sponsor-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.sponsor-name {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #2d3748;
+}
+.sponsor-level {
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+.level-platinum {
+  background-color: #ed4baf;
+  color: #f5e2ff;
+}
+.level-gold {
+  background-color: #fefce8;
+  color: #744210;
+}
+.level-silver {
+  background-color: #e8e8f0;
+  color: #4b5563;
+}
+.level-bronze {
+  background-color: #f5e2de;
+  color: #b34f46;
+}
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 5px;
+  width: 120px; /* 缩小按钮的宽度 */
+  height: 35px; /* 缩小按钮的高度 */
+  display: flex; /* 使用flex布局来居中文本 */
+  justify-content: center; /* 水平居中文本 */
+  align-items: center; /* 垂直居中文本 */
+}
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem; /* 按钮之间的间距 */
+}
+.version-footer {
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #f7fafc;
+  padding: 5px 0;
+  font-size: 0.75rem;
+  color: #4b5563;
+}
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body id="V1">
+<div id="V" class="container">
+  <div class="features">
+    <div class="feature-card">
+      <p>网站合集</p>
+    </div>  
+  <div class="button-container" style="margin-top: 20px;">
+    <button class="button" onclick="window.location.href='https://www.ylawen.com/qq/'">查绑</button>
+    <button class="button" onclick="window.location.href='http://www.husinimee.com/dxhzj/'">短信轰炸机</button>
+    <button class="button" onclick="window.location.href='https://zhaoyaojing.wanxiangyuanma.com/?ref=www.codernav.cn'">照妖镜</button>
+    <button class="button" onclick="window.location.href='https://www.diydoutu.com/news/sfzegao.html'">身份证恶搞</button>
+    <button class="button" onclick="window.location.href='https://www.gsxt.gov.cn/index.html'">企业查询</button>
+    <button class="button" onclick="window.location.href='https://accounts.qq.com/#/'">安全中心</button>
+    <button class="button" onclick="window.location.href='http://yigeqige.com/'">表白网页</button>
+    <button class="button" onclick="window.location.href='http://zyjb.zyjfkw.top/xzyj/'">ip探针</button>
+    <button class="button" onclick="window.location.href='https://www.json.cn/text/idcard-check/'">🆔核验</button>
+    <button class="button" onclick="window.location.href='https://m.youdao.com/translate'">有道翻译</button>
+    <button class="button" onclick="window.location.href='https://www.yikm.net/'">游戏大全</button>
+    <button class="button" onclick="window.location.href='http://www.fuyixlr.com/#/'">小六壬排盘</button>
+    <button class="button" onclick="window.location.href='http://www.520transform.cn/'">手写字</button>
+    <button class="button" onclick="window.location.href='https://ol.woobx.cn/'">一个木函</button> 
+    <button class="button" onclick="window.location.href='http://slither.io/'">贪吃蛇</button>
+    <button class="button" onclick="window.location.href='https://bz.iwzwh.com/'">八字排盘</button>
+    <button class="button" onclick="window.location.href='https://ioxapp.com/'">益智游戏</button>
+    <button class="button" onclick="window.location.href='https://www.uugai.com/'">图标设计</button> 
+    <button class="button" onclick="window.location.href='https://toolwa.com/'">工具哇</button>
+    <button class="button" onclick="window.location.href='https://phototool.cn/'">图片处理</button> 
+    <button class="button" onclick="window.location.href='http://www.shijian.cc/'">世界时间</button> 
+    <button class="button" onclick="window.location.href='https://www.beijing-time.org/jb.html#nongli'">万年历</button>
+    <button class="button" onclick="window.location.href='https://piaofang.maoyan.com/box-office'">电影票房</button> 
+    <button class="button" onclick="window.location.href='https://charat.me/mono/create/'">纸片人制作</button>
+    <button class="button" onclick="window.location.href='https://piaofang.maoyan.com/box-office'">收款三合一</button> 
+    <button class="button" onclick="window.location.href='https://tools.miku.ac/anime4k/'">图片放大</button>
+    <button class="button" onclick="window.location.href='https://y.8684.com/'">邮编查询</button> 
+    <button class="button" onclick="window.location.href='https://www.dute.org/'">独特工具箱</button>
+    <button class="button" onclick="window.location.href='https://www.jspoo.com/vip.html'">视频解析</button> 
+    <button class="button" onclick="window.location.href='https://ai.binwang.me/couplet/'">对子生成器</button>
+    <button class="button" onclick="window.location.href='http://www.thvksoft.com/'">生理期计算</button> 
+    <button class="button" onclick="window.location.href='http://shouyu.z12345.com/1-%E4%BD%A0%E5%90%83%E9%A5%AD%E4%BA%86%E5%90%97.html'">手语翻译</button>
+    <button class="button" onclick="window.location.href='http://www.jsons.cn/heat/'">单位换算</button> 
+    <button class="button" onclick="window.location.href='https://gx.httpcn.com/'">国学</button>
+     <button class="button" onclick="window.location.href='http://tools.53at.com/tools/house_calculator-master/index.html'">房贷计算</button> 
+    <button class="button" onclick="window.location.href='https://palworld.caimogu.cc/breed.html'">帕鲁配种</button>
+    <button class="button" onclick="window.location.href='https://onehu.xyz/'">我不是盐神</button> 
+    <button class="button" onclick="window.location.href='https://321fa.cn/0/6/'">召唤神龙</button>
+    <button class="button" onclick="window.location.href='https://www.957001.tv//'">直播</button> 
+    <button class="button" onclick="window.location.href='https://wantquotes.net/'">据意查句</button>
+    <button class="button" onclick="window.location.href='https://aidn.jp/ugomoji/'">动文字</button> 
+    <button class="button" onclick="window.location.href='https://pvp.qq.com/ip/m/index.html'">王者故事站</button>
+    <button class="button" onclick="window.location.href='https://iirose.com/'">蔷薇花园</button> 
+    <button class="button" onclick="window.location.href='https://bruno-simon.com/'">遥控小车</button>
+    <button class="button" onclick="window.location.href='http://www.secaibi.com/howbigisspace/?uc_biz_str=OPT%3ABACK_BTN_STYLE%400%7COPT%3ATOOLBAR_STYLE%401'">天空有多高</button> 
+    <button class="button" onclick="window.location.href='https://kingcos.me/jjz/'">绝绝子生成器</button>
+    <button class="button" onclick="window.location.href='https://www.cbaigui.com/'">纪妖</button> 
+    <button class="button" onclick="window.location.href='https://vocalremover.org/zh/'">分离人声</button>
+    <button class="button" onclick="window.location.href='https://gangqin.bmcx.com/'">在线钢琴</button> 
+    <button class="button" onclick="window.location.href='0.html'">添加资源</button>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  <div class="version-footer">    
+  </div>
+</div>
+<script>
+</script>
+</body>
+</html>

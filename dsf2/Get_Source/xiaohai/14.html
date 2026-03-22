@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title></title>
+</head>
+<body>
+<style>
+*{
+  margin:0;
+  padding:0;
+  }
+html{
+  width:100vw;
+  height:100vh;
+  }
+body{
+  width:100%;
+  height:100%;
+  }
+#Canvas{
+  top:0;
+  left:0;
+  z-index:-1;
+  position:fixed;
+  background-color:#000;
+  }
+
+</style>
+<canvas id="Canvas"></canvas>
+<script>
+function getRandom(min,max){return Math.floor(Math.random() *(max+1-min)+min);}
+const ctx = Canvas.getContext('2d',{willReadFrequently:true});
+let dpr = devicePixelRatio;
+let ww = window.innerWidth;
+let wh = window.innerHeight;
+Canvas.width = ww * dpr;
+Canvas.height = wh * dpr;
+Canvas.style.width = ww + "px";
+Canvas.style.height = wh + "px";
+class Particle{
+  constructor(){
+    const r = Math.min(Canvas.width,Canvas.height) / 2;
+    const cx = Canvas.width / 2;
+    const cy = Canvas.height / 2;
+    const rad = getRandom(0,360) * Math.PI / 100;
+    this.size = 1 * dpr;
+    this.x = cx + r * Math.cos(rad);
+    this.y = cy + r * Math.sin(rad);
+    }
+  draw(){
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    ctx.fillStyle = '#0066ff';
+    ctx.fill();
+    }
+  moveTo(tx,ty){
+    const duration = 500;
+    const sx = this.x,sy = this.y;
+    const xSpeed = (tx - sx) / duration;
+    const ySpeed = (ty - sy) / duration;
+    const startTime = Date.now();
+    const move=()=>{
+      const t = Date.now() - startTime;
+      const x = sx + xSpeed * t;
+      const y = sy + ySpeed * t;
+      this.x = x;
+      this.y = y;
+      if(t >= duration){
+        this.x = tx;
+        this.y = ty;
+        return;
+        }
+      requestAnimationFrame(move);
+      }
+    move();
+    }
+  }
+
+const partciles = [];
+for(let i = 0; i < 1000; i++){
+  partciles.push(new Particle());
+  }
+let text = null;
+function clear(){
+    ctx.clearRect(0, 0, Canvas.width, Canvas.height);
+    }
+function draw(){
+    clear();
+    update();
+    partciles.forEach((p)=>p.draw());
+    requestAnimationFrame(draw);
+    }
+function update(){
+    const {width, height} = Canvas;
+    const newText = new Date().toTimeString().substring(0, 8);
+    if(newText === text){
+      return;
+      }
+    clear();
+    text = newText;
+    ctx.fillStyle='black';
+    ctx.textBase ='middle';
+    ctx.font = `${70 * dpr}px 'MyCustomFont',sans-serif`;
+    ctx.fillText(text,(width - ctx.measureText(text).width) / 2,height / 2);
+    const points = getPoints();
+    clear();
+    for(let i =0 ; i < points.length; i++){
+      let  p = partciles[i];
+      if(!p){
+        p = new Particle();
+        partciles.push(p);
+        }
+      const [x,y] = points[i];
+      p.moveTo(x,y);
+      }
+    if(points.length < partciles.length){
+    partciles.splice(points.length);
+    }
+    }
+function getPoints (){
+    const {width,height,data} = ctx.getImageData(0,0,Canvas.width,Canvas.height);
+    const points = [];
+    const gap = 2 * dpr;
+    for(let i = 0; i < width; i+=gap){
+      for(let j = 0; j < height; j+=gap){
+        const index = (i + j * width) * 4;
+        const r = data[index];
+        const g = data[index + 1];
+        const b = data[index + 2];
+        const a = data[index + 3];
+        if(r===0 && g===0 && b===0 && a===255){
+          points.push([i,j]);
+          }
+        }
+      }
+    return points;
+    }
+  draw();
+</script>
+</body>
+</html>

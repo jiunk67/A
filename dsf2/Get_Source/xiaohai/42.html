@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title></title>
+</head>
+<body>
+<style>
+*{
+  margin:0;
+  padding:0;
+  }
+html{
+  width:100vw;
+  height:100vh;
+  background-color:#45A8A8;
+  }
+body{
+  width:100%;
+  height:100%;
+  }
+#Canvas{
+  display:flex;
+  position:fixed;
+  flex-wrap:wrap;
+  box-sizing:border-box;
+  background-color:#D5FFFE;
+  }
+</style>
+<canvas id="Canvas"></canvas>
+<script>
+//随机数
+function getRandom(min,max){
+return Math.floor(Math.random() * (max + 1 - min) + min);
+}
+
+const canvas = document.getElementById("Canvas")
+const dpr = devicePixelRatio;
+const ww = window.innerWidth;
+const wh = window.innerHeight;
+const cwh = Math.min(ww,wh) - 50;
+canvas.width = cwh * dpr;
+canvas.height = cwh * dpr;
+canvas.style.width = cwh + "px";
+canvas.style.height = cwh + "px";
+canvas.style.top = (wh - cwh) / 2 + "px";
+canvas.style.left = (ww - cwh) / 2 + "px";
+const ctx = canvas.getContext('2d');
+const matrix = [
+[0,2,0,0],
+[0,0,0,0],
+[0,2,0,0],
+[0,0,0,0]
+];
+
+function move(matrix,direction){
+const rows = matrix.length;
+const cols = matrix[0].length;
+function _inRange(i,j){
+    return i >= 0 && i < rows && j >= 0 && j < cols;
+  }
+const nexts = {
+  'up':(i,j)=>[i+1,j],
+  'down':(i,j)=>[i-1,j],
+  'left':(i,j)=>[i,j+1],
+  'right':(i,j)=>[i,j-1]
+  }
+function _nextNonZero(i,j){
+    let [nextI,nextJ] = nexts[direction](i,j);
+    if(!_inRange(nextI,nextJ))return null;
+    while(_inRange(nextI,nextJ)){
+      const value = matrix[nextI][nextJ];
+      if(value !== 0){
+        return [nextI,nextJ,value];
+      }
+     [nextI,nextJ] = nexts[direction](nextI,nextJ);
+    }
+  return null;
+  }
+function _cal(i,j){
+    if(!_inRange(i,j))return;
+    const next = _nextNonZero(i,j);
+    if(!next){
+      return;
+    }
+    const [nextI,nextJ,nextValue] = next;
+    if(matrix[i][j] === 0){
+    matrix[i][j] = nextValue;
+    matrix[nextI][nextJ] = 0;
+    _cal(i,j);
+    }else if(matrix[i][j] === nextValue){
+    matrix[i][j] *= 2;
+    matrix[nextI][nextJ] = 0;
+    }
+  const [ni,nj] = nexts[direction](i,j);
+  _cal(ni,nj);
+  }
+
+if(direction === "up"){
+for(let j = 0;j < cols;j++){
+_cal(0,j);
+}
+}else if(direction === "down"){
+for(let j = 0;j < cols;j++){
+_cal(rows - 1,j);
+}
+}else if(direction === "left"){
+for(let i = 0;i < rows;i++){
+_cal(i,0);
+}
+}else if(direction === "right"){
+for(let i = 0;i < rows;i++){
+_cal(i,cols - 1);
+}
+}
+draw(matrix);
+}
+const colors = {
+  0:"#CDF5F4",
+  2:"#92F5F4",
+  4:"#00DCF4",
+  8:"#00A7F4",
+  16:"#74A0FD",
+  32:"#007AE2",
+  64:"#2F5093",
+  128:"#0442E5"
+ }
+function draw(matrix){
+const value = getRandom(0,1) ? 2 : 4;
+const gap = 50;
+let chance = true,s = 0;
+const size = (canvas.width - gap * 5) / 4;
+for(let i = 0; i < matrix.length; i ++){
+  for(let j =0 ; j < matrix[0].length; j++){
+    const x = j * size + gap * j + gap;
+    const y = i * size + gap * i + gap;
+    const text = matrix[i][j];
+    if(text === 0 && chance){
+    matrix[i][j] = value;
+    chance = false;
+    }
+    if(s === 15)chance = true;
+    s++;
+    ctx.beginPath();
+    ctx.fillStyle = text in colors ? colors[text] : "#FF2B5F";
+    ctx.fillRect(x,y,size,size);
+    const fontSize = 50;
+    ctx.beginPath();
+    ctx.textBase ='middle';
+    ctx.fillStyle = "#fff";
+    ctx.font = `${fontSize}px 'MyCustomFont',sans-serif`;
+    if(text){
+     ctx.fillText(text,x + (size - ctx.measureText(text).width) / 2,(size + fontSize) / 2 + y);
+    }
+  } 
+ }        
+}
+draw(matrix);
+let startX, startY, moveX, moveY;
+canvas.addEventListener("touchstart",function(e){
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+},false);
+canvas.addEventListener("touchmove",function(e){
+  moveX = e.touches[0].clientX - startX;
+  moveY = e.touches[0].clientY - startY;
+},false);
+canvas.addEventListener("touchend",function(e){
+if(Math.abs(moveX) > Math.abs(moveY)){
+if(moveX > 50){
+  move(matrix,"right");
+  }else{
+  move(matrix,"left");
+   }
+  }else{
+  if(moveY > 50){
+  move(matrix,"down");
+  }else if(moveY < 50 && moveY !== 0){
+  move(matrix,"up");
+  }
+ }
+moveX = 0;
+moveY = 0;
+},false);
+
+</script>
+</body>
+</html>

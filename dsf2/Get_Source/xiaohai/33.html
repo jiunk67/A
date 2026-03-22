@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQQ跳转小世界链接生成器</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #3a7bd5;
+            --background-color: linear-gradient(135deg, #e6e9f0, #eef1f5);
+            --text-color: #333;
+            --border-color: #e1e4e8;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --border-radius: 15px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --loading-color: rgba(74, 144, 226, 0.5);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            padding: 40px 20px;
+            background: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s ease;
+        }
+
+        .container {
+            background-color: white;
+            padding: 60px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-align: center;
+            font-size: 3.2em;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0, 0.2);
+            transition: text-shadow 0.3s ease;
+        }
+
+        input {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 35px;
+            font-size: 18px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 6px rgba(74, 144, 226, 0.3);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #result {
+            margin-top: 50px;
+            padding: 35px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: white;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: box-shadow 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            animation-delay: 0s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message {
+            font-weight: bold;
+            margin-top: 25px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .success-message {
+            color: var(--success-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+        }
+
+        @media (max-width: 576px) {
+            h2 {
+                font-size: 2.5em;
+            }
+
+            input,
+            button {
+                font-size: 16px;
+                padding: 18px;
+            }
+
+            #result {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>跳转QQ小世界</h2>
+        <input type="text" id="qqNumber" placeholder="请输入Q号码">
+        <button onclick="generateUrl()">生成链接</button>
+        <div id="generatedUrl"></div>
+        <div id="instruction"></div>
+    </div>
+
+    <script>
+        function generateUrl() {
+            var qqNumber = document.getElementById('qqNumber').value;
+             if (qqNumber) {
+                 var url = "https://h5.qzone.qq.com/v2/wezone/jump?_wv=3&_proxy=1&schema=mqqapi%3A//qcircle/openmainpage%3Ffrom%3Dhomepage%26sharecategory%3D1%26shareentrance%3D2%26uin%3D" + encodeURIComponent(qqNumber);
+                 var linkElement = document.createElement('a');
+                 linkElement.href = url;
+                 linkElement.innerText = '跳转小世界'; // 设置链接显示文本为“查看QQ跳转小世界链接”
+                 document.getElementById('generatedUrl').innerHTML = '';
+                 document.getElementById('generatedUrl').appendChild(linkElement);
+             } else {
+                 alert("请输入Q号码！");
+             }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <style>
+      body{
+        background-color:#6ef2ff
+        }
+      .kuang{
+        display:grid;
+        width:300px;
+        height:80px;
+        border:2px solid white;
+        border-radius:25px;
+        margin-top:120px;
+        }
+      .time{
+        margin-top:25px;
+        }
+      .an{
+        margin-top:50px;
+        }
+      button{
+        width:300px;
+        height:40px;
+        border-radius:25px;
+        border:2px solid yellow;
+        background:transparent;
+        margin-top:20px;
+        }
+    </style>
+  </head>
+  <body>
+    <center>
+      <div class="kuang">
+        <h1 class="time">-----计时-----</h1>
+      </div>
+      <div class="an">
+        <button onclick="ks()">开始</button>
+        <button onclick="zt()">暂停</button>
+        <button onclick="cz()">重置</button>
+      </div>
+    </center>
+    <script>
+      var time=document.querySelector(".time")
+      var js=""
+      var s=0
+      var m=0
+      var h=0
+      function ks(){
+          js=setInterval(()=>{
+            s+=1;
+            time.innerHTML=h+"时 "+m+"分 "+s+"秒 ";
+            if(s==59){
+              s=-1;
+              m+=1;
+            }if(m==60){
+              m=0;
+              h+=1;
+            }},1000);
+      }
+      function zt(){
+          clearInterval(js);
+      }
+      function cz(){
+          clearInterval(js);
+          time.innerHTML="-----计时-----";
+          s=0;
+          m=0;
+          h=0;
+      }
+    </script>
+  </body>
+</html>

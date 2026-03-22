@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>设置网页快捷方式</title>
+<style>
+/* 通用样式 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f7f7f7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 弹窗样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 快捷站点列表样式 */
+.shortcuts-container {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+.shortcuts-container h3 {
+    text-align: center;
+}
+
+.shortcuts-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.shortcuts-list li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    width: 80%; /* 每个条目宽度占屏幕的80% */
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.shortcuts-list li:hover {
+    background-color: #e0e0e0;
+}
+
+.shortcuts-list li .delete-button {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.shortcuts-list li:hover .delete-button {
+    display: flex;
+}
+
+/* 添加按钮样式 */
+.add-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.add-button:hover {
+    background-color: #0056b3;
+}
+</style>
+<script>
+// 用于存储快捷站点的数组
+var shortcuts = [];
+
+// 从localStorage获取已保存的站点列表
+function loadShortcuts() {
+    var savedShortcuts = JSON.parse(localStorage.getItem('shortcuts')) || [];
+    shortcuts = savedShortcuts;
+    displayShortcuts();
+}
+
+// 显示快捷站点列表
+function displayShortcuts() {
+    var list = document.getElementById('shortcutsList');
+    list.innerHTML = ''; // 清空列表
+
+    // 遍历站点列表并创建列表项
+    shortcuts.forEach(function(shortcut, index) {
+        var li = document.createElement('li');
+        li.textContent = shortcut.name;
+        li.onclick = function() {
+            window.open(shortcut.url, '_blank');
+        };
+
+        // 添加删除按钮
+        var deleteButton = document.createElement('button');
+        deleteButton.textContent = '×';
+        deleteButton.className = 'delete-button';
+        deleteButton.onclick = function(event) {
+            event.stopPropagation(); // 阻止事件冒泡
+            removeShortcut(index);
+        };
+
+        li.appendChild(deleteButton);
+        list.appendChild(li);
+    });
+}
+
+// 添加快捷站点
+function addShortcut() {
+    var siteName = document.getElementById('siteName').value;
+    var siteUrl = document.getElementById('siteUrl').value;
+
+    // 创建新的快捷站点对象   
+ var newShortcut = {
+        name: siteName,
+        url: siteUrl
+    };
+
+    // 添加到数组和localStorage
+    shortcuts.push(newShortcut);
+    localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
+
+    // 关闭弹窗
+    closeModal();
+
+    // 更新页面显示
+    displayShortcuts();
+}
+
+// 移除快捷站点
+function removeShortcut(index) {
+    // 从数组中移除
+    shortcuts.splice(index, 1);
+    // 更新localStorage
+    localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
+    // 更新页面显示
+    displayShortcuts();
+}
+
+// 打开弹窗
+function openModal() {
+    document.getElementById('myModal').style.display = 'block';
+}
+
+// 关闭弹窗
+function closeModal() {
+    document.getElementById('myModal').style.display = 'none';
+}
+
+// 页面加载时加载快捷站点
+window.onload = loadShortcuts;
+</script>
+</head>
+<body>
+
+<h2>快捷中心</h2>
+
+<div class="shortcuts-container">
+    <h3>快捷功能</h3>
+    <ul id="shortcutsList" class="shortcuts-list">
+        <!-- 这里将显示添加的快捷站点 -->
+    </ul>
+</div>
+
+<!-- 添加按钮 -->
+<button class="add-button" onclick="openModal()">+</button>
+
+<!-- 弹窗 -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3>添加快捷网站</h3>
+        <form onsubmit="return false;">
+            <label for="siteName">网站名:</label>
+            <input type="text" id="siteName" name="siteName" required><br><br>
+            <label for="siteUrl">网址:</label>
+            <input type="url" id="siteUrl" name="siteUrl" value="https://www." required><br><br>
+            <input type="button" value="添加" onclick="addShortcut()">
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

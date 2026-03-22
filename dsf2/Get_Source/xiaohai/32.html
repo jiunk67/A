@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三要素核验</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: black;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+            background-color: #333;
+            color: white;
+        }
+        .button {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #333;
+            height: 150px;
+            overflow-y: auto;
+            color: white;
+        }
+        .success {
+            color: green;
+        }
+        .failure {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>三要素核验</h1>
+        
+        <div class="input-group">
+            <label for="real_name">姓名：</label>
+            <input type="text" id="real_name" name="real_name" placeholder="请输入姓名">
+        </div>
+        
+        <div class="input-group">
+            <label for="phone">手机号：</label>
+            <input type="text" id="phone" name="phone" placeholder="请输入手机号">
+        </div>
+        
+        <div class="input-group">
+            <label for="cardNo">身份证号：</label>
+            <input type="text" id="cardNo" name="cardNo" placeholder="请输入身份证号">
+        </div>
+        
+        <button class="button" onclick="make_auth_request()">核验</button>
+        
+        <h2>核验结果：</h2>
+        <div class="output" id="results"></div>
+    </div>
+
+    <script>
+        function make_auth_request() {
+            const realName = document.getElementById('real_name').value;
+            const phone = document.getElementById('phone').value;
+            const cardNo = document.getElementById('cardNo').value;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '正在核验...';
+
+            fetch('https://gxhs.wtkj.site/dev-api/gxhs/front/make_auth', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ',
+                    'Content-Type': 'application/json;charset=utf-8',
+                    'Referer': 'https://servicewechat.com/wxe48112dad392793a/154/page-frame.html',
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 7.1.2; V2130A Build/N2G47H; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36 XWEB/1160253 MMWEBSDK/20241101 MMWEBID/6877 MicroMessenger/8.0.54.2760(0x28003636) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64 MiniProgramEnv/android',
+                    'Accept-Encoding': 'gzip, deflate, br'
+                },
+                body: JSON.stringify({
+                    authType: "IdCard",
+                    isUpdateIdCard: 1,
+                    openId: "oU4Z6654bA_zl0f2ku0VGkrGJp6w",
+                    roleCode: "recycler",
+                    realName: realName,
+                    phone: phone,
+                    cardNo: cardNo,
+                    pid: 209,
+                    pname: "湖北省再生资源集团有限公司",
+                    stationId: "4070",
+                    stationName: "珞瑜路金鑫国际家居一楼德国菲斯曼店",
+                    mid: null,
+                    merchantId: null,
+                    custId: "tlRKbObMJ2",
+                    userId: "tlRKbObMJ2"
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.code === 200) {
+                    if (result.msg === "操作成功") {
+                        resultsDiv.innerHTML = `<span class="success">${realName}: 三要素核验成功✔️</span>`;
+                    } else {
+                        resultsDiv.innerHTML = `<span class="failure">${realName}: 三要素核验失败❎</span>`;
+                    }
+                } else {
+                    resultsDiv.innerHTML = `<span class="failure">${realName}: 核验失败，错误代码：${result.code}，错误信息：${result.msg}</span>`;
+                }
+            })
+            .catch(error => {
+                console.error('请求失败:', error);
+                resultsDiv.innerHTML = `<span class="failure">请求失败: ${error.message}</span>`;
+            });
+        }
+    </script>
+</body>
+</html>

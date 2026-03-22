@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            background-image: url('Screenshot_2025_0208_210147.png'); /* 添加背景图片 */
+            background-size: cover; /* 背景图片覆盖整个页面 */
+            background-attachment: fixed; /* 背景图片固定，不随滚动条滚动 */
+            background-position: center; /* 背景图片居中 */
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0); /* 透明背景 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2); /* 增加边框宽度并设置浅色透明边框 */
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        p {
+            line-height: 1.6;
+            color: #000000; /* 将小字颜色加深为 #000000 */
+        }
+        .team-member {
+            margin-top: 20px;
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2); /* 增加边框宽度并设置浅色透明边框 */
+            border-radius: 5px;
+            background-color: rgba(249, 249, 249, 0); /* 透明背景 */
+        }
+        .team-member img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .team-member h3 {
+            display: inline-block;
+            margin: 0;
+            color: #333;
+        }
+        .team-member p {
+            margin: 10px 0;
+        }
+        .contact-info {
+            margin-top: 20px;
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2); /* 增加边框宽度并设置浅色透明边框 */
+            border-radius: 5px;
+            background-color: rgba(249, 249, 249, 0); /* 透明背景 */
+        }
+        .donation {
+            margin-top: 20px;
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2); /* 增加边框宽度并设置浅色透明边框 */
+            border-radius: 5px;
+            background-color: rgba(249, 249, 249, 0); /* 透明背景 */
+        }
+        .donation img {
+            width: 150px;
+            height: 150px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+        }
+        .modal-content {
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 700px;
+            background-color: rgba(255, 255, 255, 0); /* 透明背景 */
+            border: 2px solid rgba(255, 255, 255, 0.2); /* 增加边框宽度并设置浅色透明边框 */
+        }
+        .close {
+            color: #f1f1f1;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>关于我们</h1>
+        <p>欢迎您使用小海工具箱！我们致力于制作网络工具箱工程多年，软件维护与更新不易！如果您相信我们的技术相信我们的信誉，且有一定经济实力请打赏我们。</p>
+        <div class="team-member">
+            <img src="appIcon.png" alt="团队成员1">
+            <h3>软件开发者/团队</h3>
+            <p>开发团队：小海科技</p>
+            <p>开发者：熊振海</p>
+            <p>简介：宇宙超级无敌第一帅逼</p>
+        </div>
+        <div class="contact-info">
+            <h3>官方邮箱</h3>
+            <p>邮箱：<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ea9282dadedadbdedadbdadbd3d2d2dad2dad3aadbdcd9c4898587">[email&#160;protected]</a></p>
+        </div>
+        <div class="contact-info">
+            <h3>官方联系方式</h3>
+            <p>TG：@xh088a</p>
+            <p>TG频道：https://t.me/xhnbxhnbsn88</p>
+           <p>暗信号：71481914<p>
+           <p>QQ：等公告通知<p>
+           <p>QQ群：等公告通知<p>
+        </div>     
+        <div class="donation">
+            <h3>打赏我们</h3>
+            <p>如果您喜欢我们的工具，请通过以下方式打赏我们，感谢您的支持！【小海提醒你：点击收款码图片，图片可以放大！】</p>           
+            <img src="1739154576852.jpg" alt="支付宝打赏" id="alipay-donation" onclick="openModal('alipay')">
+        </div>
+    </div>  
+    <div id="alipay-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('alipay')">&times;</span>
+            <img src="1739154576852.jpg" alt="支付宝打赏" style="width:100%">
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        function openModal(id) {
+            var modal = document.getElementById(id + "-modal");
+            modal.style.display = "block";
+        }
+
+        function closeModal(id) {
+            var modal = document.getElementById(id + "-modal");
+            modal.style.display = "none";
+        }
+    </script>
+</body>
+</html>

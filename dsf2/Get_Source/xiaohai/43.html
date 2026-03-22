@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鸡兔同笼求解</title>
+  <style>
+    /* 整体页面布局和古代学堂风格样式模拟 */
+    body {
+      font-family: "楷体", serif;
+      background-color: #f0e4d0;
+      color: #333;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #553c1f;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+ .main-content {
+      background-color: rgba(255, 255, 255, 0.8);
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+ .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #b38867;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+ .btn:hover {
+      background-color: #9a704f;
+    }
+
+ .input-area {
+      margin-bottom: 20px;
+    }
+
+    /* 输入框装饰样式（模拟筋斗云） */
+   .input-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+   .input-wrapper input[type="number"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100px;
+      background-color: #f9f9f9;
+      padding-left: 30px;
+    }
+
+   .input-wrapper::before {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 10px;
+      background: url('https://pic1.zhimg.com/v2-xxxxxx/your_cloud_image.png') no-repeat center / cover;
+      /* 这里替换为你实际的筋斗云样式图片链接 */
+      opacity: 0.8;
+    }
+
+    /* 结果展示区域样式及动画关键帧 */
+   .result-display {
+      text-align: center;
+      margin-top: 20px;
+      color: #553c1f;
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: resultDrop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes resultDrop {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      20% {
+        transform: translateY(10px);
+      }
+
+      40% {
+        transform: translateY(-5px);
+      }
+
+      60% {
+        transform: translateY(3px);
+      }
+
+      80% {
+        transform: translateY(-2px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 自定义提示弹窗样式及动画关键帧 */
+   .error-popup {
+      position: fixed;
+      top: -100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      animation: popupEnter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes popupEnter {
+      0% {
+        top: -100%;
+        opacity: 0;
+      }
+
+      60% {
+        top: 50%;
+        opacity: 1;
+        transform: translateX(-50%) rotate(-5deg);
+      }
+
+      80% {
+        transform: translateX(-50%) rotate(5deg);
+      }
+
+      100% {
+        top: 50%;
+        opacity: 1;
+        transform: translateX(-50%) rotate(0);
+      }
+    }
+
+    @keyframes popupExit {
+      0% {
+        top: 50%;
+        opacity: 1;
+        transform: translateX(-50%) rotate(0);
+      }
+
+      20% {
+        transform: translateX(-50%) rotate(-5deg);
+      }
+
+      40% {
+        transform: translateX(-50%) rotate(5deg);
+      }
+
+      100% {
+        top: -100%;
+        opacity: 0;
+      }
+    }
+
+ .error-content p {
+      color: white;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+ .error-btn {
+      background-color: #b38867;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+ .error-btn:hover {
+      background-color: #9a704f;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>鸡兔同笼之江湖求解</h1>
+  <div class="main-content">
+    <div class="input-area">
+      <div class="input-wrapper">
+        <label for="total-heads">请输入鸡兔总头数：</label>
+        <input type="number" id="total-heads" required>
+      </div>
+      <div class="input-wrapper">
+        <label for="total-feet">请输入鸡兔总脚数：</label>
+        <input type="number" id="total-feet" required>
+      </div>
+    </div>
+    <div class="option">
+      <button class="btn" id="calculate-btn">算出结果</button>
+    </div>
+    <div class="result-display hidden" id="result-display-area"></div>
+  </div>
+
+  <script>
+    // 自定义弹窗提示函数
+    function showError(message) {
+      const errorPopup = document.createElement('div');
+      errorPopup.className = 'error-popup';
+      errorPopup.innerHTML = `
+        <div class="error-content">
+          <p>${message}</p>
+          <button class="btn error-btn">确定</button>
+        </div>
+      `;
+      document.body.appendChild(errorPopup);
+
+      const errorBtn = errorPopup.querySelector('.error-btn');
+      errorBtn.addEventListener('click', function () {
+        errorPopup.style.animation = 'popupExit 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+        setTimeout(() => {
+          document.body.removeChild(errorPopup);
+        }, 500);
+      });
+    }
+
+    document.getElementById('calculate-btn').addEventListener('click', function () {
+      const totalHeads = parseInt(document.getElementById('total-heads').value);
+      const totalFeet = parseInt(document.getElementById('total-feet').value);
+
+      if (isNaN(totalHeads) || isNaN(totalFeet)) {
+        showError('兄台，你所输入需为有效的数字！');
+        return;
+      }
+
+      if (totalHeads <= 0) {
+        showError('这鸡兔总头数怎可小于等于零？莫要戏弄老夫！');
+        return;
+      }
+
+      if (totalFeet <= 0) {
+        showError('这鸡兔总脚数焉能不大于零？重新来过！');
+        return;
+      }
+
+      if (totalFeet % 2!== 0) {
+        showError('鸡兔总脚数应为偶数，兄台莫要糊涂！');
+        return;
+      }
+
+      if (totalFeet < 2 * totalHeads) {
+        showError('总脚数岂会少于两倍总头数？仔细想来！');
+        return;
+      }
+
+      // 用抬脚法计算
+      const rabbits = (totalFeet - 2 * totalHeads) / 2;
+      const chickens = totalHeads - rabbits;
+
+      if (rabbits < 0 || chickens < 0) {
+        showError('这结果怎会出现负数？定是你输入有误，重新来过！');
+        return;
+      }
+
+      const resultText = `鸡有${chickens}只，兔有${rabbits}只`;
+      const displayArea = document.getElementById('result-display-area');
+      displayArea.textContent = resultText;
+      displayArea.classList.remove('hidden');
+      // 触发结果展示动画
+      displayArea.style.animation = 'resultDrop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+    });
+  </script>
+</body>
+
+</html>
