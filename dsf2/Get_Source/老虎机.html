@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老虎机游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a2e;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        .container {
+            background-color: #16213e;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        
+        h1 {
+            color: #f9c74f;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .slot-machine {
+            background-color: #e94560;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slots {
+            display: flex;
+            justify-content: space-around;
+            background-color: #0f3460;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .slot {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #333;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .slot-item {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        button {
+            background-color: #f9c74f;
+            color: #333;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px 0;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            background-color: #f8961e;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .info {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+        
+        .info-box {
+            background-color: #0f3460;
+            padding: 10px 15px;
+            border-radius: 5px;
+            min-width: 100px;
+        }
+        
+        .win-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(249,199,79,0.8) 0%, rgba(233,69,96,0) 70%);
+            animation: pulse 1s infinite;
+            display: none;
+            z-index: 10;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.7; }
+        }
+        
+        .jackpot {
+            font-size: 24px;
+            color: #f9c74f;
+            font-weight: bold;
+            text-shadow: 0 0 10px #f9c74f;
+            animation: jackpot 0.5s infinite alternate;
+            display: none;
+        }
+        
+        @keyframes jackpot {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>老虎机游戏</h1>
+        
+        <div class="slot-machine">
+            <div class="win-animation" id="winAnimation"></div>
+            <div class="jackpot" id="jackpot">大奖!</div>
+            
+            <div class="slots">
+                <div class="slot" id="slot1">
+                    <div class="slot-item">🍒</div>
+                    <div class="slot-item">🍋</div>
+                    <div class="slot-item">🍊</div>
+                    <div class="slot-item">🍇</div>
+                    <div class="slot-item">🍉</div>
+                    <div class="slot-item">7️⃣</div>
+                </div>
+                
+                <div class="slot" id="slot2">
+                    <div class="slot-item">🍒</div>
+                    <div class="slot-item">🍋</div>
+                    <div class="slot-item">🍊</div>
+                    <div class="slot-item">🍇</div>
+                    <div class="slot-item">🍉</div>
+                    <div class="slot-item">7️⃣</div>
+                </div>
+                
+                <div class="slot" id="slot3">
+                    <div class="slot-item">🍒</div>
+                    <div class="slot-item">🍋</div>
+                    <div class="slot-item">🍊</div>
+                    <div class="slot-item">🍇</div>
+                    <div class="slot-item">🍉</div>
+                    <div class="slot-item">7️⃣</div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="spinBtn">开始旋转</button>
+                
+                <div class="info">
+                    <div class="info-box">
+                        <div>余额</div>
+                        <div id="balance">100</div>
+                    </div>
+                    <div class="info-box">
+                        <div>下注</div>
+                        <div id="bet">10</div>
+                    </div>
+                    <div class="info-box">
+                        <div>赢取</div>
+                        <div id="win">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 游戏配置
+        const config = {
+            symbols: ['🍒', '🍋', '🍊', '🍇', '🍉', '7️⃣'],
+            payouts: {
+                '🍒🍒🍒': 2,
+                '🍋🍋🍋': 3,
+                '🍊🍊🍊': 4,
+                '🍇🍇🍇': 5,
+                '🍉🍉🍉': 6,
+                '7️⃣7️⃣7️⃣': 10
+            },
+            spinDuration: 3000, // 旋转持续时间(毫秒)
+            spinSpeed: 100,    // 旋转速度(毫秒)
+            initialBalance: 100,
+            betAmount: 10
+        };
+        
+        // 游戏状态
+        let state = {
+            balance: config.initialBalance,
+            bet: config.betAmount,
+            isSpinning: false,
+            results: [],
+            startTime: 0
+        };
+        
+        // DOM元素
+        const spinBtn = document.getElementById('spinBtn');
+        const balanceDisplay = document.getElementById('balance');
+        const betDisplay = document.getElementById('bet');
+        const winDisplay = document.getElementById('win');
+        const winAnimation = document.getElementById('winAnimation');
+        const jackpotDisplay = document.getElementById('jackpot');
+        const slots = [
+            document.getElementById('slot1'),
+            document.getElementById('slot2'),
+            document.getElementById('slot3')
+        ];
+        
+        // 初始化游戏
+        function initGame() {
+            updateDisplay();
+            
+            // 初始化每个slot的位置
+            slots.forEach((slot, index) => {
+                const items = slot.querySelectorAll('.slot-item');
+                items.forEach((item, i) => {
+                    item.style.transform = `translateY(${i * 100}%)`;
+                });
+            });
+            
+            spinBtn.addEventListener('click', () => {
+                if (!state.isSpinning && state.balance >= state.bet) {
+                    spin();
+                }
+            });
+        }
+        
+        // 旋转老虎机
+        function spin() {
+            if (state.isSpinning) return;
+            
+            // 扣除下注金额
+            state.balance -= state.bet;
+            state.isSpinning = true;
+            spinBtn.disabled = true;
+            winDisplay.textContent = '0';
+            winAnimation.style.display = 'none';
+            jackpotDisplay.style.display = 'none';
+            
+            updateDisplay();
+            
+            // 为每个滚轮生成随机结果
+            state.results = [];
+            for (let i = 0; i < 3; i++) {
+                state.results.push(Math.floor(Math.random() * config.symbols.length));
+            }
+            
+            // 设置开始时间
+            state.startTime = Date.now();
+            
+            // 开始动画
+            const spinInterval = setInterval(() => {
+                const elapsed = Date.now() - state.startTime;
+                const progress = Math.min(elapsed / config.spinDuration, 1);
+                
+                // 更新每个滚轮的位置
+                for (let i = 0; i < 3; i++) {
+                    // 随着时间推移减慢速度
+                    const speedFactor = 1 - progress * 0.9;
+                    const offset = Math.floor(elapsed / (config.spinSpeed * speedFactor));
+                    
+                    // 设置滚轮位置
+                    setSlotPosition(i, offset);
+                }
+                
+                // 旋转结束
+                if (progress >= 1) {
+                    clearInterval(spinInterval);
+                    finishSpin();
+                }
+            }, 16); // 约60fps
+        }
+        
+        // 设置滚轮位置
+        function setSlotPosition(slotIndex, offset) {
+            const slot = slots[slotIndex];
+            const items = slot.querySelectorAll('.slot-item');
+            const itemCount = items.length;
+            const resultIndex = state.results[slotIndex];
+            
+            // 计算停止位置(最后停在结果位置)
+            const stopPosition = -resultIndex * 100;
+            
+            // 计算当前偏移量(旋转时)
+            let currentOffset = -offset % itemCount;
+            
+            // 接近结束时逐渐减速到停止位置
+            const elapsed = Date.now() - state.startTime;
+            const progress = Math.min(elapsed / config.spinDuration, 1);
+            if (progress > 0.7) {
+                const slowdownProgress = (progress - 0.7) / 0.3;
+                currentOffset = currentOffset * (1 - slowdownProgress) + stopPosition * slowdownProgress;
+            }
+            
+            // 应用变换
+            items.forEach((item, index) => {
+                let position = (index * 100 + currentOffset * 100) % (itemCount * 100);
+                if (position < 0) position += itemCount * 100;
+                item.style.transform = `translateY(${position}%)`;
+            });
+        }
+        
+        // 完成旋转
+        function finishSpin() {
+            // 确保所有滚轮停在正确位置
+            for (let i = 0; i < 3; i++) {
+                const slot = slots[i];
+                const items = slot.querySelectorAll('.slot-item');
+                const resultIndex = state.results[i];
+                
+                items.forEach((item, index) => {
+                    const position = (index - resultIndex) * 100;
+                    item.style.transform = `translateY(${position}%)`;
+                });
+            }
+            
+            // 检查是否中奖
+            checkWin();
+            
+            state.isSpinning = false;
+            spinBtn.disabled = state.balance < state.bet;
+            updateDisplay();
+        }
+        
+        // 检查赢奖
+        function checkWin() {
+            const symbols = state.results.map(index => config.symbols[index]);
+            const resultStr = symbols.join('');
+            
+            // 检查是否中奖
+            for (const [pattern, payout] of Object.entries(config.payouts)) {
+                if (resultStr === pattern) {
+                    const winAmount = state.bet * payout;
+                    state.balance += winAmount;
+                    winDisplay.textContent = winAmount;
+                    
+                    // 显示赢奖动画
+                    winAnimation.style.display = 'block';
+                    
+                    // 如果是大奖，显示特别动画
+                    if (payout === 10) {
+                        jackpotDisplay.style.display = 'block';
+                    }
+                    
+                    // 3秒后隐藏动画
+                    setTimeout(() => {
+                        winAnimation.style.display = 'none';
+                        jackpotDisplay.style.display = 'none';
+                    }, 3000);
+                    
+                    break;
+                }
+            }
+        }
+        
+        // 更新显示
+        function updateDisplay() {
+            balanceDisplay.textContent = state.balance;
+            betDisplay.textContent = state.bet;
+            
+            // 如果没有余额或正在旋转，禁用按钮
+            spinBtn.disabled = state.isSpinning || state.balance < state.bet;
+        }
+        
+        // 初始化游戏
+        initGame();
+    </script>
+</body>
+</html>

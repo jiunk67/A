@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MD3 五子棋</title>
+    <style>
+        /* --- Material Design 3 Token Variables --- */
+        :root {
+            --md-sys-color-primary: #6750a4;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #eaddff;
+            --md-sys-color-on-primary-container: #21005d;
+            --md-sys-color-secondary: #625b71;
+            --md-sys-color-background: #fdfcff;
+            --md-sys-color-surface: #fdfcff;
+            --md-sys-color-surface-variant: #e7e0ec;
+            --md-sys-color-on-surface: #1c1b1f;
+            --md-sys-color-on-surface-variant: #49454f;
+            --md-sys-color-outline: #79747e;
+            
+            /* Board Colors */
+            --board-bg: #f0d9b5;
+            --board-line: #5c4d3c;
+
+            /* Font */
+            --md-sys-typescale-title-large: 400 22px/28px 'Roboto', sans-serif;
+            --md-sys-typescale-label-large: 500 14px/20px 'Roboto', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-surface);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 16px 24px;
+            background: var(--md-sys-color-surface);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        h1 {
+            font: var(--md-sys-typescale-title-large);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .status-chip {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font: var(--md-sys-typescale-label-large);
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        /* --- Main Game Area --- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .board-container {
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1;
+            background-color: var(--board-bg);
+            border-radius: 12px; /* MD3 Medium shape */
+            box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3); /* Elevation 2 */
+            position: relative;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: crosshair;
+        }
+
+        /* --- Controls (Bottom Bar) --- */
+        .controls {
+            width: 100%;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            background-color: var(--md-sys-color-surface-variant);
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+        }
+
+        /* MD3 Button Styles */
+        .btn {
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px; /* Full pill shape */
+            font: var(--md-sys-typescale-label-large);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-filled {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .btn-filled:active {
+            box-shadow: none;
+            background-color: #503e85; 
+        }
+
+        .btn-tonal {
+            background-color: var(--md-sys-color-secondary);
+            color: #fff;
+        }
+        
+        .btn-text {
+            background-color: transparent;
+            color: var(--md-sys-color-primary);
+        }
+
+        /* --- Dialog (MD3 Style) --- */
+        .dialog-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+
+        .dialog-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .dialog-card {
+            background: var(--md-sys-color-surface);
+            padding: 24px;
+            border-radius: 28px; /* MD3 Extra Large shape */
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 8px 12px 6px rgba(0,0,0,0.15);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        
+        .dialog-overlay.active .dialog-card {
+            transform: scale(1);
+        }
+
+        .dialog-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .dialog-title {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        /* Icon SVG Helper */
+        .icon { width: 18px; height: 18px; fill: currentColor; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>五子棋</h1>
+        <div class="status-chip" id="status-text">黑方回合</div>
+    </header>
+
+    <main>
+        <div class="board-container">
+            <canvas id="board"></canvas>
+        </div>
+    </main>
+
+    <div class="controls">
+        <button class="btn btn-tonal" id="btn-undo">
+            <!-- Undo Icon -->
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+            悔棋
+        </button>
+        <button class="btn btn-filled" id="btn-restart">
+            <!-- Refresh Icon -->
+            <svg class="icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+            重来
+        </button>
+    </div>
+
+    <!-- Win Dialog -->
+    <div class="dialog-overlay" id="win-dialog">
+        <div class="dialog-card">
+            <div class="dialog-icon" id="dialog-icon">🏆</div>
+            <div class="dialog-title" id="dialog-msg">黑方获胜!</div>
+            <button class="btn btn-filled" style="width: 100%; justify-content: center;" id="btn-dialog-ok">再来一局</button>
+        </div>
+    </div>
+
+<script>
+    // --- Game Configuration ---
+    const BOARD_SIZE = 15;
+    let CELL_SIZE;
+    const canvas = document.getElementById('board');
+    const ctx = canvas.getContext('2d');
+    
+    // --- Game State ---
+    // 0: Empty, 1: Black, 2: White
+    let boardState = [];
+    let moveHistory = [];
+    let currentPlayer = 1; // 1 = Black, 2 = White
+    let isGameOver = false;
+
+    // --- DOM Elements ---
+    const statusText = document.getElementById('status-text');
+    const winDialog = document.getElementById('win-dialog');
+    const dialogMsg = document.getElementById('dialog-msg');
+    const dialogIcon = document.getElementById('dialog-icon');
+
+    // --- Initialization ---
+    function initGame() {
+        // Initialize 2D Array
+        boardState = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(0));
+        moveHistory = [];
+        currentPlayer = 1;
+        isGameOver = false;
+        
+        updateStatusUI();
+        resizeCanvas();
+        winDialog.classList.remove('active');
+    }
+
+    // --- Drawing Logic ---
+    function resizeCanvas() {
+        const container = document.querySelector('.board-container');
+        const rect = container.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+
+        // Set actual canvas size (high res)
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+
+        // Scale context
+        ctx.scale(dpr, dpr);
+
+        CELL_SIZE = rect.width / BOARD_SIZE;
+        drawBoard();
+    }
+
+    function drawBoard() {
+        const width = canvas.width / (window.devicePixelRatio || 1);
+        
+        // Clear
+        ctx.clearRect(0, 0, width, width);
+
+        // Draw Grid
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--board-line');
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+
+        // Offset to center lines in cells
+        const offset = CELL_SIZE / 2;
+
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            // Vertical
+            ctx.moveTo(offset + i * CELL_SIZE, offset);
+            ctx.lineTo(offset + i * CELL_SIZE, width - offset);
+            // Horizontal
+            ctx.moveTo(offset, offset + i * CELL_SIZE);
+            ctx.lineTo(width - offset, offset + i * CELL_SIZE);
+        }
+        ctx.stroke();
+
+        // Draw Star Points (Optional, standard for Gomoku)
+        const starPoints = [3, 7, 11];
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--board-line');
+        starPoints.forEach(x => {
+            starPoints.forEach(y => {
+                ctx.beginPath();
+                ctx.arc(offset + x * CELL_SIZE, offset + y * CELL_SIZE, 3, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        });
+
+        // Draw Pieces
+        for (let y = 0; y < BOARD_SIZE; y++) {
+            for (let x = 0; x < BOARD_SIZE; x++) {
+                if (boardState[y][x] !== 0) {
+                    drawPiece(x, y, boardState[y][x]);
+                }
+            }
+        }
+        
+        // Draw Last Move Marker
+        if (moveHistory.length > 0) {
+            const lastMove = moveHistory[moveHistory.length - 1];
+            drawMarker(lastMove.x, lastMove.y);
+        }
+    }
+
+    function drawPiece(x, y, type) {
+        const offset = CELL_SIZE / 2;
+        const centerX = offset + x * CELL_SIZE;
+        const centerY = offset + y * CELL_SIZE;
+        const radius = (CELL_SIZE / 2) * 0.85;
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+
+        // Gradient for 3D effect
+        const grad = ctx.createRadialGradient(
+            centerX - radius/3, centerY - radius/3, radius/10,
+            centerX, centerY, radius
+        );
+
+        if (type === 1) { // Black
+            grad.addColorStop(0, '#666');
+            grad.addColorStop(1, '#000');
+        } else { // White
+            grad.addColorStop(0, '#fff');
+            grad.addColorStop(1, '#ddd');
+            ctx.strokeStyle = '#ccc'; // Slight border for white
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+        }
+
+        ctx.fillStyle = grad;
+        ctx.fill();
+        
+        // Shadow
+        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+        ctx.shadowBlur = 4;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 2;
+        ctx.fill();
+        ctx.shadowColor = 'transparent'; // Reset shadow
+    }
+
+    function drawMarker(x, y) {
+        const offset = CELL_SIZE / 2;
+        const centerX = offset + x * CELL_SIZE;
+        const centerY = offset + y * CELL_SIZE;
+        
+        ctx.fillStyle = 'red';
+        ctx.fillRect(centerX - 2, centerY - 2, 4, 4);
+    }
+
+    // --- Interaction Logic ---
+    function handleInput(e) {
+        if (isGameOver) return;
+
+        const rect = canvas.getBoundingClientRect();
+        let clientX, clientY;
+
+        if (e.type === 'touchend') {
+            // Prevent mouse emulation
+            e.preventDefault();
+            clientX = e.changedTouches[0].clientX;
+            clientY = e.changedTouches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+
+        const xRaw = clientX - rect.left;
+        const yRaw = clientY - rect.top;
+
+        const gridX = Math.floor(xRaw / CELL_SIZE);
+        const gridY = Math.floor(yRaw / CELL_SIZE);
+
+        // Validation
+        if (gridX >= 0 && gridX < BOARD_SIZE && gridY >= 0 && gridY < BOARD_SIZE) {
+            if (boardState[gridY][gridX] === 0) {
+                placePiece(gridX, gridY);
+            }
+        }
+    }
+
+    function placePiece(x, y) {
+        // Haptic feedback
+        if (navigator.vibrate) navigator.vibrate(15);
+
+        boardState[y][x] = currentPlayer;
+        moveHistory.push({x, y, player: currentPlayer});
+
+        drawBoard();
+        checkWin(x, y);
+
+        if (!isGameOver) {
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            updateStatusUI();
+        }
+    }
+
+    function undo() {
+        if (moveHistory.length === 0 || isGameOver) return;
+        
+        const lastMove = moveHistory.pop();
+        boardState[lastMove.y][lastMove.x] = 0;
+        
+        currentPlayer = lastMove.player;
+        updateStatusUI();
+        drawBoard();
+    }
+
+    function updateStatusUI() {
+        if (currentPlayer === 1) {
+            statusText.textContent = "黑方回合";
+            statusText.style.backgroundColor = "#333";
+            statusText.style.color = "#fff";
+        } else {
+            statusText.textContent = "白方回合";
+            statusText.style.backgroundColor = "#f0f0f0";
+            statusText.style.color = "#333";
+            statusText.style.border = "1px solid #ccc";
+        }
+    }
+
+    // --- Game Logic (Win Check) ---
+    function checkWin(x, y) {
+        const current = boardState[y][x];
+        const directions = [
+            [[1, 0], [-1, 0]], // Horizontal
+            [[0, 1], [0, -1]], // Vertical
+            [[1, 1], [-1, -1]], // Diagonal \
+            [[1, -1], [-1, 1]] // Diagonal /
+        ];
+
+        for (let dir of directions) {
+            let count = 1;
+            
+            // Check both sides of the direction
+            for (let side of dir) {
+                let dx = side[0];
+                let dy = side[1];
+                let nx = x + dx;
+                let ny = y + dy;
+
+                while(nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && boardState[ny][nx] === current) {
+                    count++;
+                    nx += dx;
+                    ny += dy;
+                }
+            }
+
+            if (count >= 5) {
+                gameOver(current);
+                return;
+            }
+        }
+    }
+
+    function gameOver(winner) {
+        isGameOver = true;
+        if (navigator.vibrate) navigator.vibrate([50, 50, 100]);
+        
+        const winnerName = winner === 1 ? "黑方" : "白方";
+        dialogIcon.textContent = winner === 1 ? "⚫" : "⚪";
+        dialogMsg.textContent = `${winnerName}获胜!`;
+        winDialog.classList.add('active');
+    }
+
+    // --- Event Listeners ---
+    canvas.addEventListener('click', handleInput);
+    canvas.addEventListener('touchend', handleInput, {passive: false});
+    
+    document.getElementById('btn-restart').addEventListener('click', initGame);
+    document.getElementById('btn-undo').addEventListener('click', undo);
+    document.getElementById('btn-dialog-ok').addEventListener('click', initGame);
+
+    // Handle resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            resizeCanvas();
+        }, 100);
+    });
+
+    // Start
+    initGame();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <!-- 明月资源库独家打造 -->
+  <link rel="preconnect" href="https://assets/webcat/1d">
+  <!-- 内联核心CSS，减少HTTP请求 -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; background: #f8f8f8; }
+    .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+    .card-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: transform 0.2s; /* GPU加速动画 */
+    }
+    .card:hover { transform: translateY(-3px); }
+    .card-img {
+      width: 100%;
+      height: 180px; /* 固定高度，避免布局偏移 */
+    }
+    .card-content { padding: 15px; }
+    .card-title { font-size: 18px; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 延迟加载非关键脚本（底部引入+defer） -->
+  <script src="https://cdn.example.com/non-critical-script.js" defer></script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 适配移动端，禁止缩放，提升渲染效率 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
+    <style>
+        /* 内联 CSS 减少 HTTP 请求，避免渲染阻塞 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* 禁用不必要的动画，提升性能 */
+            animation: none !important;
+            transition: none !important;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            line-height: 1.4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .img-grid {
+            display: grid;
+            /* 响应式网格，自动适配屏幕宽度 */
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .img-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            /* 避免布局偏移，提前设置宽高比 */
+            aspect-ratio: 4/3;
+        }
+        .img-item img {
+            width: 100%;
+            height: 100%;
+            /* 图片懒加载+优化渲染 */
+            object-fit: cover;
+            loading: lazy;
+            /* 禁用图片拖拽，减少不必要交互消耗 */
+            pointer-events: none;
+        }
+    </style>
+</head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* 简化样式，减少渲染负担 */
+        .music-player {
+            width: 300px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <script>
+        // 简化脚本，仅保留核心播放控制，避免冗余操作
+        const audio = document.getElementById('musicPlayer');
+        
+        // 页面加载完成后执行，避免阻塞DOM渲染
+        window.addEventListener('DOMContentLoaded', () => {
+            // 可选：用户交互后取消静音（解决部分浏览器 autoplay 限制）
+            document.body.addEventListener('click', () => {
+                if (audio.muted) {
+                    audio.muted = false;
+                }
+            }, { once: true }); // 仅执行一次，减少事件监听消耗
+        });
+    </script>
+<body>
+    
+
+    <!-- 脚本置于页面底部，避免阻塞 DOM 解析 -->
+    <script>
+        // 仅保留必要交互，避免冗余逻辑
+        document.addEventListener('DOMContentLoaded', () => {
+            // 简单的页面加载完成提示（可删除，不影响核心功能）
+            console.log('页面流畅加载完成');
+            
+            // 避免添加复杂事件监听或循环操作，减少主线程阻塞
+        });
+    </script>
+        <style>
+        .page { display: none; }
+        .page.active { display: block; }
+    </style>
+    <script>
+        function showPage(pageId) {
+            // 
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            // 
+            document.getElementById(pageId).classList.add('active');
+            // 
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        }
+        
+        window.addEventListener('load', function() {
+            var scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>明月资源库定制2.0版本</title>
+  </head>
+  <body>
+    <script>
+        // 保存当前滚动位置
+        window.addEventListener('beforeunload', function() {
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        });
+
+        // 页面加载时恢复滚动位置
+        window.addEventListener('load', function() {
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
+
+        // 按钮点击事件
+        document.getElementById('myButton').addEventListener('click', function() {
+            // 模拟页面跳转
+            window.location.href = 'otherpage.html';
+        });
+    </script>
+</body>
+</html>
+  <title>滑下去获取更多资源chuxinyydd</title> 
+  <style>
+		body {
+  background-image:url("icon.png");
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+ 
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  animation: rainbow 10s infinite;
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+		.tox {
+			text-align: center;
+			margin-top: 20px;
+		}
+
+		.tox img {
+			width: 100px;
+			height: 100px;
+			border-radius: 5px;
+			transition: transform 0.5s;
+		}
+
+		.tox img:hover {
+			transform: rotateY(180deg);
+		}
+
+		.gnlieb {
+			display: flex;
+			justify-content: space-evenly;
+			margin-top: 20px;
+		}
+
+		.gnlieb .card {
+			width: 150px;
+			height: 50px;
+			background-color: rgba(16, 52, 166, 0.7);
+			text-align: center;
+			border-radius: 10px;
+			font-size: 18px;
+			color: #fff;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		}
+
+		.gnlieb .card:hover {
+			background-color: rgba(16, 52, 166, 0.9);
+			cursor: pointer;
+			transition: background-color 0.3s ease-in-out;
+		}
+
+		.gnlieb .card a {
+			color: #fff;
+			text-decoration: none;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+		}
+
+#progress-bar {
+  width: 340px;
+  height: 10px;
+  border: 1px solid #ccc;
+  position: relative;
+  overflow: hidden;
+}
+
+#progress-bar hr {
+  height: 100%;
+  width: 0;
+  background-color: #00aaff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: width 0.5s ease;
+}
+	</style> 
+ </head> 
+ <body id="v1"> 
+  <div id="v2" class="tox"> 
+   	<img src="2.jpg" alt="头像" />
+   <br id="v4"> 
+   <br id="v5"> 
+   <h1 id="v6">明月资源库【滑下去获取更多资源】</h1> 
+  </div>
+     <div id="progress-bar"> 
+   <hr id="v7" style="width: 100%;"> 
+  </div> <h2>核心区【滑下去获取更多资源】<h2>
+  <div id="v8" class="gnlieb"> 
+   <div id="v9" class="card"> 
+       <a id="v10" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4">点这里对接内部稳定易支付接口【费率低而且稳定】</a> 
+   </div> 
+   <div id="v11" class="card"> 
+    <a id="v12" href="mqqapi://card/show_pslcard?src_type=internal&version=1&card_type=group&source=qrcode&uin=936797490">明月资源库官方群聊</a> 
+   </div> 
+  </div> 
+  <div id="v13" class="gnlieb"> 
+   <div id="v14" class="card"> 
+    <a id="v15" href="mqqapi://card/show_pslcard?src_type=internal&version=1&card_type=group&source=qrcode&uin=936797490">加入明月总部群</a> 
+   </div> 
+   <div id="v16" class="card"> 
+    <a id="v17" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4l">点这对接晴天易支付接口【费率低】</a> 
+   </div> 
+  </div> 
+  <div id="v18" class="gnlieb"> 
+   <div id="v19" class="card"> 
+    <a id="v20" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4"">点这对接晴天易支付接口【费率低】</a> 
+   </div>
+   <div id="v21" class="card"> 
+    <a id="v22" href="mqqapi://card/show_pslcard?src_type=internal&version=1&card_type=group&source=qrcode&uin=936797490">加入明月交流群④</a> 
+   </div> 
+  </div><h2>破解区<h2> 
+  <div id="v23" class="gnlieb"> 
+   <div id="v24" class="card"> 
+    <a id="v25" href="https://wwxt.lanzout.com/b014wr9xib">输入法破解大全</a> 
+   </div> 
+   <div id="v26" class="card"> 
+    <a id="v27" href="https://wwxt.lanzout.com/b014wra0cd">小说破解大全</a> 
+   </div> 
+  </div> 
+  <div id="v28" class="gnlieb"> 
+   <div id="v29" class="card"> 
+    <a id="v30" href="https://wwxt.lanzout.com/b014wra0cd">视频破解大全</a> 
+   </div> 
+   <div id="v31" class="card"> 
+    <a id="v32" href="https://wwxt.lanzout.com/b014wr9xib">音乐破解大全</a> 
+   </div> 
+  </div> 
+  <div id="v33" class="gnlieb"> 
+   <div id="v34" class="card"> 
+    <a id="v35" href="https://wwxt.lanzout.com/b014wr9xib">迅雷快影永久VIP</a> 
+   </div> 
+   <div id="v36" class="card"> 
+    <a id="v37" href="https://wwxt.lanzout.com/b014wr9xib">快手刷赞破解大全</a> 
+   </div> 
+  </div> 
+  <div id="v38" class="gnlieb"> 
+   <div id="v39" class="card"> 
+    <a id="v40" href="https://wwxt.lanzout.com/b014wra2be">明月资源库使用教程</a> 
+   </div> 
+   <div id="v41" class="card"> 
+    <a id="v42" href="https://wwxt.lanzout.com/b014wr9xib">快手丫L速刷</a> 
+   </div> 
+  </div><h2>手机壁纸破解<h2> 
+  <div id="v43" class="gnlieb"> 
+   <div id="v44" class="card"> 
+    <a id="v45" href="https://wwxt.lanzout.com/iwpnr37pqrze">MT管理器解锁VIP版本</a> 
+   </div> 
+   <div id="v46" class="card"> 
+    <a id="v47" href="https://wwxt.lanzout.com/ion1c37pt9ba">NP管理器</a> 
+   </div> 
+  </div> <h2>外挂区<h2>
+  <div id="v48" class="gnlieb"> 
+   <div id="v49" class="card"> 
+    <a id="v50" href="https://wwxt.lanzout.com/b014wr9xfi">和平精英</a> 
+   </div> 
+   <div id="v51" class="card"> 
+    <a id="v52" href="https://wwxt.lanzout.com/b014wr9xgj">王者荣耀</a> 
+   </div> 
+  </div> 
+  <div id="v53" class="gnlieb"> 
+   <div id="v54" class="card"> 
+    <a id="v55" href="https://wwxt.lanzout.com/b014wr9xmf">暗区突围</a> 
+   </div> 
+   <div id="v56" class="card"> 
+    <a id="v57" href="https://wwxt.lanzout.com/b014wr9xpi">PUBG</a> 
+   </div> 
+  </div> 
+  <div id="v58" class="gnlieb"> 
+   <div id="v59" class="card"> 
+    <a id="v60" href="https://wwxt.lanzout.com/b014wr9xqj">创造与魔法</a> 
+   </div> 
+   <div id="v61" class="card"> 
+    <a id="v62" href="https://wwxt.lanzout.com/b014wr9xra">鸣潮</a> 
+   </div> 
+  </div> 
+  <div id="v63" class="gnlieb"> 
+   <div id="v64" class="card"> 
+    <a id="v65" href="https://wwxt.lanzout.com/b014wr9ygf">永劫无间</a> 
+   </div> 
+   <div id="v66" class="card"> 
+    <a id="v67" href="https://wwxt.lanzout.com/b014wr9ync">未来之役</a> 
+   </div> 
+  </div> 
+  <div id="v68" class="gnlieb"> 
+   <div id="v69" class="card"> 
+    <a id="v70" href="https://wwxt.lanzout.com/b014wr9y4d">狼人杀</a> 
+   </div> 
+   <div id="v71" class="card"> 
+    <a id="v72" href="https://wwxt.lanzout.com/b014wr9yqf">太空行动</a> 
+   </div> 
+  </div> 
+  <div id="v73" class="gnlieb"> 
+   <div id="v74" class="card"> 
+    <a id="v75" href="https://wwxt.lanzout.com/b014wr9zch">对峙2</a> 
+   </div> 
+   <div id="v76" class="card"> 
+    <a id="v77" href="https://wwxt.lanzout.com/b014wr9z4j">火影忍者</a> 
+   </div> 
+  </div> 
+  <div id="v78" class="gnlieb"> 
+   <div id="v79" class="card"> 
+    <a id="v80" href="https://wwxt.lanzout.com/b014wrapvc">QQ炫舞</a> 
+   </div> 
+   <div id="v81" class="card"> 
+    <a id="v82" href="https://wwxt.lanzout.com/b014wrap6h">逃跑吧少年</a> 
+   </div> 
+  </div> 
+  <div id="v83" class="gnlieb"> 
+   <div id="v84" class="card"> 
+    <a id="v85" href="https://wwxt.lanzout.com/b014wr9xha">香肠派对</a> 
+   </div> 
+   <div id="v86" class="card"> 
+    <a id="v87" href="https://wwxt.lanzout.com/b014wr9x2f">明月所有游戏类型的端口防封</a> 
+   </div> 
+  </div> 
+  <div id="v88" class="gnlieb"> 
+   <div id="v89" class="card"> 
+    <a id="v90" href="https://wwxt.lanzout.com/b014wr9y1a">传说对决</a> 
+   </div> 
+   <div id="v91" class="card"> 
+    <a id="v92" href="https://wwxt.lanzout.com/b014wra1eb">明日方舟</a> 
+   </div> 
+  </div> 
+  <div id="v93" class="gnlieb"> 
+   <div id="v94" class="card"> 
+    <a id="v95" href="https://wwxt.lanzout.com/b014wr9xkd">穿越火线</a> 
+   </div> 
+   <div id="v96" class="card"> 
+    <a id="v97" href="https://wwxt.lanzout.com/b014wr9yih">使命召唤</a> 
+   </div> 
+  </div> 
+  <div id="v98" class="gnlieb"> 
+   <div id="v99" class="card"> 
+    <a id="v100" href="https://wwxt.lanzout.com/b014wr9yfe">第五人格</a> 
+   </div> 
+   <div id="v101" class="card"> 
+    <a id="v102" href="https://wwxt.lanzout.com/b014wr9z3i">萤火突击</a> 
+   </div> 
+  </div> 
+  <div id="v103" class="gnlieb"> 
+   <div id="v104" class="card"> 
+    <a id="v105" href="https://wwxt.lanzout.com/b014wr9z8d">地铁跑酷</a> 
+   </div> 
+   <div id="v106" class="card"> 
+    <a id="v107" href="https://wwxt.lanzout.com/b014wr9yuj">QQ飞车</a> 
+   </div> 
+  </div> 
+  <div id="v108" class="gnlieb"> 
+   <div id="v109" class="card"> 
+    <a id="v110" href="https://wwxt.lanzout.com/b014wr9yva">我的世界</a> 
+   </div> 
+   <div id="v111" class="card"> 
+    <a id="v112" href="https://wwxt.lanzout.com/b014wr9z0f">迷你世界</a> 
+   </div> 
+  </div> 
+  <div id="v113" class="gnlieb"> 
+   <div id="v114" class="card"> 
+    <a id="v115" href="https://wwxt.lanzout.com/b014wr9z1g">迷你枪战</a> 
+   </div> 
+   <div id="v116" class="card"> 
+    <a id="v117" href="https://wwxt.lanzout.com/b014wr9ype">太空杀</a> 
+   </div> 
+  </div> 
+  <div id="v118" class="gnlieb"> 
+   <div id="v119" class="card"> 
+    <a id="v120" href="https://wwxt.lanzout.com/b014wr9x2f">所有类型的游戏端口</a> 
+   </div> 
+   <div id="v121" class="card"> 
+    <a id="v122" href="https://wwxt.lanzout.com/b014wr9y5e">高能英雄</a> 
+   </div> 
+  </div> 
+  <div id="v123" class="gnlieb"> 
+   <div id="v124" class="card"> 
+    <a id="v125" href="https://wwxt.lanzout.com/b014wr9z8d">地铁跑酷直装</a> 
+   </div> 
+   <div id="v126" class="card"> 
+    <a id="v127" href="https://wwxt.lanzout.com/b014wr9xoh">生死狙击</a> 
+   </div> 
+  </div> 
+  <div id="v128" class="gnlieb"> 
+   <div id="v129" class="card"> 
+    <a id="v130" href="https://wwxt.lanzout.com/b014wr9y8h">光遇</a> 
+   </div> 
+   <div id="v131" class="card"> 
+    <a id="v132" href="https://wwxt.lanzout.com/b014wr9xle">三角洲行动</a> 
+   </div> 
+  </div> 
+  <div id="v133" class="gnlieb"> 
+   <div id="v134" class="card"> 
+    <a id="v135" href="https://wwxt.lanzout.com/b014wr9y9i">王牌战争</a> 
+   </div> 
+   <div id="v136" class="card"> 
+    <a id="v137" href="https://wwxt.lanzout.com/b014wr9zdi">元气骑士</a> 
+     </div> 
+  </div> 
+  <div id="v138" class="gnlieb"> 
+   <div id="v139" class="card"> 
+    <a id="v140" href="https://wwxt.lanzout.com/b014wr9z6b">曙光英雄</a> 
+   </div> 
+   <div id="v141" class="card"> 
+    <a id="v142" href="https://wwxt.lanzout.com/b014wra1kh">天天酷跑</a> 
+   </div> 
+  </div> 
+  <div id="v143" class="gnlieb"> 
+   <div id="v144" class="card"> 
+    <a id="v145" href="https://wwxt.lanzout.com/b014wra22f">各种小游戏的直装</a> 
+   </div> 
+   <div id="v146" class="card"> 
+    <a id="v147" href="https://wwxt.lanzout.com/b014wra20d">开源各种软件网站源码区</a> 
+   </div> 
+  </div> 
+  <div id="v148" class="gnlieb"> 
+   <div id="v149" class="card"> 
+    <a id="v150" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4">点这里对接晴天内部稳定易支付接口【费率低而且稳定】</a> 
+   </div> 
+   <div id="v151" class="card"> 
+    <a id="v152" href="https://wwxt.lanzout.com/b014wra2be">各种游戏科技的使用教程</a> 
+   </div> 
+  </div> 
+  <div id="v153" class="gnlieb"> 
+   <div id="v154" class="card"> 
+    <a id="v155" href="https://wwxt.lanzout.com/b014wra2dg">资源库里面下载不了软件的解决方法</a> 
+   </div> 
+   <div id="v156" class="card"> 
+    <a id="v157" href="https://wwxt.lanzout.com/b014wr9y8h">光遇萌丸</a> 
+   </div> 
+  </div> 
+  <div id="v158" class="gnlieb"> 
+   <div id="v159" class="card"> 
+    <a id="v160" href="https://wwxt.lanzout.com/b014wr9y8h">光遇云月</a> 
+   </div> 
+   <div id="v161" class="card"> 
+    <a id="v162" href="https://wwxt.lanzout.com/b014wr9y8h">光遇花铭</a> 
+   </div> 
+  </div> 
+  <div id="v163" class="gnlieb"> 
+   <div id="v164" class="card"> 
+    <a id="v165" href="https://wwxt.lanzout.com/b014wr9y8h">光遇鱼鱼</a> 
+   </div> 
+   <div id="v166" class="card"> 
+    <a id="v167" href="https://wwxt.lanzout.com/b014wr9y8h">测试服全物品</a> 
+   </div> 
+  </div> 
+  <div id="v168" class="gnlieb"> 
+   <div id="v169" class="card"> 
+    <a id="v170" href="https://wwxt.lanzout.com/b014wr9xyh">部落冲突</a> 
+   </div> 
+   <div id="v171" class="card"> 
+    <a id="v172" href="https://wwxt.lanzout.com/b014wr9xpi">PUBG</a> 
+   </div> 
+  </div> <h2>框架区<h2>
+  <div id="v173" class="gnlieb"> 
+   <div id="v174" class="card"> 
+    <a id="v175" href="https://wwxt.lanzout.com/b014wr9zsd">全网框架合集</a> 
+   </div> 
+   <div id="v176" class="card"> 
+    <a id="v177" href="https://wwxt.lanzout.com/b014wr9zsd">全网框架都在这里</a> 
+   </div> 
+  </div> <h2>实用软件<h2>
+  <div id="v178" class="gnlieb"> 
+   <div id="v179" class="card"> 
+    <a id="v180" href="https://wwxt.lanzout.com/b014wr9xib">实用软件区</a> 
+   </div> 
+   <div id="v181" class="card"> 
+    <a id="v182" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4">点这里对接晴天内部稳定易支付接口【费率低而且稳定】</a> 
+   </div> 
+  </div> 
+  <div id="v183" class="gnlieb"> 
+   <div id="v184" class="card"> 
+    <a id="v185" href="https://wwxt.lanzout.com/b014wr9zsd">挽念虚拟机</a> 
+   </div> 
+   <div id="v186" class="card"> 
+    <a id="v187" href="https://wwxt.lanzout.com/b014wr9xib">定制微信</a> 
+   </div> 
+  </div> <h2>社工<h2>
+  <div id="v188" class="gnlieb"> 
+   <div id="v189" class="card"> 
+    <a id="v190" href="https://wwxt.lanzout.com/b014wranuj">小七工具箱</a> 
+   </div> 
+   <div id="v191" class="card"> 
+    <a id="v192" href="https://wwxt.lanzout.com/b014wranuj">小优工具箱</a> 
+   </div> 
+  </div> 
+  <div id="v193" class="gnlieb"> 
+   <div id="v194" class="card"> 
+    <a id="v195" href="https://wwxt.lanzout.com/b014wranuj">离别黑猫社工</a> 
+   </div> 
+   <div id="v196" class="card"> 
+    <a id="v197" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4"">点这对接晴天易支付接口【费率低】</a> 
+   </div> 
+  </div> 
+  <div id="v198" class="gnlieb"> 
+   <div id="v199" class="card"> 
+    <a id="v200" href="https://wwxt.lanzout.com/b014wranuj">NL社工</a> 
+   </div> 
+   <div id="v201" class="card"> 
+    <a id="v202" href="https://wwxt.lanzout.com/b014wranuj">秋霜社工</a> 
+   </div> 
+  </div> 
+  <div id="v203" class="gnlieb"> 
+   <div id="v204" class="card"> 
+    <a id="v205" href="https://wwxt.lanzout.com/b014wranuj">X社工</a> 
+   </div> 
+   <div id="v206" class="card"> 
+    <a id="v207" href="https://wwxt.lanzout.com/b014wranuj">kk社工</a> 
+   </div> 
+  </div> 
+  <div id="v208" class="gnlieb"> 
+   <div id="v209" class="card"> 
+    <a id="v210" href="https://wwxt.lanzout.com/b014wr9yti">球球大作战</a> 
+   </div> 
+   <div id="v211" class="card"> 
+    <a id="v212" href="https://wwxt.lanzout.com/b014wraoyj">落日余晖</a> 
+   </div> 
+  </div> 
+  <div id="v213" class="gnlieb"> 
+   <div id="v214" class="card"> 
+    <a id="v215" href="https://wwxt.lanzout.com/b014wranuj">照妖镜</a> 
+   </div> 
+   <div id="v216" class="card"> 
+    <a id="v217" href="https://wwxt.lanzout.com/b014wranuj">社工库大全</a> 
+   </div> 
+  </div> <h2>明月NB<h2>
+  <div id="v218" class="gnlieb"> 
+   <div id="v219" class="card"> 
+    <a id="v220" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4"">点这对接晴天易支付接口【费率低】</a> 
+   </div> 
+   <div id="v221" class="card"> 
+    <a id="v222" href="https://wwxt.lanzout.com/b014wr9xud">无畏契约</a> 
+   </div> 
+  </div> 
+  <div id="v223" class="gnlieb"> 
+   <div id="v224" class="card"> 
+    <a id="v225" href="https://wwxt.lanzout.com/b014wr9y0j">远光84</a> 
+   </div> 
+   <div id="v226" class="card"> 
+    <a id="v227" href="https://wwxt.lanzout.com/b014wr9xxg">超自然行动组</a> 
+   </div> 
+  </div> 
+  <div id="v228" class="gnlieb"> 
+   <div id="v229" class="card"> 
+    <a id="v230" href="https://wwxt.lanzout.com/b014wrapzg">王牌竞速</a> 
+   </div> 
+   <div id="v231" class="card"> 
+    <a id="v232" href="https://wwxt.lanzout.com/b014wr9yfe">第五人格</a> 
+   </div> 
+  </div> <h2>逆向<h2>
+  <div id="v233" class="gnlieb"> 
+   <div id="v234" class="card"> 
+    <a id="v235" href="https://wwxt.lanzout.com/b014wra2gj">逆向思维</a> 
+   </div> 
+   <div id="v236" class="card"> 
+    <a id="v237" href="https://wwxt.lanzout.com/b014wra2gj">逆向工具</a> 
+   </div> 
+  </div> <h2>我推荐使用晴天易支付接口<h2>
+  <div id="v238" class="gnlieb"> 
+   <div id="v239" class="card"> 
+    <a id="v240" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4"">点这对接晴天易支付接口【费率低】</a> 
+   </div> 
+   <div id="v241" class="card"> 
+    <a id="v242" href="https://wwxt.lanzout.com/b014wr9yuj">QQ飞车</a> 
+   </div> 
+  </div> 
+  <div id="v243" class="gnlieb"> 
+   <div id="v244" class="card"> 
+    <a id="v245" href="https://wwxt.lanzout.com/b014wr9ysh">英雄联盟</a> 
+   </div> 
+   <div id="v246" class="card"> 
+    <a id="v247" href="https://wwxt.lanzout.com/b014wranuj">IP查询</a> 
+   </div> 
+  </div> <h2>游戏区<h2>
+  <div id="v248" class="gnlieb"> 
+   <div id="v249" class="card"> 
+    <a id="v250" href="https://wwxt.lanzout.com/b014wr9z3i">萤火突击</a> 
+   </div> 
+   <div id="v251" class="card"> 
+    <a id="v252" href="https://wwxt.lanzout.com/b014wraqeb">荒野行动</a> 
+   </div> 
+  </div> <h2>快手速刷频道<h2>
+  <div id="v253" class="gnlieb"> 
+   <div id="v254" class="card"> 
+    <a id="v255" href="https://wwxt.lanzout.com/b014wrbo6h">冰嘉快手速刷</a> 
+   </div> 
+   <div id="v256" class="card"> 
+    <a id="v257" href="https://wwxt.lanzout.com/b014wrbo6h">思月快手速刷</a> 
+   </div> 
+  </div> 
+  <div id="v258" class="gnlieb"> 
+   <div id="v259" class="card"> 
+    <a id="v260" href="https://wwxt.lanzout.com/b014wrbo6h">TA快手快手速刷</a> 
+   </div> 
+   <div id="v261" class="card"> 
+    <a id="v262" href="https://wwxt.lanzout.com/b014wrbo6h">小梦快手速刷</a> 
+   </div> 
+  </div> 
+  <div id="v263" class="gnlieb"> 
+   <div id="v264" class="card"> 
+    <a id="v265" href="https://wwxt.lanzout.com/b014wrbo6h">丫U快手速刷</a> 
+   </div> 
+   <div id="v266" class="card"> 
+    <a id="v267" href="https://wwxt.lanzout.com/b014wrbo6h">仙帝快手速刷</a> 
+   </div> 
+  </div> 
+  <div id="v268" class="gnlieb"> 
+   <div id="v269" class="card"> 
+    <a id="v270" href="https://wwxt.lanzout.com/b014wrbo6h">古德福快手速刷</a> 
+   </div> 
+   <div id="v271" class="card"> 
+    <a id="v272" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4"">点这对接晴天易支付接口【费率低】</a> 
+   </div> 
+  </div> <h2>APK加固<h2>
+  <div id="v273" class="gnlieb"> 
+   <div id="v274" class="card"> 
+    <a id="v275" href="https://jiagu.360.cn">360加固</a> 
+   </div> 
+   <div id="v276" class="card"> 
+    <a id="v277" href="https://dev.bangcle.com">梆梆加固</a> 
+   </div> 
+  </div> 
+  <div id="v278" class="gnlieb"> 
+   <div id="v279" class="card"> 
+    <a id="v280" href="https://www.ijiami.cn/">爱加密</a> 
+   </div> 
+   <div id="v281" class="card"> 
+    <a id="v282" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4"">点这对接晴天易支付接口【费率低】</a> 
+   </div> 
+  </div> <h2>在线使用<h2>
+  <div id="v283" class="gnlieb"> 
+   <div id="v284" class="card"> 
+    <a id="v285" href="https://semlp-partner.kuaishou.com/dynamic?keywordId=608110606070&query=%E8%B9%87%EE%82%A3%E5%A2%9C%E9%8D%A6%E3%84%A7%E5%9A%8E%E7%91%99%E5%82%9C%E6%B9%85%E7%BC%83%E6%88%A6%E3%80%89%E9%90%97%EF%BF%BD&cid=54231661824&match=1&pos=mt1&planName=157405279&unit=5884671341&pn=1&dt=0&ori_query=%7Bquery%7D&crowdid=0&bd_vid=rjf4Pjcdn161PWR1P10knW01n7tznWPxnNtknjKxP7tdPjc1nHmvnH6zP0&requestId=a68310a3b53d4e498529648cee9c3ed5&word=&ip=27.47.133.61&ua=Mozilla%2F5.0+%28Linux%3B+U%3B+Android+13%3B+zh-cn%3B+2201123C+Build%2FTKQ1.220807.001%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Version%2F4.0+Chrome%2F100.0.4896.127+Mobile+Safari%2F537.36+XiaoMi%2FMiuiBrowser%2F17.7.280811+swan-mibrowser&webDeviceId=web_032f27d4240859dc5af9ca3898ea8e24">快手</a> 
+   </div> 
+   <div id="v286" class="card"> 
+    <a id="v287" href="https://live.douyin.com/">抖音</a> 
+   </div> 
+  </div> 
+  <div id="v288" class="gnlieb"> 
+   <div id="v289" class="card"> 
+    <a id="v290" href="https://m.bilibili.com/">b站</a> 
+   </div> 
+   <div id="v291" class="card"> 
+    <a id="v292" href="https://wwxt.lanzout.com/b014wr9xib">kk偷相册</a> 
+   </div> 
+  </div> 
+  <div id="v293" class="gnlieb"> 
+   <div id="v294" class="card"> 
+    <a id="v295" href="https://pan.jl8.top/">图转链接</a> 
+   </div> 
+   <div id="v296" class="card"> 
+    <a id="v297" href="https://www.uugai.com/">LOGO设计</a> 
+   </div> 
+  </div> 
+  <div id="v298" class="gnlieb"> 
+   <div id="v299" class="card"> 
+    <a id="v300" href="https://wwxt.lanzout.com/b014wr9xib">4399小白号</a> 
+   </div> 
+   <div id="v301" class="card"> 
+    <a id="v302" href="https://wwxt.lanzout.com/b014wr9xib">无限手机号</a> 
+   </div> 
+  </div> 
+  <div id="v303" class="gnlieb"> 
+   <div id="v304" class="card"> 
+    <a id="v305" href="https://wwxt.lanzout.com/b014wr9xib">VIP视频解析</a> 
+   </div> 
+   <div id="v306" class="card"> 
+    <a id="v307" href="https://wwxt.lanzout.com/b014wr9xib">工具箱</a> 
+   </div> 
+  </div> 
+    <div id="v308" class="gnlieb"> 
+   <div id="v309" class="card"> 
+    <a id="v310" href="https://wwxt.lanzout.com/b014wr9xib">工具箱2</a> 
+   </div> 
+   <div id="v311" class="card"> 
+    <a id="v312" href="https://wwxt.lanzout.com/b014wr9xib">二维码生成器</a> 
+   </div> 
+  </div> 
+  <div id="v313" class="gnlieb"> 
+   <div id="v314" class="card"> 
+    <a id="v315" href="https://wap.sogou.com/">搜狗在线使用</a> 
+   </div> 
+   <div id="v316" class="card"> 
+    <a id="v317" href="https://quark.sm.cn/">夸克在线使用</a> 
+   </div> 
+  </div> 
+  <div id="v318" class="gnlieb"> 
+   <div id="v319" class="card"> 
+    <a id="v320" href="http://hao.uc.cn/?uc_param_str=dnfrpfbivecpbtnt">UC在线使用</a> 
+   </div> 
+   <div id="v321" class="card"> 
+    <a id="v322" href="https://m.baidu.com/?ref=www_ptl&ms=1&rsv_pq=8412643359331076669&rsv_t=4f2bmZb1E814eRVwL9dmly9elBLWHQhaeet2fSPqFnYj16RBt3Mq">百度网盘在线使用</a> 
+   </div> 
+  </div> <h2>新增内容<h2>
+<div id="v323" class="gnlieb"> 
+   <div id="v324" class="card"> 
+    <a id="v325" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4">点这里对接晴天内部稳定易支付接口【费率低而且稳定】</a> 
+   </div> 
+   <div id="v326" class="card"> 
+    <a id="v327" href="https://wwxt.lanzout.com/b014wr9xfi">和平最强改文件</a> 
+   </div> 
+  </div> 
+  <div id="v328" class="gnlieb"> 
+   <div id="v329" class="card"> 
+    <a id="v330" href="https://wwxt.lanzout.com/b014wr9xib">音乐播放器</a> 
+   </div> 
+   <div id="v331" class="card"> 
+    <a id="v332" href="https://wwxt.lanzout.com/b014wra22f">各种游戏破解</a> 
+   </div> 
+  </div> 
+  <div id="v333" class="gnlieb"> 
+   <div id="v334" class="card"> 
+    <a id="v335" href="https://wwxt.lanzout.com/b014wr9xib">破解软件大全</a> 
+   </div> 
+   <div id="v336" class="card"> 
+    <a id="v337" href="https://wwxt.lanzout.com/b014wr9ydc">原神</a> 
+   </div> 
+   </div> 
+  <div id="v378" class="gnlieb"> 
+   <div id="v379" class="card"> 
+    <a id="v380" href="https://wwxt.lanzout.com/b014wr9z0f">迷你世界冰昔辅助</a> 
+   </div> 
+   <div id="v381" class="card"> 
+    <a id="v382" href="https://wwxt.lanzout.com/b014wranuj">Q绑查询</a> 
+   </div> 
+  </div> 
+  <div id="v383" class="gnlieb"> 
+   <div id="v384" class="card"> 
+    <a id="v385" href="https://wwxt.lanzout.com/b014wr9z8d">地铁跑酷</a> 
+   </div> 
+   <div id="v386" class="card"> 
+    <a id="v387" href="https://wwxt.lanzout.com/b014wranuj">网页攻击</a> 
+   </div> 
+  </div> 
+  <div id="v388" class="gnlieb"> 
+   <div id="v389" class="card"> 
+    <a id="v390" href="https://wwxt.lanzout.com/b014wr9yze">金铲铲</a> 
+   </div> 
+   <div id="v391" class="card"> 
+    <a id="v392" href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4">点这里对接晴天内部稳定易支付接口【费率低而且稳定】</a> 
+   </div> 
+  </div> 
+  <div id="v393" class="gnlieb"> 
+   <div id="v394" class="card"> 
+    <a id="v395" href="https://wwxt.lanzout.com/b014wr9xib">清印</a> 
+   </div> 
+   <div id="v396" class="card"> 
+    <a id="v397" href="https://wwxt.lanzout.com/b014wr9xib">水印</a> 
+   </div> 
+  </div> 
+  <div id="v398" class="gnlieb"> 
+   <div id="v399" class="card"> 
+    <a id="v400" href="mqqapi://card/show_pslcard?src_type=internal&version=1&card_type=group&source=qrcode&uin=936797490">明月资源库交流群</a> 
+   </div> 
+   <div id="v401" class="card"> 
+    <a id="v402" href="https://wwxt.lanzout.com/b014wra20d">各种软件网站源码区</a> 
+   </div> 
+  </div> 
+  <div id="v403" class="gnlieb"> 
+   <div id="v404" class="card"> 
+    <a id="v405" href="https://wwxt.lanzout.com/b014wr9yyd">蛋仔派对</a> 
+   </div> 
+   <div id="v406" class="card"> 
+    <a id="v407" href="https://wwxt.lanzout.com/b014wr9z9e">明日之后</a> 
+ </div> 
+  </div> 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script>
+  <script>
+                // 添加点击动画
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+    </script>
+    <!DOCTYPE html>
+<html>
+<head>
+    <title>保持滚动位置的返回按钮</title>
+    <style>
+        body {
+            height: px; /* 用于演示滚动 */
+        }
+        .content {
+            margin-top: 800px; /* 初始滚动位置 */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 保存当前滚动位置
+        window.addEventListener('beforeunload', function() {
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        });
+
+        // 页面加载时恢复滚动位置
+        window.addEventListener('load', function() {
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
+
+        // 按钮点击事件
+        document.getElementById('myButton').addEventListener('click', function() {
+            // 模拟页面跳转
+            window.location.href = 'otherpage.html';
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>保持滚动位置的返回按钮</title>
+    <style>
+        body {
+            height: px; /* 用于演示滚动 */
+        }
+        .content {
+            margin-top: 800px; /* 初始滚动位置 */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 保存当前滚动位置
+        window.addEventListener('beforeunload', function() {
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        });
+
+        // 页面加载时恢复滚动位置
+        window.addEventListener('load', function() {
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
+
+        // 按钮点击事件
+        document.getElementById('myButton').addEventListener('click', function() {
+            // 模拟页面跳转
+            window.location.href = 'otherpage.html';
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>带网络检测的跳转按钮</title>
+    <style>
+        /* 正常页面样式 */
+        .normal-page {
+            padding: 50px;
+            text-align: center;
+        }
+        .jump-btn {
+            padding: 12px 24px;
+            font-size: 18px;
+            cursor: pointer;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+        .jump-btn:hover {
+            background: #1976D2;
+        }
+
+        /* 断网提示页样式（初始隐藏） */
+        .offline-page {
+            display: none; /* 默认不显示 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white; /* 白屏效果 */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .offline-icon {
+            font-size: 60px;
+            color: #F44336;
+            margin-bottom: 20px;
+        }
+        .offline-tip {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .offline-desc {
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 断网提示页面（白屏+提示） -->
+    <div class="offline-page" id="offlinePage">
+        <div class="offline-icon">🔌</div>
+        <div class="offline-tip">请打开网络再使用</div>
+        <div class="offline-desc">当前网络已断开，无法完成跳转</div>
+    </div>
+
+    <script>
+        // 网络检测+跳转核心函数
+        function checkNetworkAndJump(targetUrl) {
+            // 1. 检测当前网络状态：navigator.onLine 为 true 表示在线，false 表示离线
+            if (navigator.onLine) {
+                // 2. 在线状态：执行正常跳转
+                window.location.href = targetUrl;
+            } else {
+                // 3. 离线状态：隐藏正常页面，显示断网白屏提示
+                document.querySelector('.normal-page').style.display = 'none';
+                document.getElementById('offlinePage').style.display = 'flex';
+            }
+        }
+
+        // 可选：监听网络状态变化（比如断网后重新联网，自动恢复正常页面）
+        window.addEventListener('online', function() {
+            document.querySelector('.normal-page').style.display = 'block';
+            document.getElementById('offlinePage').style.display = 'none';
+        });
+
+        window.addEventListener('offline', function() {
+            // 若断网时未点击按钮，可选择是否自动显示提示（按需开启）
+            // document.querySelector('.normal-page').style.display = 'none';
+            // document.getElementById('offlinePage').style.display = 'flex';
+        });
+    </script>
+      <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>WebCat</title>
+	<script src="js/jquery.min.js"></script>
+  </head>
+          <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>WebCat</title>
+	<script src="js/12.js"></script>
+  </head>
+    <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>WebCat</title>
+	<script src="js/vue.min.js"></script>
+  </head>
+    <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>WebCat</title>
+	<script src="js/wc-3.0.6.min.js"></script>
+  </head>
+  <script type="text/javascript" id="myhk" src="https://myhkw.cn/api/player/1759648694146" key="1759648694146" m="1"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>网络状态检测</title>
+    <style>
+        #offlineMessage {
+            display: none;
+            position: fixed;
+            top: 0;
+     
+</body>
+</html>

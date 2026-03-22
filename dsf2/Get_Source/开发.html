@@ -1,0 +1,157 @@
+<html lang="zh-CN">
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>赞助者名单</title> 
+  <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: #2d3748;
+        }
+        .header p {
+            font-size: 1.25rem;
+            color: #4a5568;
+        }
+        .sponsor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .sponsor-card {
+            background-color: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .sponsor-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .sponsor-name {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #2d3748;
+        }
+        .sponsor-level {
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+                .offline-page{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;z-index:99999;}
+.offline-icon{font-size:60px;color:#F44336;margin-bottom:20px;}
+.offline-tip{font-size:22px;color:#333;margin-bottom:10px;}
+.offline-desc{font-size:16px;color:#666;}
+#offlineMessage{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);color:#fff;text-align:center;padding-top:20%;font-size:24px;z-index:100000;}
+        .level-platinum { background-color: #E9D8FD; color: #553C9A; }
+        .level-gold { background-color: #FEFCBF; color: #744210; }
+        .level-silver { background-color: #E2E8F0; color: #2D3748; }
+        .level-bronze { background-color: #FEEBC8; color: #7B341E; }
+    </style> 
+  <script src="js/jq.js"></script> 
+ </head> 
+     <!-- 断网提示容器 -->
+    <div class="offline-page" id="offlinePage">
+        <div class="offline-icon">🔌</div>
+        <div class="offline-tip">请打开网络再使用</div>
+        <div class="offline-desc">当前网络已断开，无法完成跳转</div>
+    </div>
+    <div id="offlineMessage">
+        <h3>请打开网络连接后再使用</h3>
+        <p>用断网大法破解天帝软件库？</p>
+        <p>荒诞至极！！！</p>
+		<p>天帝-断网检测V1.0</p>
+    </div>
+ <body id="v1"> 
+  <div id="v2" class="container"> 
+   <header id="v3" class="header"> 
+    <h1 id="v4">我们的赞助者</h1> 
+    <p id="v5">感谢这些赞助者们，是他们让这个项目成为可能</p> 
+   </header> 
+   <div id="v6" class="sponsor-grid"> 
+    <div id="v7" class="sponsor-card"> 
+     <div id="v8" class="sponsor-info"> 
+      <span id="v9" class="sponsor-name">小弑</span> 
+      <span id="v10" class="sponsor-level level-platinum">赞助技术</span> 
+     </div> 
+    </div> 
+    <div id="v11" class="sponsor-card"> 
+     <div id="v12" class="sponsor-info"> 
+      <span id="v13" class="sponsor-name">初念</span> 
+      <span id="v14" class="sponsor-level level-gold">赞助UI</span> 
+     </div> 
+    </div> 
+    <div id="v15" class="sponsor-card"> 
+     <div id="v16" class="sponsor-info"> 
+      <span id="v17" class="sponsor-name">慕</span> 
+      <span id="v18" class="sponsor-level level-gold">赞助方向指导</span> 
+     </div> 
+    </div> 
+    <div id="v19" class="sponsor-card"> 
+     <div id="v20" class="sponsor-info"> 
+      <span id="v21" class="sponsor-name">冰少</span> 
+      <span id="v22" class="sponsor-level level-silver">赞助模板</span> 
+     </div> 
+    </div> 
+    <div id="v23" class="sponsor-card"> 
+     <div id="v24" class="sponsor-info"> 
+      <span id="v25" class="sponsor-name">苏瑾词</span> 
+      <span id="v26" class="sponsor-level level-silver">反馈赞助</span> 
+     </div> 
+    </div> 
+    <div id="v27" class="sponsor-card"> 
+     <div id="v28" class="sponsor-info"> 
+      <span id="v29" class="sponsor-name">挽仙</span> 
+      <span id="v30" class="sponsor-level level-silver">赞助技术</span> 
+     </div> 
+    </div> 
+     </div> 
+    </div> 
+   </div> 
+  </div> 
+          <script>
+    // 断网检测+跳转核心函数
+function checkNetworkAndJump(targetUrl) {
+    const offlinePage = document.getElementById('offlinePage');
+    const offlineMessage = document.getElementById('offlineMessage');
+    if (navigator.onLine) {
+        offlinePage.style.display = 'none';
+        offlineMessage.style.display = 'none';
+        window.location.href = targetUrl;
+    } else {
+        offlinePage.style.display = 'flex';
+        offlineMessage.style.display = 'block';
+    }
+}
+
+// 监听网络状态变化
+window.addEventListener('online', function() {
+    document.getElementById('offlinePage').style.display = 'none';
+    document.getElementById('offlineMessage').style.display = 'none';
+});
+
+window.addEventListener('offline', function() {
+    document.getElementById('offlinePage').style.display = 'flex';
+    document.getElementById('offlineMessage').style.display = 'block';
+});
+    </script>  
+ </body>
+</html>

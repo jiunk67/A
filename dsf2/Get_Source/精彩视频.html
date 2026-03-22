@@ -1,0 +1,295 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>TERMINAL_TRUE_COLOR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;700&display=swap');
+        
+        body {
+            background-color: #000;
+            color: #00f3ff; 
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        /* 极简点状背景 */
+        .bg-dots {
+            background-image: radial-gradient(rgba(0, 243, 255, 0.15) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        /* 极细扫描线 (降低不透明度，不遮挡画面) */
+        .scanner {
+            position: fixed;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 243, 255, 0.03), transparent);
+            z-index: 60;
+            pointer-events: none;
+            animation: scan 6s linear infinite;
+        }
+        @keyframes scan { 0% { top: -100%; } 100% { top: 100%; } }
+
+        /* HUD 装饰角 */
+        .hud-corner {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border: 1px solid rgba(0, 243, 255, 0.5);
+        }
+
+        /* 分段能量槽进度条 */
+        .segmented-progress {
+            display: flex;
+            gap: 4px;
+            position: fixed;
+            bottom: env(safe-area-inset-bottom);
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            z-index: 100;
+            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+        }
+        .segment {
+            height: 4px;
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1px;
+        }
+        .segment.active { background: #00f3ff; box-shadow: 0 0 8px #00f3ff; }
+
+        /* 几何裁切按钮 */
+        .sci-btn {
+            width: 52px;
+            height: 52px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 243, 255, 0.4);
+            clip-path: polygon(15% 0, 100% 0, 100% 85%, 85% 100%, 0 100%, 0 15%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            transition: all 0.2s;
+        }
+        .sci-btn.active { background: #00f3ff; color: #000; box-shadow: 0 0 15px #00f3ff; }
+
+        /* 还原视频色彩：删除了色相旋转滤镜 */
+        video { background: #000; } 
+        .swiper-v { width: 100%; height: 100vh; }
+    </style>
+</head>
+<body class="bg-dots">
+
+<div id="app" class="relative h-screen w-full flex flex-col select-none">
+    
+    <!-- 扫描线特效 -->
+    <div class="scanner"></div>
+
+    <!-- 顶部 HUD 状态栏 -->
+    <header class="fixed top-0 left-0 w-full z-50 px-6 pt-[env(safe-area-inset-top)] flex justify-between pointer-events-none mt-3">
+        <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></span>
+                <span class="text-[12px] font-bold tracking-widest">LIVE_FEED_01</span>
+            </div>
+            <span class="text-[8px] opacity-40 font-mono">CODEC: H.264 // ENCRYPTED</span>
+        </div>
+        <div class="text-right font-mono">
+            <div class="text-[12px] font-bold">{{ state.currentTime }}</div>
+            <div class="text-[8px] opacity-40 italic">STABLE_CONNECTION</div>
+        </div>
+    </header>
+
+    <!-- 视频流 -->
+    <div class="swiper swiper-v">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide bg-black relative" v-for="(item, index) in videoList" :key="item.id">
+                
+                <!-- 视频核心 (色彩已还原) -->
+                <video 
+                    :id="'v-' + index"
+                    class="w-full h-full object-contain"
+                    :src="item.url"
+                    loop
+                    playsinline
+                    @click="onVideoTap($event, index)"
+                ></video>
+
+                <!-- 边角装饰 -->
+                <div class="absolute inset-0 pointer-events-none p-4">
+                    <div class="hud-corner top-0 left-0 border-r-0 border-b-0"></div>
+                    <div class="hud-corner top-0 right-0 border-l-0 border-b-0"></div>
+                    <div class="hud-corner bottom-0 left-0 border-r-0 border-t-0"></div>
+                    <div class="hud-corner bottom-0 right-0 border-l-0 border-t-0"></div>
+                </div>
+
+                <!-- 侧边交互 -->
+                <div class="absolute right-6 bottom-28 flex flex-col gap-5 z-40">
+                    <div class="flex flex-col items-center">
+                        <button @click.stop="toggleLike(index)" class="sci-btn" :class="{'active': item.isLiked}">
+                            <i class="ph-bold ph-heart text-2xl"></i>
+                        </button>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <button @click.stop="state.autoNext = !state.autoNext" class="sci-btn" :class="{'active': state.autoNext}">
+                            <i class="ph-bold ph-lightning text-2xl"></i>
+                        </button>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <button @click.stop="pip(index)" class="sci-btn">
+                            <i class="ph-bold ph-app-window text-2xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 底部信息 -->
+                <div class="absolute left-8 bottom-16 z-40 pointer-events-none">
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="h-4 w-1 bg-cyan-400"></div>
+                        <h2 class="text-lg font-black italic tracking-widest text-white drop-shadow-lg">@{{ item.author }}</h2>
+                    </div>
+                    <div class="text-[10px] text-cyan-100/70 bg-black/40 px-3 py-1 inline-block border-l border-cyan-500/50 backdrop-blur-md">
+                        {{ item.desc }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 能量槽进度条 -->
+    <div class="segmented-progress">
+        <div v-for="i in 15" :key="i" class="segment" 
+             :class="{active: (state.progress / 6.6) >= i-1}"></div>
+    </div>
+
+    <!-- 加速提示层 -->
+    <div id="speed-overlay" class="fixed inset-0 z-50 pointer-events-none opacity-0 flex items-center justify-center">
+        <div class="bg-cyan-500/20 border border-cyan-400 px-6 py-2 backdrop-blur-md">
+            <div class="text-cyan-400 text-xl font-black italic">OVERCLOCK 2.0X</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const { createApp, reactive, onMounted, nextTick } = Vue;
+
+    createApp({
+        setup() {
+            const state = reactive({
+                autoNext: true,
+                progress: 0,
+                currentIndex: 0,
+                currentTime: '',
+            });
+
+            const videoList = reactive([]);
+            let swiper = null;
+
+            const updateTime = () => {
+                const now = new Date();
+                state.currentTime = now.getHours().toString().padStart(2,'0') + ":" + 
+                                   now.getMinutes().toString().padStart(2,'0') + ":" + 
+                                   now.getSeconds().toString().padStart(2,'0');
+                requestAnimationFrame(updateTime);
+            };
+
+            const fetchItem = async () => {
+                try {
+                    const r = await fetch(`https://api.yujn.cn/api/baisis.php?type=video&_t=${Math.random()}`);
+                    return {
+                        id: Math.random().toString(16).substr(2, 8),
+                        url: r.url,
+                        author: 'AUTH_' + Math.floor(Math.random()*999),
+                        desc: '传输协议 102.4 // 实时视频流接收完成。',
+                        isLiked: false
+                    };
+                } catch (e) { return null; }
+            };
+
+            const loadBatch = async (n=5) => {
+                for(let i=0; i<n; i++) {
+                    const item = await fetchItem();
+                    if(item) videoList.push(item);
+                }
+                if(swiper) nextTick(() => swiper.update());
+            };
+
+            const onVideoTap = (e, index) => {
+                const v = document.getElementById(`v-${index}`);
+                if (e.detail === 2) {
+                    videoList[index].isLiked = true;
+                } else {
+                    v.paused ? v.play() : v.pause();
+                }
+            };
+
+            const pip = async (index) => {
+                const v = document.getElementById(`v-${index}`);
+                try { await v.requestPictureInPicture(); } catch(e) {}
+            };
+
+            onMounted(async () => {
+                updateTime();
+                await loadBatch(3);
+                
+                nextTick(() => {
+                    swiper = new Swiper('.swiper-v', {
+                        direction: 'vertical',
+                        speed: 400,
+                        on: {
+                            init: () => { document.getElementById('v-0').play(); },
+                            slideChange: function() {
+                                document.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+                                state.currentIndex = this.activeIndex;
+                                const v = document.getElementById(`v-${this.activeIndex}`);
+                                if(v) v.play();
+                                if(this.activeIndex >= videoList.length - 2) loadBatch(3);
+                            }
+                        }
+                    });
+
+                    setInterval(() => {
+                        const v = document.getElementById(`v-${state.currentIndex}`);
+                        if(v && v.duration) {
+                            state.progress = (v.currentTime / v.duration) * 100;
+                            if(state.autoNext && v.ended) swiper.slideNext();
+                        }
+                    }, 100);
+
+                    // 长按加速
+                    const container = document.querySelector('.swiper-v');
+                    let t;
+                    container.addEventListener('touchstart', () => {
+                        t = setTimeout(() => {
+                            const v = document.getElementById(`v-${state.currentIndex}`);
+                            if(v) { v.playbackRate = 2.0; gsap.to("#speed-overlay", { opacity: 1, duration: 0.2 }); }
+                        }, 500);
+                    });
+                    const stop = () => {
+                        clearTimeout(t);
+                        const v = document.getElementById(`v-${state.currentIndex}`);
+                        if(v) { v.playbackRate = 1.0; gsap.to("#speed-overlay", { opacity: 0, duration: 0.2 }); }
+                    };
+                    container.addEventListener('touchend', stop);
+                });
+            });
+
+            return { state, videoList, onVideoTap, toggleLike: (i)=>videoList[i].isLiked=!videoList[i].isLiked, pip };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>

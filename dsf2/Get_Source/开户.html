@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>身份证模板生成器 - 专业版</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "SimSun", sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        header h1 {
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+        .id-preview {
+            flex: 0 0 520px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+        }
+        .id-card {
+            width: 100%;
+            height: 380px; /* 高度增加到380px以容纳更多内容 */
+            background: white;
+            border-radius: 10px;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+        .id-left {
+            width: 38%;
+            padding: 15px;
+            border-right: 1px dashed #ccc;
+            position: relative;
+        }
+        .police-badge {
+            width: 85px;
+            height: 85px;
+            background: linear-gradient(to bottom, #1d4ba1, #0c2a6d);
+            border-radius: 50%;
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .police-badge::before {
+            content: "★";
+            color: white;
+            font-size: 42px;
+            margin-top: 3px;
+        }
+        .police-text {
+            position: absolute;
+            top: 103px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            color: #0c2a6d;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .photo-container {
+            position: absolute;
+            top: 145px; /* 调整照片位置 */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 150px;
+            background-color: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e0e0e0;
+        }
+        .person-photo {
+            max-width: 95%;
+            max-height: 95%;
+            display: none;
+        }
+        .photo-placeholder {
+            color: #999;
+            text-align: center;
+            font-size: 14px;
+        }
+        .id-right {
+            width: 62%; /* 增加右侧宽度比例 */
+            padding: 25px 20px 30px; /* 增加底部内边距 */
+            position: relative;
+        }
+        .id-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0c2a6d;
+            text-align: center;
+            letter-spacing: 3px;
+            margin-bottom: 15px; /* 减少间距为信息腾出空间 */
+        }
+        .id-info {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 8px 5px; /* 减小行间距增加行数 */
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .label {
+            font-weight: bold;
+            color: #0c2a6d;
+            align-self: start;
+        }
+        .info {
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .address {
+            white-space: normal; /* 地址允许多行显示 */
+            line-height: 1.4; /* 增加行高便于阅读 */
+        }
+        .id-number {
+            letter-spacing: 1.5px;
+            font-family: monospace;
+        }
+        .id-footer {
+            position: absolute;
+            bottom: 10px; /* 调整位置 */
+            right: 20px;
+            text-align: right;
+            font-size: 13px;
+            color: #555;
+        }
+        .controls {
+            flex: 1;
+            min-width: 350px;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #1a3a7c;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #1d4ba1;
+            box-shadow: 0 0 5px rgba(29, 75, 161, 0.3);
+        }
+        .btn {
+            padding: 13px 25px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            width: 100%;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .btn-generate {
+            background: linear-gradient(to bottom, #1d4ba1, #0c2a6d);
+        }
+        .btn-generate:hover {
+            background: linear-gradient(to bottom, #2a5bc5, #153994);
+        }
+        .btn-save {
+            background: linear-gradient(to bottom, #28a745, #1e7e34);
+        }
+        .btn-save:hover {
+            background: linear-gradient(to bottom, #34d058, #28a745);
+        }
+        .btn-reset {
+            background: linear-gradient(to bottom, #6c757d, #495057);
+        }
+        .btn-reset:hover {
+            background: linear-gradient(to bottom, #868e96, #6c757d);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .age-hint {
+            font-size: 14px;
+            color: #666;
+            margin-top: 8px;
+            padding: 5px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .current-year {
+            color: #d9534f;
+            font-weight: bold;
+        }
+        .photo-controls {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        .credit {
+            text-align: center;
+            margin-top: 30px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+        .save-section {
+            background: #e9f5ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            border: 1px dashed #1d4ba1;
+        }
+        @media (max-width: 850px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            .id-preview {
+                flex-basis: auto;
+                width: 100%;
+                max-width: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>身份证模板生成器 - 专业版</h1>
+            <p>支持全信息编辑、照片上传和生成保存功能</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="id-preview">
+                <div class="id-card">
+                    <div class="id-left">
+                        <div class="police-badge"></div>
+                        <div class="police-text">公安机关签发专用章</div>
+                        <div class="photo-container">
+                            <div class="photo-placeholder">上传个人照片</div>
+                            <img id="previewPhoto" class="person-photo" alt="个人照片">
+                        </div>
+                    </div>
+                    <div class="id-right">
+                        <div class="id-title">中华人民共和国居民身份证</div>
+                        <div class="id-info">
+                            <div class="label">姓名</div>
+                            <div id="previewName" class="info">陈驿芳</div>
+                            
+                            <div class="label">性别</div>
+                            <div id="previewGender" class="info">女</div>
+                            
+                            <div class="label">民族</div>
+                            <div id="previewEthnic" class="info">汉</div>
+                            
+                            <div class="label">出生日期</div>
+                            <div id="previewBirth" class="info">2007年02月15日</div>
+                            
+                            <div class="label">身份证号</div>
+                            <div id="previewIdNumber" class="info id-number">500101200702154023</div>
+                            
+                            <div class="label">住址</div>
+                            <div id="previewAddress" class="info address">重庆市渝北区龙溪街道金龙路121号嘉州协信中心B栋15-2</div>
+                        </div>
+                        <div class="id-footer">
+                            <div>PLC公安部全国人口信息库</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="photo-controls">
+                    <h3>上传个人照片</h3>
+                    <input type="file" id="photoUpload" accept="image/*" class="form-control">
+                    <button id="resetPhoto" class="btn btn-reset">移除照片</button>
+                </div>
+                
+                <form id="idForm">
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" class="form-control" placeholder="请输入姓名" value="陈驿芳">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="gender">性别</label>
+                        <select id="gender" class="form-control">
+                            <option value="男">男</option>
+                            <option value="女" selected>女</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ethnic">民族</label>
+                        <input type="text" id="ethnic" class="form-control" placeholder="请输入民族" value="汉">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="birth">出生日期</label>
+                        <input type="date" id="birth" class="form-control" value="2007-02-15">
+                        <div class="age-hint">当前年龄: <span id="currentAge" class="current-year">17</span> 岁</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="idNumber">身份证号码</label>
+                        <input type="text" id="idNumber" class="form-control" placeholder="请输入18位身份证号" 
+                               maxlength="18" value="500101200702154023">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">住址</label>
+                        <textarea id="address" class="form-control" rows="2" placeholder="请输入详细住址">重庆市渝北区龙溪街道金龙路121号嘉州协信中心B栋15-2</textarea>
+                    </div>
+                    
+                    <button type="button" id="generateBtn" class="btn btn-generate">更新身份证信息</button>
+                    <button type="button" id="resetBtn" class="btn btn-reset">重置为原始数据</button>
+                    
+                    <div class="save-section">
+                        <h3>保存身份证图片</h3>
+                        <button type="button" id="saveBtn" class="btn btn-save">保存为高清图片</button>
+                        <p>点击按钮可将生成的身份证保存为PNG格式图片</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="credit">
+            注：此工具仅用于学习与设计目的，请勿用于非法用途
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const nameInput = document.getElementById('name');
+            const genderInput = document.getElementById('gender');
+            const ethnicInput = document.getElementById('ethnic');
+            const birthInput = document.getElementById('birth');
+            const idNumberInput = document.getElementById('idNumber');
+            const addressInput = document.getElementById('address');
+            const generateBtn = document.getElementById('generateBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const photoUpload = document.getElementById('photoUpload');
+            const resetPhotoBtn = document.getElementById('resetPhoto');
+            const previewPhoto = document.getElementById('previewPhoto');
+            const saveBtn = document.getElementById('saveBtn');
+            
+            // 预览元素
+            const previewName = document.getElementById('previewName');
+            const previewGender = document.getElementById('previewGender');
+            const previewEthnic = document.getElementById('previewEthnic');
+            const previewBirth = document.getElementById('previewBirth');
+            const previewIdNumber = document.getElementById('previewIdNumber');
+            const previewAddress = document.getElementById('previewAddress');
+            const currentAge = document.getElementById('currentAge');
+            
+            // 更新年龄计算
+            function updateAge() {
+                const birthDate = new Date(birthInput.value);
+                const today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                
+                currentAge.textContent = age;
+            }
+            
+            // 初始化显示
+            updateAge();
+            
+            // 更新预览信息
+            function updatePreview() {
+                previewName.textContent = nameInput.value;
+                previewGender.textContent = genderInput.value;
+                previewEthnic.textContent = ethnicInput.value;
+                
+                // 格式化日期显示
+                const birthDate = new Date(birthInput.value);
+                const year = birthDate.getFullYear();
+                const month = (birthDate.getMonth() + 1).toString().padStart(2, '0');
+                const day = birthDate.getDate().toString().padStart(2, '0');
+                previewBirth.textContent = `${year}年${month}月${day}日`;
+                
+                previewIdNumber.textContent = idNumberInput.value;
+                previewAddress.textContent = addressInput.value;
+                
+                updateAge();
+            }
+            
+            // 表单实时更新预览
+            const inputs = [nameInput, genderInput, ethnicInput, birthInput, idNumberInput, addressInput];
+            inputs.forEach(input => {
+                input.addEventListener('input', updatePreview);
+            });
+            
+            // 生成按钮点击事件
+            generateBtn.addEventListener('click', updatePreview);
+            
+            // 重置按钮事件
+            resetBtn.addEventListener('click', function() {
+                nameInput.value = '陈驿芳';
+                genderInput.value = '女';
+                ethnicInput.value = '汉';
+                birthInput.value = '2007-02-15';
+                idNumberInput.value = '500101200702154023';
+                addressInput.value = '重庆市渝北区龙溪街道金龙路121号嘉州协信中心B栋15-2';
+                updatePreview();
+                
+                // 重置照片
+                previewPhoto.style.display = 'none';
+                document.querySelector('.photo-placeholder').style.display = 'block';
+                photoUpload.value = '';
+            });
+            
+            // 出生日期更改时更新年龄
+            birthInput.addEventListener('change', updateAge);
+            
+            // 照片上传功能
+            photoUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        previewPhoto.src = event.target.result;
+                        previewPhoto.style.display = 'block';
+                        document.querySelector('.photo-placeholder').style.display = 'none';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // 移除照片
+            resetPhotoBtn.addEventListener('click', function() {
+                previewPhoto.src = '';
+                previewPhoto.style.display = 'none';
+                document.querySelector('.photo-placeholder').style.display = 'block';
+                photoUpload.value = '';
+            });
+            
+            // 保存为图片功能
+            saveBtn.addEventListener('click', function() {
+                // 显示保存提示
+                const originalText = saveBtn.textContent;
+                saveBtn.textContent = '生成中...';
+                saveBtn.disabled = true;
+                
+                html2canvas(document.querySelector('.id-card'), {
+                    scale: 2, // 提高清晰度
+                    allowTaint: true,
+                    useCORS: true,
+                    backgroundColor: "#FFFFFF",
+                    logging: false,
+                }).then(canvas => {
+                    // 转换为图片URL
+                    const imgData = canvas.toDataURL('image/png');
+                    
+                    // 创建下载链接
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = imgData;
+                    downloadLink.download = `身份证_${nameInput.value || '未命名'}.png`;
+                    
+                    // 触发下载
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                    
+                    // 恢复按钮状态
+                    saveBtn.textContent = originalText;
+                    saveBtn.disabled = false;
+                }).catch(err => {
+                    console.error('保存错误:', err);
+                    alert('保存失败，请重试或检查浏览器支持');
+                    saveBtn.textContent = originalText;
+                    saveBtn.disabled = false;
+                });
+            });
+            
+            // 初始化预览
+            updatePreview();
+        });
+    </script>
+</body>
+</html>

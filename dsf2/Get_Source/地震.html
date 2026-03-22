@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全球地震统计</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #earthquakeData {
+            margin-top: 20px;
+        }
+
+        #earthquakeData p {
+            margin: 5px 0;
+        }
+
+        #countdown {
+            font-size: 18px;
+            color: #ff0000;
+            margin-top: 10px;
+        }
+
+        .earthquake-item {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .earthquake-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>全球地震统计</h1>
+        <div id="earthquakeData">
+            <h2>最近5次地震信息</h2>
+        </div>
+        <div id="countdown">下次刷新：15秒</div>
+    </div>
+    <script>
+        let countdownElement = document.getElementById('countdown');
+        let countdownInterval;
+        let countdownTime = 15;
+
+        function updateCountdown() {
+            countdownElement.textContent = `下次刷新：${countdownTime}秒`;
+            countdownTime--;
+            if (countdownTime < 0) {
+                clearInterval(countdownInterval);
+                fetchEarthquakeData();
+                countdownTime = 15;
+                startCountdown();
+            }
+        }
+
+        function startCountdown() {
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        function fetchEarthquakeData() {
+            const apiUrl = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson';
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const features = data.features.slice(0, 5);
+                    const earthquakeDataDiv = document.getElementById('earthquakeData');
+                    earthquakeDataDiv.innerHTML = '<h2>最近5次地震信息</h2>';
+
+                    features.forEach((earthquake, index) => {
+                        const properties = earthquake.properties;
+                        const earthquakeItem = document.createElement('div');
+                        earthquakeItem.className = 'earthquake-item';
+                        earthquakeItem.innerHTML = `
+                            <p><strong>震级：</strong>${properties.mag}</p>
+                            <p><strong>位置：</strong>${properties.place}</p>
+                            <p><strong>时间：</strong>${new Date(properties.time).toLocaleString()}</p>
+                        `;
+                        earthquakeDataDiv.appendChild(earthquakeItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching earthquake data:', error);
+                    const earthquakeDataDiv = document.getElementById('earthquakeData');
+                    earthquakeDataDiv.innerHTML = '<h2>最近5次地震信息</h2><p>加载失败，请稍后再试。</p>';
+                });
+        }
+
+        fetchEarthquakeData();
+        startCountdown();
+    </script>
+</body>
+</html>

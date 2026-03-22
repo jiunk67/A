@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>✨ 百工软仓</title>
+  <style id="theme-style">
+    :root {
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #212529;
+      --border: #e0e0e0;
+      --hover: #e9ecef;
+      --accent: #4361ee;
+      --shadow: rgba(0,0,0,0.08);
+    }
+
+    .dark-mode {
+      --bg: #121212;
+      --card-bg: #1e1e1e;
+      --text: #f0f0f0;
+      --border: #333;
+      --hover: #2a2a2a;
+      --accent: #4cc9f0;
+      --shadow: rgba(0,0,0,0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      transition: background 0.4s, color 0.4s;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 2.6em;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, var(--accent), #7209b7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      color: var(--text);
+      opacity: 0.8;
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .btn-control {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.2s;
+    }
+
+    .btn-control:hover {
+      background: var(--hover);
+    }
+
+    .category-section {
+      max-width: 1200px;
+      margin: 0 auto 30px;
+      padding: 0 20px;
+    }
+
+    .category-title {
+      font-size: 1.3em;
+      margin: 25px 0 15px;
+      padding-left: 12px;
+      border-left: 4px solid var(--accent);
+      color: var(--text);
+    }
+
+    .buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+    }
+
+    .tool-btn-h4 {
+      margin: 0;
+      padding: 14px 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      overflow: hidden;
+      box-shadow: 0 4px 12px var(--shadow);
+      position: relative;
+    }
+
+    .tool-btn-h4:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 6px 16px var(--shadow);
+    }
+
+    .tool-btn-h4::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(67, 97, 238, 0.1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .tool-btn-h4:active::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    .tool-btn-link {
+      color: var(--text);
+      font-size: 0.92em;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text);
+      opacity: 0.7;
+      font-size: 0.85em;
+    }
+
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 1.5s ease-out;
+      overflow: hidden;
+    }
+    
+    .splash-screen:fullscreen {
+      width: 100vw !important;
+      height: 100vh !important;
+      background: #000 !important;
+    }
+    
+    .splash-screen:-webkit-full-screen {
+      width: 100vw !important;
+      height: 100vh !important;
+      background: #000 !important;
+    }
+    
+    .splash-screen:-moz-full-screen {
+      width: 100vw !important;
+      height: 100vh !important;
+      background: #000 !important;
+    }
+    
+    .splash-screen:-ms-fullscreen {
+      width: 100vw !important;
+      height: 100vh !important;
+      background: #000 !important;
+    }
+
+    .splash-video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9998;
+      background: #000;
+    }
+    
+    .splash-video:fullscreen {
+      width: 100vw !important;
+      height: 100vh !important;
+      object-fit: cover !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      background: #000 !important;
+    }
+    
+    .splash-video:-webkit-full-screen {
+      width: 100vw !important;
+      height: 100vh !important;
+      object-fit: cover !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      background: #000 !important;
+    }
+    
+    .splash-video:-moz-full-screen {
+      width: 100vw !important;
+      height: 100vh !important;
+      object-fit: cover !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      background: #000 !important;
+    }
+    
+    .splash-video:-ms-fullscreen {
+      width: 100vw !important;
+      height: 100vh !important;
+      object-fit: cover !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      background: #000 !important;
+    }
+
+    .skip-button {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.8);
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+
+    .skip-button:hover {
+      background: rgba(0,0,0,0.8);
+      border-color: rgba(255,255,255,1);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    }
+
+    .splash-fade-out {
+      opacity: 0 !important;
+      pointer-events: none;
+    }
+
+    .delayed-content {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease-in, visibility 0.5s ease-in;
+    }
+
+    .delayed-content.loaded {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+  <div class="splash-screen" id="splashScreen">
+    <video class="splash-video" id="splashVideo" autoplay muted playsinline>
+      <source src="开屏.mp4" type="video/mp4">
+      您的浏览器不支持视频播放。
+    </video>
+    <button class="skip-button" id="skipButton">跳过</button>
+  </div>
+
+  <div class="delayed-content" id="mainContent">
+    <div id="particles-js"></div>
+
+    <header>
+      <h1>百工软仓</h1>
+      <p class="subtitle">超多实用功能 · 一键直达</p>
+      <div class="controls">
+        <button class="btn-control" id="theme-toggle">🌙 深色模式</button>
+      </div>
+    </header>
+  
+
+
+
+  <div class="category-section">
+    <h2 class="category-title">iapp</h2>
+    <div class="buttons-grid">
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882xush">iapp破解版</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882xush">iapp混淆</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="CtrlrOS.html">CtrlrOS</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="手机端Web应用构建器.html">手机端Web应用构建器</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="爱奇艺 - 爱奇艺风格.html">爱奇艺 - 爱奇艺风格</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="顶级高仿windows10桌面_0/index.html"></a>windows10桌面</h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="射了么_0/index.html">射了么</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="二维码生成器.html"></a>二维码生成器</h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="卡卡大王.html">卡卡大王</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="计算器.html"></a>计算器</h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="美食大转盘.html">美食大转盘</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="原子移动解压网站.html"></a>原子移动解压网站</h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="筑梦浏览器.html">筑梦浏览器</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="摇一摇.html"></a>摇一摇</h4>
+    </div>
+  </div>
+
+  <div class="category-section">
+    <h2 class="category-title">连点器</h2>
+    <div class="buttons-grid">
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882o9uj">各类连点器</a></h4>
+      <h4 id="v66-139" class="tool-btn-h4"><a id="v67-139" class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882o9uj">暂无</a></h4>
+    </div>
+  </div>
+
+  <div class="category-section">
+    <h2 class="category-title">源码大全</h2>
+    <div class="buttons-grid">
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882oaje">iapp源码</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882oaje">webcat源码</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882oaje">各类源码</a></h4>
+    </div>
+  </div>
+    <div class="category-section">
+    <h2 class="category-title">公益api</h2>
+    <div class="buttons-grid">
+    <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://xxapi.cn/">小小api</a></h4>
+    <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://api.52vmy.cn/">维梦api</a></h4>
+    <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://apii.52vmy.cn/">小维api</a></h4>
+    <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://uapis.cn/">UAPI</a></h4>
+    </div>
+  </div>
+
+  <div class="category-section">
+    <h2 class="category-title">各类加固</h2>
+    <div class="buttons-grid">
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://sc.pingcode.com/dun">网易易盾</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://dev.bangcle.com/">梆梆安全</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://nagain.com/">娜迦信息科技</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://tianyu.360.cn">三六零天御</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.fair-guard.com">FairGuard</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.ijiami.cn/">爱加密</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="http://www.gzmcrown.com/">铭冠网安</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.qcloud.com/product/cr">腾讯乐固</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.neusoft.com/cn">东软集团</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.irzhd.com/">锐智互动</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.uguardsec.com">天磊卫士</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.dingxiang-inc.com/business/iot">顶象加固</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.testin.cn">Testin云测</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.rising.com.cn/">瑞星</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.tongfudun.com">通付盾</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.secidea.com">海云安</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.kiwisec.com">几维安全</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://apkprotect.baidu.com/login.html">百度加固</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.sangfor.com.cn/">深信服</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://www.infosec.com.cn/">信安世纪</a></h4>
+    </div>
+  </div>
+  <div id="tools-container">
+    <div class="category-section">
+      <h2 class="category-title">安卓逆向</h2>
+      <div class="buttons-grid">
+      <h4 id="v66-139" class="tool-btn-h4"><a id="v67-139" class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882oijc">逆向思维</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882oijc">脱壳网站</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882oijc">逆向工具</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882oijc">去签工具</a></h4>
+      </div>
+    </div>
+    <div id="tools-container">
+    <div class="category-section">
+      <h2 class="category-title">开发工具</h2>
+      <div class="buttons-grid">
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882o9uj">开发工具</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882o9uj">代码编辑器</a></h4>
+      </div>
+    </div>
+
+  <div class="category-section">
+    <h2 class="category-title">软件库</h2>
+    <div class="buttons-grid">
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882o9uj">MT管理器</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882oa6b">锁机生成器</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882y7kh">hook工具</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882o9uj">迅雷永久vip</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882o9qf">游戏框架</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882o9uj">定制V</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882o9uj">chatGTP无限使用</a></h4>
+      <h4 class="tool-btn-h4"><a class="tool-btn-link" href="https://wwaxd.lanzout.com/b01882o9uj">小x分身破解版</a></h4>
+    </div>
+  </div>
+
+    <footer>
+      © 明月软件库版权所有 百工软仓
+    </footer>
+  </div>
+
+  <div id="music" api="https://y.tgwo.cn"></div>
+  
+  <script>
+    const splashScreen = document.getElementById('splashScreen');
+    const splashVideo = document.getElementById('splashVideo');
+    const skipButton = document.getElementById('skipButton');
+    const mainContent = document.getElementById('mainContent');
+    
+    const isFirstVisit = !sessionStorage.getItem('hasVisited');
+    
+    if (!isFirstVisit) {
+      splashScreen.style.display = 'none';
+      loadMainContent();
+    } else {
+      sessionStorage.setItem('hasVisited', 'true');
+      
+      requestFullscreenVideo();
+      
+      splashVideo.addEventListener('ended', () => {
+        hideSplashAndLoadContent();
+      });
+      
+      splashVideo.addEventListener('error', () => {
+        console.log('视频加载失败，将在3秒后自动跳过');
+        setTimeout(() => {
+          hideSplashAndLoadContent();
+        }, 3000);
+      });
+      
+      skipButton.addEventListener('click', () => {
+        hideSplashAndLoadContent();
+      });
+      
+      document.addEventListener('keydown', (e) => {
+        if ((e.code === 'Space' || e.code === 'Escape') && !splashScreen.classList.contains('splash-fade-out')) {
+          e.preventDefault();
+          hideSplashAndLoadContent();
+        }
+      });
+    }
+    
+    function requestFullscreenVideo() {
+      splashVideo.playsInline = false;
+      splashVideo.setAttribute('playsinline', 'false');
+      splashVideo.webkitPlaysInline = false;
+      splashVideo.setAttribute('webkit-playsinline', 'false');
+      
+      splashVideo.controls = false;
+      splashVideo.removeAttribute('controls');
+      
+      const videoContainer = splashScreen;
+      
+      const enterFullscreen = () => {
+        if (videoContainer.requestFullscreen) {
+          videoContainer.requestFullscreen({ navigationUI: 'hide' });
+        } else if (videoContainer.webkitRequestFullscreen) { /* Safari */
+          videoContainer.webkitRequestFullscreen({ navigationUI: 'hide' });
+        } else if (videoContainer.msRequestFullscreen) { /* IE11 */
+          videoContainer.msRequestFullscreen();
+        } else if (videoContainer.mozRequestFullScreen) { /* Firefox */
+          videoContainer.mozRequestFullScreen({ navigationUI: 'hide' });
+        }
+      };
+      
+      setTimeout(enterFullscreen, 100);
+      
+      const playPromise = splashVideo.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log('自动播放失败，可能需要用户交互:', error);
+          // 如果自动播放失败，添加点击提示
+          showPlayPrompt();
+        });
+      }
+    }
+    
+    function showPlayPrompt() {
+      const prompt = document.createElement('div');
+      prompt.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        font-size: 18px;
+        z-index: 10001;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+      `;
+      prompt.innerHTML = '点击任意位置开始播放';
+      prompt.onclick = () => {
+        splashVideo.play();
+        prompt.remove();
+        requestFullscreenVideo();
+      };
+      splashScreen.appendChild(prompt);
+    }
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    
+    function handleFullscreenChange() {
+      const isFullscreen = document.fullscreenElement || 
+                          document.webkitFullscreenElement || 
+                          document.mozFullScreenElement ||
+                          document.msFullscreenElement;
+      
+      if (!isFullscreen && isFirstVisit && !splashScreen.classList.contains('splash-fade-out')) {
+        const retryFullscreen = confirm('是否继续全屏播放？');
+        if (retryFullscreen) {
+          setTimeout(() => {
+            requestFullscreenVideo();
+          }, 100);
+        }
+      }
+    }
+    
+    if ('ontouchstart' in window) {
+      let tapCount = 0;
+      splashVideo.addEventListener('touchend', (e) => {
+        tapCount++;
+        if (tapCount === 2) {
+          e.preventDefault();
+          requestFullscreenVideo();
+          tapCount = 0;
+        }
+        setTimeout(() => {
+          tapCount = 0;
+        }, 300);
+      });
+    }
+    
+    splashScreen.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      return false;
+    });
+    
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && isFirstVisit && !splashScreen.classList.contains('splash-fade-out')) {
+        splashVideo.pause();
+      } else if (!document.hidden && isFirstVisit && !splashScreen.classList.contains('splash-fade-out')) {
+        splashVideo.play().catch(error => {
+          console.log('恢复播放失败:', error);
+        });
+      }
+    });
+    
+    function hideSplashAndLoadContent() {
+      if (splashScreen.classList.contains('splash-fade-out')) return;
+      
+      splashScreen.classList.add('splash-fade-out');
+      
+      loadMainContent();
+      
+      setTimeout(() => {
+        splashScreen.style.display = 'none';
+      }, 1500);
+    }
+    
+    function loadMainContent() {
+      mainContent.classList.add('loaded');
+      
+      setTimeout(() => {
+        const particlesScript = document.createElement('script');
+        particlesScript.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
+        particlesScript.onload = initParticles;
+        document.head.appendChild(particlesScript);
+        
+        const jqueryScript = document.createElement('script');
+        jqueryScript.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
+        document.head.appendChild(jqueryScript);
+        
+        const musicScript = document.createElement('script');
+        musicScript.id = 'xplayer';
+        musicScript.src = 'https://y.tgwo.cn/api/PlayerJs/id/68ddc835b6168';
+        document.head.appendChild(musicScript);
+      }, 500);
+    }
+    
+    function initParticles() {
+      if (typeof particlesJS !== 'undefined') {
+        particlesJS('particles-js', {
+          particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: "#4361ee" },
+            shape: { type: "circle" },
+            opacity: { value: 0.5, random: true },
+            size: { value: 3, random: true },
+            line_linked: {
+              enable: true,
+              distance: 150,
+              color: "#4cc9f0",
+              opacity: 0.4,
+              width: 1
+            },
+            move: {
+              enable: true,
+              speed: 2,
+              direction: "none",
+              random: true,
+              straight: false,
+              out_mode: "out",
+              bounce: false
+            }
+          },
+          interactivity: {
+            detect_on: "canvas",
+            events: {
+              onhover: { enable: true, mode: "repulse" },
+              onclick: { enable: true, mode: "push" },
+              resize: true
+            }
+          },
+          retina_detect: true
+        });
+      }
+    }
+    
+    const themeToggle = document.getElementById('theme-toggle');
+    const isDark = localStorage.getItem('theme') === 'dark';
+    if (isDark) {
+      document.body.classList.add('dark-mode');
+      themeToggle.textContent = '☀️ 浅色模式';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isNowDark = document.body.classList.contains('dark-mode');
+      localStorage.setItem('theme', isNowDark ? 'dark' : 'light');
+      themeToggle.textContent = isNowDark ? '☀️ 浅色模式' : '🌙 深色模式';
+    });
+  </script>
+</body>
+</html>

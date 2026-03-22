@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            padding: 20px;
+        }
+        
+        .calculator {
+            width: 350px;
+            background: #222;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 4px solid #444;
+            position: relative;
+        }
+        
+        .crt-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 4px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .display {
+            background: #1a1a1a;
+            padding: 25px 20px;
+            text-align: right;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid #333;
+        }
+        
+        .previous-operand {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+            min-height: 24px;
+            overflow: hidden;
+        }
+        
+        .current-operand {
+            color: #0f0;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-top: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #0f0;
+        }
+        
+        .glitch {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+            padding: 20px;
+        }
+        
+        button {
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 15px 0;
+            border-radius: 10px;
+            background: #444;
+            color: white;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #555;
+            transform: translateY(-3px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .operator {
+            background: #ff9500;
+        }
+        
+        .equals {
+            background: #ff2d55;
+            grid-column: span 2;
+        }
+        
+        .clear, .backspace {
+            background: #ff3b30;
+        }
+        
+        .special {
+            background: #5e5ce6;
+        }
+        
+        .title {
+            text-align: center;
+            color: white;
+            padding: 15px;
+            font-size: 1.8rem;
+            background: rgba(0, 0, 0, 0.3);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #444;
+            position: relative;
+        }
+        
+        .title::after {
+            content: "非常智障版";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: #ff2d55;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+        
+        .rules {
+            color: #aaa;
+            font-size: 0.9rem;
+            padding: 0 20px 20px;
+            text-align: center;
+        }
+        
+        .rules span {
+            color: #ff2d55;
+            font-weight: bold;
+        }
+        
+        /* 故障效果 */
+        @keyframes glitch-anim {
+            0% { transform: translate(0); }
+            20% { transform: translate(-5px, 5px); }
+            40% { transform: translate(-5px, -5px); }
+            60% { transform: translate(5px, 5px); }
+            80% { transform: translate(5px, -5px); }
+            100% { transform: translate(0); }
+        }
+        
+        .glitch-effect {
+            animation: glitch-anim 0.3s linear;
+        }
+        
+        .screen-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        @keyframes shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-4px); }
+            40%, 60% { transform: translateX(4px); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 400px) {
+            .calculator {
+                width: 100%;
+            }
+            
+            button {
+                font-size: 1.2rem;
+                padding: 12px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="crt-effect"></div>
+        <div class="title">计算器</div>
+        <div class="display">
+            <div class="previous-operand"></div>
+            <div class="current-operand">0</div>
+            <div class="glitch"></div>
+        </div>
+        <div class="rules">规则：<span></span> | <span></span> | <span></span></div>
+        <div class="buttons">
+            <button class="clear">C</button>
+            <button class="backspace">⌫</button>
+            <button class="operator">÷</button>
+            <button class="operator">×</button>
+            
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button class="operator">-</button>
+            
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button class="operator">+</button>
+            
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button class="special">?</button>
+            
+            <button>0</button>
+            <button>.</button>
+            <button class="equals">=</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const display = document.querySelector('.current-operand');
+            const prevDisplay = document.querySelector('.previous-operand');
+            const clearBtn = document.querySelector('.clear');
+            const backspaceBtn = document.querySelector('.backspace');
+            const numberBtns = document.querySelectorAll('button:not(.operator):not(.clear):not(.backspace):not(.equals):not(.special)');
+            const operatorBtns = document.querySelectorAll('.operator');
+            const equalsBtn = document.querySelector('.equals');
+            const specialBtn = document.querySelector('.special');
+            const glitch = document.querySelector('.glitch');
+            const calculator = document.querySelector('.calculator');
+            
+            let currentOperand = '0';
+            let previousOperand = '';
+            let operation = null;
+            let shouldResetScreen = false;
+            
+            // 更新显示
+            function updateDisplay() {
+                display.textContent = currentOperand;
+                prevDisplay.textContent = previousOperand;
+            }
+            
+            // 添加数字
+            function appendNumber(number) {
+                if (currentOperand === '0' || shouldResetScreen) {
+                    currentOperand = number;
+                    shouldResetScreen = false;
+                } else {
+                    currentOperand += number;
+                }
+                updateDisplay();
+            }
+            
+            // 添加小数点
+            function appendDecimal() {
+                if (shouldResetScreen) {
+                    currentOperand = '0.';
+                    shouldResetScreen = false;
+                    updateDisplay();
+                    return;
+                }
+                
+                if (!currentOperand.includes('.')) {
+                    currentOperand += '.';
+                }
+                updateDisplay();
+            }
+            
+            // 选择运算符
+            function chooseOperator(op) {
+                if (previousOperand !== '') {
+                    calculate();
+                }
+                
+                operation = op;
+                previousOperand = `${currentOperand} ${getOperatorSymbol(op)}`;
+                shouldResetScreen = true;
+                updateDisplay();
+            }
+            
+            // 获取运算符符号
+            function getOperatorSymbol(op) {
+                switch(op) {
+                    case '+': return '+';
+                    case '-': return '-';
+                    case '×': return '×';
+                    case '÷': return '÷';
+                    default: return '';
+                }
+            }
+            
+            // 计算（智障版）
+            function calculate() {
+                let computation;
+                const prev = parseFloat(previousOperand);
+                const current = parseFloat(currentOperand);
+                
+                if (isNaN(prev) || isNaN(current)) return;
+                
+                // 智障计算规则
+                switch(operation) {
+                    case '+':
+                        // 个位数加法：结果加1
+                        if (prev < 10 && current < 10) {
+                            computation = prev + current + 1;
+                        } 
+                        // 两位数加法：结果变为100
+                        else if (prev >= 10 && prev < 100 && current >= 10 && current < 100) {
+                            computation = 100;
+                        }
+                        // 其他情况：结果加10
+                        else {
+                            computation = prev + current + 10;
+                        }
+                        break;
+                    case '-':
+                        // 减法：结果总是为0
+                        computation = 0;
+                        break;
+                    case '×':
+                        // 乘法：结果总是第一个操作数
+                        computation = prev;
+                        break;
+                    case '÷':
+                        // 除法：结果总是42（宇宙的答案）
+                        computation = 42;
+                        break;
+                    default:
+                        return;
+                }
+                
+                // 应用故障效果
+                applyGlitchEffect();
+                
+                // 随机结果（10%概率）
+                if (Math.random() < 0.1) {
+                    computation = Math.floor(Math.random() * 1000);
+                }
+                
+                currentOperand = computation.toString();
+                operation = null;
+                previousOperand = '';
+                shouldResetScreen = true;
+                updateDisplay();
+            }
+            
+            // 应用故障效果
+            function applyGlitchEffect() {
+                // 添加屏幕抖动效果
+                calculator.classList.add('screen-shake');
+                
+                // 添加故障效果
+                glitch.style.opacity = '0.7';
+                glitch.classList.add('glitch-effect');
+                
+                // 播放音效
+                playSound();
+                
+                // 重置效果
+                setTimeout(() => {
+                    calculator.classList.remove('screen-shake');
+                    glitch.style.opacity = '0';
+                    glitch.classList.remove('glitch-effect');
+                }, 500);
+            }
+            
+            // 播放音效
+            function playSound() {
+                try {
+                    const context = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = context.createOscillator();
+                    const gainNode = context.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(context.destination);
+                    
+                    oscillator.type = 'square';
+                    oscillator.frequency.value = 100 + Math.random() * 500;
+                    gainNode.gain.value = 0.1;
+                    
+                    oscillator.start();
+                    setTimeout(() => {
+                        oscillator.stop();
+                    }, 100);
+                } catch (e) {
+                    // 浏览器不支持Web Audio API
+                }
+            }
+            
+            // 特殊按钮（随机操作）
+            function specialOperation() {
+                const ops = ['+', '-', '×', '÷'];
+                const randomOp = ops[Math.floor(Math.random() * ops.length)];
+                
+                if (previousOperand === '') {
+                    previousOperand = `${currentOperand} ${getOperatorSymbol(randomOp)}`;
+                    operation = randomOp;
+                    shouldResetScreen = true;
+                } else {
+                    chooseOperator(randomOp);
+                }
+                
+                updateDisplay();
+                applyGlitchEffect();
+            }
+            
+            // 清除
+            function clear() {
+                currentOperand = '0';
+                previousOperand = '';
+                operation = null;
+                updateDisplay();
+            }
+            
+            // 退格
+            function backspace() {
+                if (currentOperand.length === 1) {
+                    currentOperand = '0';
+                } else {
+                    currentOperand = currentOperand.slice(0, -1);
+                }
+                updateDisplay();
+            }
+            
+            // 事件监听
+            clearBtn.addEventListener('click', clear);
+            
+            backspaceBtn.addEventListener('click', backspace);
+            
+            numberBtns.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (button.textContent === '.') {
+                        appendDecimal();
+                    } else {
+                        appendNumber(button.textContent);
+                    }
+                });
+            });
+            
+            operatorBtns.forEach(button => {
+                button.addEventListener('click', () => {
+                    chooseOperator(button.textContent);
+                });
+            });
+            
+            equalsBtn.addEventListener('click', calculate);
+            
+            specialBtn.addEventListener('click', specialOperation);
+            
+            // 初始化显示
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>

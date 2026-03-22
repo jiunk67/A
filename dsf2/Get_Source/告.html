@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>心动告白神器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            height: 100vh;
+            max-width: 450px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .status-bar {
+            background: #ffffff;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #666;
+            border-bottom: 1px solid #eee;
+        }
+
+        .chat-container {
+            padding: 16px;
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+            background: #f0f2f5;
+        }
+
+        .message {
+            margin: 8px 0;
+            display: flex;
+        }
+
+        .message.received {
+            justify-content: flex-start;
+        }
+
+        .message.sent {
+            justify-content: flex-end;
+        }
+
+        .bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.4;
+            position: relative;
+        }
+
+        .received .bubble {
+            background: #fff;
+            color: #333;
+        }
+
+        .sent .bubble {
+            background: #07c160;
+            color: white;
+        }
+
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 450px;
+            background: #fff;
+            padding: 12px 16px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 8px;
+        }
+
+        input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        button {
+            background: #07c160;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        button:active {
+            opacity: 0.8;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 0px;
+            color: #666;
+            display: none;
+            background: transparent;
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .love-link {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            background: #ffe6f0;
+            border-radius: 15px;
+            text-decoration: Безопасностьnone;
+            color: #e64980;
+            transition: transform 0.2s;
+        }
+
+        .love-link:hover {
+            transform: scale(1.02);
+        }
+
+        .link-item {
+            margin: 12px 0;
+            padding: 12px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .love-image {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .save-button, .recall-button, .marriage-button {
+            margin-top: 10px;
+            background: #07c160;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <span>13:14</span>
+        <div>
+            <span>📶</span>
+            <span style="margin: 0 8px;">520%</span>
+            <span>🔋</span>
+        </div>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+        <div class="message received">
+            <div class="bubble">💖输入“xxxxxx”可生成表白占卜</div>
+        </div>
+        <div class="message received">
+            <div class="bubble">💖输入“不满意”可直接逆天改命</div>
+        </div>
+        <div class="message received">
+            <div class="bubble">💖输入“伪造聊天”强制让她同意</div>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <input type="text" placeholder="输入Ta的名字..." id="nameInput" autocomplete="off">
+        <button onclick="generateBiaobai()">💌发送</button>
+    </div>
+
+    <div class="loading" id="loading">✨正在为你加载……</div>
+
+    <script>
+let lastName = '';
+
+function generateBiaobai() {
+    const name = document.getElementById('nameInput').value.trim();
+    if (!name) return;
+
+    if (name === '伪造聊天') {
+        generateFakeChat();
+        document.getElementById('nameInput').value = '';
+        return;
+    }
+
+    lastName = name;
+    generateResult(name, true);
+}
+
+function generateResult(name, includeLink = false) {
+    const loading = document.getElementById('loading');
+    const chatContainer = document.getElementById('chatContainer');
+
+    loading.style.display = 'block';
+
+    const userMessageDiv = document.createElement('div');
+    userMessageDiv.classList.add('message', 'sent');
+    userMessageDiv.innerHTML = `<div class="bubble">📝 ${name}</div>`;
+    chatContainer.appendChild(userMessageDiv);
+
+    let imageUrl, successRate, imageDiv;
+
+    if (name.toLowerCase() === '不满意') {
+        imageUrl = 'http://shp.qpic.cn/collector/1347526903/bcd33ce3-6d55-457c-a56e-9365a3954b81/0';
+        successRate = '100';
+        // 为“不满意”定制输出，不包含“制作光瓶”按钮
+        imageDiv = document.createElement('div');
+        imageDiv.classList.add('message', 'received');
+        imageDiv.innerHTML = `
+            <div class="bubble">
+                ✨ 占卜 成功率 ${successRate}%(自行添加)<br>
+                <img src="${imageUrl}" class="love-image" alt="占卜图片" data-url="${imageUrl}" onload="this.setAttribute('data-loaded', 'true')" onerror="this.nextSibling.style.display='block';this.style.display='none'">
+                <p style="display:none">未能加载图片</p>
+                <button class="save-button" onclick="saveImage(this.previousElementSibling.previousElementSibling)">保存图片</button>
+                <button class="recall-button" onclick="recallApi('${name}')">重新占卜</button>
+            </div>
+        `;
+    } else {
+        successRate = (Math.random() * 98.99 + 1).toFixed(2);
+        imageUrl = `https://www.hhlqilongzhu.cn/api/tu_lofter_cpV7.php?name=${encodeURIComponent(name)}&t=${Date.now()}`;
+        imageDiv = document.createElement('div');
+        imageDiv.classList.add('message', 'received');
+        imageDiv.innerHTML = `
+            <div class="bubble">
+                ✨ 占卜 成功率 ${successRate}%<br>
+                <img src="${imageUrl}" class="love-image" alt="占卜图片" data-url="${imageUrl}" onload="this.setAttribute('data-loaded', 'true')" onerror="this.nextSibling.style.display='block';this.style.display='none'">
+                <p style="display:none">未能加载图片</p>
+                <button class="save-button" onclick="saveImage(this.previousElementSibling.previousElementSibling)">保存图片</button>
+                <button class="recall-button" onclick="recallApi('${name}')">重新占卜</button>
+                <button class="marriage-button" onclick="generateMarriage('${name}')">制作光瓶</button>
+            </div>
+        `;
+    }
+
+    if (includeLink && name.toLowerCase() !== '不满意') {
+        const linkDiv = document.createElement('div');
+        linkDiv.classList.add('message', 'received');
+        linkDiv.innerHTML = `
+            <div class="bubble">
+                <div class="link-item">
+                    ✨ 专属表白链接：<br>
+                    <button onclick="copyLink('${name}')" class="love-link">
+                       🌟 点击复制给她的表白链接
+                    </button>
+                </div>
+            </div>
+        `;
+        setTimeout(() => {
+            chatContainer.appendChild(linkDiv);
+            linkDiv.scrollIntoView({ behavior: 'smooth' });
+        }, 800);
+    }
+
+    setTimeout(() => {
+        chatContainer.appendChild(imageDiv);
+        imageDiv.scrollIntoView({ behavior: 'smooth' });
+        loading.style.display = 'none';
+        if (includeLink) document.getElementById('nameInput').value = '';
+    }, 1600);
+}
+
+function generateMarriage(name) {
+    const secondName = prompt('请输入另一半的名字：');
+    if (!secondName) return;
+
+    const loading = document.getElementById('loading');
+    loading.style.display = 'block';
+
+    const marriageUrl = `https://www.hhlqilongzhu.cn/api/tu_ngp_biaobai.php?n1=${encodeURIComponent(name)}&n2=${encodeURIComponent(secondName)}&t=${Date.now()}`;
+    const marriageDiv = document.createElement('div');
+    marriageDiv.classList.add('message', 'received');
+    marriageDiv.innerHTML = `
+        <div class="bubble">
+            你们的暖光瓶已生成：<br>
+            <img src="${marriageUrl}" class="love-image" alt="光屏" data-url="${marriageUrl}" onload="this.setAttribute('data-loaded', 'true')" onerror="this.nextSibling.style.display='block';this.style.display='none'">
+            <p style="display:none">未能加载图片</p>
+            <button class="save-button" onclick="saveImage(this.previousElementSibling.previousElementSibling)">保存图片</button>
+        </div>
+    `;
+
+    setTimeout(() => {
+        document.getElementById('chatContainer').appendChild(marriageDiv);
+        marriageDiv.scrollIntoView({ behavior: 'smooth' });
+        loading.style.display = 'none';
+    }, 1600);
+}
+
+function recallApi(name) {
+    generateResult(name, false);
+}
+
+function copyLink(name) {
+    const link = `https://api.suyanw.cn/api/biaobai/?a=${encodeURIComponent(name)}`;
+    const textarea = document.createElement('textarea');
+    textarea.value = link;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            webapp.toast('表白链接已复制！');
+        } else {
+            webapp.toast('复制失败，请手动复制链接。');
+        }
+    } catch (err) {
+        webapp.toast('复制失败，请手动复制链接。');
+        console.error('复制失败', err);
+    }
+    document.body.removeChild(textarea);
+}
+
+function saveImage(imgElement) {
+    if (!imgElement || (imgElement.getAttribute('data-loaded') !== 'true' && !imgElement.complete)) {
+        webapp.toast('图片尚未加载完成，请稍后再试');
+        return;
+    }
+
+    const target = imgElement.getAttribute('data-url') || imgElement.src;
+    if (!target) {
+        webapp.toast('无法获取图片地址');
+        return;
+    }
+
+    if (typeof webapp !== 'undefined' && webapp.bestow && !webapp.bestow()) {
+        webapp.rights();
+        webapp.toast('请授予存储权限以保存图片');
+        return;
+    }
+
+    if (target.startsWith('http://') || target.startsWith('https://')) {
+        const canvas = document.createElement('canvas');
+        canvas.width = imgElement.naturalWidth;
+        canvas.height = imgElement.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(imgElement, 0, 0);
+        canvas.toBlob(function(blob) {
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                const base64Data = reader.result;
+                const fileName = '/storage/emulated/0/Download/image_' + Date.now() + '.jpg';
+                if (typeof webapp !== 'undefined' && webapp.savefile) {
+                    webapp.savefile(fileName, base64Data);
+                    webapp.toast('图片保存成功');
+                } else {
+                    webapp.toast('当前环境不支持保存功能');
+                }
+            };
+            reader.readAsDataURL(blob);
+        }, 'image/jpeg', 1.0);
+    } else if (target.startsWith('data:image/')) {
+        const extension = target.split(';')[0].split('/')[1] || 'png';
+        const fileName = '/storage/emulated/0/Download/image_' + Date.now() + '.' + extension;
+        webapp.savefile(fileName, target);
+        webapp.toast('图片保存成功');
+    } else {
+        webapp.toast('不支持保存此图片格式: ' + target);
+    }
+}
+
+function generateFakeChat() {
+    const loading = document.getElementById('loading');
+    const chatContainer = document.getElementById('chatContainer');
+    
+    async function getUserInputs() {
+        const qqNumber = await new Promise((resolve) => {
+            setTimeout(() => {
+                const input = prompt('输入QQ获取头像：');
+                resolve(input);
+            }, 100);
+        });
+        if (!qqNumber) return null;
+
+        const qqName = await new Promise((resolve) => {
+            setTimeout(() => {
+                const input = prompt('请输入昵称：');
+                resolve(input);
+            }, 100);
+        });
+        if (!qqName) return null;
+
+        const message = await new Promise((resolve) => {
+            setTimeout(() => {
+                const input = prompt('请输入聊天内容：');
+                resolve(input);
+            }, 100);
+        });
+        if (!message) return null;
+
+        return { qqNumber, qqName, message };
+    }
+
+    loading.style.display = 'block';
+
+    getUserInputs().then((result) => {
+        if (!result) {
+            loading.style.display = 'none';
+            return;
+        }
+
+        const { qqNumber, qqName, message } = result;
+        const messageObj = {
+            user_id: qqNumber,
+            user_nickname: qqName,
+            message: message
+        };
+        const apiUrl = `https://oiapi.net/API/QQ_quote/?message=${encodeURIComponent(JSON.stringify(messageObj))}`;
+
+        const fakeChatDiv = document.createElement('div');
+        fakeChatDiv.classList.add('message', 'received');
+        fakeChatDiv.innerHTML = `
+            <div class="bubble">
+                ✨ 已生成伪造的QQ聊天记录：<br>
+                <img src="${apiUrl}" class="love-image" alt="聊天记录" data-url="${apiUrl}" onload="this.setAttribute('data-loaded', 'true')" onerror="this.nextSibling.style.display='block';this.style.display='none'">
+                <p style="display:none">未能加载图片</p>
+                <button class="save-button" onclick="saveImage(this.previousElementSibling.previousElementSibling)">保存图片</button>
+            </div>
+        `;
+
+        setTimeout(() => {
+            chatContainer.appendChild(fakeChatDiv);
+            fakeChatDiv.scrollIntoView({ behavior: 'smooth' });
+            loading.style.display = 'none';
+        }, 1600);
+    }).catch((err) => {
+        console.error('生成伪造聊天失败:', err);
+        loading.style.display = 'none';
+    });
+}
+
+document.getElementById('nameInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') generateBiaobai();
+});
+    </script>
+</body>
+</html>

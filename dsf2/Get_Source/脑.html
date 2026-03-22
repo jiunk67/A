@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>脑筋急转弯</title>
+<style>
+    html,body{
+        height:100%;
+        margin:0;
+        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+        background:#f5f5f7;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        padding:0;
+    }
+    h1{
+        margin:0 0 5vh 0;
+        font-size:8vh;
+        font-weight:600;
+        color:#1d1d1f;
+        letter-spacing:.5px;
+    }
+    .box{
+        width:90%;
+        height:22vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:#fff;
+        box-shadow:0 8px 24px rgba(0,0,0,.05);
+        border-radius:4vh;
+        font-size:5vh;
+        line-height:1.4;
+        color:#333;
+        transition:.3s;
+        padding:0 5vw;
+        text-align:center;
+    }
+    .question{
+        margin-bottom:4vh;
+        background:#fafafa;
+    }
+    .answer{
+        cursor:pointer;
+        background:#f0f0f2;
+    }
+    .answer span{display:none;}
+    .answer.reveal span{display:inline;}
+    .answer.reveal{background:#e8e8ea;}
+    button{
+        margin-top:6vh;
+        width:50vw;
+        height:12vh;
+        font-size:5.5vh;
+        border:none;
+        border-radius:6vh;
+        background:#0071e3;
+        color:#fff;
+        cursor:pointer;
+        transition:.25s;
+    }
+    button:hover{background:#0077ed;}
+</style>
+</head>
+<body>
+
+<h1>脑筋急转弯</h1>
+
+<div class="box question" id="q"></div>
+<div class="box answer" id="a" onclick="show()"><span id="ans"></span></div>
+
+<button onclick="next()">再来一个</button>
+
+<script>
+const data=[
+{q:"什么东西越洗越脏？",a:"水"},
+{q:"什么动物你打死了它却流了你的血？",a:"蚊子"},
+{q:"什么东西有头无脚？",a:"针"},
+{q:"什么车子寸步难行？",a:"风车"},
+{q:"什么人整天都在路上跑？",a:"司机"},
+{q:"什么东西晚上才生出尾巴？",a:"流星"},
+{q:"什么东西有五个头，人却不觉得它怪？",a:"手"},
+{q:"什么英文字母最多人喜欢听？",a:"CD"},
+{q:"什么东西越生气越大？",a:"脾气"},
+{q:"什么东西越剪越大？",a:"洞"},
+{q:"什么东西不能吃？",a:"亏"},
+{q:"什么东西越热越爱出来？",a:"汗"},
+{q:"什么东西越用越少？",a:"橡皮"},
+{q:"什么东西越冷越爱出来？",a:"鼻涕"},
+{q:"什么布剪不断？",a:"瀑布"},
+{q:"什么球不能踢？",a:"地球"},
+{q:"什么鸡没有翅膀？",a:"田鸡"},
+{q:"什么马不会跑？",a:"海马"},
+{q:"什么牛不会吃草？",a:"蜗牛"},
+{q:"什么狗不会叫？",a:"热狗"},
+{q:"什么书不能看？",a:"秘书"},
+{q:"什么水永远用不完？",a:"口水"},
+{q:"什么帽子不能戴？",a:"螺丝帽"},
+{q:"什么车子最不怕堵车？",a:"风车"},
+{q:"什么门永远关不上？",a:"球门"},
+{q:"什么虎不吃人？",a:"壁虎"},
+{q:"什么桥没人能走？",a:"立交桥"},
+{q:"什么字半个月才能写完？",a:"胖"},
+{q:"什么酒不能喝？",a:"碘酒"},
+{q:"什么冰没有水？",a:"干冰"},
+{q:"什么火看不见？",a:"怒火"},
+{q:"什么球不能拍？",a:"眼球"},
+{q:"什么蛋不能吃？",a:"零蛋"},
+{q:"什么鸡不下蛋？",a:"公鸡"},
+{q:"什么鱼不能吃？",a:"木鱼"},
+{q:"什么枪不装子弹？",a:"水枪"},
+{q:"什么车最不怕撞？",a:"象棋里的车"},
+{q:"什么船永远不会沉？",a:"太空飞船"},
+{q:"什么数字最勤快？",a:"2（一不做二不休）"},
+{q:"什么植物最老实？",a:"芭蕉，因为老实巴交"},
+{q:"什么动物最爱贴在墙上？",a:"海豹（海报）"},
+{q:"什么动物最怕水？",a:"鸡，因为机不可失（湿）"},
+{q:"什么动物最没有方向感？",a:"麋鹿（迷路）"},
+{q:"什么动物最容易摔倒？",a:"狡猾的狐狸（脚滑）"},
+{q:"什么东西越洗越臭？",a:"袜子"},
+{q:"什么水果最怕冷？",a:"香蕉（怕寒）"},
+{q:"什么水果最怕热？",a:"梨（离）"},
+{q:"什么动物最爱问为什么？",a:"袋鼠（口袋）"},
+{q:"什么动物最爱打扮？",a:"美羊羊"},
+{q:"什么动物最爱干净？",a:"浣熊"},
+{q:"什么动物最爱哭？",a:"企鹅（泣）"},
+{q:"什么动物最会吹牛？",a:"牛"},
+{q:"什么动物最会拍马屁？",a:"马"},
+{q:"什么动物最会装死？",a:"负鼠"},
+{q:"什么动物最会变色？",a:"变色龙"},
+{q:"什么动物最会唱歌？",a:"百灵鸟"},
+{q:"什么动物最会跳舞？",a:"孔雀"},
+{q:"什么动物最会游泳？",a:"鱼"},
+{q:"什么动物最会爬树？",a:"猴子"},
+{q:"什么动物最会挖洞？",a:"鼹鼠"},
+{q:"什么动物最会飞？",a:"鸟"},
+{q:"什么动物最会跑？",a:"猎豹"},
+{q:"什么动物最会跳？",a:"袋鼠"},
+{q:"什么动物最会藏？",a:"刺猬"},
+{q:"什么动物最会睡？",a:"树懒"},
+{q:"什么动物最会吃？",a:"猪"},
+{q:"什么动物最会玩？",a:"海豚"},
+{q:"什么动物最会学人？",a:"鹦鹉"},
+{q:"什么动物最会保护孩子？",a:"袋鼠"},
+{q:"什么动物最会打架？",a:"狮子"},
+{q:"什么动物最会偷懒？",a:"树懒"},
+{q:"什么动物最会熬夜？",a:"猫头鹰"},
+{q:"什么动物最会早起？",a:"公鸡"},
+{q:"什么动物最会做梦？",a:"考拉"},
+{q:"什么动物最会卖萌？",a:"熊猫"},
+{q:"什么动物最会撒娇？",a:"猫"},
+{q:"什么动物最会生气？",a:"河马"},
+{q:"什么动物最会害羞？",a:"含羞草"},
+{q:"什么动物最会装酷？",a:"企鹅"},
+{q:"什么动物最会装可爱？",a:"仓鼠"},
+{q:"什么动物最会装死？",a:"负鼠"},
+{q:"什么动物最会装睡？",a:"猫"},
+{q:"什么动物最会装病？",a:"羊"},
+{q:"什么动物最会装傻？",a:"狗"},
+{q:"什么动物最会装聪明？",a:"狐狸"},
+{q:"什么动物最会装可怜？",a:"狗"},
+{q:"什么动物最会装无辜？",a:"猫"},
+{q:"什么动物最会装忙？",a:"蚂蚁"},
+{q:"什么动物最会装懒？",a:"树懒"},
+{q:"什么动物最会装勤快？",a:"蜜蜂"},
+{q:"什么动物最会装凶？",a:"猫"},
+{q:"什么动物最会装温柔？",a:"蛇"},
+{q:"什么动物最会装勇敢？",a:"老鼠"},
+{q:"什么动物最会装胆小？",a:"鸵鸟"},
+{q:"什么动物最会装大？",a:"河马"},
+{q:"什么动物最会装小？",a:"蚂蚁"},
+{q:"什么动物最会装老？",a:"乌龟"},
+{q:"什么动物最会装年轻？",a:"猴子"},
+{q:"什么动物最会装成熟？",a:"大象"},
+{q:"什么动物最会装幼稚？",a:"小狗"},
+{q:"什么动物最会装深沉？",a:"猫头鹰"},
+{q:"什么动物最会装活泼？",a:"猴子"},
+{q:"什么动物最会装忧郁？",a:"猫"},
+{q:"什么动物最会装开心？",a:"狗"},
+{q:"什么动物最会装伤心？",a:"熊猫"},
+{q:"什么动物最会装帅？",a:"狮子"},
+{q:"什么动物最会装美？",a:"孔雀"},
+{q:"什么动物最会装丑？",a:"河马"},
+{q:"什么动物最会装干净？",a:"猫"},
+{q:"什么动物最会装脏？",a:"猪"},
+{q:"什么动物最会装饱？",a:"蛇"},
+{q:"什么动物最会装饿？",a:"狗"},
+{q:"什么动物最会装困？",a:"猫"},
+{q:"什么动物最会装精神？",a:"猴子"},
+{q:"什么动物最会装健康？",a:"马"}
+];
+
+let idx=-1;
+
+function next(){
+    let n;
+    do{n=Math.floor(Math.random()*data.length);}
+    while(n===idx&&data.length>1);
+    idx=n;
+    document.getElementById('q').textContent=data[idx].q;
+    document.getElementById('ans').textContent=data[idx].a;
+    document.getElementById('a').classList.remove('reveal');
+}
+function show(){
+    document.getElementById('a').classList.add('reveal');
+}
+next();
+</script>
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批量密码生成器</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 2rem;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 2.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 5px;
+            background: #e2e8f0;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+        
+        .range-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary);
+            background: #e0e7ff;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: #f1f5f9;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-item:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+        
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--gray);
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+        
+        .result-container {
+            margin-top: 2rem;
+            position: relative;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .result-header h3 {
+            font-size: 1.25rem;
+            color: var(--dark);
+        }
+        
+        .result-count {
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .password-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            background: #fafafa;
+        }
+        
+        .password-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            background: white;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .password-item:hover {
+            background: #f8fafc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .password-text {
+            font-family: monospace;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+        }
+        
+        .copy-btn:hover {
+            background: #e0e7ff;
+            color: var(--secondary);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+        
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        @media (max-width: 600px) {
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        .strength-meter {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .strength-meter-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--danger);
+            border-radius: 4px;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .strength-text {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>批量密码生成器</h1>
+            <p>安全、快速、可定制的密码生成工具</p>
+        </div>
+        
+        <div class="content">
+            <div class="form-group">
+                <label for="password-count">生成数量</label>
+                <div class="range-container">
+                    <input type="range" id="password-count" min="1" max="50" value="10">
+                    <span class="range-value" id="count-value">10</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password-length">密码长度</label>
+                <div class="range-container">
+                    <input type="range" id="password-length" min="6" max="32" value="12">
+                    <span class="range-value" id="length-value">12</span>
+                </div>
+                <div class="strength-meter">
+                    <div class="strength-meter-fill" id="strength-fill"></div>
+                </div>
+                <div class="strength-text">
+                    <span id="strength-text">强度: 中等</span>
+                    <span id="entropy-value">熵: 0 bits</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>密码选项</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="lowercase" checked>
+                        <label for="lowercase">小写字母 (a-z)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="uppercase" checked>
+                        <label for="uppercase">大写字母 (A-Z)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="numbers" checked>
+                        <label for="numbers">数字 (0-9)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="symbols">
+                        <label for="symbols">特殊字符 (!@#$...)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="exclude-similar">
+                        <label for="exclude-similar">排除相似字符 (Il1O0)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="exclude-duplicate">
+                        <label for="exclude-duplicate">排除重复字符</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn-primary" id="generate-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                    </svg>
+                    生成密码
+                </button>
+                <button class="btn-secondary" id="copy-all-btn" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                    </svg>
+                    全部复制
+                </button>
+                <button class="btn-secondary" id="download-btn" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                    </svg>
+                    下载文件
+                </button>
+            </div>
+            
+            <div class="result-container">
+                <div class="result-header">
+                    <h3>密码列表</h3>
+                    <span class="result-count" id="result-count">0 个密码</span>
+                </div>
+                <div class="password-list" id="password-list">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                        </svg>
+                        <p>点击"生成密码"按钮开始生成</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast">已复制到剪贴板！</div>
+    
+    <script>
+        // DOM Elements
+        const countSlider = document.getElementById('password-count');
+        const countValue = document.getElementById('count-value');
+        const lengthSlider = document.getElementById('password-length');
+        const lengthValue = document.getElementById('length-value');
+        const strengthFill = document.getElementById('strength-fill');
+        const strengthText = document.getElementById('strength-text');
+        const entropyValue = document.getElementById('entropy-value');
+        const generateBtn = document.getElementById('generate-btn');
+        const copyAllBtn = document.getElementById('copy-all-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const passwordList = document.getElementById('password-list');
+        const resultCount = document.getElementById('result-count');
+        const toast = document.getElementById('toast');
+        
+        // Checkbox elements
+        const lowercaseCheckbox = document.getElementById('lowercase');
+        const uppercaseCheckbox = document.getElementById('uppercase');
+        const numbersCheckbox = document.getElementById('numbers');
+        const symbolsCheckbox = document.getElementById('symbols');
+        const excludeSimilarCheckbox = document.getElementById('exclude-similar');
+        const excludeDuplicateCheckbox = document.getElementById('exclude-duplicate');
+        
+        // Update slider values
+        countSlider.addEventListener('input', () => {
+            countValue.textContent = countSlider.value;
+        });
+        
+        lengthSlider.addEventListener('input', () => {
+            const length = lengthSlider.value;
+            lengthValue.textContent = length;
+            updateStrengthMeter();
+        });
+        
+        // Update checkboxes to update strength meter
+        [lowercaseCheckbox, uppercaseCheckbox, numbersCheckbox, symbolsCheckbox].forEach(checkbox => {
+            checkbox.addEventListener('change', updateStrengthMeter);
+        });
+        
+        function updateStrengthMeter() {
+            const length = parseInt(lengthSlider.value);
+            let charPoolSize = 0;
+            
+            if (lowercaseCheckbox.checked) charPoolSize += 26;
+            if (uppercaseCheckbox.checked) charPoolSize += 26;
+            if (numbersCheckbox.checked) charPoolSize += 10;
+            if (symbolsCheckbox.checked) charPoolSize += 32;
+            
+            // Calculate entropy (bits)
+            const entropy = length * Math.log2(charPoolSize || 1);
+            const percentage = Math.min(100, (entropy / 128) * 100);
+            
+            strengthFill.style.width = `${percentage}%`;
+            entropyValue.textContent = `熵: ${Math.round(entropy)} bits`;
+            
+            // Set color and text based on entropy
+            if (entropy < 30) {
+                strengthFill.style.backgroundColor = 'var(--danger)';
+                strengthText.textContent = '强度: 弱';
+            } else if (entropy < 60) {
+                strengthFill.style.backgroundColor = 'var(--warning)';
+                strengthText.textContent = '强度: 中等';
+            } else if (entropy < 90) {
+                strengthFill.style.backgroundColor = 'var(--success)';
+                strengthText.textContent = '强度: 强';
+            } else {
+                strengthFill.style.backgroundColor = '#0ea5e9';
+                strengthText.textContent = '强度: 非常强';
+            }
+        }
+        
+        // Initialize strength meter
+        updateStrengthMeter();
+        
+        // Generate passwords
+        generateBtn.addEventListener('click', generatePasswords);
+        
+        function generatePasswords() {
+            const count = parseInt(countSlider.value);
+            const length = parseInt(lengthSlider.value);
+            
+            let charset = '';
+            if (lowercaseCheckbox.checked) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (uppercaseCheckbox.checked) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (numbersCheckbox.checked) charset += '0123456789';
+            if (symbolsCheckbox.checked) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            if (excludeSimilarCheckbox.checked) {
+                charset = charset.replace(/[Il1O0]/g, '');
+            }
+            
+            if (!charset) {
+                alert('请至少选择一种字符类型');
+                return;
+            }
+            
+            const passwords = [];
+            for (let i = 0; i < count; i++) {
+                let password = '';
+                let availableChars = charset;
+                
+                for (let j = 0; j < length; j++) {
+                    if (excludeDuplicateCheckbox.checked && availableChars.length === 0) {
+                        // Reset available characters if we've used them all
+                        availableChars = charset;
+                    }
+                    
+                    const randomIndex = Math.floor(Math.random() * availableChars.length);
+                    const char = availableChars[randomIndex];
+                    password += char;
+                    
+                    if (excludeDuplicateCheckbox.checked) {
+                        // Remove the used character from available characters
+                        availableChars = availableChars.slice(0, randomIndex) + availableChars.slice(randomIndex + 1);
+                    }
+                }
+                
+                passwords.push(password);
+            }
+            
+            displayPasswords(passwords);
+        }
+        
+        function displayPasswords(passwords) {
+            // Clear existing passwords
+            passwordList.innerHTML = '';
+            
+            if (passwords.length === 0) {
+                passwordList.innerHTML = `
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                        </svg>
+                        <p>没有生成任何密码</p>
+                    </div>
+                `;
+                resultCount.textContent = '0 个密码';
+                copyAllBtn.disabled = true;
+                downloadBtn.disabled = true;
+                return;
+            }
+            
+            passwords.forEach((password, index) => {
+                const passwordItem = document.createElement('div');
+                passwordItem.className = 'password-item';
+                passwordItem.style.animationDelay = `${index * 0.05}s`;
+                
+                passwordItem.innerHTML = `
+                    <span class="password-text">${password}</span>
+                    <button class="copy-btn" title="复制密码" data-password="${password}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                        </svg>
+                    </button>
+                `;
+                
+                passwordList.appendChild(passwordItem);
+                
+                // Add copy functionality for individual passwords
+                const copyBtn = passwordItem.querySelector('.copy-btn');
+                copyBtn.addEventListener('click', () => {
+                    copyToClipboard(password);
+                });
+            });
+            
+            resultCount.textContent = `${passwords.length} 个密码`;
+            copyAllBtn.disabled = false;
+            downloadBtn.disabled = false;
+        }
+        
+        // Copy all passwords
+        copyAllBtn.addEventListener('click', () => {
+            const passwordItems = document.querySelectorAll('.password-text');
+            const passwords = Array.from(passwordItems).map(item => item.textContent);
+            const passwordText = passwords.join('\n');
+            
+            copyToClipboard(passwordText);
+        });
+        
+        // Download passwords as file
+        downloadBtn.addEventListener('click', () => {
+            const passwordItems = document.querySelectorAll('.password-text');
+            const passwords = Array.from(passwordItems).map(item => item.textContent);
+            const passwordText = passwords.join('\n');
+            
+            const blob = new Blob([passwordText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'passwords.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('密码已下载');
+        });
+        
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('已复制到剪贴板！');
+            }).catch(err => {
+                console.error('无法复制到剪贴板: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('已复制到剪贴板！');
+                } catch (err) {
+                    console.error('Fallback copy failed: ', err);
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+        
+        // Show toast notification
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Initialize with empty state
+        displayPasswords([]);
+    </script>
+</body>
+</html>

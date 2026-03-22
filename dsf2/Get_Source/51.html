@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国历任主席</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: #f2f2f2;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #d32f2f;
+            color: #fff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background-color: #e0e0e0;
+        }
+
+        .president-card {
+            position: relative;
+            width: 45%;
+            padding: 20px;
+            margin: 30px 0;
+            background-color: #fafafa;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .president-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .president-card:nth-child(odd) {
+            left: 0;
+            margin-left: 2%;
+        }
+
+        .president-card:nth-child(even) {
+            left: 53%;
+        }
+
+        .president-card::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            width: 20px;
+            height: 20px;
+            background-color: #d32f2f;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px #fff;
+        }
+
+        .president-card:nth-child(odd)::before {
+            right: -30px;
+        }
+
+        .president-card:nth-child(even)::before {
+            left: -30px;
+        }
+
+        .president-card h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+            color: #d32f2f;
+        }
+
+        .president-card .period {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .president-card .description {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #888;
+            background-color: #f9f9f9;
+        }
+
+        @media (max-width: 600px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .president-card {
+                width: 85%;
+                margin-left: 50px !important;
+                left: 0 !important;
+            }
+
+            .president-card::before {
+                left: -30px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>中华人民共和国历任主席</h1>
+            <p>1949年10月1日至今</p>
+        </div>
+
+        <div class="timeline">
+            <div class="president-card">
+                <h2>毛泽东</h2>
+                <div class="period">1954年 - 1959年</div>
+                <div class="description">伟大的无产阶级革命家、战略家和理论家，中国共产党、中国人民解放军和中华人民共和国的主要创立者之一。</div>
+            </div>
+
+            <div class="president-card">
+                <h2>刘少奇</h2>
+                <div class="period">1959年 - 1968年</div>
+                <div class="description">伟大的马克思主义者，伟大的无产阶级革命家、政治家、理论家，党和国家主要领导人之一，中华人民共和国开国元勋。</div>
+            </div>
+
+            <div class="president-card">
+                <h2>宋庆龄</h2>
+                <div class="period">1968年 - 1972年</div>
+                <div class="description">中华人民共和国副主席代理主席职务，伟大的爱国主义、民主主义、国际主义和共产主义战士，举世闻名的二十世纪的伟大女性。</div>
+            </div>
+
+            <div class="president-card">
+                <h2>董必武</h2>
+                <div class="period">1972年 - 1975年</div>
+                <div class="description">中华人民共和国副主席代理主席职务，中国共产党的创始人之一，伟大的马克思主义者，杰出的无产阶级革命家。</div>
+            </div>
+
+            <div class="president-card">
+                <h2>朱德</h2>
+                <div class="period">1975年 - 1976年</div>
+                <div class="description">伟大的马克思主义者，伟大的无产阶级革命家、政治家、军事家，中国人民解放军的主要缔造者之一，中华人民共和国的开国元勋。</div>
+            </div>
+
+            <div class="president-card">
+                <h2>叶剑英</h2>
+                <div class="period">1978年 - 1983年</div>
+                <div class="description">久经考验的共产主义忠诚战士，坚定的马克思主义者，伟大的无产阶级革命家、政治家、军事家，中国人民解放军的缔造者之一。</div>
+            </div>
+
+            <div class="president-card">
+                <h2>李先念</h2>
+                <div class="period">1983年 - 1988年</div>
+                <div class="description">伟大的无产阶级革命家、政治家、军事家，坚定的马克思主义者，党和国家的卓越领导人。</div>
+            </div>
+
+            <div class="president-card">
+                <h2>杨尚昆</h2>
+                <div class="period">1988年 - 1993年</div>
+                <div class="description">伟大的无产阶级革命家、政治家、军事家，坚定的马克思主义者，党、国家和人民军队的卓越领导人。</div>
+            </div>
+
+            <div class="president-card">
+                <h2>江泽民</h2>
+                <div class="period">1993年 - 2003年</div>
+                <div class="description">伟大的马克思主义者，伟大的无产阶级革命家、政治家、军事家、外交家，久经考验的共产主义战士，中国特色社会主义伟大事业的杰出领导者。</div>
+            </div>
+
+            <div class="president-card">
+                <h2>胡锦涛</h2>
+                <div class="period">2003年 - 2013年</div>
+                <div class="description">伟大的马克思主义者，伟大的无产阶级革命家、政治家，久经考验的共产主义战士，党的卓越领导人。</div>
+            </div>
+
+            <div class="president-card">
+                <h2>习近平</h2>
+                <div class="period">2013年 - 至今</div>
+                <div class="description">伟大的马克思主义者，伟大的无产阶级革命家、政治家，党的核心，人民领袖，军队统帅，中华民族伟大复兴的领航人。</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>资料整理于公开信息 | 仅供学习参考</p>
+        </div>
+    </div>
+</body>
+</html>

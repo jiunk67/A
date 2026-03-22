@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小雨加密文件解密工具</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --error: #e63946;
+            --dark: #1e1e2d;
+            --darker: #14141c;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border: #2d2d3a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--error));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .card {
+            background: rgba(30, 30, 45, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 i {
+            font-size: 1.3rem;
+        }
+        
+        .input-area {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: rgba(20, 20, 28, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            color: var(--light);
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .file-drop-area {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .file-drop-area:hover, .file-drop-area.dragover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+        
+        .file-drop-area i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .file-drop-text {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        
+        .file-drop-hint {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-error {
+            background: var(--error);
+            color: white;
+        }
+        
+        .btn-error:hover {
+            background: #d62839;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status.success {
+            background: rgba(46, 204, 113, 0.15);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+        }
+        
+        .status.error {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+        
+        .status.info {
+            background: rgba(52, 152, 219, 0.15);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            color: #3498db;
+        }
+        
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .output-area {
+            position: relative;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(30, 30, 45, 0.8);
+            border: 1px solid var(--border);
+            color: var(--light);
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .warning {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-unlock-alt"></i>解密工具</h1>
+            <p class="subtitle">解密HTML文件</p>
+        </header>
+        
+        <div class="warning">
+            <p><i class="fas fa-exclamation-triangle"></i></p>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-file-code"></i> 输入加密文件</h2>
+            
+            <div class="file-drop-area" id="dropArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p class="file-drop-text">拖放加密HTML文件到此处</p>
+                <p class="file-drop-hint">或点击选择文件</p>
+                <input type="file" id="fileInput" accept=".html,.htm" style="display: none;">
+            </div>
+            
+            <div class="input-area">
+                <textarea id="inputCode" placeholder="在此粘贴您的加密HTML代码..."></textarea>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-error" onclick="decryptHTML()">
+                    <i class="fas fa-unlock"></i> 解密文件
+                </button>
+                <button class="btn btn-secondary" onclick="clearInput()">
+                    <i class="fas fa-trash-alt"></i> 清除内容
+                </button>
+            </div>
+            
+            <div class="status" id="status"></div>
+            <div class="loader" id="loader">
+                <div class="spinner"></div>
+                <p>正在解密中，请稍候...</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-code"></i> 解密结果</h2>
+            <div class="output-area">
+                <textarea id="output" readonly placeholder="解密后的代码将显示在这里..."></textarea>
+                <button class="copy-btn" onclick="copyToClipboard()">
+                    <i class="fas fa-copy"></i> 复制
+                </button>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="downloadDecrypted()">
+                    <i class="fas fa-download"></i> 下载解密文件
+                </button>
+                <button class="btn btn-secondary" onclick="testDecrypted()">
+                    <i class="fas fa-play-circle"></i> 测试解密效果
+                </button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 解密工具 | 所有内容在本地处理，不会上传到服务器</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        // 获取DOM元素
+        const inputCode = document.getElementById('inputCode');
+        const output = document.getElementById('output');
+        const status = document.getElementById('status');
+        const loader = document.getElementById('loader');
+        const fileInput = document.getElementById('fileInput');
+        const dropArea = document.getElementById('dropArea');
+        
+        // 显示状态消息
+        function showStatus(message, isSuccess) {
+            status.textContent = message;
+            status.className = isSuccess ? 'status success' : 'status error';
+            status.style.display = 'flex';
+            
+            // 5秒后隐藏
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showLoader(show) {
+            loader.style.display = show ? 'block' : 'none';
+        }
+        
+        // 文件处理
+        dropArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                inputCode.value = e.target.result;
+                showStatus(`成功加载文件: ${file.name}`, true);
+            };
+            reader.readAsText(file);
+        }
+        
+        // 拖放功能
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.classList.add('dragover');
+        });
+        
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('dragover');
+        });
+        
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('dragover');
+            
+            const file = e.dataTransfer.files[0];
+            if (!file) return;
+            
+            if (file.type === 'text/html' || file.name.endsWith('.html') || file.name.endsWith('.htm')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    inputCode.value = e.target.result;
+                    showStatus(`成功加载文件: ${file.name}`, true);
+                };
+                reader.readAsText(file);
+            } else {
+                showStatus('请拖放HTML文件(.html或.htm)', false);
+            }
+        });
+        
+        // 清除输入
+        function clearInput() {
+            inputCode.value = '';
+            output.value = '';
+            showStatus('已清除所有内容', true);
+        }
+        
+        // 解密HTML
+        function decryptHTML() {
+            const input = inputCode.value.trim();
+            
+            if (!input) {
+                showStatus('请输入要解密的HTML代码', false);
+                return;
+            }
+            
+            showLoader(true);
+            
+            // 使用setTimeout模拟解密过程
+            setTimeout(() => {
+                try {
+                    // 提取加密内容和隐藏密码
+                    const encryptedMatch = input.match(/const encrypted = "([^"]+)"/);
+                    const hiddenPassMatch = input.match(/const hiddenPass = "([^"]+)"/);
+                    
+                    if (!encryptedMatch || !hiddenPassMatch) {
+                        throw new Error('这不是有效的小雨加密文件');
+                    }
+                    
+                    const encrypted = encryptedMatch[1];
+                    const hiddenPass = hiddenPassMatch[1];
+                    
+                    // 反转并解码密码
+                    const password = decodeURIComponent(escape(atob(hiddenPass.split('').reverse().join(''))));
+                    
+                    // 解密内容
+                    const decrypted = CryptoJS.AES.decrypt(encrypted, password).toString(CryptoJS.enc.Utf8);
+                    
+                    if (!decrypted) {
+                        throw new Error('解密失败，可能是密码错误或文件损坏');
+                    }
+                    
+                    output.value = decrypted;
+                    showLoader(false);
+                    showStatus('解密成功！', true);
+                } catch(e) {
+                    showLoader(false);
+                    showStatus('解密失败: ' + e.message, false);
+                }
+            }, 1000);
+        }
+        
+        function copyToClipboard() {
+            if (!output.value) {
+                showStatus("没有可复制的内容", false);
+                return;
+            }
+            
+            output.select();
+            document.execCommand('copy');
+            showStatus("已复制到剪贴板！", true);
+        }
+        
+        function downloadDecrypted() {
+            const content = output.value;
+            if (!content) {
+                showStatus("没有可下载的内容", false);
+                return;
+            }
+            
+            try {
+                const blob = new Blob([content], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'decrypted.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                URL.revokeObjectURL(url);
+                showStatus("文件下载成功！", true);
+            } catch(e) {
+                showStatus("下载失败: " + e.message, false);
+            }
+        }
+        
+        function testDecrypted() {
+            const content = output.value;
+            if (!content) {
+                showStatus("没有可测试的内容", false);
+                return;
+            }
+            
+            try {
+                const blob = new Blob([content], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                
+                window.open(url, '_blank');
+                showStatus("在新标签页中打开解密文件", true);
+            } catch(e) {
+                showStatus("测试失败: " + e.message, false);
+            }
+        }
+    </script>
+</body>
+</html>

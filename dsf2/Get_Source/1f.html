@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <!-- 明月资源库独家打造 -->
+  <link rel="preconnect" href="https://assets/webcat/1d">
+  <!-- 内联核心CSS，减少HTTP请求 -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; background: #f8f8f8; }
+    .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+    .card-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: transform 0.2s; /* GPU加速动画 */
+    }
+    .card:hover { transform: translateY(-3px); }
+    .card-img {
+      width: 100%;
+      height: 180px; /* 固定高度，避免布局偏移 */
+    }
+    .card-content { padding: 15px; }
+    .card-title { font-size: 18px; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 延迟加载非关键脚本（底部引入+defer） -->
+  <script src="https://cdn.example.com/non-critical-script.js" defer></script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 适配移动端，禁止缩放，提升渲染效率 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
+    <style>
+        /* 内联 CSS 减少 HTTP 请求，避免渲染阻塞 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* 禁用不必要的动画，提升性能 */
+            animation: none !important;
+            transition: none !important;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            line-height: 1.4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .img-grid {
+            display: grid;
+            /* 响应式网格，自动适配屏幕宽度 */
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .img-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            /* 避免布局偏移，提前设置宽高比 */
+            aspect-ratio: 4/3;
+        }
+        .img-item img {
+            width: 100%;
+            height: 100%;
+            /* 图片懒加载+优化渲染 */
+            object-fit: cover;
+            loading: lazy;
+            /* 禁用图片拖拽，减少不必要交互消耗 */
+            pointer-events: none;
+        }
+    </style>
+</head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* 简化样式，减少渲染负担 */
+        .music-player {
+            width: 300px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <script>
+        // 简化脚本，仅保留核心播放控制，避免冗余操作
+        const audio = document.getElementById('musicPlayer');
+        
+        // 页面加载完成后执行，避免阻塞DOM渲染
+        window.addEventListener('DOMContentLoaded', () => {
+            // 可选：用户交互后取消静音（解决部分浏览器 autoplay 限制）
+            document.body.addEventListener('click', () => {
+                if (audio.muted) {
+                    audio.muted = false;
+                }
+            }, { once: true }); // 仅执行一次，减少事件监听消耗
+        });
+    </script>
+<body>
+    
+
+    <!-- 脚本置于页面底部，避免阻塞 DOM 解析 -->
+    <script>
+        // 仅保留必要交互，避免冗余逻辑
+        document.addEventListener('DOMContentLoaded', () => {
+            // 简单的页面加载完成提示（可删除，不影响核心功能）
+            console.log('页面流畅加载完成');
+            
+            // 避免添加复杂事件监听或循环操作，减少主线程阻塞
+        });
+    </script>
+        <style>
+        .page { display: none; }
+        .page.active { display: block; }
+    </style>
+    <script>
+        function showPage(pageId) {
+            // 
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            // 
+            document.getElementById(pageId).classList.add('active');
+            // 
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        }
+        
+        window.addEventListener('load', function() {
+            var scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>明月资源库定制2.0版本</title>
+  </head>
+  <body>
+    <script>
+        // 保存当前滚动位置
+        window.addEventListener('beforeunload', function() {
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        });
+
+        // 页面加载时恢复滚动位置
+        window.addEventListener('load', function() {
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
+
+        // 按钮点击事件
+        document.getElementById('myButton').addEventListener('click', function() {
+            // 模拟页面跳转
+            window.location.href = 'otherpage.html';
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <!-- 明月资源库独家打造 -->
+  <link rel="preconnect" href="https://assets/webcat/1f">
+  <!-- 内联核心CSS，减少HTTP请求 -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; background: #f8f8f8; }
+    .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+    .card-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: transform 0.2s; /* GPU加速动画 */
+    }
+    .card:hover { transform: translateY(-3px); }
+    .card-img {
+      width: 100%;
+      height: 180px; /* 固定高度，避免布局偏移 */
+    }
+    .card-content { padding: 15px; }
+    .card-title { font-size: 18px; margin-bottom: 8px; }
+  </style>
+  <script>
+        // 1. 明月资源库已经跟这个代码融为一体了
+        window.addEventListener('load', () => {
+            const savedScroll = sessionStorage.getItem('savedScrollTop');
+            if (savedScroll) {
+                // 明月资源库已经跟这个代码融为一体了
+                setTimeout(() => window.scrollTo(0, Number(savedScroll)), 10);
+                // 明月资源库已经跟这个代码融为一体了
+                sessionStorage.removeItem('savedScrollTop');
+            }
+        });
+
+        // 2. 明月资源库已经跟这个代码融为一体了
+        function jumpTo(target) {
+            // 明月资源库已经跟这个代码融为一体了
+            sessionStorage.setItem('savedScrollTop', window.scrollY);
+            // 明月资源库已经跟这个代码融为一体了
+            window.location.href = target;
+        }
+
+        // 3. 明月资源库已经跟这个代码融为一体了
+        window.addEventListener('popstate', () => {
+            const savedScroll = sessionStorage.getItem('savedScrollTop');
+            if (savedScroll) {
+                setTimeout(() => window.scrollTo(0, Number(savedScroll)), 10);
+                sessionStorage.removeItem('savedScrollTop');
+            }
+        });
+    </script>
+</head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* 简化样式，减少渲染负担 */
+        .music-player {
+            width: 300px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <script>
+        // 简化脚本，仅保留核心播放控制，避免冗余操作
+        const audio = document.getElementById('musicPlayer');
+        
+        // 页面加载完成后执行，避免阻塞DOM渲染
+        window.addEventListener('DOMContentLoaded', () => {
+            // 可选：用户交互后取消静音（解决部分浏览器 autoplay 限制）
+            document.body.addEventListener('click', () => {
+                if (audio.muted) {
+                    audio.muted = false;
+                }
+            }, { once: true }); // 仅执行一次，减少事件监听消耗
+        });
+    </script>
+<body>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 延迟加载非关键脚本（底部引入+defer） -->
+  <script src="https://cdn.example.com/non-critical-script.js" defer></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 适配移动端，禁止缩放，提升渲染效率 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
+    <style>
+        /* 内联 CSS 减少 HTTP 请求，避免渲染阻塞 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* 禁用不必要的动画，提升性能 */
+            animation: none !important;
+            transition: none !important;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            line-height: 1.4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .img-grid {
+            display: grid;
+            /* 响应式网格，自动适配屏幕宽度 */
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .img-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            /* 避免布局偏移，提前设置宽高比 */
+            aspect-ratio: 4/3;
+        }
+        .img-item img {
+            width: 100%;
+            height: 100%;
+            /* 图片懒加载+优化渲染 */
+            object-fit: cover;
+            loading: lazy;
+            /* 禁用图片拖拽，减少不必要交互消耗 */
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <!-- 脚本置于页面底部，避免阻塞 DOM 解析 -->
+    <script>
+        // 仅保留必要交互，避免冗余逻辑
+        document.addEventListener('DOMContentLoaded', () => {
+            // 简单的页面加载完成提示（可删除，不影响核心功能）
+            console.log('页面流畅加载完成');
+            
+            // 避免添加复杂事件监听或循环操作，减少主线程阻塞
+        });
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html>
+    <style>
+    body{
+      background-image:url("737.png");
+      background-size:cover;
+      background-repeat:no-repeat;
+      background-attachment:fixed;
+    }
+  </style>
+<head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>明月资源库Pro2.0版本</title>
+	<style>
+		body {
+  background: linear-gradient(to);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  animation: rainbow 10s infinite;
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+		.tox {
+			text-align: center;
+			margin-top: 20px;
+		}
+
+		.tox img {
+			width: 100px;
+			height: 100px;
+			border-radius: 5px;
+			transition: transform 0.5s;
+		}
+
+		.tox img:hover {
+			transform: rotateY(180deg);
+		}
+
+		.gnlieb {
+			display: flex;
+			justify-content: space-evenly;
+			margin-top: 20px;
+		}
+
+		.gnlieb .card {
+			width: 150px;
+			height: 50px;
+			background-color: rgba(16, 52, 166, 0.7);
+			text-align: center;
+			border-radius: 10px;
+			font-size: 18px;
+			color: #fff;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		}
+
+		.gnlieb .card:hover {
+			background-color: rgba(16, 52, 166, 0.9);
+			cursor: pointer;
+			transition: background-color 0.3s ease-in-out;
+		}
+
+		.gnlieb .card a {
+			color: #fff;
+			text-decoration: none;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+		}
+
+#progress-bar {
+  width: 340px;
+  height: 10px;
+  border: 1px solid #ccc;
+  position: relative;
+  overflow: hidden;
+}
+
+#progress-bar hr {
+  height: 100%;
+  width: 0;
+  background-color: #00aaff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: width 0.5s ease;
+}
+	</style>
+</head>
+<body>
+    <script>
+        // 保存当前滚动位置
+        window.addEventListener('beforeunload', function() {
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        });
+
+        // 页面加载时恢复滚动位置
+        window.addEventListener('load', function() {
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
+
+        // 按钮点击事件
+        document.getElementById('myButton').addEventListener('click', function() {
+            // 模拟页面跳转
+            window.location.href = 'otherpage.html';
+        });
+    </script>
+</body>
+<body>
+	<div class="tox">
+		<img src="3.jpg" alt="头像" />
+		<br /><br />
+		<h1>明月资源库Pro版本【滑下去获取更多资源】</h1>
+	</div>
+<div id="progress-bar">
+  <hr>
+</div>
+
+
+
+
+
+
+
+
+<div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra0cd">影视软件破解大全</a>
+		</div>
+		<div class="card">
+			<a href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4">点这对接晴天易支付接口【费率低】</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="mqqapi://card/show_pslcard?src_type=internal&version=1&card_type=group&source=qrcode&uin=936797490">明月QQ交流群</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xle">三角洲行动</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra2be">新手指南（新手一定要看）</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xoh">生死狙击</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xfi">和平精英</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xpi">PUBG</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xgj">王者荣耀</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xib">实用软件和实用工具大全</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xqj">创造与魔法</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xra">鸣潮</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4">点这对接晴天易支付接口【费率低】</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xxg">超自然行动</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra0cd">漫画小说动漫软件破解大全</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra20d">直装内核插件源码区【只是源码】</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4">点这对接晴天易支付接口【费率低】</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xyh">部落冲突</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9y0j">远光84</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wranuj">社工黑科技</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9y1a">传说对决</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9y4d">狼人杀</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xud">无畏契约</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra1jg">桌球类游戏MOD直装</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra1re">刷root权限教程</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wrarib">gg修改器抓功能脚本教程</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xha">香肠派对</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wranti">GG修改器大全区</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xkd">穿越火线</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xkd">高能英雄</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xmf">暗区突围</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra2ha">抓端口和抓内防教程</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9ype">太空杀</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9yqf">太空行动</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra2gj">破解辅助和制作辅助教程</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra22f">小游戏MOD直装大全</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9y8h">光遇</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra23g">各类游戏端游区</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wraoyj">落日余晖</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9y9i">王牌战争文明重启</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra1jg">桌球类游戏</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9yba">超凡先锋</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9zdi">元气骑士</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9ydc">原神</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  <style>
+        .page { display: none; }
+        .page.active { display: block; }
+    </style>
+    <script>
+        function showPage(pageId) {
+            // 
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            // 
+            document.getElementById(pageId).classList.add('active');
+            // 
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        }
+        
+        window.addEventListener('load', function() {
+            var scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
+    </script>
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9yfe">第五人格</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9ygf">永劫无间</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr66gj"
+			>明月资源库新版本点这</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9x2f">防封端口【防游戏检测的软件】</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4"">点这对接晴天易支付接口【费率低】</a>
+		</div>
+		<div class="card">
+			<a href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4">点这对接晴天易支付接口【费率低】</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9yih">使命召唤</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9ysh">英雄联盟</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9ync">未来之役</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9yti">球球大作战</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4">点这对接晴天易支付接口【费率低】</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wra2dg">资源库下载不了软件或文件解决方法</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wrap6h">逃跑吧少年</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9yuj">QQ飞车</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9zsd">全网虚拟机框架合集区</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wrannc">黄鸟抓包教程</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9zsd">全部框架合集</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9yva">我的世界</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9yxc">元梦之星</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9yze">金铲铲</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9z0f">迷你世界</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9z3i">萤火突击</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9z4j">火影忍者</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9yyd">蛋仔派对</a>
+		</div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9z1g">迷你枪战</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9z6b">曙光英雄</a>
+		</div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9z8d">地铁跑酷</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9z9e">明日之后</a>
+		</div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9zch">对峙2</a>
+		</div>
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xxg">超自然行动</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4"">点这对接晴天易支付接口【费率低】</a>
+		</div>
+		<div class="card">
+			<a href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4"">点这对接晴天易支付接口【费率低】</a>
+		</div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="gnlieb">
+		<div class="card">
+			<a href="https://wwxt.lanzout.com/b014wr9xib">实用工具大全</a>
+		</div>
+		<div class="card">
+			<a href="https://docs.qq.com/doc/DRWVTcWhIa0tUbnN4">点这对接晴天易支付接口【费率低】</a>
+		</div>
+  </div>
+   <!DOCTYPE html>
+<html>
+<head>
+    <title>保持滚动位置的返回按钮</title>
+    <style>
+        body {
+            height: px; /* 用于演示滚动 */
+        }
+        .content {
+            margin-top: 800px; /* 初始滚动位置 */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 保存当前滚动位置
+        window.addEventListener('beforeunload', function() {
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        });
+
+        // 页面加载时恢复滚动位置
+        window.addEventListener('load', function() {
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
+
+        // 按钮点击事件
+        document.getElementById('myButton').addEventListener('click', function() {
+            // 模拟页面跳转
+            window.location.href = 'otherpage.html';
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>保持滚动位置的返回按钮</title>
+    <style>
+        body {
+            height: px; /* 用于演示滚动 */
+        }
+        .content {
+            margin-top: 800px; /* 初始滚动位置 */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 保存当前滚动位置
+        window.addEventListener('beforeunload', function() {
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        });
+
+        // 页面加载时恢复滚动位置
+        window.addEventListener('load', function() {
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
+
+        // 按钮点击事件
+        document.getElementById('myButton').addEventListener('click', function() {
+            // 模拟页面跳转
+            window.location.href = 'otherpage.html';
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>带网络检测的跳转按钮</title>
+    <style>
+        /* 正常页面样式 */
+        .normal-page {
+            padding: 50px;
+            text-align: center;
+        }
+        .jump-btn {
+            padding: 12px 24px;
+            font-size: 18px;
+            cursor: pointer;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+        .jump-btn:hover {
+            background: #1976D2;
+        }
+
+        /* 断网提示页样式（初始隐藏） */
+        .offline-page {
+            display: none; /* 默认不显示 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white; /* 白屏效果 */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .offline-icon {
+            font-size: 60px;
+            color: #F44336;
+            margin-bottom: 20px;
+        }
+        .offline-tip {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .offline-desc {
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 断网提示页面（白屏+提示） -->
+    <div class="offline-page" id="offlinePage">
+        <div class="offline-icon">🔌</div>
+        <div class="offline-tip">请打开网络再使用</div>
+        <div class="offline-desc">当前网络已断开，无法完成跳转</div>
+    </div>
+
+    <script>
+        // 网络检测+跳转核心函数
+        function checkNetworkAndJump(targetUrl) {
+            // 1. 检测当前网络状态：navigator.onLine 为 true 表示在线，false 表示离线
+            if (navigator.onLine) {
+                // 2. 在线状态：执行正常跳转
+                window.location.href = targetUrl;
+            } else {
+                // 3. 离线状态：隐藏正常页面，显示断网白屏提示
+                document.querySelector('.normal-page').style.display = 'none';
+                document.getElementById('offlinePage').style.display = 'flex';
+            }
+        }
+
+        // 可选：监听网络状态变化（比如断网后重新联网，自动恢复正常页面）
+        window.addEventListener('online', function() {
+            document.querySelector('.normal-page').style.display = 'block';
+            document.getElementById('offlinePage').style.display = 'none';
+        });
+
+        window.addEventListener('offline', function() {
+            // 若断网时未点击按钮，可选择是否自动显示提示（按需开启）
+            // document.querySelector('.normal-page').style.display = 'none';
+            // document.getElementById('offlinePage').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>网络状态检测</title>
+    <style>
+        #offlineMessage {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            color: white;
+            text-align: center;
+            padding-top: 20%;
+            font-size: 24px;
+            z-index: 1000;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="offlineMessage">
+        <h2>请打开网络连接后再使用</h2>
+        <p>当前处于没网状态，请把网络打开就能正常使用了</p>
+        <p>此软件必须打开网络后才能使用</p>
+    </div>
+
+    <script>
+        const button = document.getElementById('myButton');
+        const offlineMessage = document.getElementById('offlineMessage');
+        
+        // 检测网络状态
+        function checkNetwork() {
+            if (!navigator.onLine) {
+                offlineMessage.style.display = 'block';
+                return false;
+            }
+            offlineMessage.style.display = 'none';
+            return true;
+        }
+        
+        // 初始检查
+        checkNetwork();
+        
+        // 监听网络状态变化
+        window.addEventListener('online', checkNetwork);
+        window.addEventListener('offline', checkNetwork);
+        
+        // 按钮点击事件
+        button.addEventListener('click', function(e) {
+            if (!navigator.onLine) {
+                e.preventDefault();
+                offlineMessage.style.display = 'block';
+                return;
+            }
+            
+            // 正常跳转逻辑
+            window.location.href = ''; // 替换为你的实际链接
+        });
+    </script>
+      <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>WebCat</title>
+	<script src="js/jquery.min.js"></script>
+  </head>
+          <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>WebCat</title>
+	<script src="js/12.js"></script>
+  </head>
+    <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>WebCat</title>
+	<script src="js/vue.min.js"></script>
+  </head>
+    <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>WebCat</title>
+	<script src="js/wc-3.0.6.min.js"></script>
+  </head>
+    <script type="text/javascript" id="myhk" src="https://myhkw.cn/api/player/1759648694146" key="1759648694146" m="1"></script>
+</body>
+</html>
+</body>
+</html>
+<script>
+  var progressBar = document.querySelector("#progress-bar hr");
+  var width = 0;
+  var interval = setInterval(function() {
+    width += 5;
+    progressBar.style.width = width + "%";
+    if (width >= 100) {
+      clearInterval(interval);
+    }
+  }, 1000);
+
+ 
+</body>
+</html> 

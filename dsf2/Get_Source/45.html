@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>答案之书</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: #e0f7fa;
+            color: #00695c;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            background-color: #004d40;
+            color: white;
+            width: 100%;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .header-right {
+            font-size: 20px;
+        }
+
+        .main-content {
+            background-color: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 40px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #00695c;
+            text-align: center;
+        }
+
+        .title-icon {
+            font-size: 32px;
+            margin-right: 10px;
+        }
+
+        .question-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #b2dfdb;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #00695c;
+            background-color: #f5f5f5;
+        }
+
+        .answer-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #00897b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .answer-button:hover {
+            background-color: #00796b;
+        }
+
+        .answer-button::before {
+            content: "🔍";
+            margin-right: 10px;
+        }
+
+        .answer-display {
+            width: 100%;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #00695c;
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .copy-button {
+            position: absolute;
+            right: 20px;
+            font-size: 20px;
+            color: #00695c;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .moon-icon {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .globe-icon {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>答案之书</h1>
+        <div class="header-right">⋮</div>
+    </div>
+
+    <div class="moon-icon">🌙</div>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑暗模式切换</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --button-bg: #f0f0f0;
+            --button-icon: #333333;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content {
+            text-align: center;
+            max-width: 600px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background-color: var(--button-bg);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .toggle::after {
+            content: "";
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background-color: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s, background-color 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle.active {
+            background-color: #2d3436;
+        }
+
+        .toggle.active::after {
+            transform: translateX(30px);
+        }
+
+        .icons {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            width: 100px;
+        }
+
+        .sun {
+            color: #f39c12;
+            font-size: 24px;
+        }
+
+        .moon {
+            color: #bdc3c7;
+            font-size: 24px;
+            margin-left: 20px;
+        }
+
+        .dark-mode.active ~ .icons .sun {
+            color: #bdc3c7;
+        }
+
+        .dark-mode.active ~ .icons .moon {
+            color: #f39c12;
+        }
+
+        /* 深色模式样式 */
+        body.dark-mode {
+            --bg-color: #1e1e2e;
+            --text-color: #e0e0e0;
+            --button-bg: #4a4a5e;
+            --button-icon: #e0e0e0;
+        }
+
+        body.dark-mode .toggle-container {
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="toggle-container">
+            <div class="icons">
+                <div class="sun">☀️</div>
+                <div class="moon">🌙</div>
+            </div>
+            <label class="toggle dark-mode" id="dark-mode-toggle"></label>
+        </div>$
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            
+            // 检查本地存储中的模式设置
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                document.body.classList.add('dark-mode');
+                toggle.classList.add('active');
+            }
+            
+            toggle.addEventListener('click', function() {
+                // 切换暗黑模式
+                document.body.classList.toggle('dark-mode');
+                toggle.classList.toggle('active');
+                
+                // 保存设置到本地存储
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('darkMode', 'enabled');
+                } else {
+                    localStorage.setItem('darkMode', 'disabled');
+                }
+            });
+        });
+    </script>
+    <div class="main-content">
+        <div style="position: relative;">
+            <div class="title">
+                <span class="title-icon">📖</span> 答案之书
+            </div>
+            
+            <input type="text" class="question-input" id="question-input" placeholder="过程一定比结果重要吗">
+            
+            <button class="answer-button" id="answer-button">获取答案</button>
+            
+            <div class="answer-display" id="answer-display">
+                不妨改变一下想法
+            </div>
+            
+            <button class="copy-button" id="copy-button">📋</button>
+        </div>
+    </div>
+
+    <div class="globe-icon" style="position: fixed; top: 80px; right: 20px;">🌐</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const answerButton = document.getElementById('answer-button');
+            const questionInput = document.getElementById('question-input');
+            const answerDisplay = document.getElementById('answer-display');
+            const copyButton = document.getElementById('copy-button');
+            
+            // 答案库
+            const answers = [
+                "不妨改变一下想法。",
+                "答案显而易见。",
+                "不，事实并非如此。",
+                "是的，这是正确的。",
+                "时机尚未成熟。",
+                "你已经知道了答案。",
+                "问问自己内心的声音。",
+                "很可能是这样。",
+                "寻找其他选择。",
+                "需要更多的信息。",
+                "坚持你的直觉。",
+                "这是最佳选择。",
+                "重新审视问题。",
+                "答案就在眼前。",
+                "耐心等待时机。",
+                "问问你的父母吧！",
+                "团结",
+                "放松一下。",
+                "该治治了",
+                "没事的。",
+                "不幸。",
+                "在认真点",
+                ""
+            ];
+            
+            // 获取答案功能
+            answerButton.addEventListener('click', function() {
+                const question = questionInput.value.trim();
+                if (!question) {
+                    alert('请输入您的问题');
+                    return;
+                }
+                
+                // 随机选择一个答案
+                const randomIndex = Math.floor(Math.random() * answers.length);
+                const answer = answers[randomIndex];
+                
+                // 显示答案
+                answerDisplay.textContent = answer;
+                
+                // 添加淡入效果
+                answerDisplay.style.opacity = 0;
+                void answerDisplay.offsetWidth; // 触发重绘
+                answerDisplay.style.opacity = 1;
+                answerDisplay.style.transition = 'opacity 0.5s';
+                
+                // 滚动到答案区域
+                answerDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // 复制答案功能
+            copyButton.addEventListener('click', function() {
+                const answer = answerDisplay.textContent;
+                navigator.clipboard.writeText(answer).then(() => {
+                    alert('答案已复制到剪贴板');
+                }).catch(err => {
+                    console.error('复制失败:', err);
+                });
+            });
+            
+            // 初始化答案显示区域
+            answerDisplay.textContent = answers[Math.floor(Math.random() * answers.length)];
+        });
+    </script>
+</body>
+</html>

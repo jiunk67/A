@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防诈骗意识测试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF4D4F',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        neutral: '#86909C',
+                        light: '#F2F3F5',
+                        dark: '#1D2129'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+            .option-hover {
+                transition: all 0.2s ease;
+            }
+            .option-hover:hover:not(.option-selected):not(.option-disabled) {
+                background-color: rgba(22, 93, 255, 0.05);
+                transform: translateY(-2px);
+            }
+            .progress-animation {
+                transition: width 0.5s ease-in-out;
+            }
+            .fade-in {
+                animation: fadeIn 0.5s ease-in-out;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .score-progress-container {
+                height: 10px;
+                background-color: #e5e7eb;
+                border-radius: 5px;
+                overflow: hidden;
+                margin: 1rem 0;
+            }
+            .score-progress-bar {
+                height: 100%;
+                width: 0%;
+                transition: width 1.5s ease-out;
+            }
+            .result-card {
+                transition: all 0.5s ease;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-dark">
+    <!-- 欢迎页面 -->
+    <div id="welcome-page" class="min-h-screen flex flex-col items-center justify-center p-4">
+        <div class="max-w-2xl w-full bg-white rounded-2xl card-shadow p-6 md:p-8">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
+                    <i class="fa fa-shield text-2xl"></i>
+                </div>
+                <h1 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-2">防诈骗意识测试</h1>
+                <p class="text-neutral">提升防范意识，远离诈骗陷阱</p>
+            </div>
+           
+            <div class="space-y-4 mb-8">
+                <div class="flex items-start gap-3">
+                    <div class="mt-1 text-primary"><i class="fa fa-check-circle"></i></div>
+                    <div>
+                        <h3 class="font-semibold">共40道题目</h3>
+                        <p class="text-sm text-neutral">涵盖各类常见诈骗场景</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="mt-1 text-primary"><i class="fa fa-check-circle"></i></div>
+                    <div>
+                        <h3 class="font-semibold">难度递增</h3>
+                        <p class="text-sm text-neutral">题目从简单到复杂，全面检测防骗能力</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="mt-1 text-primary"><i class="fa fa-check-circle"></i></div>
+                    <div>
+                        <h3 class="font-semibold">支持多选题</h3>
+                        <p class="text-sm text-neutral">部分题目有多个正确答案，需全部选择</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="mt-1 text-primary"><i class="fa fa-check-circle"></i></div>
+                    <div>
+                        <h3 class="font-semibold">即时评分</h3>
+                        <p class="text-sm text-neutral">完成测试后获得总分和个性化防骗建议</p>
+                    </div>
+                </div>
+            </div>
+           
+            <button id="start-test" class="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+                <span>开始测试</span>
+                <i class="fa fa-arrow-right"></i>
+            </button>
+        </div>
+       
+        <div class="mt-6 text-center text-sm text-neutral">
+            <p>本测试仅供学习参考，提高防诈骗意识请关注官方安全教育</p>
+        </div>
+    </div>
+
+    <!-- 测试页面 -->
+    <div id="test-page" class="min-h-screen p-4 hidden">
+        <div class="max-w-3xl mx-auto">
+            <!-- 顶部导航 -->
+            <header class="bg-white rounded-xl card-shadow p-4 mb-6">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="font-bold text-lg">防诈骗意识测试</h2>
+                    <div class="flex items-center gap-2">
+                        <span id="current-question" class="text-sm font-medium">第1题</span>
+                        <span class="text-neutral text-sm">/ 共40题</span>
+                    </div>
+                </div>
+               
+                <!-- 进度条 -->
+                <div class="w-full bg-light rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-primary h-2.5 rounded-full progress-animation" style="width: 2.5%"></div>
+                </div>
+            </header>
+           
+            <!-- 题目卡片 -->
+            <div class="bg-white rounded-xl card-shadow p-6 mb-6 fade-in">
+                <div class="mb-6">
+                    <span id="question-difficulty" class="inline-block px-2 py-1 text-xs font-medium rounded-full bg-success/10 text-success mb-3">
+                        简单
+                    </span>
+                    <h3 id="question-text" class="text-xl font-semibold">当你收到一条短信："恭喜您获得iPhone手机一部，请点击链接填写信息领取"，你应该怎么做？</h3>
+                </div>
+               
+                <div id="options-container" class="space-y-3">
+                    <!-- 选项将通过JS动态生成 -->
+                </div>
+            </div>
+           
+            <!-- 底部按钮 -->
+            <div class="flex justify-between">
+                <button id="prev-btn" class="px-6 py-3 border border-gray-300 rounded-lg text-dark font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <i class="fa fa-arrow-left"></i>
+                    <span>上一题</span>
+                </button>
+               
+                <button id="next-btn" class="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
+                    <span>下一题</span>
+                    <i class="fa fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结果页面 -->
+    <div id="result-page" class="min-h-screen flex flex-col items-center justify-center p-4 hidden">
+        <div id="result-card" class="max-w-2xl w-full bg-white rounded-2xl card-shadow p-6 md:p-8 result-card">
+            <!-- 分数计算进度条区域 -->
+            <div id="score-calculation" class="mb-8 text-center">
+                <p class="text-neutral mb-2">正在计算您的得分...</p>
+                <div class="score-progress-container">
+                    <div id="score-progress-bar" class="score-progress-bar bg-primary"></div>
+                </div>
+            </div>
+           
+            <div class="text-center mb-6">
+                <div id="result-icon" class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-secondary/10 text-secondary mb-4">
+                    <i class="fa-exclamation-triangle text-3xl"></i>
+                </div>
+                <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-dark mb-2">测试完成！</h2>
+               
+                <!-- 益达科技提醒 -->
+                <div class="my-4 p-3 rounded-lg bg-primary/10 inline-block">
+                    <span class="font-medium text-primary">【益达科技提醒你】</span>
+                    <span id="awareness-level" class="ml-2">您的反诈意识：防骗意识薄弱</span>
+                </div>
+               
+                <div class="flex flex-col items-center mt-4">
+                    <span class="text-4xl font-bold text-primary mb-1" id="result-score">26</span>
+                    <span class="text-neutral">总分 100 分</span>
+                </div>
+                <div class="mt-4">
+                    <span id="result-rating" class="inline-block px-4 py-2 rounded-full bg-secondary text-white font-medium">
+                        防骗意识薄弱
+                    </span>
+                </div>
+            </div>
+           
+            <div class="mb-8">
+                <h3 class="font-semibold text-lg mb-3">评语</h3>
+                <p id="result-comment" class="text-neutral leading-relaxed">
+                    您的防诈骗意识有待提高，容易受到各类诈骗的侵害。建议您立即下载国家反诈中心APP，学习防诈骗知识，遇到任何要求转账、提供个人信息的情况，务必多方核实，必要时拨打110或96110咨询。
+                </p>
+            </div>
+           
+            <div class="space-y-4 mb-8">
+                <h3 class="font-semibold text-lg mb-2">防骗建议</h3>
+                <ul class="space-y-2 text-neutral">
+                    <li class="flex items-start gap-2">
+                        <i class="fa fa-check-circle text-success mt-1"></i>
+                        <span>不轻易点击陌生链接，不下载非官方应用</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa fa-check-circle text-success mt-1"></i>
+                        <span>保护好银行卡密码、短信验证码等敏感信息</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa fa-check-circle text-success mt-1"></i>
+                        <span>遇到可疑情况，及时拨打110或全国反诈劝阻专线96110</span>
+                    </li>
+                </ul>
+            </div>
+           
+            <button id="restart-test" class="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+                <span>重新测试</span>
+                <i class="fa fa-refresh"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 题目数据 - 40道从简单到困难的防诈骗测试题
+        const questions = [
+            // 简单难度 (1-10题)
+            {
+                id: 1,
+                text: '当你收到一条短信："恭喜您获得iPhone手机一部，请点击链接填写信息领取"，你应该怎么做？',
+                difficulty: '简单',
+                score: 2,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即点击链接，填写个人信息领取奖品' },
+                    { id: 'b', text: '忽略这条短信，不轻易相信天上掉馅饼的好事' },
+                    { id: 'c', text: '转发给朋友，让他们也有机会领取' },
+                    { id: 'd', text: '打电话给发件人确认是否属实' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 2,
+                text: '接到自称是银行工作人员的电话，说你的银行卡存在风险，需要你提供银行卡号和密码进行核实，你应该？',
+                difficulty: '简单',
+                score: 2,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即提供银行卡号和密码，以免账户被盗' },
+                    { id: 'b', text: '挂断电话，自己拨打银行官方客服电话核实' },
+                    { id: 'c', text: '按照对方指示操作，毕竟是银行工作人员' },
+                    { id: 'd', text: '告诉对方自己没有时间，让他稍后再打' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 3,
+                text: '在网上购物时，卖家说订单异常，需要你点击他发来的链接进行退款操作，你应该？',
+                difficulty: '简单',
+                score: 2,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即点击链接，按照提示操作退款' },
+                    { id: 'b', text: '通过购物平台官方渠道联系卖家核实' },
+                    { id: 'c', text: '直接把银行卡信息发给卖家，让他帮忙操作' },
+                    { id: 'd', text: '抱怨卖家后，关闭聊天窗口' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 4,
+                text: '收到一条来自陌生号码的短信，内容是"爸妈，我在外地出事了，急需用钱，快把钱打到这个账户上"，你应该？',
+                difficulty: '简单',
+                score: 2,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即转账，救人要紧' },
+                    { id: 'b', text: '先打电话给子女核实情况' },
+                    { id: 'c', text: '不理会，可能是诈骗' },
+                    { id: 'd', text: '回复短信询问详情' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 5,
+                text: '微信上有陌生人加你好友，并称自己是你的远房亲戚，现在有困难需要借钱，你应该？',
+                difficulty: '简单',
+                score: 2,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '直接转账帮助亲戚' },
+                    { id: 'b', text: '通过其他亲属核实情况' },
+                    { id: 'c', text: '拉黑对方，不相信陌生人' },
+                    { id: 'd', text: '询问对方更多个人信息' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 6,
+                text: '看到网上有"刷单兼职，日赚200元"的广告，你应该？',
+                difficulty: '简单',
+                score: 2,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即报名参加，赚取零花钱' },
+                    { id: 'b', text: '知道这是诈骗，不予理会' },
+                    { id: 'c', text: '先投入少量资金试试水' },
+                    { id: 'd', text: '推荐给朋友一起做' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 7,
+                text: '收到自称是公安机关的电话，说你涉嫌洗钱，需要将资金转入"安全账户"配合调查，你应该？',
+                difficulty: '简单',
+                score: 2,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '按照要求转账，证明自己清白' },
+                    { id: 'b', text: '拒绝转账，公安机关不会设立"安全账户"' },
+                    { id: 'c', text: '害怕被抓，立即按指示操作' },
+                    { id: 'd', text: '挂掉电话，假装没接到' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 8,
+                text: '在使用公共WiFi时，下列哪些操作存在安全风险？',
+                difficulty: '简单',
+                score: 3,
+                multiple: true,
+                options: [
+                    { id: 'a', text: '进行网上银行转账' },
+                    { id: 'b', text: '登录社交账号' },
+                    { id: 'c', text: '浏览新闻网站' },
+                    { id: 'd', text: '输入信用卡信息购物' },
+                    { id: 'e', text: '观看在线视频' }
+                ],
+                correct: ['a', 'b', 'd']
+            },
+            {
+                id: 9,
+                text: '下列哪些属于个人敏感信息，不应轻易泄露？',
+                difficulty: '简单',
+                score: 3,
+                multiple: true,
+                options: [
+                    { id: 'a', text: '身份证号码' },
+                    { id: 'b', text: '银行卡号和密码' },
+                    { id: 'c', text: '短信验证码' },
+                    { id: 'd', text: '家庭住址' },
+                    { id: 'e', text: '手机号码' },
+                    { id: 'f', text: '生日' }
+                ],
+                correct: ['a', 'b', 'c', 'd', 'e', 'f']
+            },
+            {
+                id: 10,
+                text: '接到陌生电话，对方能准确说出你的姓名和住址，并称有一份快递需要签收但地址不详，让你提供更多信息，你应该？',
+                difficulty: '简单',
+                score: 2,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '提供详细信息，方便快递送达' },
+                    { id: 'b', text: '不提供信息，让对方通过官方渠道核实' },
+                    { id: 'c', text: '询问对方快递公司名称，再拨打官方电话查询' },
+                    { id: 'd', text: '直接挂断电话' }
+                ],
+                correct: ['c']
+            },
+           
+            // 中等难度 (11-25题)
+            {
+                id: 11,
+                text: '你在网上看到一个投资平台，声称"低风险、高回报，月收益可达20%"，你应该？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即投入资金，抓住赚钱机会' },
+                    { id: 'b', text: '意识到这可能是非法集资，不予理会' },
+                    { id: 'c', text: '先小额投资，观察收益情况' },
+                    { id: 'd', text: '推荐给家人朋友一起投资' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 12,
+                text: '手机收到一条短信："您的账户积分即将过期，请点击链接兑换礼品"，链接看起来像是银行官方网站，你应该？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '点击链接，尽快兑换礼品' },
+                    { id: 'b', text: '手动输入银行官方网址登录查看' },
+                    { id: 'c', text: '转发给家人，让他们也兑换' },
+                    { id: 'd', text: '删除短信，不做理会' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 13,
+                text: '在游戏中认识的网友，推荐你下载一个"游戏辅助软件"，声称可以免费获得装备，你应该？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即下载，获取免费装备' },
+                    { id: 'b', text: '怀疑是恶意软件，拒绝下载' },
+                    { id: 'c', text: '先查毒再下载' },
+                    { id: 'd', text: '让对方先试用，确认安全再下载' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 14,
+                text: '接到电话称你的孩子在学校受伤，正在医院抢救，需要立即汇款支付医药费，你应该？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '心急如焚，立即按要求汇款' },
+                    { id: 'b', text: '先拨打孩子班主任电话核实情况' },
+                    { id: 'c', text: '要求对方提供医院地址，亲自前往' },
+                    { id: 'd', text: '认为是诈骗，直接挂断电话' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 15,
+                text: '网上认识的异性朋友，感情迅速升温，不久后对方称自己遇到困难需要借钱，你应该？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即借钱帮助对方，维护感情' },
+                    { id: 'b', text: '意识到可能是"杀猪盘"诈骗，拒绝借钱' },
+                    { id: 'c', text: '少量借钱，观察对方是否归还' },
+                    { id: 'd', text: '要求见面后再决定是否借钱' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 16,
+                text: '收到"社保中心"的短信，称你的社保卡异常，需要在24小时内点击链接认证，否则将被停用，你应该？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即点击链接进行认证，避免社保卡被停用' },
+                    { id: 'b', text: '拨打当地社保中心官方电话核实' },
+                    { id: 'c', text: '不理会，可能是诈骗' },
+                    { id: 'd', text: '转发给家人让他们帮忙处理' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 17,
+                text: '在网上购买二手商品时，卖家要求你直接转账到他的个人账户，说这样可以便宜一些，你应该？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '为了省钱，直接转账给卖家' },
+                    { id: 'b', text: '坚持通过平台担保交易' },
+                    { id: 'c', text: '要求卖家提供身份证照片后再转账' },
+                    { id: 'd', text: '讨价还价后，同意直接转账' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 18,
+                text: '下列哪些情况可能是电信网络诈骗，需要提高警惕？',
+                difficulty: '中等',
+                score: 4,
+                multiple: true,
+                options: [
+                    { id: 'a', text: '自称公检法，要求转账到"安全账户"' },
+                    { id: 'b', text: '陌生号码发送中奖信息，要求先交手续费' },
+                    { id: 'c', text: '收到银行短信，提示账户异常需要登录验证' },
+                    { id: 'd', text: '网友推荐高收益投资，稳赚不赔' },
+                    { id: 'e', text: '客服来电，说订单异常需要退款' },
+                    { id: 'f', text: '10086发送的话费套餐变更提醒' }
+                ],
+                correct: ['a', 'b', 'c', 'd', 'e']
+            },
+            {
+                id: 19,
+                text: '发现自己可能遭遇网络诈骗，应该采取哪些措施？',
+                difficulty: '中等',
+                score: 4,
+                multiple: true,
+                options: [
+                    { id: 'a', text: '立即报警' },
+                    { id: 'b', text: '保留聊天记录、转账凭证等证据' },
+                    { id: 'c', text: '拨打全国反诈劝阻专线96110' },
+                    { id: 'd', text: '尝试联系对方要求退款' },
+                    { id: 'e', text: '在网上发布对方信息进行报复' },
+                    { id: 'f', text: '修改自己的各类账户密码' }
+                ],
+                correct: ['a', 'b', 'c', 'f']
+            },
+            {
+                id: 20,
+                text: '手机突然收到多条验证码短信，但自己并未操作，可能是什么原因？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '运营商发错了，可以不理会' },
+                    { id: 'b', text: '可能有人正在尝试登录或注册你的账号' },
+                    { id: 'c', text: '手机病毒导致的，需要立即杀毒' },
+                    { id: 'd', text: '朋友恶作剧，故意发送的' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 21,
+                text: '接到自称是"淘宝客服"的电话，说你购买的商品有质量问题，要给你双倍退款，但需要你提供支付宝账号和密码，你应该？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '提供账号密码，领取双倍退款' },
+                    { id: 'b', text: '不提供密码，让对方直接退款到原支付账户' },
+                    { id: 'c', text: '挂断电话，自己登录淘宝查看' },
+                    { id: 'd', text: '怀疑是诈骗，向淘宝官方客服求证' }
+                ],
+                correct: ['d']
+            },
+            {
+                id: 22,
+                text: '微信收到一条来自"领导"的消息，让你尽快转账到某个账户，说是紧急公务，你应该？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即转账，不耽误领导的事' },
+                    { id: 'b', text: '打电话给领导核实情况' },
+                    { id: 'c', text: '回复消息询问详情' },
+                    { id: 'd', text: '假装没看见，等领导再发消息' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 23,
+                text: '在社交媒体上看到有人发布"点赞、转发本条信息，可免费领取手机"的活动，你应该？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即点赞转发，参与活动' },
+                    { id: 'b', text: '怀疑是引流诈骗，不予理会' },
+                    { id: 'c', text: '先转发，看看是否真的能领到' },
+                    { id: 'd', text: '举报这条信息' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 24,
+                text: '收到一条短信，内容是"您的快递在运输途中丢失，点击链接填写信息即可获得双倍赔偿"，你最近确实有快递，应该？',
+                difficulty: '中等',
+                score: 3,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '点击链接填写信息，获取赔偿' },
+                    { id: 'b', text: '通过购物平台联系卖家核实' },
+                    { id: 'c', text: '拨打短信中的电话咨询' },
+                    { id: 'd', text: '等待快递公司主动联系' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 25,
+                text: '下载手机APP时，下列哪些做法是安全的？',
+                difficulty: '中等',
+                score: 4,
+                multiple: true,
+                options: [
+                    { id: 'a', text: '通过手机官方应用商店下载' },
+                    { id: 'b', text: '点击微信聊天中的不明链接下载' },
+                    { id: 'c', text: '下载前查看APP的评价和评分' },
+                    { id: 'd', text: '授权APP获取不必要的权限' },
+                    { id: 'e', text: '选择官方认证的APP' },
+                    { id: 'f', text: '扫描陌生人提供的二维码下载' }
+                ],
+                correct: ['a', 'c', 'e']
+            },
+           
+            // 困难难度 (26-40题)
+            {
+                id: 26,
+                text: '你接到一个电话，对方自称是市场监督管理局工作人员，说你购买的商品存在质量问题，正在进行理赔，需要你添加QQ好友办理，添加后对方发送了一个"理赔中心"的链接，你应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '点击链接，按照提示办理理赔' },
+                    { id: 'b', text: '通过官方渠道核实，不轻易点击链接' },
+                    { id: 'c', text: '询问对方工号和办公室电话，再决定' },
+                    { id: 'd', text: '既然有质量问题，就按对方要求操作' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 27,
+                text: '你在网上看到一个贷款平台，声称"无抵押、秒到账、利息低"，你正好需要资金，应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即申请贷款，解决资金问题' },
+                    { id: 'b', text: '先交手续费，尽快拿到贷款' },
+                    { id: 'c', text: '通过正规金融机构申请贷款' },
+                    { id: 'd', text: '填写个人信息，看看能贷多少' }
+                ],
+                correct: ['c']
+            },
+            {
+                id: 28,
+                text: '你的微信突然收到一条来自多年未联系的同学的消息，说他在外地出差，钱包被盗，让你先转些钱给他应急，你应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '老同学有困难，立即转账帮忙' },
+                    { id: 'b', text: '通过其他共同好友核实情况' },
+                    { id: 'c', text: '打电话给同学确认（如果有号码）' },
+                    { id: 'd', text: '以自己也没钱为由拒绝' }
+                ],
+                correct: ['c']
+            },
+            {
+                id: 29,
+                text: '你收到一条短信，称你的车辆有违章记录，需要点击链接缴纳罚款，否则将产生滞纳金，你应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即点击链接缴纳罚款，避免滞纳金' },
+                    { id: 'b', text: '通过交管12123APP查询核实' },
+                    { id: 'c', text: '拨打短信中的电话咨询' },
+                    { id: 'd', text: '不理会，可能是诈骗' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 30,
+                text: '在一个聊天群里，有人发布"抢红包"活动，规则是先在指定平台充值，然后可以抢更多红包，你应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '少量充值试试，可能能赚钱' },
+                    { id: 'b', text: '意识到这是赌博或诈骗，退出群聊' },
+                    { id: 'c', text: '邀请朋友一起参与，增加中奖机会' },
+                    { id: 'd', text: '观察其他人是否赚到钱，再决定' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 31,
+                text: '你接到自称是教育局的电话，说你符合助学金申请条件，需要你提供银行卡号和身份证号进行审核，你应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '提供信息，争取获得助学金' },
+                    { id: 'b', text: '挂断电话，向学校相关部门核实' },
+                    { id: 'c', text: '要求对方提供官方文件' },
+                    { id: 'd', text: '询问具体金额后再决定' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 32,
+                text: '你在网上看到一个"网络兼职"，工作内容是帮助商家"代运营"，需要先缴纳一定的押金，承诺一个月后返还并支付高薪，你应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '缴纳押金，开始兼职' },
+                    { id: 'b', text: '怀疑是诈骗，不缴纳任何费用' },
+                    { id: 'c', text: '要求签订合同后再缴纳押金' },
+                    { id: 'd', text: '先交一部分押金试试' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 33,
+                text: '你的手机收到一条来自"10086"的短信，说你可以免费领取流量包，点击链接即可办理，你应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '点击链接领取，毕竟是10086发来的' },
+                    { id: 'b', text: '拨打10086官方热线核实' },
+                    { id: 'c', text: '查看短信中的链接是否为官方网址' },
+                    { id: 'd', text: '转发给家人，让他们也领取' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 34,
+                text: '你在使用一款APP时，突然弹出一个窗口，提示"你的账号存在异常，需要立即验证，否则将被封禁"，并要求输入密码，你应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即输入密码，避免账号被封' },
+                    { id: 'b', text: '关闭窗口，重新打开APP查看' },
+                    { id: 'c', text: '截图保存，然后输入密码' },
+                    { id: 'd', text: '通过官方渠道联系客服咨询' }
+                ],
+                correct: ['d']
+            },
+            {
+                id: 35,
+                text: '下列哪些是新型网络诈骗手段，需要特别警惕？',
+                difficulty: '困难',
+                score: 5,
+                multiple: true,
+                options: [
+                    { id: 'a', text: 'AI换脸视频诈骗，冒充亲友借钱' },
+                    { id: 'b', text: '虚假购物直播，诱导私下交易' },
+                    { id: 'c', text: '"元宇宙"投资诈骗' },
+                    { id: 'd', text: '免费赠送游戏皮肤，要求扫码关注' },
+                    { id: 'e', text: '伪造核酸检测阳性报告，实施敲诈' },
+                    { id: 'f', text: '声称可以"消除征信污点"' }
+                ],
+                correct: ['a', 'b', 'c', 'd', 'e', 'f']
+            },
+            {
+                id: 36,
+                text: '你接到一个电话，对方自称是你公司的IT部门，说你的电脑感染了病毒，需要远程控制你的电脑进行清理，你应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '配合对方，让其远程控制电脑' },
+                    { id: 'b', text: '挂断电话，联系公司IT部门核实' },
+                    { id: 'c', text: '询问对方工号和姓名后再决定' },
+                    { id: 'd', text: '自己进行病毒扫描，不需要对方帮助' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 37,
+                text: '在网上看到一个"高价回收旧手机"的信息，对方要求你先将手机寄过去，验机后再付款，你应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '立即寄手机，高价回收很划算' },
+                    { id: 'b', text: '通过正规平台进行交易' },
+                    { id: 'c', text: '要求对方先支付一部分定金' },
+                    { id: 'd', text: '删除手机数据后再寄过去' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 38,
+                text: '你收到一条短信，说你之前购买的商品被检测出质量问题，厂家正在召回并双倍赔偿，但需要你先在指定平台购买一款"保证金商品"，之后会全额返还，你应该？',
+                difficulty: '困难',
+                score: 4,
+                multiple: false,
+                options: [
+                    { id: 'a', text: '按照要求购买，毕竟可以双倍赔偿' },
+                    { id: 'b', text: '通过原购买渠道核实信息' },
+                    { id: 'c', text: '询问对方具体的商品问题' },
+                    { id: 'd', text: '拒绝购买，但投诉该商品质量问题' }
+                ],
+                correct: ['b']
+            },
+            {
+                id: 39,
+                text: '你的孩子用你的手机玩游戏，之后你收到多条游戏充值记录，你怀疑是孩子误操作，应该采取哪些措施？',
+                difficulty: '困难',
+                score: 5,
+                multiple: true,
+                options: [
+                    { id: 'a', text: '立即修改支付密码和手机锁屏密码' },
+                    { id: 'b', text: '联系游戏客服，说明情况申请退款' },
+                    { id: 'c', text: '检查是否开启了免密支付，及时关闭' },
+                    { id: 'd', text: '严厉批评孩子，禁止再玩游戏' },
+                    { id: 'e', text: '向公安机关报案' },
+                    { id: 'f', text: '开启手机的儿童模式或家长控制' }
+                ],
+                correct: ['a', 'b', 'c', 'f']
+            },
+            {
+                id: 40,
+                text: '为了有效防范电信网络诈骗，个人应该养成哪些良好习惯？',
+                difficulty: '困难',
+                score: 5,
+                multiple: true,
+                options: [
+                    { id: 'a', text: '不轻易点击陌生链接和下载不明APP' },
+                    { id: 'b', text: '不向陌生人透露短信验证码' },
+                    { id: 'c', text: '定期更换各类账户密码' },
+                    { id: 'd', text: '安装国家反诈中心APP' },
+                    { id: 'e', text: '关注官方发布的反诈知识' },
+                    { id: 'f', text: '不贪图小便宜，不轻信"天上掉馅饼"' }
+                ],
+                correct: ['a', 'b', 'c', 'd', 'e', 'f']
+            }
+        ];
+
+        // 全局变量
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let totalScore = 0;
+
+        // DOM元素
+        const welcomePage = document.getElementById('welcome-page');
+        const testPage = document.getElementById('test-page');
+        const resultPage = document.getElementById('result-page');
+        const startTestBtn = document.getElementById('start-test');
+        const restartTestBtn = document.getElementById('restart-test');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const currentQuestionEl = document.getElementById('current-question');
+        const progressBarEl = document.getElementById('progress-bar');
+        const questionDifficultyEl = document.getElementById('question-difficulty');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainerEl = document.getElementById('options-container');
+        const resultScoreEl = document.getElementById('result-score');
+        const resultRatingEl = document.getElementById('result-rating');
+        const resultCommentEl = document.getElementById('result-comment');
+        const resultIconEl = document.getElementById('result-icon');
+        const resultCardEl = document.getElementById('result-card');
+        const scoreCalculationEl = document.getElementById('score-calculation');
+        const scoreProgressBarEl = document.getElementById('score-progress-bar');
+        const awarenessLevelEl = document.getElementById('awareness-level');
+
+        // 事件监听
+        startTestBtn.addEventListener('click', startTest);
+        restartTestBtn.addEventListener('click', restartTest);
+        prevBtn.addEventListener('click', goToPreviousQuestion);
+        nextBtn.addEventListener('click', goToNextQuestion);
+
+        // 开始测试
+        function startTest() {
+            welcomePage.classList.add('hidden');
+            testPage.classList.remove('hidden');
+            loadQuestion(currentQuestionIndex);
+        }
+
+        // 重新测试
+        function restartTest() {
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            totalScore = 0;
+            resultPage.classList.add('hidden');
+            testPage.classList.remove('hidden');
+            loadQuestion(currentQuestionIndex);
+        }
+
+        // 加载题目
+        function loadQuestion(index) {
+            const question = questions[index];
+           
+            // 更新题目信息
+            currentQuestionEl.textContent = `第${question.id}题`;
+            progressBarEl.style.width = `${(question.id / questions.length) * 100}%`;
+           
+            // 设置难度标签样式
+            questionDifficultyEl.textContent = question.difficulty;
+            if (question.difficulty === '简单') {
+                questionDifficultyEl.className = 'inline-block px-2 py-1 text-xs font-medium rounded-full bg-success/10 text-success mb-3';
+            } else if (question.difficulty === '中等') {
+                questionDifficultyEl.className = 'inline-block px-2 py-1 text-xs font-medium rounded-full bg-warning/10 text-warning mb-3';
+            } else {
+                questionDifficultyEl.className = 'inline-block px-2 py-1 text-xs font-medium rounded-full bg-secondary/10 text-secondary mb-3';
+            }
+           
+            questionTextEl.textContent = question.text;
+           
+            // 清空并生成选项
+            optionsContainerEl.innerHTML = '';
+            question.options.forEach(option => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'option-hover p-4 border border-gray-200 rounded-lg cursor-pointer flex items-start gap-3';
+               
+                // 判断是否为多选题
+                const inputType = question.multiple ? 'checkbox' : 'radio';
+                const name = question.multiple ? `q${question.id}` : 'options';
+               
+                optionEl.innerHTML = `
+                    <input type="${inputType}" id="${question.id}-${option.id}" name="${name}" value="${option.id}" class="mt-1 accent-primary">
+                    <label for="${question.id}-${option.id}" class="flex-grow cursor-pointer">${option.text}</label>
+                `;
+               
+                optionsContainerEl.appendChild(optionEl);
+               
+                // 如果用户之前回答过此题，恢复选择状态
+                if (userAnswers[question.id]) {
+                    if (question.multiple) {
+                        if (userAnswers[question.id].includes(option.id)) {
+                            document.getElementById(`${question.id}-${option.id}`).checked = true;
+                        }
+                    } else {
+                        if (userAnswers[question.id] === option.id) {
+                            document.getElementById(`${question.id}-${option.id}`).checked = true;
+                        }
+                    }
+                }
+               
+                // 添加选项点击事件
+                optionEl.addEventListener('click', (e) => {
+                    // 如果点击的是label或容器，触发input的点击
+                    if (e.target !== document.getElementById(`${question.id}-${option.id}`)) {
+                        document.getElementById(`${question.id}-${option.id}`).click();
+                    }
+                   
+                    // 保存用户答案
+                    saveAnswer(question);
+                });
+            });
+           
+            // 更新按钮状态
+            prevBtn.disabled = index === 0;
+            nextBtn.textContent = index === questions.length - 1 ? '提交测试' : '下一题';
+            nextBtn.innerHTML = index === questions.length - 1 ?
+                '<span>提交测试</span><i class="fa fa-check"></i>' :
+                '<span>下一题</span><i class="fa fa-arrow-right"></i>';
+        }
+
+        // 保存用户答案
+        function saveAnswer(question) {
+            if (question.multiple) {
+                const selectedOptions = [];
+                document.querySelectorAll(`input[name="q${question.id}"]:checked`).forEach(checkbox => {
+                    selectedOptions.push(checkbox.value);
+                });
+                userAnswers[question.id] = selectedOptions;
+            } else {
+                const selectedOption = document.querySelector(`input[name="options"]:checked`);
+                userAnswers[question.id] = selectedOption ? selectedOption.value : null;
+            }
+        }
+
+        // 上一题
+        function goToPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                // 添加动画效果
+                questionTextEl.parentElement.classList.add('fade-in');
+                setTimeout(() => {
+                    questionTextEl.parentElement.classList.remove('fade-in');
+                }, 500);
+            }
+        }
+
+        // 下一题或提交
+        function goToNextQuestion() {
+            // 检查是否已回答当前问题
+            const currentQuestion = questions[currentQuestionIndex];
+            if (!userAnswers[currentQuestion.id] ||
+                (currentQuestion.multiple && userAnswers[currentQuestion.id].length === 0)) {
+                alert('请选择答案后再继续');
+                return;
+            }
+           
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                // 添加动画效果
+                questionTextEl.parentElement.classList.add('fade-in');
+                setTimeout(() => {
+                    questionTextEl.parentElement.classList.remove('fade-in');
+                }, 500);
+            } else {
+                // 显示结果页面
+                testPage.classList.add('hidden');
+                resultPage.classList.remove('hidden');
+               
+                // 重置进度条
+                scoreProgressBarEl.style.width = '0%';
+               
+                // 计算得分并带动画效果
+                setTimeout(() => {
+                    calculateScoreWithAnimation();
+                }, 500);
+            }
+        }
+
+        // 带动画效果的得分计算
+        function calculateScoreWithAnimation() {
+            let tempScore = 0;
+            let questionIndex = 0;
+           
+            // 逐步计算得分，创建动画效果
+            const interval = setInterval(() => {
+                if (questionIndex < questions.length) {
+                    const question = questions[questionIndex];
+                    const userAnswer = userAnswers[question.id];
+                   
+                    if (userAnswer) {
+                        let isCorrect = false;
+                       
+                        if (question.multiple) {
+                            // 多选题需要全部选对才得分
+                            if (userAnswer.length === question.correct.length) {
+                                isCorrect = question.correct.every(option => userAnswer.includes(option));
+                            }
+                        } else {
+                            // 单选题
+                            isCorrect = question.correct.includes(userAnswer);
+                        }
+                       
+                        if (isCorrect) {
+                            tempScore += question.score;
+                        }
+                    }
+                   
+                    questionIndex++;
+                    // 更新进度条
+                    const progress = (tempScore / 100) * 100;
+                    scoreProgressBarEl.style.width = `${progress}%`;
+                } else {
+                    clearInterval(interval);
+                    totalScore = tempScore;
+                    // 隐藏计算区域，显示结果
+                    setTimeout(() => {
+                        scoreCalculationEl.classList.add('hidden');
+                        showResult();
+                    }, 1000);
+                }
+            }, 30); // 每30毫秒计算一道题
+        }
+
+        // 显示结果
+        function showResult() {
+            // 显示得分
+            resultScoreEl.textContent = totalScore;
+           
+            // 根据得分设置评级、评语、图标和颜色
+            let rating, comment, iconClass, iconBgClass, ratingClass, cardBgClass, awarenessText;
+           
+            if (totalScore >= 90) {
+                rating = '防骗高手';
+                awarenessText = '防骗高手';
+                comment = '恭喜您！您的防诈骗意识非常强，能够识别各类常见的诈骗手段。请继续保持警惕，不轻易泄露个人信息，不贪图小便宜，让诈骗分子无机可乘。';
+                iconClass = 'fa-trophy text-3xl';
+                iconBgClass = 'bg-success/10 text-success';
+                ratingClass = 'bg-success text-white';
+                cardBgClass = 'bg-success/5 border border-success/20';
+            } else if (totalScore >= 70) {
+                rating = '防骗达人';
+                awarenessText = '良好';
+                comment = '不错！您具备较好的防诈骗意识，能够识别大部分常见诈骗手段。建议您继续关注最新的诈骗手法，特别是新型网络诈骗，提高警惕，保护好个人财产安全。';
+                iconClass = 'fa-shield text-3xl';
+                iconBgClass = 'bg-primary/10 text-primary';
+                ratingClass = 'bg-primary text-white';
+                cardBgClass = 'bg-primary/5 border border-primary/20';
+            } else if (totalScore >= 60) {
+                rating = '防骗新手';
+                awarenessText = '一般';
+                comment = '您的防诈骗意识一般，对部分常见诈骗手段有一定了解，但仍有提升空间。建议您多学习防诈骗知识，遇到可疑情况时不轻信、不透露、不转账，及时向警方或官方机构核实。';
+                iconClass = 'fa-exclamation-circle text-3xl';
+                iconBgClass = 'bg-warning/10 text-warning';
+                ratingClass = 'bg-warning text-white';
+                cardBgClass = 'bg-warning/5 border border-warning/20';
+            } else {
+                rating = '防骗意识薄弱';
+                awarenessText = '薄弱';
+                comment = '您的防诈骗意识有待提高，容易受到各类诈骗的侵害。建议您立即下载国家反诈中心APP，学习防诈骗知识，遇到任何要求转账、提供个人信息的情况，务必多方核实，必要时拨打110或96110咨询。';
+                iconClass = 'fa-exclamation-triangle text-3xl';
+                iconBgClass = 'bg-secondary/10 text-secondary';
+                ratingClass = 'bg-secondary text-white';
+                cardBgClass = 'bg-secondary/5 border border-secondary/20';
+            }
+           
+            // 更新结果页面元素
+            resultRatingEl.textContent = rating;
+            resultRatingEl.className = `inline-block px-4 py-2 rounded-full ${ratingClass} font-medium`;
+            resultCommentEl.textContent = comment;
+            resultIconEl.className = `inline-flex items-center justify-center w-20 h-20 rounded-full ${iconBgClass} mb-4`;
+            resultIconEl.innerHTML = `<i class="${iconClass}"></i>`;
+           
+            // 设置卡片背景色
+            resultCardEl.className = `max-w-2xl w-full rounded-2xl card-shadow p-6 md:p-8 result-card ${cardBgClass}`;
+           
+            // 设置益达科技提醒的反诈意识水平
+            awarenessLevelEl.textContent = `您的反诈意识：${awarenessText}`;
+        }
+    </script>
+</body>
+</html>
+    

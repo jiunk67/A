@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>// 高级安全监控控制台 //</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        body {
+            background-color: #000;
+            color: #0f0;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        /* 终端容器 */
+        #terminal-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            grid-template-rows: 50px 1fr 50px;
+            grid-template-areas:
+                "header sidebar-header"
+                "main sidebar"
+                "input sidebar";
+            gap: 10px;
+            padding: 10px;
+            height: 100%;
+        }
+        
+        /* 头部样式 */
+        .header {
+            grid-area: header;
+            border: 1px solid #0f0;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sidebar-header {
+            grid-area: sidebar-header;
+            border: 1px solid #0f0;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        /* 主内容区 */
+        #main-terminal {
+            grid-area: main;
+            border: 1px solid #0f0;
+            padding: 15px;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        /* 侧边栏 */
+        #sidebar {
+            grid-area: sidebar;
+            border: 1px solid #0f0;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* 命令输入区 */
+        #command-input {
+            grid-area: input;
+            display: flex;
+            align-items: center;
+            border: 1px solid #0f0;
+            padding: 0 15px;
+        }
+        
+        /* 文本样式分类 */
+        .system { color: #f0f; }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        .warning { color: #ff0; }
+        .info { color: #0af; }
+        .debug { color: #a50; }
+        .critical { color: #f0f; font-weight: bold; animation: blink 0.5s infinite; }
+        
+        /* 光标样式 */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background-color: #0f0;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* 提示符样式 */
+        .prompt {
+            color: #0f0;
+            margin-right: 8px;
+        }
+        
+        /* 输入框样式 */
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: #0f0;
+            font-size: 16px;
+            width: 100%;
+            outline: none;
+        }
+        
+        /* 状态卡片 */
+        .status-card {
+            border: 1px dashed #0f0;
+            padding: 10px;
+        }
+        
+        .status-card h3 {
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #0f0;
+        }
+        
+        /* 进程列表 */
+        .process-list {
+            list-style: none;
+        }
+        
+        .process-list li {
+            margin: 5px 0;
+            padding: 3px;
+            border-bottom: 1px dotted #0f03;
+        }
+        
+        /* 矩阵背景 */
+        .matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.08;
+        }
+        
+        /* 进度条 */
+        .progress-container {
+            width: 100%;
+            height: 15px;
+            background-color: #000;
+            border: 1px solid #0f0;
+            margin: 5px 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: #0f0;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            #terminal-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 50px 50px 1fr 1fr 50px;
+                grid-template-areas:
+                    "header"
+                    "sidebar-header"
+                    "main"
+                    "sidebar"
+                    "input";
+            }
+        }
+        
+        /* 表格样式 */
+        .vuln-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        
+        .vuln-table th, .vuln-table td {
+            border: 1px solid #0f0;
+            padding: 5px;
+            text-align: left;
+        }
+        
+        .vuln-table th {
+            background-color: #0f03;
+        }
+        
+        /* 扫描动画 */
+        @keyframes scan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+        
+        .scan-animation {
+            background: linear-gradient(
+                to bottom right,
+                transparent 0%,
+                rgba(0, 255, 0, 0.1) 25%,
+                rgba(0, 255, 0, 0.3) 50%,
+                rgba(0, 255, 0, 0.1) 75%,
+                transparent 100%
+            );
+            background-size: 200% 200%;
+            animation: scan 2s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- 矩阵背景 -->
+    <canvas id="matrix" class="matrix"></canvas>
+    
+    <!-- 终端容器 -->
+    <div id="terminal-container">
+        <!-- 顶部标题 -->
+        <div class="header system">
+            <div>高级安全监控控制台 v5.1.3</div>
+            <div id="system-time">2023-10-05 14:32:45</div>
+        </div>
+        
+        <!-- 侧边栏标题 -->
+        <div class="sidebar-header system">系统状态监控</div>
+        
+        <!-- 主终端区域 -->
+        <div id="main-terminal">
+            <div class="system">// 安全监控系统已启动 //</div>
+            <div class="system">// 访问级别: 管理员 (最高权限) //</div>
+            <div class="system">// 会话ID: SESS-${Math.random().toString(36).substr(2, 8).toUpperCase()} //</div>
+            <br>
+            
+            <div class="info">> 初始化系统组件...</div>
+            <div class="success">√ 日志服务已启动</div>
+            <div class="success">√ 监控模块已加载</div>
+            <div class="success">√ 加密模块已激活 (AES-256)</div>
+            <div class="success">√ 漏洞扫描引擎已就绪</div>
+            <div class="success">√ 防火墙规则已应用</div>
+            <br>
+            
+            <div class="warning">! 系统提示: 检测到异常流量波动</div>
+            <div class="info">> 正在分析网络数据包...</div>
+            <div class="debug">协议分布: TCP(68%) | UDP(22%) | ICMP(10%)</div>
+            <div class="debug">流量来源: 本地(75%) | 远程(25%)</div>
+            <div class="success">√ 流量分析完成: 无威胁特征</div>
+            <br>
+            
+            <div class="system">> 最近安全日志:</div>
+            <div class="info">[14:28:12] 防火墙拦截: 185.234.12.45:4444</div>
+            <div class="info">[14:25:07] 认证成功: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6001040d090e205159524e5156584e514e55">[email&#160;protected]</a></div>
+            <div class="error">[14:19:33] 认证失败: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a9cedcccdadde99b999a87989190879c9f879e9b">[email&#160;protected]</a> (3次尝试)</div>
+            <div class="warning">[14:15:42] 检测到端口扫描: 45.33.12.154</div>
+            <div class="info">[14:10:21] 系统更新完成</div>
+            <br>
+            
+            <div class="system">> 请输入命令 <span class="cursor"></span></div>
+        </div>
+        
+        <!-- 侧边栏监控 -->
+        <div id="sidebar">
+            <!-- 系统资源 -->
+            <div class="status-card">
+                <h3 class="success">系统资源</h3>
+                <div class="info">CPU: <span id="cpu-usage">65%</span></div>
+                <div class="progress-container"><div class="progress-bar" id="cpu-bar" style="width: 65%"></div></div>
+                
+                <div class="info">内存: <span id="mem-usage">42%</span></div>
+                <div class="progress-container"><div class="progress-bar" id="mem-bar" style="width: 42%"></div></div>
+                
+                <div class="info">磁盘: <span id="disk-usage">28%</span></div>
+                <div class="progress-container"><div class="progress-bar" id="disk-bar" style="width: 28%"></div></div>
+                
+                <div class="info">网络: <span id="net-usage">12Mbps</span></div>
+                <div class="progress-container"><div class="progress-bar" id="net-bar" style="width: 40%"></div></div>
+            </div>
+            
+            <!-- 在线设备 -->
+            <div class="status-card">
+                <h3 class="success">在线设备 (8)</h3>
+                <ul class="process-list">
+                    <li class="info">192.168.1.1 (网关)</li>
+                    <li class="info">192.168.1.5 (工作站)</li>
+                    <li class="info">192.168.1.10 (服务器)</li>
+                    <li class="info">192.168.1.15 (打印机)</li>
+                    <li class="info">192.168.1.20 (NAS)</li>
+                </ul>
+            </div>
+            
+            <!-- 运行进程 -->
+            <div class="status-card">
+                <h3 class="success">活跃进程</h3>
+                <ul class="process-list">
+                    <li class="debug">sysmon.exe (PID: 1248)</li>
+                    <li class="debug">netguard.dll (PID: 3562)</li>
+                    <li class="debug">logserver (PID: 7821)</li>
+                    <li class="debug">cryptd (PID: 2105)</li>
+                    <li class="debug">scanner (PID: 4690)</li>
+                </ul>
+            </div>
+            
+            <!-- 可用命令 -->
+            <div class="status-card">
+                <h3 class="success">常用命令</h3>
+                <ul class="process-list">
+                    <li class="warning">status - 系统状态</li>
+                    <li class="warning">logs - 查看日志</li>
+                    <li class="warning">netstat - 网络连接</li>
+                    <li class="warning">scan [url/ip] - 漏洞扫描</li>
+                    <li class="warning">exploit - 漏洞利用</li>
+                    <li class="warning">brute - 暴力破解</li>
+                    <li class="warning">help - 命令帮助</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 命令输入区 -->
+        <div id="command-input">
+            <span class="prompt">admin@console:~$</span>
+            <input type="text" id="cmd-input" placeholder="输入命令..." autocomplete="off">
+        </div>
+    </div>
+    
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // 更新系统时间
+        function updateSystemTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            }).replace(/\//g, '-');
+            document.getElementById('system-time').textContent = timeString;
+        }
+        updateSystemTime();
+        setInterval(updateSystemTime, 1000);
+        
+        // 模拟系统资源波动
+        function simulateResourceUsage() {
+            const cpu = document.getElementById('cpu-usage');
+            const cpuBar = document.getElementById('cpu-bar');
+            const mem = document.getElementById('mem-usage');
+            const memBar = document.getElementById('mem-bar');
+            const disk = document.getElementById('disk-usage');
+            const diskBar = document.getElementById('disk-bar');
+            const net = document.getElementById('net-usage');
+            const netBar = document.getElementById('net-bar');
+            
+            // 小幅度波动当前值
+            let currentCpu = parseInt(cpu.textContent);
+            let currentMem = parseInt(mem.textContent);
+            let currentDisk = parseInt(disk.textContent);
+            
+            currentCpu = Math.max(30, Math.min(90, currentCpu + (Math.random() * 10 - 5)));
+            currentMem = Math.max(20, Math.min(70, currentMem + (Math.random() * 5 - 2.5)));
+            currentDisk = Math.max(10, Math.min(50, currentDisk + (Math.random() * 3 - 1.5)));
+            
+            cpu.textContent = Math.round(currentCpu) + '%';
+            cpuBar.style.width = currentCpu + '%';
+            mem.textContent = Math.round(currentMem) + '%';
+            memBar.style.width = currentMem + '%';
+            disk.textContent = Math.round(currentDisk) + '%';
+            diskBar.style.width = currentDisk + '%';
+            
+            // 随机网络速度
+            const netSpeed = Math.round(Math.random() * 30 + 5);
+            net.textContent = netSpeed + 'Mbps';
+            netBar.style.width = (netSpeed / 75 * 100) + '%';
+            
+            // 随机颜色变化
+            if (currentCpu > 80) {
+                cpu.className = 'error';
+                cpuBar.style.backgroundColor = '#f00';
+            } else if (currentCpu > 60) {
+                cpu.className = 'warning';
+                cpuBar.style.backgroundColor = '#ff0';
+            } else {
+                cpu.className = 'info';
+                cpuBar.style.backgroundColor = '#0f0';
+            }
+            
+            if (currentMem > 75) {
+                mem.className = 'error';
+                memBar.style.backgroundColor = '#f00';
+            } else if (currentMem > 50) {
+                mem.className = 'warning';
+                memBar.style.backgroundColor = '#ff0';
+            } else {
+                mem.className = 'info';
+                memBar.style.backgroundColor = '#0f0';
+            }
+        }
+        setInterval(simulateResourceUsage, 3000);
+        
+        // 矩阵背景效果
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = document.getElementById('main-terminal').offsetWidth;
+            canvas.height = document.getElementById('main-terminal').offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ';
+        const fontSize = 14;
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = Array(columns).fill(1);
+        
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#0f0';
+            ctx.font = `${fontSize}px monospace`;
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                
+                ctx.fillText(text, x, y);
+                
+                if (y > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 40);
+        
+        // 命令处理
+        const cmdInput = document.getElementById('cmd-input');
+        const mainTerminal = document.getElementById('main-terminal');
+        
+        // 模拟扫描进度
+        function simulateScanProgress(callback) {
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(progressInterval);
+                    callback();
+                }
+                
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-container';
+                progressBar.innerHTML = `<div class="progress-bar" style="width: ${progress}%"></div>`;
+                
+                // 更新或添加进度条
+                const existingBar = mainTerminal.querySelector('.scan-progress');
+                if (existingBar) {
+                    existingBar.innerHTML = `<div class="progress-bar" style="width: ${progress}%"></div>`;
+                } else {
+                    const container = document.createElement('div');
+                    container.className = 'scan-progress';
+                    container.appendChild(progressBar);
+                    mainTerminal.appendChild(container);
+                }
+                
+                mainTerminal.scrollTop = mainTerminal.scrollHeight;
+            }, 300);
+        }
+        
+        // 模拟漏洞扫描
+        function simulateVulnerabilityScan(target) {
+            return new Promise((resolve) => {
+                // 模拟扫描过程
+                setTimeout(() => {
+                    const vulnerabilities = [];
+                    const vulnTypes = [
+                        'SQL注入', 'XSS跨站脚本', 'CSRF跨站请求伪造', 
+                        '文件包含', '命令注入', 'SSRF服务器端请求伪造',
+                        'XXE XML外部实体', '反序列化漏洞', '目录遍历',
+                        '认证绕过', '权限提升', '信息泄露'
+                    ];
+                    
+                    // 随机生成1-5个漏洞
+                    const numVulns = Math.floor(Math.random() * 5) + 1;
+                    for (let i = 0; i < numVulns; i++) {
+                        const randomType = vulnTypes[Math.floor(Math.random() * vulnTypes.length)];
+                        const severity = ['低', '中', '高', '严重'][Math.floor(Math.random() * 4)];
+                        
+                        vulnerabilities.push({
+                            type: randomType,
+                            severity: severity,
+                            description: `${randomType}漏洞存在于${target}的${['登录页面', 'API接口', '上传功能', '搜索功能', '管理后台'][Math.floor(Math.random() * 5)]}`,
+                            cve: `CVE-${2020 + Math.floor(Math.random() * 4)}-${Math.floor(1000 + Math.random() * 9000)}`
+                        });
+                    }
+                    
+                    resolve(vulnerabilities);
+                }, 2000);
+            });
+        }
+        
+        // 模拟暴力破解
+        function simulateBruteForce(target) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const success = Math.random() > 0.7; // 30%成功率
+                    const attempts = Math.floor(Math.random() * 1000) + 500;
+                    const cracked = success ? ['admin:admin123', 'root:toor', 'guest:guest123'][Math.floor(Math.random() * 3)] : null;
+                    
+                    resolve({ success, attempts, cracked });
+                }, 3000);
+            });
+        }
+        
+        // 模拟漏洞利用
+        function simulateExploit(target, vulnerability) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const success = Math.random() > 0.6; // 40%失败率
+                    const result = success ? 
+                        `成功利用${vulnerability}漏洞获取系统权限` : 
+                        `利用${vulnerability}漏洞失败: 目标已打补丁`;
+                    
+                    resolve({ success, result });
+                }, 2500);
+            });
+        }
+        
+        cmdInput.addEventListener('keydown', async function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value.trim();
+                if (!command) return;
+                
+                // 添加命令到终端
+                const commandLine = document.createElement('div');
+                commandLine.innerHTML = `<span class="prompt">admin@console:~$</span> ${command}`;
+                mainTerminal.appendChild(commandLine);
+                
+                // 处理命令
+                const output = document.createElement('div');
+                
+                // 解析命令和参数
+                const parts = command.split(' ');
+                const cmd = parts[0].toLowerCase();
+                const args = parts.slice(1);
+                
+                switch (cmd) {
+                    case 'status':
+                        output.innerHTML = `
+                            <div class="info">系统状态: 正常运行中</div>
+                            <div class="info">启动时间: 2023-10-05 08:15:32</div>
+                            <div class="info">当前用户: admin (管理员)</div>
+                            <div class="info">会话ID: SESS-${Math.random().toString(36).substr(2, 8).toUpperCase()}</div>
+                            <div class="info">连接数: ${Math.floor(Math.random() * 20) + 5} 个活跃连接</div>
+                            <div class="info">安全等级: 高 (已启用防火墙)</div>
+                        `;
+                        break;
+                        
+                    case 'logs':
+                        output.innerHTML = `
+                            <div class="info">[${new Date().toLocaleTimeString('zh-CN', {hour12: false})}] 用户执行命令: ${command}</div>
+                            <div class="info">[14:35:22] 系统资源检查完成</div>
+                            <div class="info">[14:33:10] 自动备份成功</div>
+                            <div class="warning">[14:31:05] 磁盘空间低于30% (警告)</div>
+                            <div class="info">[14:28:12] 防火墙拦截: 185.234.12.45:4444</div>
+                            <div class="info">[14:25:07] 认证成功: admin@192.168.1.5</div>
+                        `;
+                        break;
+                        
+                    case 'netstat':
+                        output.innerHTML = `
+                            <div class="info">活动网络连接:</div>
+                            <div class="info">TCP 192.168.1.5:80 → 203.0.113.45:5678 (ESTABLISHED)</div>
+                            <div class="info">TCP 192.168.1.5:443 → 198.51.100.12:1234 (ESTABLISHED)</div>
+                            <div class="info">UDP 192.168.1.5:53 → *:* (LISTEN)</div>
+                            <div class="info">TCP 192.168.1.5:22 → 172.16.0.8:9876 (ESTABLISHED)</div>
+                            <div class="info">TCP 192.168.1.5:3389 → 10.0.0.15:6543 (ESTABLISHED)</div>
+                        `;
+                        break;
+                        
+                    case 'scan':
+                        if (!args[0]) {
+                            output.className = 'error';
+                            output.textContent = '用法: scan [url/ip] - 例如: scan http://example.com';
+                            break;
+                        }
+                        
+                        const target = args[0];
+                        output.className = 'info';
+                        output.innerHTML = `> 开始扫描目标: ${target} <span class="cursor"></span>`;
+                        mainTerminal.appendChild(output);
+                        
+                        // 添加扫描动画
+                        const scanDiv = document.createElement('div');
+                        scanDiv.className = 'scan-animation';
+                        scanDiv.style.height = '20px';
+                        scanDiv.style.margin = '5px 0';
+                        mainTerminal.appendChild(scanDiv);
+                        
+                        // 模拟扫描进度
+                        simulateScanProgress(async () => {
+                            scanDiv.remove();
+                            
+                            const resultDiv = document.createElement('div');
+                            resultDiv.className = 'info';
+                            resultDiv.innerHTML = `> 扫描完成: ${target}`;
+                            mainTerminal.appendChild(resultDiv);
+                            
+                            // 获取漏洞扫描结果
+                            const vulnerabilities = await simulateVulnerabilityScan(target);
+                            
+                            if (vulnerabilities.length === 0) {
+                                const noVulnDiv = document.createElement('div');
+                                noVulnDiv.className = 'success';
+                                noVulnDiv.textContent = '√ 未发现已知漏洞';
+                                mainTerminal.appendChild(noVulnDiv);
+                            } else {
+                                const vulnCountDiv = document.createElement('div');
+                                vulnCountDiv.className = 'error';
+                                vulnCountDiv.textContent = `! 发现 ${vulnerabilities.length} 个漏洞`;
+                                mainTerminal.appendChild(vulnCountDiv);
+                                
+                                // 创建漏洞表格
+                                const table = document.createElement('table');
+                                table.className = 'vuln-table';
+                                table.innerHTML = `
+                                    <thead>
+                                        <tr>
+                                            <th>类型</th>
+                                            <th>严重性</th>
+                                            <th>CVE编号</th>
+                                            <th>描述</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${vulnerabilities.map(vuln => `
+                                            <tr>
+                                                <td>${vuln.type}</td>
+                                                <td class="${vuln.severity === '严重' ? 'critical' : vuln.severity === '高' ? 'error' : vuln.severity === '中' ? 'warning' : 'info'}">${vuln.severity}</td>
+                                                <td>${vuln.cve}</td>
+                                                <td>${vuln.description}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                `;
+                                mainTerminal.appendChild(table);
+                            }
+                            
+                            mainTerminal.scrollTop = mainTerminal.scrollHeight;
+                        });
+                        
+                        this.value = '';
+                        return;
+                        
+                    case 'brute':
+                        if (!args[0]) {
+                            output.className = 'error';
+                            output.textContent = '用法: brute [url/ip] - 例如: brute http://example.com/login';
+                            break;
+                        }
+                        
+                        const bruteTarget = args[0];
+                        output.className = 'info';
+                        output.innerHTML = `> 开始暴力破解: ${bruteTarget} <span class="cursor"></span>`;
+                        mainTerminal.appendChild(output);
+                        
+                        // 模拟暴力破解过程
+                        simulateScanProgress(async () => {
+                            const { success, attempts, cracked } = await simulateBruteForce(bruteTarget);
+                            
+                            const resultDiv = document.createElement('div');
+                            resultDiv.className = success ? 'success' : 'error';
+                            resultDiv.innerHTML = success ? 
+                                `√ 破解成功! 找到凭证: <strong>${cracked}</strong> (尝试次数: ${attempts})` :
+                                `× 破解失败 (尝试次数: ${attempts})`;
+                            mainTerminal.appendChild(resultDiv);
+                            
+                            mainTerminal.scrollTop = mainTerminal.scrollHeight;
+                        });
+                        
+                        this.value = '';
+                        return;
+                        
+                    case 'exploit':
+                        if (args.length < 2) {
+                            output.className = 'error';
+                            output.textContent = '用法: exploit [url/ip] [vulnerability] - 例如: exploit http://example.com "SQL注入"';
+                            break;
+                        }
+                        
+                        const exploitTarget = args[0];
+                        const vulnerability = args.slice(1).join(' ');
+                        
+                        output.className = 'info';
+                        output.innerHTML = `> 尝试利用漏洞: ${vulnerability} @ ${exploitTarget} <span class="cursor"></span>`;
+                        mainTerminal.appendChild(output);
+                        
+                        // 模拟漏洞利用过程
+                        simulateScanProgress(async () => {
+                            const { success, result } = await simulateExploit(exploitTarget, vulnerability);
+                            
+                            const resultDiv = document.createElement('div');
+                            resultDiv.className = success ? 'success' : 'error';
+                            resultDiv.innerHTML = result;
+                            mainTerminal.appendChild(resultDiv);
+                            
+                            if (success) {
+                                const shellDiv = document.createElement('div');
+                                shellDiv.className = 'system';
+                                shellDiv.innerHTML = `> 已建立反向shell连接: ${exploitTarget}`;
+                                mainTerminal.appendChild(shellDiv);
+                                
+                                const cmdDiv = document.createElement('div');
+                                cmdDiv.className = 'system';
+                                cmdDiv.innerHTML = `<span class="prompt">root@${exploitTarget.split('://')[1]}:~#</span> <span class="cursor"></span>`;
+                                mainTerminal.appendChild(cmdDiv);
+                            }
+                            
+                            mainTerminal.scrollTop = mainTerminal.scrollHeight;
+                        });
+                        
+                        this.value = '';
+                        return;
+                        
+                    case 'help':
+                        output.innerHTML = `
+                            <div class="warning">可用命令列表:</div>
+                            <div class="info">status - 显示系统状态信息</div>
+                            <div class="info">logs - 查看最近系统日志</div>
+                            <div class="info">netstat - 显示网络连接状态</div>
+                            <div class="info">scan [url/ip] - 扫描目标漏洞</div>
+                            <div class="info">brute [url] - 暴力破解登录</div>
+                            <div class="info">exploit [url] [vuln] - 漏洞利用</div>
+                            <div class="info">processes - 查看活跃进程</div>
+                            <div class="info">clear - 清空终端内容</div>
+                            <div class="info">exit - 退出控制台</div>
+                        `;
+                        break;
+                        
+                    case 'processes':
+                        output.innerHTML = `
+                            <div class="info">PID  | 进程名          | 占用率 | 状态</div>
+                            <div class="info">1248 | sysmon.exe      | 8%     | 运行中</div>
+                            <div class="info">3562 | netguard.dll    | 12%    | 运行中</div>
+                            <div class="info">7821 | logserver       | 5%     | 运行中</div>
+                            <div class="info">2105 | cryptd          | 15%    | 运行中</div>
+                            <div class="info">4690 | scanner         | 22%    | 运行中</div>
+                            <div class="info">5123 | exploit-kit     | 18%    | 运行中</div>
+                        `;
+                        break;
+                        
+                    case 'clear':
+                        mainTerminal.innerHTML = '';
+                        break;
+                        
+                    case 'exit':
+                        output.innerHTML = `<div class="system">// 正在注销管理员会话... //</div>
+                                           <div class="system">// 控制台已关闭 //</div>`;
+                        mainTerminal.appendChild(output);
+                        setTimeout(() => {
+                            mainTerminal.innerHTML = '<div class="error">// 会话已结束，请重新登录 //</div>';
+                            cmdInput.disabled = true;
+                        }, 2000);
+                        this.value = '';
+                        return;
+                        
+                    default:
+                        output.className = 'error';
+                        output.textContent = `命令不存在: ${command} - 输入 help 查看可用命令`;
+                }
+                
+                // 添加命令输出并滚动到底部
+                mainTerminal.appendChild(output);
+                mainTerminal.scrollTop = mainTerminal.scrollHeight;
+                
+                // 清空输入框
+                this.value = '';
+            }
+        });
+        
+        // 自动聚焦输入框
+        cmdInput.focus();
+        
+        // 添加命令历史功能
+        let commandHistory = [];
+        let historyIndex = -1;
+        
+        cmdInput.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp') {
+                if (commandHistory.length === 0) return;
+                
+                if (historyIndex === -1) {
+                    historyIndex = commandHistory.length - 1;
+                } else if (historyIndex > 0) {
+                    historyIndex--;
+                }
+                
+                this.value = commandHistory[historyIndex];
+                e.preventDefault();
+            } else if (e.key === 'ArrowDown') {
+                if (commandHistory.length === 0 || historyIndex === -1) return;
+                
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    this.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = -1;
+                    this.value = '';
+                }
+                
+                e.preventDefault();
+            } else if (e.key === 'Enter') {
+                const command = this.value.trim();
+                if (command) {
+                    commandHistory.push(command);
+                    historyIndex = -1;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

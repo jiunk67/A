@@ -1,0 +1,1957 @@
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>✎星眠软件库Pro19.0收费版本</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('1.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* 初始化界面样式 */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .splash-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .splash-logo img {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+        }
+
+        .splash-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .splash-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .splash-progress-container {
+            width: 80%;
+            max-width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .splash-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .splash-countdown {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 20px;
+        }
+
+        .splash-tips {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            padding: 0 20px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .splash-content {
+            animation: fadeIn 0.8s ease-out;
+            text-align: center;
+        }
+
+        /* 跳过按钮 */
+        .skip-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
+
+        .skip-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 基础重置 + 全局统一 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            line-height: 1.5;
+            padding: 20px 15px 100px;
+            position: relative;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+            opacity: 0;
+            animation: bodyFadeIn 0.5s 0.2s forwards;
+        }
+
+        @keyframes bodyFadeIn {
+            to { opacity: 1; }
+        }
+
+        /* 主题系统：扩展4套主题 + 统一变量 */
+        :root {
+            /* 默认浅色主题 */
+            --theme: light;
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #EADDFF;
+            --md-sys-color-on-primary-container: #21005D;
+            --md-sys-color-secondary: #625B71;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #E8DEF8;
+            --md-sys-color-on-secondary-container: #1D192B;
+            --md-sys-color-surface: #FEF7FF;
+            --md-sys-color-on-surface: #1C1B1F;
+            --md-sys-color-surface-variant: #E7E0EC;
+            --md-sys-color-on-surface-variant: #49454F;
+            --md-sys-color-outline: #79747E;
+            --md-sys-color-outline-variant: #CAC4D0;
+            --md-sys-shape-corner-extra-small: 4px;
+            --md-sys-shape-corner-small: 8px;
+            --md-sys-shape-corner-medium: 12px;
+            --md-sys-shape-corner-large: 16px;
+            --md-sys-shape-corner-extra-large: 28px;
+            --md-sys-shape-corner-full: 9999px;
+            --md-sys-elevation-level-0: none;
+            --md-sys-elevation-level-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.30);
+            --md-sys-elevation-level-2: 0px 2px 6px 2px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.30);
+            --md-sys-elevation-level-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px 0px rgba(0, 0, 0, 0.30);
+            --md-sys-state-hover: 0.08;
+            --md-sys-state-focus: 0.12;
+            --md-sys-state-pressed: 0.12;
+            --md-sys-state-dragged: 0.16;
+            --bg-image-url: url('https://tva1.sinaimg.cn/crop.0.0.1080.540.1080.540.00000000000000000000000000000000.jpg?KID=imgbed,tva&Expires=1735689600&ssig=X7Y8Z9A1B2C3D4E5F6G');
+            --bg-opacity: 0.05;
+            --bg-blur: 2px;
+            --animation-speed-fast: 0.2s;
+            --animation-speed-medium: 0.3s;
+            --animation-speed-slow: 0.4s;
+        }
+
+        /* 深色主题 */
+        [data-theme="dark"] {
+            --theme: dark;
+            --md-sys-color-primary: #D0BCFF;
+            --md-sys-color-on-primary: #371E73;
+            --md-sys-color-primary-container: #4F378B;
+            --md-sys-color-on-primary-container: #EADDFF;
+            --md-sys-color-secondary: #CCC2DC;
+            --md-sys-color-on-secondary: #332D41;
+            --md-sys-color-secondary-container: #4A4458;
+            --md-sys-color-on-secondary-container: #E8DEF8;
+            --md-sys-color-surface: #1C1B1F;
+            --md-sys-color-on-surface: #E6E1E5;
+            --md-sys-color-surface-variant: #49454F;
+            --md-sys-color-on-surface-variant: #CAC4D0;
+            --md-sys-color-outline: #938F99;
+            --md-sys-color-outline-variant: #49454F;
+            --bg-opacity: 0.08;
+            --bg-blur: 4px;
+        }
+
+        /* 柔和主题 */
+        [data-theme="soft"] {
+            --theme: soft;
+            --md-sys-color-primary: #7C6AA6;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #F0E7FF;
+            --md-sys-color-on-primary-container: #2D1B69;
+            --md-sys-color-secondary: #736988;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #F1EBF8;
+            --md-sys-color-on-secondary-container: #272139;
+            --md-sys-color-surface: #FAF7FF;
+            --md-sys-color-on-surface: #211F26;
+            --md-sys-color-surface-variant: #EAE4F2;
+            --md-sys-color-on-surface-variant: #534D5B;
+            --md-sys-color-outline: #857E8D;
+            --md-sys-color-outline-variant: #C9C2CF;
+            --bg-opacity: 0.07;
+        }
+
+        /* 活力主题 */
+        [data-theme="vibrant"] {
+            --theme: vibrant;
+            --md-sys-color-primary: #9D4EDD;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #F3D9FF;
+            --md-sys-color-on-primary-container: #3A0069;
+            --md-sys-color-secondary: #7B2CBF;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #F0D6FF;
+            --md-sys-color-on-secondary-container: #2E0050;
+            --md-sys-color-surface: #FFF7FF;
+            --md-sys-color-on-surface: #211924;
+            --md-sys-color-surface-variant: #F1E4F6;
+            --md-sys-color-on-surface-variant: #504753;
+            --md-sys-color-outline: #8A7E88;
+            --md-sys-color-outline-variant: #CBC3CE;
+            --bg-opacity: 0.09;
+        }
+
+        /* 背景容器优化：优先加载默认图 */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .custom-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: var(--bg-image-url);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: var(--bg-opacity);
+            filter: blur(var(--bg-blur));
+            transition: opacity 0.3s, filter 0.3s;
+        }
+
+        /* 容器与动画优化 */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 头部卡片优化 */
+        .header-card {
+            background-color: var(--md-sys-color-surface);
+            border-radius: var(--md-sys-shape-corner-large);
+            padding: 28px 24px;
+            text-align: center;
+            box-shadow: var(--md-sys-elevation-level-1);
+            margin-bottom: 28px;
+            border: 1px solid var(--md-sys-color-outline-variant);
+            transition: all 0.3s;
+            animation: slideUp 0.5s 0.3s both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 头像样式优化 */
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 12px;
+            border: 3px solid var(--md-sys-color-primary-container);
+            object-fit: cover;
+            box-shadow: var(--md-sys-elevation-level-1);
+            transition: all 0.3s ease;
+            margin: 0 auto 20px;
+            /* 防止加载失败空白 */
+            background-color: var(--md-sys-color-surface-variant);
+            display: block;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: var(--md-sys-elevation-level-2);
+        }
+
+        .header-title {
+            font-size: 1.75rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--md-sys-color-on-surface);
+            letter-spacing: -0.2px;
+        }
+
+        .header-subtitle {
+            font-size: 0.95rem;
+            color: var(--md-sys-color-on-surface-variant);
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        /* 进度条优化：更平滑动画 */
+        #progress-bar {
+            width: 90%;
+            max-width: 340px;
+            height: 8px;
+            background-color: var(--md-sys-color-surface-variant);
+            border-radius: var(--md-sys-shape-corner-full);
+            margin: 0 auto 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #progress-bar hr {
+            height: 100%;
+            width: 0;
+            border: none;
+            border-radius: var(--md-sys-shape-corner-full);
+            background: linear-gradient(90deg, var(--md-sys-color-primary), var(--md-sys-color-secondary), var(--md-sys-color-primary));
+            background-size: 200% auto;
+            transition: width 0.6s cubic-bezier(0.2, 0, 0, 1);
+            animation: progressColorShift 2s infinite linear;
+        }
+
+        @keyframes progressColorShift {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* 分类标题优化 */
+        .category-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            margin: 32px 0 20px;
+            padding: 8px 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideUp 0.5s 0.4s both;
+        }
+
+        .category-title:nth-child(2) { animation-delay: 0.5s; }
+        .category-title:nth-child(4) { animation-delay: 0.6s; }
+        .category-title:nth-child(6) { animation-delay: 0.7s; }
+
+        .category-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background-color: var(--md-sys-color-primary);
+            border-radius: var(--md-sys-shape-corner-extra-small);
+        }
+
+        /* 按钮组与按钮优化：增强交互反馈 */
+        .two-row-btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+            animation: slideUp 0.5s 0.5s both;
+        }
+
+        .two-row-btn-group:nth-child(3) { animation-delay: 0.6s; }
+        .two-row-btn-group:nth-child(5) { animation-delay: 0.7s; }
+
+        .md3-btn {
+            position: relative;
+            overflow: hidden;
+            height: 56px;
+            background-color: var(--md-sys-color-surface);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: var(--md-sys-shape-corner-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: var(--md-sys-elevation-level-0);
+            cursor: pointer;
+            text-decoration: none;
+            padding: 0 20px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            animation: slideUp 0.5s var(--btn-delay, 0.8s) both;
+        }
+
+        .md3-btn:hover {
+            background-color: var(--md-sys-color-surface-variant);
+            box-shadow: var(--md-sys-elevation-level-1);
+            border-color: var(--md-sys-color-outline);
+            transform: translateY(-2px);
+        }
+
+        .md3-btn:active {
+            background-color: var(--md-sys-color-primary-container);
+            box-shadow: var(--md-sys-elevation-level-0);
+            border-color: var(--md-sys-color-primary);
+            transform: translateY(0) scale(0.98);
+        }
+
+        .md3-btn span {
+            color: var(--md-sys-color-on-surface);
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.4;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 波纹效果增强 */
+        .md3-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            padding-bottom: 100%;
+            background-color: var(--md-sys-color-on-surface);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.2s;
+            z-index: 1;
+        }
+
+        .md3-btn:active::after {
+            transform: translate(-50%, -50%) scale(4);
+            opacity: var(--md-sys-state-pressed);
+            transition: transform 0.4s, opacity 0.3s;
+        }
+
+        /* 底部导航优化：固定布局防遮挡 */
+        .md3-bottom-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background-color: var(--md-sys-color-surface);
+            border-top: 1px solid var(--md-sys-color-outline-variant);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: env(safe-area-inset-bottom, 0);
+            z-index: 1000;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            flex: 1;
+            text-decoration: none;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .nav-item.active {
+            color: var(--md-sys-color-primary);
+        }
+
+        .nav-item.active .nav-icon {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-primary);
+        }
+
+        .nav-icon {
+            width: 56px;
+            height: 32px;
+            border-radius: var(--md-sys-shape-corner-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item.active .nav-label {
+            color: var(--md-sys-color-primary);
+            font-weight: 600;
+        }
+
+        /* 内容区域优化：切换更流畅 */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* 关于页面优化 */
+        .about-section {
+            background-color: var(--md-sys-color-surface);
+            border-radius: var(--md-sys-shape-corner-large);
+            padding: 24px;
+            box-shadow: var(--md-sys-elevation-level-1);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .about-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: var(--md-sys-shape-corner-large);
+            overflow: hidden;
+            margin: 0 auto 24px;
+            border: 3px solid var(--md-sys-color-primary-container);
+            background-color: var(--md-sys-color-surface-variant);
+        }
+
+        .about-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 16px;
+        }
+
+        .about-description {
+            font-size: 1rem;
+            color: var(--md-sys-color-on-surface-variant);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .about-version {
+            font-size: 0.875rem;
+            color: var(--md-sys-color-on-surface-variant);
+            background-color: var(--md-sys-color-surface-variant);
+            padding: 8px 16px;
+            border-radius: var(--md-sys-shape-corner-full);
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        /* 设置页面优化：新增主题选择器 */
+        .settings-section {
+            background-color: var(--md-sys-color-surface);
+            border-radius: var(--md-sys-shape-corner-large);
+            padding: 24px;
+            box-shadow: var(--md-sys-elevation-level-1);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            transition: all 0.3s;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 4px;
+        }
+
+        .setting-info p {
+            font-size: 0.875rem;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        /* 主题选择器样式 */
+        .theme-selector {
+            display: flex;
+            gap: 12px;
+        }
+
+        .theme-option {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .theme-option.active {
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 2px var(--md-sys-color-primary-container);
+        }
+
+        .theme-option.light { background: linear-gradient(45deg, #FEF7FF, #EADDFF); }
+        .theme-option.dark { background: linear-gradient(45deg, #1C1B1F, #49454F); }
+        .theme-option.soft { background: linear-gradient(45deg, #FAF7FF, #F0E7FF); }
+        .theme-option.vibrant { background: linear-gradient(45deg, #FFF7FF, #F3D9FF); }
+
+        /* 模态框优化：支持ESC关闭 */
+        .bg-settings-modal, .link-loading-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .bg-settings-modal.show, .link-loading-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .bg-settings-content {
+            background-color: var(--md-sys-color-surface);
+            border-radius: var(--md-sys-shape-corner-large);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--md-sys-elevation-level-3);
+        }
+
+        .bg-settings-header {
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .bg-settings-header h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 8px;
+        }
+
+        .bg-settings-header p {
+            font-size: 0.9rem;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .bg-settings-body {
+            padding: 20px 24px;
+        }
+
+        .bg-setting-control {
+            margin-bottom: 24px;
+        }
+
+        .bg-setting-control label {
+            display: block;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 12px;
+        }
+
+        .bg-setting-control input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: var(--md-sys-shape-corner-medium);
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            font-size: 1rem;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .bg-setting-control input[type="text"]:focus {
+            outline: none;
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 3px var(--md-sys-color-primary-container);
+        }
+
+        .bg-setting-control .hint {
+            font-size: 0.8rem;
+            color: var(--md-sys-color-on-surface-variant);
+            margin-top: 4px;
+        }
+
+        .bg-setting-control .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .slider-value {
+            min-width: 40px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .bg-settings-footer {
+            padding: 16px 24px 24px;
+            border-top: 1px solid var(--md-sys-color-outline-variant);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--md-sys-shape-corner-medium);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .modal-btn.cancel {
+            background-color: var(--md-sys-color-surface-variant);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .modal-btn.apply {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--md-sys-elevation-level-1);
+        }
+
+        /* 加载弹窗优化 */
+        .link-loading-spinner {
+            width: 70px;
+            height: 70px;
+            border: 4px solid transparent;
+            border-top-color: var(--md-sys-color-primary);
+            border-right-color: var(--md-sys-color-secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite, colorShift 2s ease-in-out infinite;
+            margin-bottom: 24px;
+        }
+
+        .link-loading-text {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 12px;
+            text-align: center;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .link-loading-subtext {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            max-width: 300px;
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes colorShift {
+            0%, 100% { border-top-color: var(--md-sys-color-primary); border-right-color: var(--md-sys-color-secondary); }
+            50% { border-top-color: var(--md-sys-color-secondary); border-right-color: var(--md-sys-color-primary); }
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.9; } }
+        @keyframes fadeInOut { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.6; } }
+
+        /* 开关与滑块优化 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--md-sys-color-outline-variant);
+            transition: .4s;
+            border-radius: var(--md-sys-shape-corner-full);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider { background-color: var(--md-sys-color-primary); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: var(--md-sys-color-outline-variant);
+            border-radius: var(--md-sys-shape-corner-full);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--md-sys-color-primary);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--md-sys-color-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Toast提示优化：适配主题 + 固定位置 */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--md-sys-color-on-surface);
+            color: var(--md-sys-color-surface);
+            padding: 12px 24px;
+            border-radius: var(--md-sys-shape-corner-medium);
+            font-size: 0.9rem;
+            z-index: 2000;
+            box-shadow: var(--md-sys-elevation-level-3);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .toast.show { opacity: 1; }
+
+        /* 响应式优化：适配小屏 */
+        @media (max-width: 480px) {
+            .two-row-btn-group { gap: 12px; }
+            .md3-btn { height: 52px; padding: 0 16px; }
+            .md3-btn span { font-size: 0.875rem; }
+            .header-title { font-size: 1.5rem; }
+            .profile-avatar { width: 80px; height: 80px; }
+            .header-card { padding: 24px 20px; }
+            .category-title { font-size: 1.125rem; }
+            .md3-bottom-navigation { height: 72px; }
+            .nav-icon { width: 52px; height: 30px; }
+            .bg-settings-content { width: 95%; }
+            .link-loading-text { font-size: 1.1rem; }
+            .link-loading-subtext { font-size: 0.85rem; }
+            .splash-title { font-size: 1.5rem; }
+            .splash-logo { width: 100px; height: 100px; }
+        }
+
+        @media (max-width: 360px) {
+            .two-row-btn-group { grid-template-columns: 1fr; }
+        }
+        
+        /* 性能优化类 */
+        .performance-optimized * {
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.001ms !important;
+        }
+
+        /* 快速访问按钮 */
+        .quick-access {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+        }
+
+        .quick-access-btn {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: var(--md-sys-elevation-level-1);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-access-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--md-sys-elevation-level-2);
+        }
+
+        /* 搜索框 */
+        .search-container {
+            margin: 20px 0;
+            animation: slideUp 0.5s 0.3s both;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: var(--md-sys-shape-corner-large);
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 3px var(--md-sys-color-primary-container);
+        }
+
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--md-sys-elevation-level-2);
+            transition: all 0.3s;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 999;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--md-sys-elevation-level-3);
+        }
+    </style>
+</head>
+<body>
+    <!-- 初始化界面 -->
+    <div id="splash-screen">
+        <button class="skip-btn" id="skip-splash">跳过</button>
+        <div class="splash-content">
+            <div class="splash-logo">
+                <img src="http://117.72.186.247/a?fMhZvIlblzQQqo" alt="星眠软件库" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSIzNSIgZmlsbD0idXJsKCMyZzk0ZjkpIi8+PHBhdGggZD0iTTQwIDU1VjMwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0zMCAzNVY0NSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjYiLz48cGF0aCBkPSJNNTUgMzVWNDUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI2Ii8+PC9zdmc+';">
+            </div>
+            <h1 class="splash-title">星眠软件库</h1>
+            <p class="splash-subtitle">收费Pro 19.0版本 · 云更新系统</p>
+            <div class="splash-progress-container">
+                <div class="splash-progress-bar" id="splash-progress"></div>
+            </div>
+            <div class="splash-countdown" id="splash-countdown">10秒后进入</div>
+            <div class="splash-tips">正在加载资源，请稍候...</div>
+        </div>
+    </div>
+    
+    <!-- 快速访问按钮 -->
+    <div class="quick-access">
+        <button class="quick-access-btn" id="quick-search">
+            <span class="material-icons">search</span>
+            搜索
+        </button>
+    </div>
+    
+    <!-- 返回顶部按钮 -->
+    <div class="back-to-top" id="back-to-top">
+        <span class="material-icons">arrow_upward</span>
+    </div>
+    
+    <!-- 加载弹窗 -->
+    <div id="linkLoadingModal" class="link-loading-modal">
+        <div class="link-loading-spinner"></div>
+        <div class="link-loading-text">正在加载中...</div>
+        <div class="link-loading-subtext">请稍候，正在为您跳转</div>
+    </div>
+    
+    <!-- 背景设置模态框 -->
+    <div id="bgSettingsModal" class="bg-settings-modal">
+        <div class="bg-settings-content">
+            <div class="bg-settings-header">
+                <h2>背景设置</h2>
+                <p>自定义页面背景图片和效果</p>
+            </div>
+            <div class="bg-settings-body">
+                <div class="bg-setting-control">
+                    <label for="bgUrlInput">背景图片链接</label>
+                    <input type="text" id="bgUrlInput" placeholder="输入图片链接地址..." value="https://tva1.sinaimg.cn/crop.0.0.1080.540.1080.540.00000000000000000000000000000000.jpg?KID=imgbed,tva&Expires=1735689600&ssig=X7Y8Z9A1B2C3D4E5F6G">
+                    <div class="hint">支持 JPG、PNG、GIF 等常见图片格式</div>
+                </div>
+                <div class="bg-setting-control">
+                    <label for="bgOpacitySlider">背景透明度</label>
+                    <div class="slider-container">
+                        <input type="range" id="bgOpacitySlider" min="0" max="100" value="5">
+                        <div class="slider-value" id="opacityValue">5%</div>
+                    </div>
+                    <div class="hint">数值越小，背景越透明</div>
+                </div>
+                <div class="bg-setting-control">
+                    <label for="bgBlurSlider">背景模糊度</label>
+                    <div class="slider-container">
+                        <input type="range" id="bgBlurSlider" min="0" max="20" value="2">
+                        <div class="slider-value" id="blurValue">2px</div>
+                    </div>
+                    <div class="hint">数值越大，背景越模糊</div>
+                </div>
+            </div>
+            <div class="bg-settings-footer">
+                <button class="modal-btn cancel" id="cancelBgSettings">取消</button>
+                <button class="modal-btn apply" id="applyBgSettings">应用背景</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 背景容器 -->
+    <div class="bg-container">
+        <div class="custom-bg" id="dynamicBg"></div>
+    </div>
+
+    <div class="container">
+        <!-- 软件库内容 -->
+        <div id="software-section" class="content-section active">
+            <!-- 搜索框 -->
+            <div class="search-container" style="display: none;" id="search-box-container">
+                <input type="text" class="search-box" id="search-box" placeholder="搜索软件、工具、资源...">
+            </div>
+            
+            <div class="header-card">
+                <img src="http://117.72.186.247/a?fMhZvIlblzQQqo" alt="头像" class="profile-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAiIGhlaWdodD0iOTAiIHZpZXdCb3g9IjAgMCA5MCA5MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI0NSIgY3k9IjQ1IiByPSIzMCIgZmlsbD0iI2VhZTQyNiIvPjxwYXRoIGQ9Ik00NSA2N1Y0MCIgc3Ryb2tlPSIjNzM2OTg4IiBzdHJva2Utd2lkdGg9IjgiLz48cGF0aCBkPSJNMzcgMzVWNDciIHN0cm9rZT0iIzczNjk4OCIgc3Ryb2tlLXdpZHRoPSI4Ii8+PC9zdmc+';">
+                <h3 class="header-title">星眠软件库【云更新版本】</h3>
+                <p class="header-subtitle">版本：收费Pro 19.0 | 最后更新：今天</p>
+                <div id="progress-bar">
+                    <hr>
+                </div>
+            </div>
+            <!-- 按钮组将动态生成 -->
+        </div>
+        
+        <!-- 关于我们页面 -->
+        <div id="about-section" class="content-section">
+            <div class="about-section">
+                <div class="about-logo">
+                    <img src="http://117.72.186.247/a?fMhZvIlblzQQqo" alt="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNjAiIGN5PSI2MCIgcj0iNTAiIGZpbGw9IiNlYWU0MjYiLz48cGF0aCBkPSJNNjAgODhWMzIiIHN0cm9rZT0iIzlEMkVETCIgc3Ryb2tlLXdpZHRoPSIxMCIvPjxwYXRoIGQ9Ik00OCA0MFY1OCIgc3Ryb2tlPSIjN0IyQ0JGIiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTcyIDQwVjU4IiBzdHJva2U9IiM3QjJFQkYiIHN0cm9rZS13aWR0aD0iMTAiLz48L3N2Zz4=';">
+                </div>
+                <h2 class="about-title">星眠软件库</h2>
+                <div class="about-version">版本：收费Pro 19.0</div>
+                <div style="margin-top: 32px; text-align: left;">
+                    <h3 style="margin-bottom: 16px; color: var(--md-sys-color-on-surface);">联系方式</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span class="material-icons" style="color: var(--md-sys-color-primary);">group</span>
+                            <span>137891</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span class="material-icons" style="color: var(--md-sys-color-primary);">person</span>
+                            <span>开发作者：星眠 / 破解者：小弑</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span class="material-icons" style="color: var(--md-sys-color-primary);">email</span>
+                            <span>联系邮箱：</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 32px; text-align: left;">
+                    <h3 style="margin-bottom: 16px; color: var(--md-sys-color-on-surface);">更新日志</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="padding: 12px; background-color: var(--md-sys-color-surface-variant); border-radius: var(--md-sys-shape-corner-medium);">
+                            <div style="font-weight: 500; color: var(--md-sys-color-on-surface);">版本 19.0 (今日更新)</div>
+                            <div style="font-size: 0.9rem; color: var(--md-sys-color-on-surface-variant); margin-top: 4px;">
+                                • 新增初始化界面，10秒后自动进入<br>
+                                • 新增搜索功能，快速查找资源<br>
+                                • 新增返回顶部按钮，提升浏览体验<br>
+                                • 优化按钮动画效果，更流畅<br>
+                                • 优化加载速度，提升性能<br>
+                                • 修复已知问题，提升稳定性
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 设置页面：新增主题选择器 -->
+        <div id="settings-section" class="content-section">
+            <div class="header-card">
+                <h1 class="header-title">设置</h1>
+                <p class="header-subtitle">个性化你的软件库体验</p>
+            </div>
+            <div class="settings-section">
+                <!-- 主题选择 -->
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>主题选择</h3>
+                        <p>选择喜欢的界面风格（4套主题）</p>
+                    </div>
+                    <div class="theme-selector">
+                        <div class="theme-option light active" data-theme="light" title="浅色主题"></div>
+                        <div class="theme-option dark" data-theme="dark" title="深色主题"></div>
+                        <div class="theme-option soft" data-theme="soft" title="柔和主题"></div>
+                        <div class="theme-option vibrant" data-theme="vibrant" title="活力主题"></div>
+                    </div>
+                </div>
+                <!-- 深色模式兼容（保留切换逻辑） -->
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>深色模式</h3>
+                        <p>快速切换深浅色主题</p>
+                    </div>
+                    <div class="setting-control">
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <!-- 背景设置 -->
+                <div class="setting-item" id="openBgSettingsBtn" style="cursor: pointer;">
+                    <div class="setting-info">
+                        <h3>背景设置</h3>
+                        <p>自定义页面背景图片和效果</p>
+                    </div>
+                    <div class="setting-control">
+                        <span class="material-icons" style="color: var(--md-sys-color-on-surface-variant);">chevron_right</span>
+                    </div>
+                </div>
+                <!-- 搜索功能开关 -->
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>搜索功能</h3>
+                        <p>启用/禁用软件搜索功能</p>
+                    </div>
+                    <div class="setting-control">
+                        <label class="switch">
+                            <input type="checkbox" id="searchToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <!-- 动画效果开关 -->
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3>动画效果</h3>
+                        <p>启用/禁用页面动画效果</p>
+                    </div>
+                    <div class="setting-control">
+                        <label class="switch">
+                            <input type="checkbox" id="animationToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="md3-bottom-navigation">
+        <a href="#" class="nav-item active" data-target="software-section">
+            <div class="nav-icon">
+                <span class="material-icons">apps</span>
+            </div>
+            <span class="nav-label">软件库</span>
+        </a>
+        <a href="#" class="nav-item" data-target="about-section">
+            <div class="nav-icon">
+                <span class="material-icons">info</span>
+            </div>
+            <span class="nav-label">关于我们</span>
+        </a>
+        <a href="#" class="nav-item" data-target="settings-section">
+            <div class="nav-icon">
+                <span class="material-icons">settings</span>
+            </div>
+            <span class="nav-label">设置</span>
+        </a>
+    </div>
+
+    <script>
+        // 性能优化：检查是否已加载过
+        const isFirstLoad = !sessionStorage.getItem('pageLoaded');
+        const isPerformanceMode = localStorage.getItem('performanceMode') === 'true' || !isFirstLoad;
+        
+        // 如果是性能模式，添加优化类
+        if (isPerformanceMode) {
+            document.body.classList.add('performance-optimized');
+            console.log('性能优化模式已启用');
+        }
+        
+        // 标记页面已加载
+        sessionStorage.setItem('pageLoaded', 'true');
+
+        // 核心优化点：模块化拆分 + 增强初始化 + 主题管理
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. 初始化倒计时和进度条
+            initSplashScreen();
+            
+            // 2. 优先初始化基础配置（主题、背景、存储）
+            initBaseConfig();
+            // 3. 生成按钮组（使用完整的15个分类配置）
+            generateAllButtonGroups();
+            // 4. 初始化交互功能
+            initInteractions();
+            // 5. 启动进度条动画（关联实际加载状态）
+            initProgressBar();
+            
+            // 6. 预加载常用资源
+            if (isFirstLoad) {
+                preloadResources();
+            }
+            
+            // 7. 设置性能模式
+            setTimeout(() => {
+                localStorage.setItem('performanceMode', 'true');
+            }, 1000);
+        });
+
+        // 初始化初始化界面倒计时
+        function initSplashScreen() {
+            const splashScreen = document.getElementById('splash-screen');
+            const splashProgress = document.getElementById('splash-progress');
+            const splashCountdown = document.getElementById('splash-countdown');
+            const skipBtn = document.getElementById('skip-splash');
+            
+            let countdown = 10; // 10秒倒计时
+            let progress = 0;
+            const totalTime = 10000; // 10秒总时间
+            
+            // 跳过按钮点击事件
+            skipBtn.addEventListener('click', function() {
+                hideSplashScreen();
+            });
+            
+            // 倒计时更新
+            const interval = setInterval(() => {
+                countdown--;
+                progress = 100 - (countdown * 10);
+                
+                // 更新进度条
+                splashProgress.style.width = `${progress}%`;
+                
+                // 更新倒计时文本
+                splashCountdown.textContent = `${countdown}秒后进入`;
+                
+                // 倒计时结束
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    hideSplashScreen();
+                }
+            }, 1000);
+            
+            // 隐藏初始化界面
+            function hideSplashScreen() {
+                splashScreen.classList.add('hidden');
+                // 显示主界面
+                document.body.style.opacity = '1';
+                
+                // 显示快速访问按钮
+                setTimeout(() => {
+                    document.querySelector('.quick-access').style.display = 'block';
+                }, 500);
+            }
+        }
+
+        // 预加载资源
+        function preloadResources() {
+            // 预加载图标字体
+            const iconFont = new FontFace('Material Icons', 'url(https://fonts.gstatic.com/s/materialicons/v142/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2)');
+            iconFont.load().then(function(loaded) {
+                document.fonts.add(loaded);
+            });
+            
+            // 预加载常用图片
+            const preloadImages = [
+                'https://tva1.sinaimg.cn/crop.0.0.1080.540.1080.540.00000000000000000000000000000000.jpg?KID=imgbed,tva&Expires=1735689600&ssig=X7Y8Z9A1B2C3D4E5F6G',
+                'http://117.72.186.247/a?fMhZvIlblzQQqo'
+            ];
+            
+            preloadImages.forEach(url => {
+                const img = new Image();
+                img.src = url;
+            });
+        }
+
+        // 1. 基础配置初始化：增强容错 + 预加载
+        function initBaseConfig() {
+            // 主题初始化：优先读取本地存储，无则默认浅色
+            const savedTheme = localStorage.getItem('appTheme') || 'light';
+            applyTheme(savedTheme);
+
+            // 背景初始化：使用本地缓存或默认
+            const savedBgUrl = localStorage.getItem('bgUrl') || 'https://tva1.sinaimg.cn/crop.0.0.1080.540.1080.540.00000000000000000000000000000000.jpg?KID=imgbed,tva&Expires=1735689600&ssig=X7Y8Z9A1B2C3D4E5F6G';
+            const savedBgOpacity = localStorage.getItem('bgOpacity') || '5';
+            const savedBgBlur = localStorage.getItem('bgBlur') || '2';
+            
+            // 延迟加载背景（非关键资源）
+            setTimeout(() => {
+                applyBackground(savedBgUrl, savedBgOpacity, savedBgBlur);
+            }, isFirstLoad ? 100 : 0);
+
+            // 同步背景设置模态框值
+            document.getElementById('bgUrlInput').value = savedBgUrl;
+            document.getElementById('bgOpacitySlider').value = savedBgOpacity;
+            document.getElementById('bgBlurSlider').value = savedBgBlur;
+            document.getElementById('opacityValue').textContent = `${savedBgOpacity}%`;
+            document.getElementById('blurValue').textContent = `${savedBgBlur}px`;
+            
+            // 搜索功能设置
+            const searchEnabled = localStorage.getItem('searchEnabled') !== 'false';
+            document.getElementById('searchToggle').checked = searchEnabled;
+            
+            // 动画设置
+            const animationEnabled = localStorage.getItem('animationEnabled') !== 'false';
+            document.getElementById('animationToggle').checked = animationEnabled;
+        }
+        
+        // 应用主题
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            // 同步主题选择器状态
+            document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+            const themeOption = document.querySelector(`.theme-option[data-theme="${theme}"]`);
+            if (themeOption) themeOption.classList.add('active');
+            // 同步深色模式开关
+            document.getElementById('darkModeToggle').checked = theme === 'dark';
+        }
+        
+        // 应用背景
+        function applyBackground(url, opacity, blur) {
+            const dynamicBg = document.getElementById('dynamicBg');
+            if (!dynamicBg) return;
+            
+            dynamicBg.style.backgroundImage = `url('${url}')`;
+            dynamicBg.style.opacity = opacity / 100;
+            dynamicBg.style.filter = `blur(${blur}px)`;
+            
+            // 预加载背景图（非阻塞）
+            const bgImg = new Image();
+            bgImg.src = url;
+            bgImg.onload = () => {
+                dynamicBg.classList.add('loaded');
+            };
+            bgImg.onerror = () => {
+                const defaultUrl = 'https://tva1.sinaimg.cn/crop.0.0.1080.540.1080.540.00000000000000000000000000000000.jpg?KID=imgbed,tva&Expires=1735689600&ssig=X7Y8Z9A1B2C3D4E5F6G';
+                dynamicBg.style.backgroundImage = `url('${defaultUrl}')`;
+                dynamicBg.classList.add('loaded');
+            };
+        }
+
+        // 2. 生成完整按钮组（使用提供的15个分类）
+        function generateAllButtonGroups() {
+            const softwareSection = document.getElementById('software-section');
+            if (!softwareSection) return;
+
+            // 清除现有的按钮组（如果有）
+            const existingGroups = softwareSection.querySelectorAll('.category-title, .two-row-btn-group');
+            existingGroups.forEach(el => el.remove());
+
+            // 按钮组配置（完整15个分类）
+            const buttonGroups = [
+                {
+                    title: '云更新',
+                    buttons: [
+                        { title: '星眠软件库云更新', url: 'XingMian/index.html', loadingText: '正在访问云更新页面' }
+                    ]
+                },
+                {
+                    title: '官方区',
+                    buttons: [
+                        { title: '作者软天空', url: 'http://a.ruansky.com/user/4522070/', loadingText: '正在访问作者主页' },
+                        { title: '官方交流群', url: 'https://qun.qq.com/universal-share/share?ac=1&authKey=K9t8YxmniIors9nZ8t4cAfzLlfJOECiWiT2Ll39UJJDzyoIeiKL953Wt3DK2UknJ&busi_data=eyJncm91cENvZGUiOiI5MTU4MTkzNDkiLCJ0b2tlbiI6IlNaR0wrcVlyY3hHUnNlbWxPZlJLYjdlcms1N3VZcmlyUTZaYTlsNGx1SURtYlk3d3BzN0tEcy81WmVyZmhPNEkiLCJ1aW4iOiIyMjkwNDM0NjcifQ%3D%3D&data=S1B6AJaszivfg3myRJ-auBH4ZhnJ-H4SVOw2N4oGbSI1qfKAz9rl0lwabH8KdZh63zdFURoEErDKI8dNsO1Brw&svctype=4&tempid=h5_group_info', loadingText: '正在打开交流群' },
+                        { title: '官方频道', url: 'https://pd.qq.com/s/bflomi3ij?b=9', loadingText: '正在打开官方频道' },
+                        { title: '软件库更新', url: 'https://qun.qq.com/universal-share/share?ac=1&authKey=K9t8YxmniIors9nZ8t4cAfzLlfJOECiWiT2Ll39UJJDzyoIeiKL953Wt3DK2UknJ&busi_data=eyJncm91cENvZGUiOiI5MTU4MTkzNDkiLCJ0b2tlbiI6IlNaR0wrcVlyY3hHUnNlbWxPZlJLYjdlcms1N3VZcmlyUTZaYTlsNGx1SURtYlk3d3BzN0tEcy81WmVyZmhPNEkiLCJ1aW4iOiIyMjkwNDM0NjcifQ%3D%3D&data=S1B6AJaszivfg3myRJ-auBH4ZhnJ-H4SVOw2N4oGbSI1qfKAz9rl0lwabH8KdZh63zdFURoEErDKI8dNsO1Brw&svctype=4&tempid=h5_group_info', loadingText: '正在检查更新' }
+                    ]
+                },
+                {
+                    title: '软件库大全',
+                    buttons: [
+                        { title: '风声软件库', url: 'https://lanzouy.com/b0ev67kih', loadingText: '正在加载软件库' },
+                        { title: '百万软件库', url: 'https://lanzouy.com/s/bwk', loadingText: '正在加载软件库' },
+                        { title: '阿柒软件库', url: 'https://lanzouy.com/b05ulcrta', loadingText: '正在加载软件库' },
+                        { title: '子御软件库', url: 'https://lanzouy.com/b00efg3c1i', loadingText: '正在加载软件库' },
+                        { title: '幺蓝软件库', url: 'http://250805.0yl.cc/download/download.html', loadingText: '正在加载软件库' },
+                        { title: '明月资源库定制2.0版本', url: 'xiao666/78html/1d', loadingText: '正在打开明月资源库' },
+                        { title: '明月资源库Pro2.0版本', url: '78html/1f', loadingText: '正在打开Pro版本' },
+                        { title: '明月资源库2', url: '78html/1v', loadingText: '正在打开资源库2' },
+                        { title: '小弑软件库', url: 'YYDS/index.html', loadingText: '正在打开小弑软件库' },
+                        { title: '乐于软件库〖免费版〗', url: 'xiao/🙄💅💅/78🙄💅💅.html', loadingText: '正在打开资源库' },
+                        { title: '乐于软件库〖官方赞助版〗', url: 'xiao/🙄💅💅/78🙄💅💅3.html', loadingText: '正在打开小弑软件库' }
+                    ]
+                },
+                {
+                    title: '星眠破解区',
+                    buttons: [
+                        { title: 'NP管理员破解版本', url: 'https://www.123684.com/s/vRTKjv-eJlj3', loadingText: '正在加载破解版本' },
+                        { title: 'TM管理员破解版本', url: 'https://www.123684.com/s/vRTKjv-eJlj3', loadingText: '正在加载破解版本' },
+                        { title: '迅雷快影永久VIP', url: 'https://www.123684.com/s/vRTKjv-eJlj3', loadingText: '正在加载VIP版本' },
+                        { title: 'wink小神破解', url: 'http://a.ruansky.com/up/4135474/', loadingText: '正在加载破解软件' }
+                    ]
+                },
+                {
+                    title: '工具合集',
+                    buttons: [
+                        { title: '实用网站大全', url: 'https://jianhancloud.cn/xiao666/实用网站大全.html', loadingText: '正在加载网站大全' },
+                        { title: '接口大全', url: 'https://jianhancloud.cn/xiao666/接码大全.html', loadingText: '正在加载接口大全' }
+                    ]
+                },
+                {
+                    title: '本人强烈推荐使用api',
+                    buttons: [
+                        { title: '稳定api', url: 'http://api.xingchenfu.xyz/', loadingText: '正在连接API' },
+                        { title: '云智API', url: 'https://api.jkyai.top/', loadingText: '正在连接云智API' }
+                    ]
+                },
+                {
+                    title: '星眠工具',
+                    buttons: [
+                        { title: '星眠举牌生成器', url: 'xiao888.html', loadingText: '正在加载星眠举牌生成器' },
+                        { title: '早报60秒资讯', url: 'GG88.html', loadingText: '正在加载早报60秒资讯' }
+                    ]
+                },
+                {
+                    title: '端口大全',
+                    buttons: [
+                        { title: '长春端口', url: 'https://www.123684.com/s/vRTKjv-tJlj3', loadingText: '正在连接长春端口' },
+                        { title: '持砍-私端版—和平精英', url: 'https://www.123684.com/s/vRTKjv-tJlj3', loadingText: '正在连接私端版' },
+                        { title: '風少端口', url: 'https://www.123684.com/s/vRTKjv-tJlj3', loadingText: '正在连接風少端口' },
+                        { title: 'EV端口', url: 'https://www.123684.com/s/vRTKjv-tJlj3', loadingText: '正在连接EV端口' }
+                    ]
+                },
+                {
+                    title: '加密html工具【不防嘿客】',
+                    buttons: [
+                        { title: '加密html工具1', url: 'xiao/xiao1/index.html', loadingText: '正在打开加密工具' },
+                        { title: '加密html工具2', url: 'xiao/xiao2/index.html', loadingText: '正在打开加密工具' }
+                    ]
+                },
+                {
+                    title: '源码区',
+                    buttons: [
+                        { title: 'wedcat源码', url: 'https://www.123684.com/s/vRTKjv-zJlj3', loadingText: '正在加载wedcat源码' },
+                        { title: 'AndLua源码', url: 'https://www.123684.com/s/vRTKjv-iJlj3', loadingText: '正在加载AndLua源码' },
+                        { title: 'iapp源码', url: 'https://www.123684.com/s/vRTKjv-5Jlj3', loadingText: '正在加载iapp源码' },
+                        { title: '脚本源码', url: 'https://www.123684.com/s/vRTKjv-eflj3', loadingText: '正在加载脚本源码' }
+                    ]
+                },
+                {
+                    title: '随机图片',
+                    buttons: [
+                        { title: '随机美女图片', url: 'api91', loadingText: '正在加载随机图片' },
+                        { title: '随机美女图片2', url: 'api91', loadingText: '正在加载随机图片' }
+                    ]
+                },
+                {
+                    title: '星眠随机视频区',
+                    buttons: [
+                        { title: '星眠推荐视频【星眠接口】', url: 'apixiao', loadingText: '正在加载星眠推荐视频' },
+                        { title: '星眠视频大全', url: '3333', loadingText: '正在加载星眠视频大全' },
+                        { title: '星眠美女视频大全【星眠接口】', url: 'XingMian/index.html', loadingText: '正在加载星眠美女视频大全' }
+                    ]
+                },
+                {
+                    title: '科技区大全',
+                    buttons: [
+                        { title: '香肠派对', url: 'https://www.123684.com/s/vRTKjv-Rflj3', loadingText: '正在加载香肠派对' },
+                        { title: '超自然', url: 'https://www.123684.com/s/vRTKjv-rflj3', loadingText: '正在加载超自然' },
+                        { title: 'PUBG', url: 'https://www.123684.com/s/vRTKjv-8flj3', loadingText: '正在加载PUBG' },
+                        { title: '三角洲', url: 'https://www.123684.com/s/vRTKjv-0flj3', loadingText: '正在加载三角洲' },
+                        { title: '穿越火线', url: 'https://www.123684.com/s/vRTKjv-Kflj3', loadingText: '正在加载穿越火线' },
+                        { title: '和平精英', url: 'https://www.123684.com/s/vRTKjv-uflj3', loadingText: '正在加载和平精英' },
+                        { title: '其他外挂', url: 'https://www.123684.com/s/vRTKjv-Uflj3', loadingText: '正在加载其他外挂' },
+                        { title: '蛋仔派对', url: 'https://www.123684.com/s/vRTKjv-Sflj3', loadingText: '正在加载蛋仔派对' },
+                        { title: '王者荣耀', url: 'https://www.123684.com/s/vRTKjv-lflj3', loadingText: '正在加载王者荣耀' },
+                        { title: '逃跑吧少年', url: 'https://share.feijipan.com/s/UBXF01fo', loadingText: '正在加载逃跑吧少年' },
+                        { title: '小熊猫网址', url: 'https://www.123912.com/s/dsYvjv-DwPZh', loadingText: '正在加载' },
+                        { title: '小宝网址', url: 'https://www.123684.com/s/yhYlVv-PNzph', loadingText: '正在加载' }
+                    ]
+                },
+                {
+                    title: '其他资源',
+                    buttons: [
+                        { title: '星眠身份证大全', url: 'https://www.123684.com/s/vRTKjv-yJlj3', loadingText: '正在连接' },
+                        { title: '注入软件大全', url: 'https://www.123684.com/s/vRTKjv-VJlj3', loadingText: '正在连接' },
+                        { title: '加固软件', url: 'https://www.123684.com/s/vRTKjv-jJlj3', loadingText: '正在连接云智API' },
+                        { title: '快手刷赞', url: 'https://www.123684.com/s/vRTKjv-TIlj3', loadingText: '正在连接云智API' },
+                        { title: '和平画质修改', url: 'https://www.123684.com/s/vRTKjv-vIlj3', loadingText: '正在连接云智API' }
+                    ]
+                },
+                {
+                    title: '想要搭建软件库〖点这里〗',
+                    buttons: [
+                        { title: '各种软件库源码', url: 'https://www.123684.com/s/vRTKjv-6Jlj3', loadingText: '正在加载' },
+                        { title: '自己搭建可以收费', url: '', loadingText: '' }
+                    ]
+                }
+            ];
+
+            // 生成按钮组
+            buttonGroups.forEach((group, groupIndex) => {
+                // 添加分类标题
+                const titleElement = document.createElement('h2');
+                titleElement.className = 'category-title';
+                titleElement.textContent = group.title;
+                titleElement.dataset.category = group.title;
+                softwareSection.appendChild(titleElement);
+
+                // 创建按钮组容器
+                const buttonGroup = document.createElement('div');
+                buttonGroup.className = 'two-row-btn-group';
+
+                // 添加按钮
+                group.buttons.forEach((btn, btnIndex) => {
+                    const buttonElement = document.createElement('a');
+                    buttonElement.className = 'md3-btn';
+                    buttonElement.href = btn.url || '#';
+                    buttonElement.setAttribute('data-loading-text', btn.loadingText || '正在加载...');
+                    buttonElement.setAttribute('data-title', btn.title);
+                    buttonElement.setAttribute('data-category', group.title);
+
+                    const span = document.createElement('span');
+                    span.textContent = btn.title;
+                    buttonElement.appendChild(span);
+
+                    buttonGroup.appendChild(buttonElement);
+                });
+
+                softwareSection.appendChild(buttonGroup);
+            });
+            
+            // 初始化搜索功能
+            initSearchFunction();
+        }
+
+        // 3. 交互功能初始化：增强体验 + 容错
+        function initInteractions() {
+            // 导航切换
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+                    this.classList.add('active');
+                    const targetId = this.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    
+                    // 如果在软件库页面，显示搜索框（如果启用）
+                    if (targetId === 'software-section') {
+                        const searchEnabled = document.getElementById('searchToggle').checked;
+                        document.getElementById('search-box-container').style.display = searchEnabled ? 'block' : 'none';
+                    } else {
+                        document.getElementById('search-box-container').style.display = 'none';
+                    }
+                });
+            });
+
+            // 主题切换（4套主题）
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const theme = this.getAttribute('data-theme');
+                    // 同步主题
+                    applyTheme(theme);
+                    localStorage.setItem('appTheme', theme);
+                    // 同步选中状态
+                    document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    // 提示
+                    showToast(`已切换至${getThemeName(theme)}`);
+                });
+            });
+
+            // 深色模式快速切换
+            document.getElementById('darkModeToggle').addEventListener('change', function() {
+                const theme = this.checked ? 'dark' : 'light';
+                applyTheme(theme);
+                localStorage.setItem('appTheme', theme);
+                document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+                const targetOption = document.querySelector(`.theme-option[data-theme="${theme}"]`);
+                if (targetOption) targetOption.classList.add('active');
+                showToast(`已切换至${getThemeName(theme)}`);
+            });
+
+            // 背景设置模态框
+            document.getElementById('openBgSettingsBtn').addEventListener('click', showBgSettingsModal);
+            document.getElementById('cancelBgSettings').addEventListener('click', hideBgSettingsModal);
+            document.getElementById('applyBgSettings').addEventListener('click', applyBgSettings);
+
+            // 背景滑块同步
+            document.getElementById('bgOpacitySlider').addEventListener('input', function() {
+                document.getElementById('opacityValue').textContent = `${this.value}%`;
+            });
+            document.getElementById('bgBlurSlider').addEventListener('input', function() {
+                document.getElementById('blurValue').textContent = `${this.value}px`;
+            });
+
+            // 模态框ESC关闭
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hideBgSettingsModal();
+                    document.getElementById('linkLoadingModal').classList.remove('show');
+                }
+            });
+
+            // 按钮点击加载动画
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.md3-btn');
+                if (!btn) return;
+                
+                const href = btn.getAttribute('href');
+                if (!href || href === '#') {
+                    e.preventDefault();
+                    showToast('该功能暂未开放，敬请期待');
+                    return;
+                }
+                
+                // 检查是否是外部链接或特殊路径
+                if (href.startsWith('http') || href.startsWith('//') || 
+                    href.includes('.html') || href.includes('.php') || 
+                    href.includes('/')) {
+                    e.preventDefault();
+                    const loadingText = btn.getAttribute('data-loading-text') || '正在加载中...';
+                    showLinkLoading(loadingText);
+                    // 模拟加载（实际可根据接口调整）
+                    setTimeout(() => {
+                        hideLinkLoading();
+                        window.open(href, '_blank');
+                    }, isFirstLoad ? 800 : 400); // 第二次进入时缩短加载时间
+                }
+            });
+            
+            // 搜索功能开关
+            document.getElementById('searchToggle').addEventListener('change', function() {
+                localStorage.setItem('searchEnabled', this.checked);
+                const searchContainer = document.getElementById('search-box-container');
+                if (document.getElementById('software-section').classList.contains('active')) {
+                    searchContainer.style.display = this.checked ? 'block' : 'none';
+                }
+                showToast(this.checked ? '搜索功能已启用' : '搜索功能已禁用');
+            });
+            
+            // 动画功能开关
+            document.getElementById('animationToggle').addEventListener('change', function() {
+                localStorage.setItem('animationEnabled', this.checked);
+                if (!this.checked) {
+                    document.body.classList.add('performance-optimized');
+                } else {
+                    document.body.classList.remove('performance-optimized');
+                }
+                showToast(this.checked ? '动画效果已启用' : '动画效果已禁用');
+            });
+            
+            // 快速搜索按钮
+            document.getElementById('quick-search').addEventListener('click', function() {
+                const searchBox = document.getElementById('search-box');
+                const searchContainer = document.getElementById('search-box-container');
+                
+                if (searchContainer.style.display === 'none' || searchContainer.style.display === '') {
+                    // 切换到软件库页面
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+                    document.querySelector('.nav-item[data-target="software-section"]').classList.add('active');
+                    document.getElementById('software-section').classList.add('active');
+                    
+                    // 显示搜索框
+                    searchContainer.style.display = 'block';
+                    searchBox.focus();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    searchBox.focus();
+                }
+            });
+            
+            // 返回顶部按钮
+            const backToTop = document.getElementById('back-to-top');
+            backToTop.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // 监听滚动显示返回顶部按钮
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    backToTop.classList.add('show');
+                } else {
+                    backToTop.classList.remove('show');
+                }
+            });
+        }
+
+        // 初始化搜索功能
+        function initSearchFunction() {
+            const searchBox = document.getElementById('search-box');
+            if (!searchBox) return;
+            
+            searchBox.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                const buttons = document.querySelectorAll('.md3-btn');
+                const categories = document.querySelectorAll('.category-title');
+                
+                if (searchTerm === '') {
+                    // 显示所有内容
+                    buttons.forEach(btn => {
+                        btn.style.display = 'flex';
+                        btn.parentElement.style.display = 'grid';
+                    });
+                    categories.forEach(cat => cat.style.display = 'flex');
+                    return;
+                }
+                
+                let hasVisibleItems = false;
+                let lastVisibleCategory = null;
+                
+                // 隐藏所有按钮和分类
+                buttons.forEach(btn => {
+                    const title = btn.getAttribute('data-title') || btn.textContent;
+                    const category = btn.getAttribute('data-category');
+                    
+                    if (title.toLowerCase().includes(searchTerm) || 
+                        category.toLowerCase().includes(searchTerm)) {
+                        btn.style.display = 'flex';
+                        btn.parentElement.style.display = 'grid';
+                        
+                        // 显示对应的分类
+                        const categoryEl = document.querySelector(`.category-title[data-category="${category}"]`);
+                        if (categoryEl) {
+                            categoryEl.style.display = 'flex';
+                            lastVisibleCategory = categoryEl;
+                        }
+                        
+                        hasVisibleItems = true;
+                    } else {
+                        btn.style.display = 'none';
+                    }
+                });
+                
+                // 隐藏没有可见按钮的分类
+                categories.forEach(cat => {
+                    const categoryName = cat.getAttribute('data-category');
+                    const hasVisibleButtons = Array.from(buttons).some(btn => 
+                        btn.getAttribute('data-category') === categoryName && 
+                        btn.style.display !== 'none'
+                    );
+                    
+                    if (!hasVisibleButtons) {
+                        cat.style.display = 'none';
+                        // 隐藏对应的按钮组
+                        const nextSibling = cat.nextElementSibling;
+                        if (nextSibling && nextSibling.classList.contains('two-row-btn-group')) {
+                            nextSibling.style.display = 'none';
+                        }
+                    }
+                });
+                
+                // 如果没有搜索结果，显示提示
+                if (!hasVisibleItems) {
+                    showToast('未找到相关结果');
+                }
+            });
+        }
+
+        // 4. 进度条优化：关联加载状态
+        function initProgressBar() {
+            const progressBar = document.querySelector("#progress-bar hr");
+            if (!progressBar) return;
+
+            let progressWidth = 0;
+            const progressSteps = isFirstLoad ? [30, 70, 100] : [100]; // 第二次直接到100%
+            let currentStep = 0;
+
+            // 模拟加载进度（可关联实际资源加载）
+            function updateProgress() {
+                if (currentStep >= progressSteps.length) return;
+                const target = progressSteps[currentStep];
+                const interval = setInterval(() => {
+                    progressWidth += isFirstLoad ? 1 : 5; // 第二次加快速度
+                    progressBar.style.width = `${Math.min(progressWidth, target)}%`;
+                    if (progressWidth >= target) {
+                        clearInterval(interval);
+                        currentStep++;
+                        // 最后一步加载完成后提示
+                        if (currentStep === progressSteps.length) {
+                            setTimeout(() => {
+                                if (isFirstLoad) showToast('软件库加载完成');
+                            }, 500);
+                        }
+                        setTimeout(updateProgress, currentStep === 1 ? 300 : 100);
+                    }
+                }, isFirstLoad ? 30 : 10); // 第二次加快速度
+            }
+
+            setTimeout(updateProgress, isFirstLoad ? 500 : 100);
+        }
+
+        // 辅助函数：主题名称映射
+        function getThemeName(theme) {
+            const themeNames = { light: '浅色主题', dark: '深色主题', soft: '柔和主题', vibrant: '活力主题' };
+            return themeNames[theme] || '浅色主题';
+        }
+
+        // 辅助函数：背景设置应用
+        function applyBgSettings() {
+            const bgUrl = document.getElementById('bgUrlInput').value.trim();
+            const opacity = document.getElementById('bgOpacitySlider').value;
+            const blur = document.getElementById('bgBlurSlider').value;
+
+            if (!bgUrl) {
+                showToast('请输入有效的图片链接');
+                return;
+            }
+
+            // 应用背景
+            applyBackground(bgUrl, opacity, blur);
+
+            // 保存设置
+            localStorage.setItem('bgUrl', bgUrl);
+            localStorage.setItem('bgOpacity', opacity);
+            localStorage.setItem('bgBlur', blur);
+            showToast('背景设置已应用');
+            hideBgSettingsModal();
+        }
+
+        // 辅助函数：模态框显示/隐藏
+        function showBgSettingsModal() {
+            document.getElementById('bgSettingsModal').classList.add('show');
+        }
+
+        function hideBgSettingsModal() {
+            document.getElementById('bgSettingsModal').classList.remove('show');
+        }
+
+        // 辅助函数：加载弹窗
+        function showLinkLoading(text) {
+            document.querySelector('.link-loading-text').textContent = text;
+            document.getElementById('linkLoadingModal').classList.add('show');
+        }
+
+        function hideLinkLoading() {
+            document.getElementById('linkLoadingModal').classList.remove('show');
+        }
+
+        // 辅助函数：Toast提示（优化样式）
+        function showToast(message) {
+            let toast = document.querySelector('.toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.className = 'toast';
+                document.body.appendChild(toast);
+            }
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+    </script>
+</body>
+</html>

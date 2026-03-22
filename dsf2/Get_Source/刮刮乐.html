@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>不限次数刮刮乐</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {background: #f5f0e6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px 15px;}
+        .scratch-container {max-width: 400px; margin: 30px auto; text-align: center;}
+        .title {font-size: 24px; color: #d92929; font-weight: bold; margin-bottom: 20px;}
+        .tip {font-size: 14px; color: #666; margin-bottom: 25px;}
+        
+        /* 刮刮卡容器 */
+        .scratch-box {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin: 0 auto 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        /* 中奖区域 */
+        .prize-area {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: #d92929;
+            font-weight: 500;
+        }
+        /* 刮刮涂层 */
+        .scratch-cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #c9c9c9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            color: #666;
+            transition: opacity 0.3s ease;
+        }
+        .scratch-cover.active {opacity: 0; pointer-events: none;}
+        
+        /* 按钮样式 */
+        #resetBtn {
+            width: 100%;
+            height: 50px;
+            background: #d92929;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        #resetBtn:hover {background: #b82323;}
+        
+        /* 中奖记录 */
+        .record-area {
+            margin-top: 30px;
+            text-align: left;
+        }
+        .record-title {font-size: 16px; color: #333; font-weight: 500; margin-bottom: 10px;}
+        #recordList {
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 10px 15px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+        #recordList div {margin: 5px 0;}
+    </style>
+</head>
+<body>
+<div class="scratch-container">
+        <h1 class="title">不限次数刮刮乐</h1>
+        <p class="tip">点击刮刮涂层即可开奖，中奖概率随机，可无限次刷新</p>
+        
+        <!-- 刮刮卡主体 -->
+        <div class="scratch-box" id="scratchBox">
+            <div class="prize-area" id="prizeArea">等待开奖...</div>
+            <div class="scratch-cover" id="scratchCover">点击此处刮开</div>
+        </div>
+        
+        <!-- 刷新按钮 -->
+        <button id="resetBtn">刷新刮刮卡（再来一次）</button>
+        
+        <!-- 中奖记录 -->
+        <div class="record-area">
+            <div class="record-title">开奖记录</div>
+            <div id="recordList"></div>
+        </div>
+    </div>
+
+    <script>
+        // 元素获取
+        const scratchBox = document.getElementById('scratchBox');
+        const scratchCover = document.getElementById('scratchCover');
+        const prizeArea = document.getElementById('prizeArea');
+        const resetBtn = document.getElementById('resetBtn');
+        const recordList = document.getElementById('recordList');
+        
+        // 奖品池（含中奖/未中奖，概率可调整）
+        const prizes = [
+            { text: "恭喜中奖！10元红包", isWin: true },
+            { text: "谢谢参与～", isWin: false },
+            { text: "恭喜中奖！20元话费", isWin: true },
+            { text: "谢谢参与～", isWin: false },
+            { text: "谢谢参与～", isWin: false },
+            { text: "恭喜中奖！50元购物券", isWin: true },
+            { text: "谢谢参与～", isWin: false },
+            { text: "谢谢参与～", isWin: false },
+            { text: "谢谢参与～", isWin: false },
+            { text: "恭喜中奖！100元现金", isWin: true }
+        ];
+        
+        // 初始化刮刮卡
+        function initScratchCard() {
+            scratchCover.classList.remove('active');
+            prizeArea.textContent = "等待开奖...";
+            scratchBox.style.pointerEvents = 'auto';
+        }
+        
+        // 随机生成奖品
+        function getRandomPrize() {
+            const randomIndex = Math.floor(Math.random() * prizes.length);
+            return prizes[randomIndex];
+        }
+        
+        // 记录开奖结果
+        function addRecord(prize) {
+            const time = new Date().toLocaleTimeString();
+            const recordItem = document.createElement('div');
+            recordItem.innerHTML = `[${time}] ${prize.isWin ? '<span style="color:#d92929;">中奖</span>：' : '未中奖：'}${prize.text}`;
+            recordList.prepend(recordItem); // 最新记录放最上面
+            
+            // 限制记录数量（最多显示10条）
+            if (recordList.children.length > 10) {
+                recordList.removeChild(recordList.lastChild);
+            }
+        }
+        
+        // 刮开事件（点击即刮开）
+        scratchBox.addEventListener('click', () => {
+            const prize = getRandomPrize();
+            prizeArea.textContent = prize.text;
+            scratchCover.classList.add('active');
+            scratchBox.style.pointerEvents = 'none'; // 防止重复点击
+            addRecord(prize);
+        });
+        
+        // 刷新按钮事件
+        resetBtn.addEventListener('click', initScratchCard);
+        
+        // 初始加载
+        initScratchCard();
+    </script>
+</body>
+</html>
