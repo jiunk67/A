@@ -1,0 +1,4311 @@
+<html lang="zh-CN">
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>XML颜色代码大全</title> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+  <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #6a11cb 0%, #3b5998 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                rgba(139, 0, 0, 0.3) 0%, 
+                rgba(75, 0, 130, 0.3) 100%);
+            z-index: 1;
+        }
+        
+        header > * {
+            position: relative;
+            z-index: 2;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .description {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .highlight {
+            background: linear-gradient(90deg, #8B0000, #4B0082);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            border-color: #4a6cf7;
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+            outline: none;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+        
+        .color-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .category-btn {
+            padding: 10px 18px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .category-btn:hover {
+            border-color: #4a6cf7;
+            color: #4a6cf7;
+        }
+        
+        .category-btn.active {
+            background: #4a6cf7;
+            color: white;
+            border-color: #4a6cf7;
+        }
+        
+        .category-btn .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+        
+        .color-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .color-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .color-preview {
+            height: 140px;
+            width: 100%;
+            position: relative;
+        }
+        
+        .color-info {
+            padding: 18px;
+        }
+        
+        .color-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .color-code {
+            color: #64748b;
+            font-family: monospace;
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+        
+        .color-category {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #f1f5f9;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        .copy-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .copy-btn:hover {
+            background: #4a6cf7;
+            color: white;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            padding: 16px 26px;
+            background: #4a6cf7;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        @media (max-width: 1100px) {
+            .color-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .color-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+        
+        .color-count {
+            margin-top: 20px;
+            text-align: center;
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+    </style> 
+  <script src="js/jq.js"></script> 
+ </head> 
+ <body id="v1"> 
+  <div id="v2" class="container"> 
+   <header id="v3"> 
+    <h1 id="v4">XML颜色代码大全</h1> 
+    <p id="v5" class="description">特别添加<span id="v6" class="highlight">暗红色</span>和<span id="v7" class="highlight">暗紫色</span>系，包含200+种精选颜色</p> 
+   </header> 
+   <div id="v8" class="controls"> 
+    <div id="v9" class="search-box"> 
+     <i id="v10" class="fas fa-search"></i> 
+     <input type="text" id="searchInput" placeholder="搜索颜色名称或代码..."> 
+    </div> 
+    <div id="v11" class="color-categories"> 
+     <button id="v12" class="category-btn active" data-category="all"> <span id="v13" class="color-dot" style="background: linear-gradient(45deg, #FF0000, #FFA500, #FFFF00, #008000, #00FFFF, #0000FF, #800080);"></span> 全部颜色 </button> 
+     <button id="v14" class="category-btn" data-category="red"> <span id="v15" class="color-dot" style="background: #FF0000;"></span> 红色系 </button> 
+     <button id="v16" class="category-btn" data-category="orange"> <span id="v17" class="color-dot" style="background: #FFA500;"></span> 橙色系 </button> 
+     <button id="v18" class="category-btn" data-category="yellow"> <span id="v19" class="color-dot" style="background: #FFFF00;"></span> 黄色系 </button> 
+     <button id="v20" class="category-btn" data-category="green"> <span id="v21" class="color-dot" style="background: #008000;"></span> 绿色系 </button> 
+     <button id="v22" class="category-btn" data-category="cyan"> <span id="v23" class="color-dot" style="background: #00FFFF;"></span> 青色系 </button> 
+     <button id="v24" class="category-btn" data-category="blue"> <span id="v25" class="color-dot" style="background: #0000FF;"></span> 蓝色系 </button> 
+     <button id="v26" class="category-btn" data-category="purple"> <span id="v27" class="color-dot" style="background: #800080;"></span> 紫色系 </button> 
+     <button id="v28" class="category-btn" data-category="neutral"> <span id="v29" class="color-dot" style="background: #808080;"></span> 中性色 </button> 
+    </div> 
+   </div> 
+   <div class="color-grid" id="colorGrid">
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF0000;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       红色
+      </div> 
+      <div class="color-code">
+       #FF0000
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FF0000"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #8B0000;"> 
+      <hr id="v35">
+      <canvas id="v36"></canvas>
+      <canvas id="v37"></canvas>
+     </div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       暗红色
+      </div> 
+      <div class="color-code">
+       #8B0000
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#8B0000"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #DC143C;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       猩红
+      </div> 
+      <div class="color-code">
+       #DC143C
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#DC143C"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF6B6B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅红色
+      </div> 
+      <div class="color-code">
+       #FF6B6B
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FF6B6B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #CD5C5C;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       印度红
+      </div> 
+      <div class="color-code">
+       #CD5C5C
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#CD5C5C"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF007F;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       玫瑰红
+      </div> 
+      <div class="color-code">
+       #FF007F
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FF007F"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #B22222;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       砖红色
+      </div> 
+      <div class="color-code">
+       #B22222
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#B22222"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #800000;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       栗色
+      </div> 
+      <div class="color-code">
+       #800000
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#800000"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F08080;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅珊瑚色
+      </div> 
+      <div class="color-code">
+       #F08080
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#F08080"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFB6C1;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅粉红
+      </div> 
+      <div class="color-code">
+       #FFB6C1
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FFB6C1"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFC0CB;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       粉红色
+      </div> 
+      <div class="color-code">
+       #FFC0CB
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FFC0CB"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF1493;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深粉色
+      </div> 
+      <div class="color-code">
+       #FF1493
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FF1493"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FC8EAC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       火烈鸟粉
+      </div> 
+      <div class="color-code">
+       #FC8EAC
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FC8EAC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF6347;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       番茄红
+      </div> 
+      <div class="color-code">
+       #FF6347
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FF6347"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FA8072;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       鲑红
+      </div> 
+      <div class="color-code">
+       #FA8072
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FA8072"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #E9967A;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       暗鲑红
+      </div> 
+      <div class="color-code">
+       #E9967A
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#E9967A"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #800020;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       勃艮第红
+      </div> 
+      <div class="color-code">
+       #800020
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#800020"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #7E191B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       氧化红
+      </div> 
+      <div class="color-code">
+       #7E191B
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#7E191B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #960018;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       胭脂红
+      </div> 
+      <div class="color-code">
+       #960018
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#960018"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #C21E56;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深玫瑰红
+      </div> 
+      <div class="color-code">
+       #C21E56
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#C21E56"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F34723;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       石榴红
+      </div> 
+      <div class="color-code">
+       #F34723
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#F34723"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF4D00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       朱红
+      </div> 
+      <div class="color-code">
+       #FF4D00
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FF4D00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #D21F3C;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       宝石红
+      </div> 
+      <div class="color-code">
+       #D21F3C
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#D21F3C"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #DE3163;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       樱桃红
+      </div> 
+      <div class="color-code">
+       #DE3163
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#DE3163"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #E25822;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       赤红
+      </div> 
+      <div class="color-code">
+       #E25822
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#E25822"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #990000;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       绯红
+      </div> 
+      <div class="color-code">
+       #990000
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#990000"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF7F50;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       珊瑚红
+      </div> 
+      <div class="color-code">
+       #FF7F50
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FF7F50"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F08080;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅珊瑚红
+      </div> 
+      <div class="color-code">
+       #F08080
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#F08080"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #CD5B45;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深珊瑚红
+      </div> 
+      <div class="color-code">
+       #CD5B45
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#CD5B45"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFA07A;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅鲑红
+      </div> 
+      <div class="color-code">
+       #FFA07A
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FFA07A"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #E9967A;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深鲑红
+      </div> 
+      <div class="color-code">
+       #E9967A
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#E9967A"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFB6C1;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅粉红
+      </div> 
+      <div class="color-code">
+       #FFB6C1
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FFB6C1"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #C71585;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       适中的紫罗兰红
+      </div> 
+      <div class="color-code">
+       #C71585
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#C71585"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF1493;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深粉红
+      </div> 
+      <div class="color-code">
+       #FF1493
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#FF1493"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #BA55D3;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       适中的兰花紫
+      </div> 
+      <div class="color-code">
+       #BA55D3
+      </div> 
+      <span class="color-category">red</span> 
+      <button class="copy-btn" data-code="#BA55D3"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFA500;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       橙色
+      </div> 
+      <div class="color-code">
+       #FFA500
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FFA500"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF8C00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深橙色
+      </div> 
+      <div class="color-code">
+       #FF8C00
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FF8C00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF7F50;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       珊瑚色
+      </div> 
+      <div class="color-code">
+       #FF7F50
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FF7F50"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #E9967A;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       暗珊瑚色
+      </div> 
+      <div class="color-code">
+       #E9967A
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#E9967A"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFDAB9;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅橙
+      </div> 
+      <div class="color-code">
+       #FFDAB9
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FFDAB9"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FBCEB1;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       杏黄
+      </div> 
+      <div class="color-code">
+       #FBCEB1
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FBCEB1"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF4500;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       橘红色
+      </div> 
+      <div class="color-code">
+       #FF4500
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FF4500"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF8033;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       热带橙
+      </div> 
+      <div class="color-code">
+       #FF8033
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FF8033"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFA500;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       阳橙
+      </div> 
+      <div class="color-code">
+       #FFA500
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FFA500"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFBF00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       琥珀色
+      </div> 
+      <div class="color-code">
+       #FFBF00
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FFBF00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF7518;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       南瓜橙
+      </div> 
+      <div class="color-code">
+       #FF7518
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FF7518"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #CC7722;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       赭色
+      </div> 
+      <div class="color-code">
+       #CC7722
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#CC7722"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #EB5E28;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       柿子橙
+      </div> 
+      <div class="color-code">
+       #EB5E28
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#EB5E28"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFB366;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       蜜橙
+      </div> 
+      <div class="color-code">
+       #FFB366
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FFB366"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FBC02D;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       姜橙
+      </div> 
+      <div class="color-code">
+       #FBC02D
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FBC02D"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFAA33;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       金橙色
+      </div> 
+      <div class="color-code">
+       #FFAA33
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FFAA33"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF5349;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       橙红色
+      </div> 
+      <div class="color-code">
+       #FF5349
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FF5349"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FDD5B1;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅杏黄
+      </div> 
+      <div class="color-code">
+       #FDD5B1
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FDD5B1"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F4A460;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深杏黄
+      </div> 
+      <div class="color-code">
+       #F4A460
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#F4A460"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFA07A;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅珊瑚橙
+      </div> 
+      <div class="color-code">
+       #FFA07A
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FFA07A"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF7F50;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深珊瑚橙
+      </div> 
+      <div class="color-code">
+       #FF7F50
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FF7F50"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFA07A;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅鲑橙
+      </div> 
+      <div class="color-code">
+       #FFA07A
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FFA07A"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #E9967A;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深鲑橙
+      </div> 
+      <div class="color-code">
+       #E9967A
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#E9967A"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF4500;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅橙红
+      </div> 
+      <div class="color-code">
+       #FF4500
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FF4500"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF8C00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深橙红
+      </div> 
+      <div class="color-code">
+       #FF8C00
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FF8C00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFD700;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅金橙
+      </div> 
+      <div class="color-code">
+       #FFD700
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FFD700"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFA500;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深金橙
+      </div> 
+      <div class="color-code">
+       #FFA500
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FFA500"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFBF00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅琥珀橙
+      </div> 
+      <div class="color-code">
+       #FFBF00
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FFBF00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF8C00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深琥珀橙
+      </div> 
+      <div class="color-code">
+       #FF8C00
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FF8C00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #CC7722;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅赭橙
+      </div> 
+      <div class="color-code">
+       #CC7722
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#CC7722"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #8B4513;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深赭橙
+      </div> 
+      <div class="color-code">
+       #8B4513
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#8B4513"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #EB5E28;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅柿子橙
+      </div> 
+      <div class="color-code">
+       #EB5E28
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#EB5E28"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #CD3700;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深柿子橙
+      </div> 
+      <div class="color-code">
+       #CD3700
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#CD3700"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FBC02D;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅姜橙
+      </div> 
+      <div class="color-code">
+       #FBC02D
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FBC02D"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF8C00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深姜橙
+      </div> 
+      <div class="color-code">
+       #FF8C00
+      </div> 
+      <span class="color-category">orange</span> 
+      <button class="copy-btn" data-code="#FF8C00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFF00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       黄色
+      </div> 
+      <div class="color-code">
+       #FFFF00
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFFF00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFD700;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       金色
+      </div> 
+      <div class="color-code">
+       #FFD700
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFD700"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFACD;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       柠檬色
+      </div> 
+      <div class="color-code">
+       #FFFACD
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFFACD"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFFE0;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅黄色
+      </div> 
+      <div class="color-code">
+       #FFFFE0
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFFFE0"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFDB58;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       芥末黄
+      </div> 
+      <div class="color-code">
+       #FFDB58
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFDB58"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFF8DC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       玉米色
+      </div> 
+      <div class="color-code">
+       #FFF8DC
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFF8DC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFA700;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       铬黄
+      </div> 
+      <div class="color-code">
+       #FFA700
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFA700"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F0E68C;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       卡其色
+      </div> 
+      <div class="color-code">
+       #F0E68C
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#F0E68C"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #BDB76B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       暗卡其色
+      </div> 
+      <div class="color-code">
+       #BDB76B
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#BDB76B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F7E7CE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       香槟黄
+      </div> 
+      <div class="color-code">
+       #F7E7CE
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#F7E7CE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #CCFF00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       荧光黄
+      </div> 
+      <div class="color-code">
+       #CCFF00
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#CCFF00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FEF8E2;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       奶黄色
+      </div> 
+      <div class="color-code">
+       #FEF8E2
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FEF8E2"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFE135;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       香蕉黄
+      </div> 
+      <div class="color-code">
+       #FFE135
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFE135"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFDD0;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       奶油黄
+      </div> 
+      <div class="color-code">
+       #FFFDD0
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFFDD0"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFF99;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       金丝雀黄
+      </div> 
+      <div class="color-code">
+       #FFFF99
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFFF99"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFBF00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       琥珀黄
+      </div> 
+      <div class="color-code">
+       #FFBF00
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFBF00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F0FFF0;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       蜂蜜黄
+      </div> 
+      <div class="color-code">
+       #F0FFF0
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#F0FFF0"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFEF00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       日光黄
+      </div> 
+      <div class="color-code">
+       #FFEF00
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFEF00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFF00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       鲜黄
+      </div> 
+      <div class="color-code">
+       #FFFF00
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFFF00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFFE0;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       淡黄
+      </div> 
+      <div class="color-code">
+       #FFFFE0
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFFFE0"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFD700;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深黄
+      </div> 
+      <div class="color-code">
+       #FFD700
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFD700"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFACD;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅柠檬黄
+      </div> 
+      <div class="color-code">
+       #FFFACD
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFFACD"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFF44F;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深柠檬黄
+      </div> 
+      <div class="color-code">
+       #FFF44F
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFF44F"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFF8DC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅玉米黄
+      </div> 
+      <div class="color-code">
+       #FFF8DC
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFF8DC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #EEDD82;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深玉米黄
+      </div> 
+      <div class="color-code">
+       #EEDD82
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#EEDD82"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F0E68C;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅卡其黄
+      </div> 
+      <div class="color-code">
+       #F0E68C
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#F0E68C"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #BDB76B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深卡其黄
+      </div> 
+      <div class="color-code">
+       #BDB76B
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#BDB76B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F7E7CE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅香槟黄
+      </div> 
+      <div class="color-code">
+       #F7E7CE
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#F7E7CE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F5DEB3;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深香槟黄
+      </div> 
+      <div class="color-code">
+       #F5DEB3
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#F5DEB3"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #CCFF00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅荧光黄
+      </div> 
+      <div class="color-code">
+       #CCFF00
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#CCFF00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #ADFF2F;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深荧光黄
+      </div> 
+      <div class="color-code">
+       #ADFF2F
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#ADFF2F"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FEF8E2;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅奶黄
+      </div> 
+      <div class="color-code">
+       #FEF8E2
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FEF8E2"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F5DEB3;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深奶黄
+      </div> 
+      <div class="color-code">
+       #F5DEB3
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#F5DEB3"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFE135;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅香蕉黄
+      </div> 
+      <div class="color-code">
+       #FFE135
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFE135"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFD700;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深香蕉黄
+      </div> 
+      <div class="color-code">
+       #FFD700
+      </div> 
+      <span class="color-category">yellow</span> 
+      <button class="copy-btn" data-code="#FFD700"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #008000;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       绿色
+      </div> 
+      <div class="color-code">
+       #008000
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#008000"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #006400;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深绿色
+      </div> 
+      <div class="color-code">
+       #006400
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#006400"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #90EE90;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅绿色
+      </div> 
+      <div class="color-code">
+       #90EE90
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#90EE90"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00FF00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       酸橙绿
+      </div> 
+      <div class="color-code">
+       #00FF00
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#00FF00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #228B22;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       森林绿
+      </div> 
+      <div class="color-code">
+       #228B22
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#228B22"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #2E8B57;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       海绿色
+      </div> 
+      <div class="color-code">
+       #2E8B57
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#2E8B57"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00FF7F;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       春绿色
+      </div> 
+      <div class="color-code">
+       #00FF7F
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#00FF7F"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #808000;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       橄榄色
+      </div> 
+      <div class="color-code">
+       #808000
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#808000"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #556B2F;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深橄榄绿
+      </div> 
+      <div class="color-code">
+       #556B2F
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#556B2F"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #9ACD32;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       黄绿色
+      </div> 
+      <div class="color-code">
+       #9ACD32
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#9ACD32"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #7CFC00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       草绿色
+      </div> 
+      <div class="color-code">
+       #7CFC00
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#7CFC00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #8DB600;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       苹果绿
+      </div> 
+      <div class="color-code">
+       #8DB600
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#8DB600"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00A15C;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       孔雀绿
+      </div> 
+      <div class="color-code">
+       #00A15C
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#00A15C"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #98FF98;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       薄荷绿
+      </div> 
+      <div class="color-code">
+       #98FF98
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#98FF98"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #50C878;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       碧绿色
+      </div> 
+      <div class="color-code">
+       #50C878
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#50C878"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #32CD32;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       柠檬绿
+      </div> 
+      <div class="color-code">
+       #32CD32
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#32CD32"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #90EE90;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅绿
+      </div> 
+      <div class="color-code">
+       #90EE90
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#90EE90"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #006400;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深绿
+      </div> 
+      <div class="color-code">
+       #006400
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#006400"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00FF00;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       鲜绿
+      </div> 
+      <div class="color-code">
+       #00FF00
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#00FF00"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #98FB98;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       淡绿
+      </div> 
+      <div class="color-code">
+       #98FB98
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#98FB98"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00FA9A;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深春绿
+      </div> 
+      <div class="color-code">
+       #00FA9A
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#00FA9A"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00FF7F;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中春绿
+      </div> 
+      <div class="color-code">
+       #00FF7F
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#00FF7F"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #3CB371;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中海洋绿
+      </div> 
+      <div class="color-code">
+       #3CB371
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#3CB371"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #66CDAA;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中海绿
+      </div> 
+      <div class="color-code">
+       #66CDAA
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#66CDAA"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #8FBC8F;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅海绿
+      </div> 
+      <div class="color-code">
+       #8FBC8F
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#8FBC8F"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #48D1CC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中碧绿
+      </div> 
+      <div class="color-code">
+       #48D1CC
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#48D1CC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #AFEEEE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅碧绿
+      </div> 
+      <div class="color-code">
+       #AFEEEE
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#AFEEEE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #008B8B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深碧绿
+      </div> 
+      <div class="color-code">
+       #008B8B
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#008B8B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #5F9EA0;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中绿石色
+      </div> 
+      <div class="color-code">
+       #5F9EA0
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#5F9EA0"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #B0E0E6;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅绿石色
+      </div> 
+      <div class="color-code">
+       #B0E0E6
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#B0E0E6"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00868B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深绿石色
+      </div> 
+      <div class="color-code">
+       #00868B
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#00868B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #BAB86C;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅橄榄绿
+      </div> 
+      <div class="color-code">
+       #BAB86C
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#BAB86C"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #556B2F;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深橄榄绿
+      </div> 
+      <div class="color-code">
+       #556B2F
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#556B2F"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #6B8E23;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中橄榄绿
+      </div> 
+      <div class="color-code">
+       #6B8E23
+      </div> 
+      <span class="color-category">green</span> 
+      <button class="copy-btn" data-code="#6B8E23"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00FFFF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       青色
+      </div> 
+      <div class="color-code">
+       #00FFFF
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#00FFFF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #008B8B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深青色
+      </div> 
+      <div class="color-code">
+       #008B8B
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#008B8B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #E0FFFF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅青色
+      </div> 
+      <div class="color-code">
+       #E0FFFF
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#E0FFFF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #40E0D0;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       绿松石色
+      </div> 
+      <div class="color-code">
+       #40E0D0
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#40E0D0"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00CED1;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深绿松石色
+      </div> 
+      <div class="color-code">
+       #00CED1
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#00CED1"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00A5A5;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       孔雀蓝
+      </div> 
+      <div class="color-code">
+       #00A5A5
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#00A5A5"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #006D6D;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       海蓝色
+      </div> 
+      <div class="color-code">
+       #006D6D
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#006D6D"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #AFEEEE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       水色
+      </div> 
+      <div class="color-code">
+       #AFEEEE
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#AFEEEE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #20B2AA;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅海绿色
+      </div> 
+      <div class="color-code">
+       #20B2AA
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#20B2AA"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #48D1CC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中绿松石色
+      </div> 
+      <div class="color-code">
+       #48D1CC
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#48D1CC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00F5FF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       蓝绿色
+      </div> 
+      <div class="color-code">
+       #00F5FF
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#00F5FF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #E0FFFF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅青
+      </div> 
+      <div class="color-code">
+       #E0FFFF
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#E0FFFF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #008B8B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深青
+      </div> 
+      <div class="color-code">
+       #008B8B
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#008B8B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00FFFF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       鲜青
+      </div> 
+      <div class="color-code">
+       #00FFFF
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#00FFFF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #AFEEEE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       淡青
+      </div> 
+      <div class="color-code">
+       #AFEEEE
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#AFEEEE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #48D1CC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中青
+      </div> 
+      <div class="color-code">
+       #48D1CC
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#48D1CC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00CED1;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深绿松石青
+      </div> 
+      <div class="color-code">
+       #00CED1
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#00CED1"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #48D1CC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中绿松石青
+      </div> 
+      <div class="color-code">
+       #48D1CC
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#48D1CC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #AFEEEE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅绿松石青
+      </div> 
+      <div class="color-code">
+       #AFEEEE
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#AFEEEE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00868B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深孔雀青
+      </div> 
+      <div class="color-code">
+       #00868B
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#00868B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #008B8B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中孔雀青
+      </div> 
+      <div class="color-code">
+       #008B8B
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#008B8B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #20B2AA;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅孔雀青
+      </div> 
+      <div class="color-code">
+       #20B2AA
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#20B2AA"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00868B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深海青
+      </div> 
+      <div class="color-code">
+       #00868B
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#00868B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #008B8B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中海青
+      </div> 
+      <div class="color-code">
+       #008B8B
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#008B8B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #20B2AA;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅海青
+      </div> 
+      <div class="color-code">
+       #20B2AA
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#20B2AA"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00CED1;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深水青
+      </div> 
+      <div class="color-code">
+       #00CED1
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#00CED1"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #48D1CC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中水青
+      </div> 
+      <div class="color-code">
+       #48D1CC
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#48D1CC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #AFEEEE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅水青
+      </div> 
+      <div class="color-code">
+       #AFEEEE
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#AFEEEE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #008080;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深蓝绿青
+      </div> 
+      <div class="color-code">
+       #008080
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#008080"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #20B2AA;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中蓝绿青
+      </div> 
+      <div class="color-code">
+       #20B2AA
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#20B2AA"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #7FFFD4;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅蓝绿青
+      </div> 
+      <div class="color-code">
+       #7FFFD4
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#7FFFD4"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #008B8B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深碧青
+      </div> 
+      <div class="color-code">
+       #008B8B
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#008B8B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #48D1CC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中碧青
+      </div> 
+      <div class="color-code">
+       #48D1CC
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#48D1CC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #B0E0E6;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅碧青
+      </div> 
+      <div class="color-code">
+       #B0E0E6
+      </div> 
+      <span class="color-category">cyan</span> 
+      <button class="copy-btn" data-code="#B0E0E6"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #0000FF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       蓝色
+      </div> 
+      <div class="color-code">
+       #0000FF
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#0000FF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00008B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深蓝色
+      </div> 
+      <div class="color-code">
+       #00008B
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#00008B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #87CEEB;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       天蓝色
+      </div> 
+      <div class="color-code">
+       #87CEEB
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#87CEEB"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #ADD8E6;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅蓝色
+      </div> 
+      <div class="color-code">
+       #ADD8E6
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#ADD8E6"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #4682B4;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       钢蓝色
+      </div> 
+      <div class="color-code">
+       #4682B4
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#4682B4"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #4169E1;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       皇家蓝
+      </div> 
+      <div class="color-code">
+       #4169E1
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#4169E1"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #000080;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       海军蓝
+      </div> 
+      <div class="color-code">
+       #000080
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#000080"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #0000CD;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中蓝色
+      </div> 
+      <div class="color-code">
+       #0000CD
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#0000CD"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #6495ED;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       矢车菊蓝
+      </div> 
+      <div class="color-code">
+       #6495ED
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#6495ED"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #1E90FF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       道奇蓝
+      </div> 
+      <div class="color-code">
+       #1E90FF
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#1E90FF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #B0E0E6;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       淡蓝色
+      </div> 
+      <div class="color-code">
+       #B0E0E6
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#B0E0E6"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #1434A4;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       藏青色
+      </div> 
+      <div class="color-code">
+       #1434A4
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#1434A4"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #191970;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       午夜蓝
+      </div> 
+      <div class="color-code">
+       #191970
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#191970"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #0047AB;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       孔雀蓝
+      </div> 
+      <div class="color-code">
+       #0047AB
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#0047AB"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #0047AB;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       钴蓝色
+      </div> 
+      <div class="color-code">
+       #0047AB
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#0047AB"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #ADD8E6;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅蓝
+      </div> 
+      <div class="color-code">
+       #ADD8E6
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#ADD8E6"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00008B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深蓝
+      </div> 
+      <div class="color-code">
+       #00008B
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#00008B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #0000FF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       鲜蓝
+      </div> 
+      <div class="color-code">
+       #0000FF
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#0000FF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #B0E0E6;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       淡蓝
+      </div> 
+      <div class="color-code">
+       #B0E0E6
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#B0E0E6"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #0000CD;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中蓝
+      </div> 
+      <div class="color-code">
+       #0000CD
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#0000CD"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #00BFFF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深天蓝
+      </div> 
+      <div class="color-code">
+       #00BFFF
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#00BFFF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #87CEFA;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅天蓝
+      </div> 
+      <div class="color-code">
+       #87CEFA
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#87CEFA"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #4682B4;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深钢蓝
+      </div> 
+      <div class="color-code">
+       #4682B4
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#4682B4"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #B0C4DE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅钢蓝
+      </div> 
+      <div class="color-code">
+       #B0C4DE
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#B0C4DE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #1E90FF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深道奇蓝
+      </div> 
+      <div class="color-code">
+       #1E90FF
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#1E90FF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #87CEFA;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅道奇蓝
+      </div> 
+      <div class="color-code">
+       #87CEFA
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#87CEFA"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #6495ED;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深矢车菊蓝
+      </div> 
+      <div class="color-code">
+       #6495ED
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#6495ED"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #87CEEB;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅矢车菊蓝
+      </div> 
+      <div class="color-code">
+       #87CEEB
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#87CEEB"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #4169E1;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深皇家蓝
+      </div> 
+      <div class="color-code">
+       #4169E1
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#4169E1"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #6495ED;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅皇家蓝
+      </div> 
+      <div class="color-code">
+       #6495ED
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#6495ED"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #000080;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深藏青
+      </div> 
+      <div class="color-code">
+       #000080
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#000080"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #191970;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅藏青
+      </div> 
+      <div class="color-code">
+       #191970
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#191970"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #191970;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深午夜蓝
+      </div> 
+      <div class="color-code">
+       #191970
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#191970"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #2F4F4F;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅午夜蓝
+      </div> 
+      <div class="color-code">
+       #2F4F4F
+      </div> 
+      <span class="color-category">blue</span> 
+      <button class="copy-btn" data-code="#2F4F4F"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #800080;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       紫色
+      </div> 
+      <div class="color-code">
+       #800080
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#800080"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #4B0082;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       暗紫色
+      </div> 
+      <div class="color-code">
+       #4B0082
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#4B0082"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #D8BFD8;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅紫色
+      </div> 
+      <div class="color-code">
+       #D8BFD8
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#D8BFD8"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #EE82EE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       紫罗兰色
+      </div> 
+      <div class="color-code">
+       #EE82EE
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#EE82EE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FF00FF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       洋红色
+      </div> 
+      <div class="color-code">
+       #FF00FF
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#FF00FF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #DA70D6;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       兰花紫
+      </div> 
+      <div class="color-code">
+       #DA70D6
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#DA70D6"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #DDA0DD;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       梅红色
+      </div> 
+      <div class="color-code">
+       #DDA0DD
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#DDA0DD"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #E6E6FA;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       薰衣草紫
+      </div> 
+      <div class="color-code">
+       #E6E6FA
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#E6E6FA"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #4B0082;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       靛蓝色
+      </div> 
+      <div class="color-code">
+       #4B0082
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#4B0082"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #8B008B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深洋红
+      </div> 
+      <div class="color-code">
+       #8B008B
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#8B008B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #9966CC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       紫水晶色
+      </div> 
+      <div class="color-code">
+       #9966CC
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#9966CC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #C54B8C;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       木槿紫
+      </div> 
+      <div class="color-code">
+       #C54B8C
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#C54B8C"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #7851A9;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       皇室紫
+      </div> 
+      <div class="color-code">
+       #7851A9
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#7851A9"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #9400D3;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深紫罗兰
+      </div> 
+      <div class="color-code">
+       #9400D3
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#9400D3"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #D8BFD8;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅紫
+      </div> 
+      <div class="color-code">
+       #D8BFD8
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#D8BFD8"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #4B0082;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深紫
+      </div> 
+      <div class="color-code">
+       #4B0082
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#4B0082"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #800080;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       鲜紫
+      </div> 
+      <div class="color-code">
+       #800080
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#800080"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #E6E6FA;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       淡紫
+      </div> 
+      <div class="color-code">
+       #E6E6FA
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#E6E6FA"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #9370DB;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中紫
+      </div> 
+      <div class="color-code">
+       #9370DB
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#9370DB"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #9400D3;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深紫罗兰
+      </div> 
+      <div class="color-code">
+       #9400D3
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#9400D3"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #EE82EE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅紫罗兰
+      </div> 
+      <div class="color-code">
+       #EE82EE
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#EE82EE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #9932CC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深兰花紫
+      </div> 
+      <div class="color-code">
+       #9932CC
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#9932CC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #DA70D6;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅兰花紫
+      </div> 
+      <div class="color-code">
+       #DA70D6
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#DA70D6"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #8B008B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深梅红
+      </div> 
+      <div class="color-code">
+       #8B008B
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#8B008B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #DDA0DD;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅梅红
+      </div> 
+      <div class="color-code">
+       #DDA0DD
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#DDA0DD"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #6A5ACD;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深薰衣草紫
+      </div> 
+      <div class="color-code">
+       #6A5ACD
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#6A5ACD"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #E6E6FA;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅薰衣草紫
+      </div> 
+      <div class="color-code">
+       #E6E6FA
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#E6E6FA"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #4B0082;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深紫水晶
+      </div> 
+      <div class="color-code">
+       #4B0082
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#4B0082"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #9966CC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅紫水晶
+      </div> 
+      <div class="color-code">
+       #9966CC
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#9966CC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #8B008B;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深木槿紫
+      </div> 
+      <div class="color-code">
+       #8B008B
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#8B008B"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #C54B8C;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅木槿紫
+      </div> 
+      <div class="color-code">
+       #C54B8C
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#C54B8C"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #4B0082;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深皇室紫
+      </div> 
+      <div class="color-code">
+       #4B0082
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#4B0082"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #7851A9;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅皇室紫
+      </div> 
+      <div class="color-code">
+       #7851A9
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#7851A9"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #4B0082;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深靛蓝
+      </div> 
+      <div class="color-code">
+       #4B0082
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#4B0082"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #4169E1;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅靛蓝
+      </div> 
+      <div class="color-code">
+       #4169E1
+      </div> 
+      <span class="color-category">purple</span> 
+      <button class="copy-btn" data-code="#4169E1"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFFFF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       白色
+      </div> 
+      <div class="color-code">
+       #FFFFFF
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FFFFFF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #000000;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       黑色
+      </div> 
+      <div class="color-code">
+       #000000
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#000000"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #808080;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       灰色
+      </div> 
+      <div class="color-code">
+       #808080
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#808080"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #A9A9A9;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深灰色
+      </div> 
+      <div class="color-code">
+       #A9A9A9
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#A9A9A9"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #C0C0C0;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       银白色
+      </div> 
+      <div class="color-code">
+       #C0C0C0
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#C0C0C0"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #D3D3D3;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅灰色
+      </div> 
+      <div class="color-code">
+       #D3D3D3
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#D3D3D3"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #DCDCDC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       gainsboro
+      </div> 
+      <div class="color-code">
+       #DCDCDC
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#DCDCDC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F5F5F5;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       烟白色
+      </div> 
+      <div class="color-code">
+       #F5F5F5
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#F5F5F5"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #D2B48C;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       灰褐色
+      </div> 
+      <div class="color-code">
+       #D2B48C
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#D2B48C"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FAF0E6;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       亚麻色
+      </div> 
+      <div class="color-code">
+       #FAF0E6
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FAF0E6"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F5F5DC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       米色
+      </div> 
+      <div class="color-code">
+       #F5F5DC
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#F5F5DC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FAEBD7;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       古董白
+      </div> 
+      <div class="color-code">
+       #FAEBD7
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FAEBD7"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFFF0;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       象牙色
+      </div> 
+      <div class="color-code">
+       #FFFFF0
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FFFFF0"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFAFA;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       雪白色
+      </div> 
+      <div class="color-code">
+       #FFFAFA
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FFFAFA"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F8F8FF;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       幽灵白
+      </div> 
+      <div class="color-code">
+       #F8F8FF
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#F8F8FF"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFF5EE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       海贝壳色
+      </div> 
+      <div class="color-code">
+       #FFF5EE
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FFF5EE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FAF0E6;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       亚麻白
+      </div> 
+      <div class="color-code">
+       #FAF0E6
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FAF0E6"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FDF5E6;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       旧蕾丝色
+      </div> 
+      <div class="color-code">
+       #FDF5E6
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FDF5E6"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFAF0;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       花白色
+      </div> 
+      <div class="color-code">
+       #FFFAF0
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FFFAF0"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFF8DC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       玉米丝色
+      </div> 
+      <div class="color-code">
+       #FFF8DC
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FFF8DC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFEBCD;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       杏仁白
+      </div> 
+      <div class="color-code">
+       #FFEBCD
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FFEBCD"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFE4B5;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       鹿皮色
+      </div> 
+      <div class="color-code">
+       #FFE4B5
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FFE4B5"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFEFD5;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       木瓜色
+      </div> 
+      <div class="color-code">
+       #FFEFD5
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FFEFD5"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFACD;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       淡黄色
+      </div> 
+      <div class="color-code">
+       #FFFACD
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FFFACD"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FAFAD2;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       淡金色
+      </div> 
+      <div class="color-code">
+       #FAFAD2
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FAFAD2"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #FFFDD0;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅金色
+      </div> 
+      <div class="color-code">
+       #FFFDD0
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#FFFDD0"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #F5F5DC;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅米色
+      </div> 
+      <div class="color-code">
+       #F5F5DC
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#F5F5DC"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #D2B48C;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅灰褐色
+      </div> 
+      <div class="color-code">
+       #D2B48C
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#D2B48C"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #BEBEBE;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       中灰
+      </div> 
+      <div class="color-code">
+       #BEBEBE
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#BEBEBE"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #696969;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       暗灰
+      </div> 
+      <div class="color-code">
+       #696969
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#696969"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #D3D3D3;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       亮灰
+      </div> 
+      <div class="color-code">
+       #D3D3D3
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#D3D3D3"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #C0C0C0;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       银灰
+      </div> 
+      <div class="color-code">
+       #C0C0C0
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#C0C0C0"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #A9A9A9;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       深银灰
+      </div> 
+      <div class="color-code">
+       #A9A9A9
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#A9A9A9"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+    <div class="color-card"> 
+     <div class="color-preview" style="background-color: #D3D3D3;"></div> 
+     <div class="color-info"> 
+      <div class="color-name">
+       浅银灰
+      </div> 
+      <div class="color-code">
+       #D3D3D3
+      </div> 
+      <span class="color-category">neutral</span> 
+      <button class="copy-btn" data-code="#D3D3D3"> <i class="fas fa-copy"></i> 复制代码 </button> 
+     </div> 
+    </div>
+   </div> 
+   <div class="color-count" id="colorCount">
+    显示 276 种颜色中的 276 种
+   </div> 
+  </div> 
+  <div class="notification" id="notification"> 
+   <i id="v30" class="fas fa-check-circle"></i> 
+   <span id="v31">颜色代码已复制到剪贴板！</span> 
+  </div> 
+  <script>
+        // 扩展的颜色数据 - 每个色系都有超过30种颜色
+        const colors = [
+            // 红色系 (超过30种)
+            { name: "红色", code: "#FF0000", category: "red" },
+            { name: "暗红色", code: "#8B0000", category: "red" },
+            { name: "猩红", code: "#DC143C", category: "red" },
+            { name: "浅红色", code: "#FF6B6B", category: "red" },
+            { name: "印度红", code: "#CD5C5C", category: "red" },
+            { name: "玫瑰红", code: "#FF007F", category: "red" },
+            { name: "砖红色", code: "#B22222", category: "red" },
+            { name: "栗色", code: "#800000", category: "red" },
+            { name: "浅珊瑚色", code: "#F08080", category: "red" },
+            { name: "浅粉红", code: "#FFB6C1", category: "red" },
+            { name: "粉红色", code: "#FFC0CB", category: "red" },
+            { name: "深粉色", code: "#FF1493", category: "red" },
+            { name: "火烈鸟粉", code: "#FC8EAC", category: "red" },
+            { name: "番茄红", code: "#FF6347", category: "red" },
+            { name: "鲑红", code: "#FA8072", category: "red" },
+            { name: "暗鲑红", code: "#E9967A", category: "red" },
+            { name: "勃艮第红", code: "#800020", category: "red" },
+            { name: "氧化红", code: "#7E191B", category: "red" },
+            { name: "胭脂红", code: "#960018", category: "red" },
+            { name: "深玫瑰红", code: "#C21E56", category: "red" },
+            { name: "石榴红", code: "#F34723", category: "red" },
+            { name: "朱红", code: "#FF4D00", category: "red" },
+            { name: "宝石红", code: "#D21F3C", category: "red" },
+            { name: "樱桃红", code: "#DE3163", category: "red" },
+            { name: "赤红", code: "#E25822", category: "red" },
+            { name: "绯红", code: "#990000", category: "red" },
+            { name: "珊瑚红", code: "#FF7F50", category: "red" },
+            { name: "浅珊瑚红", code: "#F08080", category: "red" },
+            { name: "深珊瑚红", code: "#CD5B45", category: "red" },
+            { name: "浅鲑红", code: "#FFA07A", category: "red" },
+            { name: "深鲑红", code: "#E9967A", category: "red" },
+            { name: "浅粉红", code: "#FFB6C1", category: "red" },
+            { name: "适中的紫罗兰红", code: "#C71585", category: "red" },
+            { name: "深粉红", code: "#FF1493", category: "red" },
+            { name: "适中的兰花紫", code: "#BA55D3", category: "red" },
+            
+            // 橙色系 (超过30种)
+            { name: "橙色", code: "#FFA500", category: "orange" },
+            { name: "深橙色", code: "#FF8C00", category: "orange" },
+            { name: "珊瑚色", code: "#FF7F50", category: "orange" },
+            { name: "暗珊瑚色", code: "#E9967A", category: "orange" },
+            { name: "浅橙", code: "#FFDAB9", category: "orange" },
+            { name: "杏黄", code: "#FBCEB1", category: "orange" },
+            { name: "橘红色", code: "#FF4500", category: "orange" },
+            { name: "热带橙", code: "#FF8033", category: "orange" },
+            { name: "阳橙", code: "#FFA500", category: "orange" },
+            { name: "琥珀色", code: "#FFBF00", category: "orange" },
+            { name: "南瓜橙", code: "#FF7518", category: "orange" },
+            { name: "赭色", code: "#CC7722", category: "orange" },
+            { name: "柿子橙", code: "#EB5E28", category: "orange" },
+            { name: "蜜橙", code: "#FFB366", category: "orange" },
+            { name: "姜橙", code: "#FBC02D", category: "orange" },
+            { name: "金橙色", code: "#FFAA33", category: "orange" },
+            { name: "橙红色", code: "#FF5349", category: "orange" },
+            { name: "浅杏黄", code: "#FDD5B1", category: "orange" },
+            { name: "深杏黄", code: "#F4A460", category: "orange" },
+            { name: "浅珊瑚橙", code: "#FFA07A", category: "orange" },
+            { name: "深珊瑚橙", code: "#FF7F50", category: "orange" },
+            { name: "浅鲑橙", code: "#FFA07A", category: "orange" },
+            { name: "深鲑橙", code: "#E9967A", category: "orange" },
+            { name: "浅橙红", code: "#FF4500", category: "orange" },
+            { name: "深橙红", code: "#FF8C00", category: "orange" },
+            { name: "浅金橙", code: "#FFD700", category: "orange" },
+            { name: "深金橙", code: "#FFA500", category: "orange" },
+            { name: "浅琥珀橙", code: "#FFBF00", category: "orange" },
+            { name: "深琥珀橙", code: "#FF8C00", category: "orange" },
+            { name: "浅赭橙", code: "#CC7722", category: "orange" },
+            { name: "深赭橙", code: "#8B4513", category: "orange" },
+            { name: "浅柿子橙", code: "#EB5E28", category: "orange" },
+            { name: "深柿子橙", code: "#CD3700", category: "orange" },
+            { name: "浅姜橙", code: "#FBC02D", category: "orange" },
+            { name: "深姜橙", code: "#FF8C00", category: "orange" },
+            
+            // 黄色系 (超过30种)
+            { name: "黄色", code: "#FFFF00", category: "yellow" },
+            { name: "金色", code: "#FFD700", category: "yellow" },
+            { name: "柠檬色", code: "#FFFACD", category: "yellow" },
+            { name: "浅黄色", code: "#FFFFE0", category: "yellow" },
+            { name: "芥末黄", code: "#FFDB58", category: "yellow" },
+            { name: "玉米色", code: "#FFF8DC", category: "yellow" },
+            { name: "铬黄", code: "#FFA700", category: "yellow" },
+            { name: "卡其色", code: "#F0E68C", category: "yellow" },
+            { name: "暗卡其色", code: "#BDB76B", category: "yellow" },
+            { name: "香槟黄", code: "#F7E7CE", category: "yellow" },
+            { name: "荧光黄", code: "#CCFF00", category: "yellow" },
+            { name: "奶黄色", code: "#FEF8E2", category: "yellow" },
+            { name: "香蕉黄", code: "#FFE135", category: "yellow" },
+            { name: "奶油黄", code: "#FFFDD0", category: "yellow" },
+            { name: "金丝雀黄", code: "#FFFF99", category: "yellow" },
+            { name: "琥珀黄", code: "#FFBF00", category: "yellow" },
+            { name: "蜂蜜黄", code: "#F0FFF0", category: "yellow" },
+            { name: "日光黄", code: "#FFEF00", category: "yellow" },
+            { name: "鲜黄", code: "#FFFF00", category: "yellow" },
+            { name: "淡黄", code: "#FFFFE0", category: "yellow" },
+            { name: "深黄", code: "#FFD700", category: "yellow" },
+            { name: "浅柠檬黄", code: "#FFFACD", category: "yellow" },
+            { name: "深柠檬黄", code: "#FFF44F", category: "yellow" },
+            { name: "浅玉米黄", code: "#FFF8DC", category: "yellow" },
+            { name: "深玉米黄", code: "#EEDD82", category: "yellow" },
+            { name: "浅卡其黄", code: "#F0E68C", category: "yellow" },
+            { name: "深卡其黄", code: "#BDB76B", category: "yellow" },
+            { name: "浅香槟黄", code: "#F7E7CE", category: "yellow" },
+            { name: "深香槟黄", code: "#F5DEB3", category: "yellow" },
+            { name: "浅荧光黄", code: "#CCFF00", category: "yellow" },
+            { name: "深荧光黄", code: "#ADFF2F", category: "yellow" },
+            { name: "浅奶黄", code: "#FEF8E2", category: "yellow" },
+            { name: "深奶黄", code: "#F5DEB3", category: "yellow" },
+            { name: "浅香蕉黄", code: "#FFE135", category: "yellow" },
+            { name: "深香蕉黄", code: "#FFD700", category: "yellow" },
+            
+            // 绿色系 (超过30种)
+            { name: "绿色", code: "#008000", category: "green" },
+            { name: "深绿色", code: "#006400", category: "green" },
+            { name: "浅绿色", code: "#90EE90", category: "green" },
+            { name: "酸橙绿", code: "#00FF00", category: "green" },
+            { name: "森林绿", code: "#228B22", category: "green" },
+            { name: "海绿色", code: "#2E8B57", category: "green" },
+            { name: "春绿色", code: "#00FF7F", category: "green" },
+            { name: "橄榄色", code: "#808000", category: "green" },
+            { name: "深橄榄绿", code: "#556B2F", category: "green" },
+            { name: "黄绿色", code: "#9ACD32", category: "green" },
+            { name: "草绿色", code: "#7CFC00", category: "green" },
+            { name: "苹果绿", code: "#8DB600", category: "green" },
+            { name: "孔雀绿", code: "#00A15C", category: "green" },
+            { name: "薄荷绿", code: "#98FF98", category: "green" },
+            { name: "碧绿色", code: "#50C878", category: "green" },
+            { name: "柠檬绿", code: "#32CD32", category: "green" },
+            { name: "浅绿", code: "#90EE90", category: "green" },
+            { name: "深绿", code: "#006400", category: "green" },
+            { name: "鲜绿", code: "#00FF00", category: "green" },
+            { name: "淡绿", code: "#98FB98", category: "green" },
+            { name: "深春绿", code: "#00FA9A", category: "green" },
+            { name: "中春绿", code: "#00FF7F", category: "green" },
+            { name: "中海洋绿", code: "#3CB371", category: "green" },
+            { name: "中海绿", code: "#66CDAA", category: "green" },
+            { name: "浅海绿", code: "#8FBC8F", category: "green" },
+            { name: "中碧绿", code: "#48D1CC", category: "green" },
+            { name: "浅碧绿", code: "#AFEEEE", category: "green" },
+            { name: "深碧绿", code: "#008B8B", category: "green" },
+            { name: "中绿石色", code: "#5F9EA0", category: "green" },
+            { name: "浅绿石色", code: "#B0E0E6", category: "green" },
+            { name: "深绿石色", code: "#00868B", category: "green" },
+            { name: "浅橄榄绿", code: "#BAB86C", category: "green" },
+            { name: "深橄榄绿", code: "#556B2F", category: "green" },
+            { name: "中橄榄绿", code: "#6B8E23", category: "green" },
+            
+            // 青色系 (超过30种)
+            { name: "青色", code: "#00FFFF", category: "cyan" },
+            { name: "深青色", code: "#008B8B", category: "cyan" },
+            { name: "浅青色", code: "#E0FFFF", category: "cyan" },
+            { name: "绿松石色", code: "#40E0D0", category: "cyan" },
+            { name: "深绿松石色", code: "#00CED1", category: "cyan" },
+            { name: "孔雀蓝", code: "#00A5A5", category: "cyan" },
+            { name: "海蓝色", code: "#006D6D", category: "cyan" },
+            { name: "水色", code: "#AFEEEE", category: "cyan" },
+            { name: "浅海绿色", code: "#20B2AA", category: "cyan" },
+            { name: "中绿松石色", code: "#48D1CC", category: "cyan" },
+            { name: "蓝绿色", code: "#00F5FF", category: "cyan" },
+            { name: "浅青", code: "#E0FFFF", category: "cyan" },
+            { name: "深青", code: "#008B8B", category: "cyan" },
+            { name: "鲜青", code: "#00FFFF", category: "cyan" },
+            { name: "淡青", code: "#AFEEEE", category: "cyan" },
+            { name: "中青", code: "#48D1CC", category: "cyan" },
+            { name: "深绿松石青", code: "#00CED1", category: "cyan" },
+            { name: "中绿松石青", code: "#48D1CC", category: "cyan" },
+            { name: "浅绿松石青", code: "#AFEEEE", category: "cyan" },
+            { name: "深孔雀青", code: "#00868B", category: "cyan" },
+            { name: "中孔雀青", code: "#008B8B", category: "cyan" },
+            { name: "浅孔雀青", code: "#20B2AA", category: "cyan" },
+            { name: "深海青", code: "#00868B", category: "cyan" },
+            { name: "中海青", code: "#008B8B", category: "cyan" },
+            { name: "浅海青", code: "#20B2AA", category: "cyan" },
+            { name: "深水青", code: "#00CED1", category: "cyan" },
+            { name: "中水青", code: "#48D1CC", category: "cyan" },
+            { name: "浅水青", code: "#AFEEEE", category: "cyan" },
+            { name: "深蓝绿青", code: "#008080", category: "cyan" },
+            { name: "中蓝绿青", code: "#20B2AA", category: "cyan" },
+            { name: "浅蓝绿青", code: "#7FFFD4", category: "cyan" },
+            { name: "深碧青", code: "#008B8B", category: "cyan" },
+            { name: "中碧青", code: "#48D1CC", category: "cyan" },
+            { name: "浅碧青", code: "#B0E0E6", category: "cyan" },
+            
+            // 蓝色系 (超过30种)
+            { name: "蓝色", code: "#0000FF", category: "blue" },
+            { name: "深蓝色", code: "#00008B", category: "blue" },
+            { name: "天蓝色", code: "#87CEEB", category: "blue" },
+            { name: "浅蓝色", code: "#ADD8E6", category: "blue" },
+            { name: "钢蓝色", code: "#4682B4", category: "blue" },
+            { name: "皇家蓝", code: "#4169E1", category: "blue" },
+            { name: "海军蓝", code: "#000080", category: "blue" },
+            { name: "中蓝色", code: "#0000CD", category: "blue" },
+            { name: "矢车菊蓝", code: "#6495ED", category: "blue" },
+            { name: "道奇蓝", code: "#1E90FF", category: "blue" },
+            { name: "淡蓝色", code: "#B0E0E6", category: "blue" },
+            { name: "藏青色", code: "#1434A4", category: "blue" },
+            { name: "午夜蓝", code: "#191970", category: "blue" },
+            { name: "孔雀蓝", code: "#0047AB", category: "blue" },
+            { name: "钴蓝色", code: "#0047AB", category: "blue" },
+            { name: "浅蓝", code: "#ADD8E6", category: "blue" },
+            { name: "深蓝", code: "#00008B", category: "blue" },
+            { name: "鲜蓝", code: "#0000FF", category: "blue" },
+            { name: "淡蓝", code: "#B0E0E6", category: "blue" },
+            { name: "中蓝", code: "#0000CD", category: "blue" },
+            { name: "深天蓝", code: "#00BFFF", category: "blue" },
+            { name: "浅天蓝", code: "#87CEFA", category: "blue" },
+            { name: "深钢蓝", code: "#4682B4", category: "blue" },
+            { name: "浅钢蓝", code: "#B0C4DE", category: "blue" },
+            { name: "深道奇蓝", code: "#1E90FF", category: "blue" },
+            { name: "浅道奇蓝", code: "#87CEFA", category: "blue" },
+            { name: "深矢车菊蓝", code: "#6495ED", category: "blue" },
+            { name: "浅矢车菊蓝", code: "#87CEEB", category: "blue" },
+            { name: "深皇家蓝", code: "#4169E1", category: "blue" },
+            { name: "浅皇家蓝", code: "#6495ED", category: "blue" },
+            { name: "深藏青", code: "#000080", category: "blue" },
+            { name: "浅藏青", code: "#191970", category: "blue" },
+            { name: "深午夜蓝", code: "#191970", category: "blue" },
+            { name: "浅午夜蓝", code: "#2F4F4F", category: "blue" },
+            
+            // 紫色系 (超过30种)
+            { name: "紫色", code: "#800080", category: "purple" },
+            { name: "暗紫色", code: "#4B0082", category: "purple" },
+            { name: "浅紫色", code: "#D8BFD8", category: "purple" },
+            { name: "紫罗兰色", code: "#EE82EE", category: "purple" },
+            { name: "洋红色", code: "#FF00FF", category: "purple" },
+            { name: "兰花紫", code: "#DA70D6", category: "purple" },
+            { name: "梅红色", code: "#DDA0DD", category: "purple" },
+            { name: "薰衣草紫", code: "#E6E6FA", category: "purple" },
+            { name: "靛蓝色", code: "#4B0082", category: "purple" },
+            { name: "深洋红", code: "#8B008B", category: "purple" },
+            { name: "紫水晶色", code: "#9966CC", category: "purple" },
+            { name: "木槿紫", code: "#C54B8C", category: "purple" },
+            { name: "皇室紫", code: "#7851A9", category: "purple" },
+            { name: "深紫罗兰", code: "#9400D3", category: "purple" },
+            { name: "浅紫", code: "#D8BFD8", category: "purple" },
+            { name: "深紫", code: "#4B0082", category: "purple" },
+            { name: "鲜紫", code: "#800080", category: "purple" },
+            { name: "淡紫", code: "#E6E6FA", category: "purple" },
+            { name: "中紫", code: "#9370DB", category: "purple" },
+            { name: "深紫罗兰", code: "#9400D3", category: "purple" },
+            { name: "浅紫罗兰", code: "#EE82EE", category: "purple" },
+            { name: "深兰花紫", code: "#9932CC", category: "purple" },
+            { name: "浅兰花紫", code: "#DA70D6", category: "purple" },
+            { name: "深梅红", code: "#8B008B", category: "purple" },
+            { name: "浅梅红", code: "#DDA0DD", category: "purple" },
+            { name: "深薰衣草紫", code: "#6A5ACD", category: "purple" },
+            { name: "浅薰衣草紫", code: "#E6E6FA", category: "purple" },
+            { name: "深紫水晶", code: "#4B0082", category: "purple" },
+            { name: "浅紫水晶", code: "#9966CC", category: "purple" },
+            { name: "深木槿紫", code: "#8B008B", category: "purple" },
+            { name: "浅木槿紫", code: "#C54B8C", category: "purple" },
+            { name: "深皇室紫", code: "#4B0082", category: "purple" },
+            { name: "浅皇室紫", code: "#7851A9", category: "purple" },
+            { name: "深靛蓝", code: "#4B0082", category: "purple" },
+            { name: "浅靛蓝", code: "#4169E1", category: "purple" },
+            
+            // 中性色 (超过30种)
+            { name: "白色", code: "#FFFFFF", category: "neutral" },
+            { name: "黑色", code: "#000000", category: "neutral" },
+            { name: "灰色", code: "#808080", category: "neutral" },
+            { name: "深灰色", code: "#A9A9A9", category: "neutral" },
+            { name: "银白色", code: "#C0C0C0", category: "neutral" },
+            { name: "浅灰色", code: "#D3D3D3", category: "neutral" },
+            { name: "gainsboro", code: "#DCDCDC", category: "neutral" },
+            { name: "烟白色", code: "#F5F5F5", category: "neutral" },
+            { name: "灰褐色", code: "#D2B48C", category: "neutral" },
+            { name: "亚麻色", code: "#FAF0E6", category: "neutral" },
+            { name: "米色", code: "#F5F5DC", category: "neutral" },
+            { name: "古董白", code: "#FAEBD7", category: "neutral" },
+            { name: "象牙色", code: "#FFFFF0", category: "neutral" },
+            { name: "雪白色", code: "#FFFAFA", category: "neutral" },
+            { name: "幽灵白", code: "#F8F8FF", category: "neutral" },
+            { name: "海贝壳色", code: "#FFF5EE", category: "neutral" },
+            { name: "亚麻白", code: "#FAF0E6", category: "neutral" },
+            { name: "旧蕾丝色", code: "#FDF5E6", category: "neutral" },
+            { name: "花白色", code: "#FFFAF0", category: "neutral" },
+            { name: "玉米丝色", code: "#FFF8DC", category: "neutral" },
+            { name: "杏仁白", code: "#FFEBCD", category: "neutral" },
+            { name: "鹿皮色", code: "#FFE4B5", category: "neutral" },
+            { name: "木瓜色", code: "#FFEFD5", category: "neutral" },
+            { name: "淡黄色", code: "#FFFACD", category: "neutral" },
+            { name: "淡金色", code: "#FAFAD2", category: "neutral" },
+            { name: "浅金色", code: "#FFFDD0", category: "neutral" },
+            { name: "浅米色", code: "#F5F5DC", category: "neutral" },
+            { name: "浅灰褐色", code: "#D2B48C", category: "neutral" },
+            { name: "中灰", code: "#BEBEBE", category: "neutral" },
+            { name: "暗灰", code: "#696969", category: "neutral" },
+            { name: "亮灰", code: "#D3D3D3", category: "neutral" },
+            { name: "银灰", code: "#C0C0C0", category: "neutral" },
+            { name: "深银灰", code: "#A9A9A9", category: "neutral" },
+            { name: "浅银灰", code: "#D3D3D3", category: "neutral" }
+        ];
+        
+        const colorGrid = document.getElementById('colorGrid');
+        const searchInput = document.getElementById('searchInput');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const notification = document.getElementById('notification');
+        const colorCount = document.getElementById('colorCount');
+        
+        let activeCategory = 'all';
+        let filteredColors = [...colors];
+        
+        // 初始化显示所有颜色
+        displayColors(colors);
+        updateColorCount(colors.length, colors.length);
+        
+        // 搜索功能
+        searchInput.addEventListener('input', () => {
+            const searchText = searchInput.value.toLowerCase();
+            filterColors(searchText, activeCategory);
+        });
+        
+        // 分类筛选
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeCategory = btn.dataset.category;
+                
+                filterColors(searchInput.value.toLowerCase(), activeCategory);
+            });
+        });
+        
+        // 筛选颜色
+        function filterColors(searchText, category) {
+            filteredColors = colors.filter(color => {
+                const matchesSearch = color.name.toLowerCase().includes(searchText) || 
+                                    color.code.toLowerCase().includes(searchText);
+                const matchesCategory = category === 'all' || color.category === category;
+                return matchesSearch && matchesCategory;
+            });
+            
+            displayColors(filteredColors);
+            updateColorCount(colors.length, filteredColors.length);
+        }
+        
+        // 显示颜色卡片
+        function displayColors(colorsArray) {
+            colorGrid.innerHTML = '';
+            
+            colorsArray.forEach(color => {
+                const colorCard = document.createElement('div');
+                colorCard.classList.add('color-card');
+                
+                colorCard.innerHTML = `
+                    <div class="color-preview" style="background-color: ${color.code};"></div>
+                    <div class="color-info">
+                        <div class="color-name">${color.name}</div>
+                        <div class="color-code">${color.code}</div>
+                        <span class="color-category">${color.category}</span>
+                        <button class="copy-btn" data-code="${color.code}">
+                            <i class="fas fa-copy"></i>
+                            复制代码
+                        </button>
+                    </div>
+                `;
+                
+                colorGrid.appendChild(colorCard);
+            });
+            
+            // 添加复制功能
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const code = btn.getAttribute('data-code');
+                    copyToClipboard(code);
+                    showNotification();
+                });
+            });
+        }
+        
+        // 更新颜色计数
+        function updateColorCount(total, filtered) {
+            colorCount.textContent = `显示 ${filtered} 种颜色中的 ${filtered} 种`;
+        }
+        
+        // 复制到剪贴板
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+        
+        // 显示通知
+        function showNotification() {
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+    </script> 
+  <p id="v32">段落32</p>
+  <input type="radio" id="v33">
+  <input type="radio" id="v34">
+ </body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>垃圾分类速览</title>
+<style>
+:root{
+  --bg:#f5f7fa;
+  --card:#fff;
+  --shadow:0 8px 24px rgba(0,0,0,.08);
+  --radius:20px;
+  --gap:20px;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",Helvetica,Arial,sans-serif}
+body{background:var(--bg);padding:20px;color:#2f3542}
+h1{text-align:center;margin-bottom:var(--gap);font-size:28px;letter-spacing:1px}
+.container{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--gap);max-width:1200px;margin:0 auto}
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:30px 25px;
+  box-shadow:var(--shadow);
+  display:flex;
+  flex-direction:column;
+  transition:.3s;
+}
+.card:hover{transform:translateY(-4px)}
+.card h2{font-size:22px;margin-bottom:15px;display:flex;align-items:center}
+.card h2 span{margin-left:10px;font-size:32px}
+.card ul{list-style:none;display:flex;flex-wrap:wrap;gap:10px}
+.card li{
+  background:#f0f4f8;
+  padding:6px 12px;
+  border-radius:12px;
+  font-size:14px;
+  color:#4a5568;
+}
+/* 颜色主题 */
+.recyclable h2{color:#4caf50}
+.hazardous h2{color:#e53935}
+.wet h2{color:#ff9800}
+.dry h2{color:#607d8b}
+@media(max-width:600px){
+  h1{font-size:24px}
+}
+</style>
+</head>
+
+<body>
+<h1>垃圾分类速览</h1>
+
+<div class="container">
+  <!-- 可回收物 -->
+  <div class="card recyclable">
+    <h2>可回收物 <span>♻️</span></h2>
+    <ul>
+      <li>报纸</li><li>书籍</li><li>纸板箱</li><li>宣传单</li><li>信封</li>
+      <li>矿泉水瓶</li><li>饮料瓶</li><li>洗发水瓶</li><li>酸奶盒</li><li>塑料桶</li>
+      <li>易拉罐</li><li>罐头盒</li><li>金属瓶盖</li>
+      <li>玻璃瓶</li><li>玻璃杯</li><li>玻璃罐</li>
+      <li>旧衣服</li><li>床单</li><li>棉被</li><li>毛绒玩具</li>
+      <li>牛奶利乐包</li><li>铝箔</li><li>金属衣架</li><li>易拉罐拉环</li>
+    </ul>
+  </div>
+
+  <!-- 有害垃圾 -->
+  <div class="card hazardous">
+    <h2>有害垃圾 <span>☠️</span></h2>
+    <ul>
+      <li>废电池</li><li>充电电池</li><li>纽扣电池</li>
+      <li>废荧光灯管</li><li>废节能灯</li><li>废卤素灯</li>
+      <li>过期药品</li><li>药片</li><li>药水</li><li>药膏</li>
+      <li>废油漆桶</li><li>废溶剂桶</li><li>废农药罐</li>
+      <li>废水银温度计</li><li>废水银血压计</li>
+      <li>杀虫剂罐</li><li>老鼠药</li><li>废打印机墨盒</li>
+    </ul>
+  </div>
+
+  <!-- 湿垃圾（厨余） -->
+  <div class="card wet">
+    <h2>湿垃圾 <span>🍎</span></h2>
+    <ul>
+      <li>菜叶</li><li>果皮</li><li>剩菜剩饭</li><li>骨头</li><li>鱼刺</li>
+      <li>茶叶渣</li><li>咖啡渣</li><li>蛋壳</li><li>虾壳</li><li>蟹壳</li>
+      <li>过期食品</li><li>宠物饲料</li><li>中药渣</li><li>腐烂水果</li>
+      <li>玉米棒</li><li>花生壳</li><li>西瓜皮</li><li>榴莲壳</li>
+    </ul>
+  </div>
+
+  <!-- 干垃圾（其他） -->
+  <div class="card dry">
+    <h2>干垃圾 <span>🗑️</span></h2>
+    <ul>
+      <li>烟头</li><li>牙签</li><li>一次性筷子</li><li>餐巾纸</li><li>尿不湿</li>
+      <li>胶带</li><li>橡皮泥</li><li>陶瓷碎片</li><li>尘土</li><li>旧陶瓷碗</li>
+      <li>贝壳</li><li>大棒骨</li><li>坚果壳（椰子/榴莲壳）</li>
+      <li>污染严重的纸张</li><li>破损雨伞</li><li>一次性口罩</li><li>口罩鼻梁条</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

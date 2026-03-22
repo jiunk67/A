@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小海音乐</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .header {
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            padding: 10px;
+        }
+        .announcement {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-size: 16px;
+            margin: 0;
+            overflow: hidden;
+            border-radius: 10px; /* 添加圆角 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 80%; /* 限制最大宽度 */
+            margin: 0 auto; /* 水平居中 */
+        }
+        .announcement marquee {
+            display: inline-block;
+            white-space: nowrap;
+            margin-left: 10px; /* 与“公告”二字的间距 */
+        }
+        .search-container {
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            width: 70%;
+            padding: 20px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            border-radius: 10px;
+            background-color: #222;
+            color: #fff;
+            font-size: 18px;
+        }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            background-color: #888;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        button:hover {
+            background-color: #666;
+        }
+        .song-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 300px;
+            overflow-y: auto;
+            width: 70%;
+            margin: 0 auto;
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 10px;
+        }
+        .song-list li {
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .song-list li:hover, .song-list li.active {
+            background-color: #333;
+        }
+        audio {
+            width: 70%;
+            margin: 20px 0;
+            height: 60px;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        .controls label {
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        .controls input[type="range"] {
+            width: 70%;
+        }
+        .loading {
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        .loop-status {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>小海音乐</h1>
+    </div>
+    <div class="announcement">
+        <span>公告</span>
+        <marquee behavior="scroll" direction="left" scrollamount="3">
+            欢迎使用小海音乐！开发者：熊振海
+        </marquee>
+    </div>
+    <div class="container">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="请输入歌曲名" autofocus>
+            <button onclick="searchMusic()">搜索音乐</button>
+        </div>
+        <div class="song-list-container">
+            <ul id="songList" class="song-list"></ul>
+            <div id="loading" class="loading" style="display: none;">加载中...</div>
+        </div>
+        <audio id="audio-player" controls></audio>
+        <div class="controls">
+            <label for="speed-slider">倍速: </label>
+            <input type="range" id="speed-slider" min="0.5" max="2" step="0.25" value="1">
+            <button id="loop-btn">循环播放</button>
+            <div id="loop-status" class="loop-status">关闭中</div>
+        </div>
+    </div>
+    <script>
+        async function searchMusic() {
+            const searchInput = document.getElementById('searchInput').value.trim();
+            const songList = document.getElementById('songList');
+            const loading = document.getElementById('loading');
+            const audioPlayer = document.getElementById('audio-player');
+
+            songList.innerHTML = '';
+            audioPlayer.src = '';
+
+            if (!searchInput) {
+                alert('请输入歌曲名');
+                return;
+            }
+
+            loading.style.display = 'block';
+
+            try {
+                const url = `http://music.163.com/api/search/get/web?csrf_token=&hlpretag=&hlposttag=&s=${encodeURIComponent(searchInput)}&type=1&offset=0&total=true&limit=20`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.code !== 200 || !data.result.songs) {
+                    throw new Error('未找到歌曲');
+                }
+
+                data.result.songs.forEach(song => {
+                    const li = document.createElement('li');
+                    li.textContent = `${song.name} - ${song.artists.map(artist => artist.name).join(', ')}`;
+                    li.setAttribute('data-id', song.id);
+                    li.addEventListener('click', () => playSong(song.id, li));
+                    songList.appendChild(li);
+                });
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function playSong(songId, li) {
+            const audioPlayer = document.getElementById('audio-player');
+            const songUrl = `http://music.163.com/song/media/outer/url?id=${songId}.mp3`;
+            audioPlayer.src = songUrl;
+            audioPlayer.play();
+
+            // 高亮显示当前播放的歌曲
+            const songList = document.getElementById('songList');
+            songList.querySelectorAll('li').forEach(item => item.classList.remove('active'));
+            li.classList.add('active');
+        }
+
+        document.getElementById('speed-slider').addEventListener('input', (e) => {
+            const audioPlayer = document.getElementById('audio-player');
+            audioPlayer.playbackRate = e.target.value;
+        });
+
+        document.getElementById('loop-btn').addEventListener('click', () => {
+            const audioPlayer = document.getElementById('audio-player');
+            audioPlayer.loop = !audioPlayer.loop;
+            const loopStatus = document.getElementById('loop-status');
+            loopStatus.textContent = audioPlayer.loop ? '开启' : '关闭';
+        });
+    </script>
+</body>
+</html>

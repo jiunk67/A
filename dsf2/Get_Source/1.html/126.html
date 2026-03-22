@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>情侣关系阶段问卷</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            max-width: 90%;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #4a6fa5;
+            margin-bottom: 25px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #4a6fa5;
+            box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+        }
+
+        button {
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #3a5a8c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            select {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            button {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>情侣关系阶段问卷</h1>
+        <form id="surveyForm">
+            <div class="question">
+                <label>1. 你们目前的关系阶段是？</label>
+                <select id="relationshipStage">
+                    <option value="justMet">刚刚认识</option>
+                    <option value="dating">正在约会</option>
+                    <option value="serious">稳定交往</option>
+                    <option value="engaged">已订婚</option>
+                    <option value="married">已婚</option>
+                </select>
+            </div>
+
+            <div class="question">
+                <label>2. 你们是如何认识的？</label>
+                <select id="howMet">
+                    <option value="friends">通过朋友介绍</option>
+                    <option value="work">工作或学习</option>
+                    <option value="online">通过网络</option>
+                    <option value="socialEvent">社交活动</option>
+                    <option value="other">其他方式</option>
+                </select>
+            </div>
+
+            <div class="question">
+                <label>3. 你们第一次约会的地点是什么？</label>
+                <select id="firstDate">
+                    <option value="cafe">咖啡馆</option>
+                    <option value="restaurant">餐厅</option>
+                    <option value="park">公园</option>
+                    <option value="movie">电影院</option>
+                    <option value="other">其他</option>
+                </select>
+            </div>
+
+            <div class="question">
+                <label>4. 你们第一次牵手是什么时候？</label>
+                <select id="firstHandhold">
+                    <option value="firstDate">第一次约会</option>
+                    <option value="laterDate">后来的约会</option>
+                    <option value="afterConfession">表白之后</option>
+                    <option value="notYet">还没有</option>
+                </select>
+            </div>
+
+            <div class="question">
+                <label>5. 你们是如何确定关系的？</label>
+                <select id="howCommitted">
+                    <option value="confession">一方表白</option>
+                    <option value="mutual">双方默契</option>
+                    <option value="gradual">逐渐发展</option>
+                    <option value="notYet">还没有确定</option>
+                </select>
+            </div>
+
+            <div class="question">
+                <label>6. 你们会一起规划未来吗？</label>
+                <select id="futurePlans">
+                    <option value="yes">是的，经常</option>
+                    <option value="sometimes">偶尔</option>
+                    <option value="no">很少</option>
+                </select>
+            </div>
+
+            <div class="question">
+                <label>7. 你们会一起庆祝纪念日吗？</label>
+                <select id="celebrateAnniversary">
+                    <option value="always">总是</option>
+                    <option value="sometimes">有时</option>
+                    <option value="rarely">很少</option>
+                    <option value="never">从不</option>
+                </select>
+            </div>
+
+            <div class="question">
+                <label>8. 你们会互相送礼物吗？</label>
+                <select id="giftExchange">
+                    <option value="often">经常</option>
+                    <option value="sometimes">有时</option>
+                    <option value="rarely">很少</option>
+                    <option value="never">从不</option>
+                </select>
+            </div>
+
+            <div class="question">
+                <label>9. 你们会一起旅行吗？</label>
+                <select id="travelTogether">
+                    <option value="often">经常</option>
+                    <option value="sometimes">有时</option>
+                    <option value="rarely">很少</option>
+                    <option value="never">从不</option>
+                </select>
+            </div>
+
+            <div class="question">
+                <label>10. 你们会一起做家务吗？</label>
+                <select id="houseworkTogether">
+                    <option value="often">经常</option>
+                    <option value="sometimes">有时</option>
+                    <option value="rarely">很少</option>
+                    <option value="never">从不</option>
+                </select>
+            </div>
+            <button type="submit">提交</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('surveyForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // 获取所有问题的答案
+            const relationshipStage = document.getElementById('relationshipStage').value;
+            const howMet = document.getElementById('howMet').value;
+            const firstDate = document.getElementById('firstDate').value;
+            const firstHandhold = document.getElementById('firstHandhold').value;
+            const howCommitted = document.getElementById('howCommitted').value;
+            const futurePlans = document.getElementById('futurePlans').value;
+            const celebrateAnniversary = document.getElementById('celebrateAnniversary').value;
+            const giftExchange = document.getElementById('giftExchange').value;
+            const travelTogether = document.getElementById('travelTogether').value;
+            const houseworkTogether = document.getElementById('houseworkTogether').value;
+
+            let resultText = '';
+
+            // 问题1：关系阶段
+            if (relationshipStage === 'justMet') {
+                resultText += '你们刚刚认识，正处于互相了解的阶段！\n';
+            } else if (relationshipStage === 'dating') {
+                resultText += '你们正在约会，感情逐渐升温！\n';
+            } else if (relationshipStage === 'serious') {
+                resultText += '你们已经稳定交往，感情非常深厚！\n';
+            } else if (relationshipStage === 'engaged') {
+                resultText += '你们已经订婚，即将步入婚姻的殿堂！\n';
+            } else if (relationshipStage === 'married') {
+                resultText += '你们已经结婚，是彼此最亲密的伴侣！\n';
+            }
+
+            // 问题2：如何认识
+            if (howMet === 'friends') {
+                resultText += '你们是通过朋友介绍认识的，缘分很奇妙！\n';
+            } else if (howMet === 'work') {
+                resultText += '你们是在工作或学习中认识的，共同话题很多！\n';
+            } else if (howMet === 'online') {
+                resultText += '你们是通过网络认识的，科技让缘分更近！\n';
+            } else if (howMet === 'socialEvent') {
+                resultText += '你们是在社交活动中认识的，彼此一见倾心！\n';
+            } else if (howMet === 'other') {
+                resultText += '你们是通过其他方式认识的，缘分无处不在！\n';
+            }
+
+            // 问题3：第一次约会地点
+            if (firstDate === 'cafe') {
+                resultText += '你们的第一次约会是在咖啡馆，氛围很温馨！\n';
+            } else if (firstDate === 'restaurant') {
+                resultText += '你们的第一次约会是在餐厅，美食让感情升温！\n';
+            } else if (firstDate === 'park') {
+                resultText += '你们的第一次约会是在公园，自然让彼此更亲近！\n';
+            } else if (firstDate === 'movie') {
+                resultText += '你们的第一次约会是在电影院，电影让感情更浪漫！\n';
+            } else if (firstDate === 'other') {
+                resultText += '你们的第一次约会是在其他地方，回忆很特别！\n';
+            }
+
+            // 问题4：第一次牵手
+            if (firstHandhold === 'firstDate') {
+                resultText += '你们在第一次约会时就牵手了，感情发展很快！\n';
+            } else if (firstHandhold === 'laterDate') {
+                resultText += '你们在之后的约会中牵手了，感情逐渐升温！\n';
+            } else if (firstHandhold === 'afterConfession') {
+                resultText += '你们在表白之后牵手了，感情更加坚定！\n';
+            } else if (firstHandhold === 'notYet') {
+                resultText += '你们还没有牵手，慢慢来，感情需要时间培养！\n';
+            }
+
+            // 问题5：如何确定关系
+            if (howCommitted === 'confession') {
+                resultText += '你们是通过一方表白确定关系的，勇敢表达爱意！\n';
+            } else if (howCommitted === 'mutual') {
+                resultText += '你们是双方默契确定关系的，心有灵犀！\n';
+            } else if (howCommitted === 'gradual') {
+                resultText += '你们是逐渐发展确定关系的，感情水到渠成！\n';
+            } else if (howCommitted === 'notYet') {
+                resultText += '你们还没有确定关系，慢慢来，感情需要时间！\n';
+            }
+
+            // 问题6：规划未来
+            if (futurePlans === 'yes') {
+                resultText += '你们经常一起规划未来，非常有目标感！\n';
+            } else if (futurePlans === 'sometimes') {
+                resultText += '你们偶尔会规划未来，继续保持！\n';
+            } else if (futurePlans === 'no') {
+                resultText += '你们很少规划未来，可以多聊聊未来的计划哦！\n';
+            }
+
+            // 问题7：庆祝纪念日
+            if (celebrateAnniversary === 'always') {
+                resultText += '你们总是庆祝纪念日，非常浪漫！\n';
+            } else if (celebrateAnniversary === 'sometimes') {
+                resultText += '你们有时会庆祝纪念日，继续保持！\n';
+            } else if (celebrateAnniversary === 'rarely') {
+                resultText += '你们很少庆祝纪念日，可以多制造一些惊喜哦！\n';
+            } else if (celebrateAnniversary === 'never') {
+                resultText += '你们从不庆祝纪念日，可以尝试一下哦！\n';
+            }
+
+            // 问题8：互送礼物
+            if (giftExchange === 'often') {
+                resultText += '你们经常互送礼物，非常甜蜜！\n';
+            } else if (giftExchange === 'sometimes') {
+                resultText += '你们有时会互送礼物，继续保持！\n';
+            } else if (giftExchange === 'rarely') {
+                resultText += '你们很少互送礼物，可以多表达心意哦！\n';
+            } else if (giftExchange === 'never') {
+                resultText += '你们从不互送礼物，可以尝试一下哦！\n';
+            }
+
+            // 问题9：一起旅行
+            if (travelTogether === 'often') {
+                resultText += '你们经常一起旅行，探索世界的美好！\n';
+            } else if (travelTogether === 'sometimes') {
+                resultText += '你们有时会一起旅行，继续保持！\n';
+            } else if (travelTogether === 'rarely') {
+                resultText += '你们很少一起旅行，可以多计划一些旅行哦！\n';
+            } else if (travelTogether === 'never') {
+                resultText += '你们从不一起旅行，可以尝试一下哦！\n';
+            }
+
+            // 问题10：一起做家务
+            if (houseworkTogether === 'often') {
+                resultText += '你们经常一起做家务，分工合作很默契！\n';
+            } else if (houseworkTogether === 'sometimes') {
+                resultText += '你们有时会一起做家务，继续保持！\n';
+            } else if (houseworkTogether === 'rarely') {
+                resultText += '你们很少一起做家务，可以多分担一些哦！\n';
+            } else if (houseworkTogether === 'never') {
+                resultText += '你们从不一起做家务，可以尝试一下哦！\n';
+            }
+
+            // 计算关系评分
+            let score = 0;
+            const answers = [relationshipStage, howMet, firstDate, firstHandhold, howCommitted, futurePlans, celebrateAnniversary, giftExchange, travelTogether, houseworkTogether];
+            
+            // 给每个问题的选项赋予不同的分数
+            const scoreMap = {
+                'justMet': 10, 'dating': 20, 'serious': 30, 'engaged': 40, 'married': 50,
+                'friends': 20, 'work': 25, 'online': 15, 'socialEvent': 25, 'other': 15,
+                'cafe': 20, 'restaurant': 25, 'park': 20, 'movie': 25, 'other': 15,
+                'firstDate': 30, 'laterDate': 25, 'afterConfession': 20, 'notYet': 10,
+                'confession': 25, 'mutual': 30, 'gradual': 20, 'notYet': 10,
+                'yes': 30, 'sometimes': 20, 'no': -100,
+                'always': 30, 'sometimes': 20, 'rarely': 10, 'never': 5,
+                'often': 30, 'sometimes': 20, 'rarely': 10, 'never': 5
+            };
+
+            answers.forEach(answer => {
+                if (scoreMap[answer]) {
+                    score += scoreMap[answer];
+                }
+            });
+
+            // 显示评分结果
+            let scoreDescription = '';
+            if (score >= 250) {
+                scoreDescription = '你们的关系非常甜蜜，堪称模范情侣！继续保持哦！';
+            } else if (score >= 200) {
+                scoreDescription = '你们的关系很稳定，已经很不错了！可以尝试进一步加深感情。';
+            } else if (score >= 150) {
+                scoreDescription = '你们的关系正在逐步发展，继续保持良好的沟通。';
+            } else if (score >= 100) {
+                scoreDescription = '就这样，你们早点分手吧。';
+            } else {
+                scoreDescription = '赶紧分';
+            }
+
+            // 显示加载进度条
+            Swal.fire({
+                title: '处理中...',
+                html: '请稍候...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // 模拟处理时间
+            setTimeout(() => {
+                // 使用SweetAlert2显示结果弹窗
+                Swal.fire({
+                    title: '问卷结果',
+                    html: `<div style="white-space: pre-line;">${resultText}</div><br><h3>关系评分: ${score}/300</h3><p>${scoreDescription}</p>`,
+                    confirmButtonText: '好的',
+                    customClass: {
+                        popup: 'custom-sweetalert'
+                    }
+                });
+            }, 2000); // 模拟2秒的处理时间
+        });
+    </script>
+</body>
+</html>

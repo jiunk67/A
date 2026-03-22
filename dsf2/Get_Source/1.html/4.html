@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- 文档基本设置 -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端编译器</title>
+    
+    <!-- 引入字体和样式 -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- CodeMirror 样式 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/monokai.min.css">
+    <!-- 代码提示和 Lint 样式 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.css">
+    
+    <!-- 自定义样式 -->
+    <style>
+        /* 全局样式重置 */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 网页背景和字体设置 */
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #ecf0f1;
+            background-color: #2c3e50;
+            overflow-x: hidden;
+        }
+
+        /* 背景视频容器 */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .video-background video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-size: cover;
+        }
+
+        /* 声音控制按钮 */
+        #soundControlButton {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            padding: 10px 15px;
+            background-color: rgba(44, 62, 80, 0.85);
+            color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #soundControlButton:hover {
+            background-color: rgba(59, 89, 152, 0.85);
+        }
+
+        /* 半透明覆盖层 */
+        .overlay {
+            position: relative;
+            background-color: rgba(44, 62, 80, 0.85);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        /* 主容器 */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 60px;
+        }
+
+        /* 标题样式 */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ecf0f1;
+            font-weight: 700;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* 计时器样式 */
+        #timer {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* 标签导航样式 */
+        .tab-navigation {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background-color: #34495e;
+            color: #ecf0f1;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .tab:hover {
+            background-color: #3b5998;
+        }
+
+        .tab.active {
+            background-color: #3b5998;
+        }
+
+        /* 编辑器容器样式 */
+        .editor-container {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        /* 按钮通用样式 */
+        .button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 各按钮的特定样式 */
+        #runButton {
+            background-color: #e74c3c;
+        }
+
+        #runButton:hover {
+            background-color: #c0392b;
+        }
+
+        #rollbackButton {
+            background-color: #8e44ad;
+        }
+
+        #rollbackButton:hover {
+            background-color: #9b59b6;
+        }
+
+        #copyButton {
+            background-color: #27ae60;
+        }
+
+        #copyButton:hover {
+            background-color: #2ecc71;
+        }
+
+        #clearCodeButton {
+            background-color: #d35400;
+        }
+
+        #clearCodeButton:hover {
+            background-color: #e67e22;
+        }
+
+        #downloadButton {
+            background-color: #16a085;
+        }
+
+        #downloadButton:hover {
+            background-color: #1abc9c;
+        }
+
+        #themeToggleButton {
+            background-color: #f39c12;
+        }
+
+        #themeToggleButton:hover {
+            background-color: #e67e22;
+        }
+
+        #helpButton {
+            background-color: #2980b9;
+            margin-top: 20px;
+        }
+
+        #helpButton:hover {
+            background-color: #3498db;
+        }
+
+        /* 输出区域样式 */
+        #outputFrame {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #7f8c8d;
+            background-color: #fff;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        /* 帮助文档样式 */
+        #helpSection {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            color: #ecf0f1;
+        }
+
+        #helpSection h2 {
+            margin-bottom: 10px;
+        }
+
+        #helpSection ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        /* 反馈消息样式 */
+        #feedback {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1em;
+            color: #2ecc71;
+            display: none;
+        }
+
+        #errorFeedback {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1em;
+            color: #e74c3c;
+            display: none;
+        }
+
+        /* 加载指示器样式 */
+        #loadingIndicator {
+            display: none;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            #runButton {
+                font-size: 16px;
+            }
+
+            .editor-container {
+                height: 200px;
+            }
+
+            #outputFrame {
+                height: 300px;
+            }
+        }
+
+        /* CodeMirror 编辑器样式 */
+        .CodeMirror {
+            height: 100%;
+            font-size: 14px;
+        }
+
+        /* 主题切换样式 */
+        body.light-theme {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        body.light-theme .overlay {
+            background-color: rgba(236, 240, 241, 0.85);
+        }
+
+        body.light-theme .tab {
+            background-color: #bdc3c7;
+            color: #2c3e50;
+        }
+
+        body.light-theme .tab:hover {
+            background-color: #95a5a6;
+        }
+
+        body.light-theme .tab.active {
+            background-color: #95a5a6;
+        }
+
+        body.light-theme #helpSection {
+            background-color: rgba(236, 240, 241, 0.1);
+            color: #2c3e50;
+        }
+
+        body.light-theme .button {
+            color: #2c3e50;
+        }
+
+        body.light-theme .button#runButton {
+            background-color: #e74c3c;
+        }
+
+        body.light-theme .button#rollbackButton {
+            background-color: #8e44ad;
+        }
+
+        body.light-theme .button#copyButton {
+            background-color: #27ae60;
+        }
+
+        body.light-theme .button#clearCodeButton {
+            background-color: #d35400;
+        }
+
+        body.light-theme .button#downloadButton {
+            background-color: #16a085;
+        }
+
+        body.light-theme .button#themeToggleButton {
+            background-color: #f39c12;
+        }
+
+        body.light-theme .button#helpButton {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <!-- 声音控制按钮 -->
+    <button id="soundControlButton">开启声音</button>
+
+    <!-- 背景视频容器 -->
+    <div class="video-background">
+        <!-- 使用单一的视频路径，确保视频包含音频 -->
+        <video autoplay loop id="backgroundVideo" muted>
+            <source src="your-ad-video.mp4" type="video/mp4">
+            您的浏览器不支持HTML5视频播放。
+        </video>
+    </div>
+
+    <!-- 半透明覆盖层 -->
+    <div class="overlay">
+        <!-- 主容器 -->
+        <div class="container">
+            <!-- 网页标题 -->
+            <h1>前端编译器</h1>
+            <!-- 实时计时器 -->
+            <div id="timer"></div>
+            <!-- 反馈消息 -->
+            <div id="feedback">代码运行成功！</div>
+            <div id="errorFeedback">代码运行时出错！</div>
+            <!-- 加载指示器 -->
+            <div id="loadingIndicator">
+                <span>正在运行...</span>
+            </div>
+            <!-- 标签导航 -->
+            <div class="tab-navigation">
+                <div class="tab active" data-lang="html">HTML</div>
+                <div class="tab" data-lang="css">CSS</div>
+                <div class="tab" data-lang="javascript">JavaScript</div>
+            </div>
+            <!-- 代码编辑器容器 -->
+            <div class="editor-container" id="editorContainer"></div>
+            <!-- 清空代码按钮 -->
+            <button id="clearCodeButton" class="button">清空代码</button>
+            <!-- 复制代码按钮 -->
+            <button id="copyButton" class="button">复制代码</button>
+            <!-- 回滚代码按钮 -->
+            <button id="rollbackButton" class="button">回滚代码</button>
+            <!-- 下载代码按钮 -->
+            <button id="downloadButton" class="button">下载代码</button>
+            <!-- 主题切换按钮 -->
+            <button id="themeToggleButton" class="button">切换主题</button>
+            <!-- 运行按钮 -->
+            <button id="runButton" class="button">运行</button>
+            <!-- 输出区域 -->
+            <iframe id="outputFrame" sandbox="allow-scripts allow-same-origin"></iframe>
+            <!-- 帮助文档 -->
+            <div id="helpSection" style="display: none;">
+                <h2>帮助文档</h2>
+                <p>欢迎使用前端编译器！以下是使用指南：</p>
+                <ul>
+                    <li>在上方的标签中选择要编辑的文件（HTML、CSS、JavaScript）。</li>
+                    <li>在代码编辑器中输入您的代码，支持语法高亮、自动补全和代码折叠。</li>
+                    <li>点击“运行”按钮或按下 <strong>Ctrl+Enter</strong> 键运行代码。</li>
+                    <li>运行结果将显示在下方的输出区域。</li>
+                    <li>您的代码会自动保存在浏览器中，下次打开页面会自动加载。</li>
+                    <li>可以回滚代码、复制代码、清空代码、下载代码或查看帮助文档。</li>
+                </ul>
+                <p>如有任何问题，请参考常见问题解答或联系我们。</p>
+            </div>
+            <!-- 帮助按钮 -->
+            <button id="helpButton" class="button">显示帮助文档</button>
+        </div>
+    </div>
+
+    <!-- 引入 CodeMirror 库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <!-- 代码模式 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <!-- 代码折叠 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/foldcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/foldgutter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/brace-fold.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/xml-fold.min.js"></script>
+    <!-- 代码提示 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.js"></script>
+    <!-- 代码检查 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/html-lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/css-lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/javascript-lint.min.js"></script>
+    <!-- JSHint 和 CSSLint -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.4/jshint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/csslint/1.0.5/csslint.min.js"></script>
+    
+    <!-- 主脚本 -->
+    <script>
+        // 获取元素引用
+        const runButton = document.getElementById('runButton');
+        const outputFrame = document.getElementById('outputFrame');
+        const timer = document.getElementById('timer');
+        const tabElements = document.querySelectorAll('.tab');
+        const editorContainer = document.getElementById('editorContainer');
+        const helpButton = document.getElementById('helpButton');
+        const helpSection = document.getElementById('helpSection');
+        const clearCodeButton = document.getElementById('clearCodeButton');
+        const rollbackButton = document.getElementById('rollbackButton');
+        const copyButton = document.getElementById('copyButton');
+        const downloadButton = document.getElementById('downloadButton');
+        const themeToggleButton = document.getElementById('themeToggleButton');
+        const feedback = document.getElementById('feedback');
+        const errorFeedback = document.getElementById('errorFeedback');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const soundControlButton = document.getElementById('soundControlButton');
+        const backgroundVideo = document.getElementById('backgroundVideo');
+
+        // 添加全屏切换按钮（已包含在主容器内）
+        // 如需保留，可以将以下代码注释掉
+        /*
+        const fullScreenButton = document.createElement('button');
+        fullScreenButton.textContent = '全屏模式';
+        fullScreenButton.id = 'fullScreenButton';
+        fullScreenButton.className = 'button';
+        fullScreenButton.style.backgroundColor = '#f39c12';
+        fullScreenButton.style.marginBottom = '20px';
+        // 将按钮插入到运行按钮上方
+        runButton.parentNode.insertBefore(fullScreenButton, runButton);
+        */
+
+        // 编辑器实例
+        const editors = {
+            html: null,
+            css: null,
+            javascript: null
+        };
+
+        let activeLanguage = 'html';
+
+        // 通用编辑器配置
+        const commonEditorConfig = {
+            theme: 'monokai',
+            lineNumbers: true,
+            lineWrapping: true,
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            tabSize: 4,
+            indentUnit: 4,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            extraKeys: {
+                "Ctrl-Space": "autocomplete",
+                "Ctrl-Enter": function() {
+                    runButton.click();
+                }
+            }
+        };
+
+        // 初始化编辑器
+        editors.html = CodeMirror(editorContainer, {
+            ...commonEditorConfig,
+            mode: 'xml',
+            value: '<!-- 在此输入您的HTML代码 -->',
+            lint: true,
+            autoCloseTags: true,
+        });
+
+        editors.css = CodeMirror(editorContainer, {
+            ...commonEditorConfig,
+            mode: 'css',
+            value: '/* 在此输入您的CSS代码 */',
+            lint: true,
+            autoCloseBrackets: false,
+            autoCloseTags: false,
+        });
+        editors.css.getWrapperElement().style.display = 'none';
+
+        editors.javascript = CodeMirror(editorContainer, {
+            ...commonEditorConfig,
+            mode: 'javascript',
+            value: '// 在此输入您的JavaScript代码',
+            lint: true
+        });
+        editors.javascript.getWrapperElement().style.display = 'none';
+
+        // 标签切换功能
+        tabElements.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabElements.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                for (let key in editors) {
+                    editors[key].getWrapperElement().style.display = 'none';
+                }
+
+                activeLanguage = tab.getAttribute('data-lang');
+                editors[activeLanguage].getWrapperElement().style.display = 'block';
+                editors[activeLanguage].refresh();
+                editors[activeLanguage].focus();
+            });
+        });
+
+        // 运行代码
+        runButton.addEventListener('click', () => {
+            // 显示加载指示器
+            loadingIndicator.style.display = 'block';
+            feedback.style.display = 'none';
+            errorFeedback.style.display = 'none';
+
+            const htmlCode = editors.html.getValue();
+            const cssCode = editors.css.getValue();
+            const jsCode = editors.javascript.getValue();
+
+            const fullCode = `
+                <!DOCTYPE html>
+                <html lang="zh-CN">
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        ${cssCode}
+                    </style>
+                </head>
+                <body>
+                    ${htmlCode}
+                    <script>
+                        try {
+                            ${jsCode}
+                        } catch (e) {
+                            window.parent.postMessage({ type: 'error', message: e.message }, '*');
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `;
+
+            // 监听iframe的消息事件
+            window.addEventListener('message', handleIframeMessage, false);
+
+            // 设置iframe内容
+            outputFrame.srcdoc = fullCode;
+
+            // 监听iframe加载完成
+            outputFrame.onload = () => {
+                loadingIndicator.style.display = 'none';
+                feedback.style.display = 'block';
+                // 自动滚动到顶部
+                outputFrame.contentWindow.scrollTo(0, 0);
+                window.removeEventListener('message', handleIframeMessage);
+            };
+        });
+
+        // 处理iframe发送的消息
+        function handleIframeMessage(event) {
+            if (event.data.type === 'error') {
+                loadingIndicator.style.display = 'none';
+                errorFeedback.textContent = '运行时错误：' + event.data.message;
+                errorFeedback.style.display = 'block';
+            }
+        }
+
+        // 实时计时器
+        function updateTimer() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            timer.textContent = '当前时间：' + timeString;
+            const randomColor = 'hsl(' + (now.getSeconds() * 6) + ', 100%, 70%)';
+            timer.style.color = randomColor;
+        }
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // 自动保存功能
+        const STORAGE_KEYS = {
+            html: 'front_end_compiler_code_html',
+            css: 'front_end_compiler_code_css',
+            javascript: 'front_end_compiler_code_js'
+        };
+
+        for (let key in editors) {
+            const savedCode = localStorage.getItem(STORAGE_KEYS[key]);
+            if (savedCode) {
+                editors[key].setValue(savedCode);
+            }
+        }
+
+        // 自动运行功能
+        let autoRunTimerHandle;
+        for (let key in editors) {
+            editors[key].on('change', () => {
+                localStorage.setItem(STORAGE_KEYS[key], editors[key].getValue());
+                clearTimeout(autoRunTimerHandle);
+                autoRunTimerHandle = setTimeout(() => {
+                    runButton.click();
+                }, 1000); // 延时1秒自动运行
+            });
+        }
+
+        // 版本控制功能
+        const versionHistory = {
+            html: [],
+            css: [],
+            javascript: []
+        };
+
+        const MAX_HISTORY_LENGTH = 20;
+
+        function saveVersion() {
+            for (let key in editors) {
+                const code = editors[key].getValue();
+                if (versionHistory[key].length === 0 || versionHistory[key][versionHistory[key].length - 1] !== code) {
+                    versionHistory[key].push(code);
+                    if (versionHistory[key].length > MAX_HISTORY_LENGTH) {
+                        versionHistory[key].shift();
+                    }
+                }
+            }
+        }
+
+        setInterval(saveVersion, 60000);
+        saveVersion();
+
+        // 回滚功能
+        rollbackButton.addEventListener('click', () => {
+            for (let key in editors) {
+                if (versionHistory[key].length > 1) {
+                    versionHistory[key].pop();
+                    const previousVersion = versionHistory[key][versionHistory[key].length - 1];
+                    editors[key].setValue(previousVersion);
+                    localStorage.setItem(STORAGE_KEYS[key], previousVersion);
+                } else {
+                    alert(`没有更多的${key.toUpperCase()}版本可回滚`);
+                }
+            }
+        });
+
+        // 帮助文档显示功能
+        let isHelpVisible = false;
+
+        helpButton.addEventListener('click', () => {
+            if (isHelpVisible) {
+                helpSection.style.display = 'none';
+                helpButton.textContent = '显示帮助文档';
+                isHelpVisible = false;
+            } else {
+                helpSection.style.display = 'block';
+                helpButton.textContent = '隐藏帮助文档';
+                isHelpVisible = true;
+            }
+        });
+
+        // 复制代码功能
+        copyButton.addEventListener('click', () => {
+            const htmlCode = editors.html.getValue();
+            const cssCode = editors.css.getValue();
+            const jsCode = editors.javascript.getValue();
+
+            const fullCode = `
+                <!DOCTYPE html>
+                <html lang="zh-CN">
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        ${cssCode}
+                    </style>
+                </head>
+                <body>
+                    ${htmlCode}
+                    <script>
+                        ${jsCode}
+                    <\/script>
+                </body>
+                </html>
+            `;
+
+            navigator.clipboard.writeText(fullCode).then(() => {
+                alert('代码已复制到剪贴板！');
+            }, () => {
+                alert('复制失败，请手动复制。');
+            });
+        });
+
+        // 清空代码功能
+        clearCodeButton.addEventListener('click', () => {
+            if (confirm('确定要清空所有代码吗？此操作无法撤销。')) {
+                for (let key in editors) {
+                    editors[key].setValue('');
+                    localStorage.setItem(STORAGE_KEYS[key], '');
+                    versionHistory[key] = [];
+                }
+                alert('所有代码已清空！');
+            }
+        });
+
+        // 下载代码功能
+        downloadButton.addEventListener('click', () => {
+            const htmlCode = editors.html.getValue();
+            const cssCode = editors.css.getValue();
+            const jsCode = editors.javascript.getValue();
+
+            const fullCode = `
+                <!DOCTYPE html>
+                <html lang="zh-CN">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>下载的前端代码</title>
+                    <style>
+                        ${cssCode}
+                    </style>
+                </head>
+                <body>
+                    ${htmlCode}
+                    <script>
+                        ${jsCode}
+                    <\/script>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob([fullCode], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // 主题切换功能
+        let isLightTheme = false;
+
+        themeToggleButton.addEventListener('click', () => {
+            if (isLightTheme) {
+                document.body.classList.remove('light-theme');
+                themeToggleButton.textContent = '切换主题';
+                isLightTheme = false;
+            } else {
+                document.body.classList.add('light-theme');
+                themeToggleButton.textContent = '切换回深色主题';
+                isLightTheme = true;
+            }
+        });
+
+        // 声音控制功能
+        let isSoundOn = false;
+
+        soundControlButton.addEventListener('click', () => {
+            if (!isSoundOn) {
+                backgroundVideo.muted = false;
+                soundControlButton.textContent = '关闭声音';
+                isSoundOn = true;
+            } else {
+                backgroundVideo.muted = true;
+                soundControlButton.textContent = '开启声音';
+                isSoundOn = false;
+            }
+        });
+
+        // 错误处理
+        function handleError(e) {
+            loadingIndicator.style.display = 'none';
+            errorFeedback.textContent = '代码执行时发生错误：' + e.message;
+            errorFeedback.style.display = 'block';
+        }
+
+        window.addEventListener('error', handleError);
+
+        // 页面卸载前清理
+        window.addEventListener('beforeunload', () => {
+            window.removeEventListener('message', handleIframeMessage);
+            window.removeEventListener('error', handleError);
+            clearInterval(autoRunTimerHandle);
+            clearInterval(saveVersion);
+        });
+    </script>
+</body>
+</html>
