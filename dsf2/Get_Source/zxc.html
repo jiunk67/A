@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>今天吃什么？</title>
+  <style>
+    :root{
+      --bg:#fff8f3;
+      --accent:#ff7a7a;
+      --text:#333;
+    }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      background:var(--bg);
+      color:var(--text);
+      font-family:"PingFang SC","Helvetica Neue",Arial,"Hiragino Sans GB","Microsoft YaHei",sans-serif;
+      user-select:none;
+    }
+    h1{
+      font-size:2.5rem;
+      margin:0 0 .8em;
+      color:var(--accent);
+      letter-spacing:.06em;
+      font-weight:500;
+    }
+    #foodBox{
+      font-size:3rem;
+      font-weight:600;
+      height:4rem;
+      line-height:4rem;
+      letter-spacing:.05em;
+      transition:transform .3s ease,opacity .3s ease;
+    }
+    #foodBox.running{
+      animation:flip 3s ease-in-out 5;
+    }
+    @keyframes flip{
+      0%{transform:translateY(0);}
+      50%{transform:translateY(-6px);}
+      100%{transform:translateY(0);}
+    }
+    #countdown{
+      margin-top:.4em;
+      font-size:2rem;
+      color:var(--accent);
+      font-weight:300;
+    }
+    #startBtn{
+      margin-top:1.5em;
+      padding:.6em 2em;
+      border:none;
+      border-radius:2em;
+      background:var(--accent);
+      color:#fff;
+      font-size:1.1rem;
+      cursor:pointer;
+      transition:background .3s,transform .3s;
+    }
+    #startBtn:hover{background:#ff6363;}
+    #startBtn:disabled{
+      background:#ffb2b2;
+      cursor:not-allowed;
+      transform:none;
+    }
+    #inputBar{
+      position:absolute;
+      bottom:8vh;
+      display:flex;
+      gap:.6em;
+      align-items:center;
+    }
+    #foodInput{
+      padding:.5em 1.2em;
+      border:1px solid #ffe1e1;
+      border-radius:2em;
+      background:#fff;
+      font-size:1rem;
+      outline:none;
+      transition:border .3s;
+    }
+    #foodInput:focus{border-color:var(--accent);}
+    #addBtn{
+      padding:.5em 1.2em;
+      border:none;
+      border-radius:2em;
+      background:var(--accent);
+      color:#fff;
+      font-size:1rem;
+      cursor:pointer;
+      transition:background .3s;
+    }
+    #addBtn:hover{background:#ff6363;}
+  </style>
+</head>
+<body>
+  <h1>今天吃什么？</h1>
+  <div id="foodBox">点击开始</div>
+  <div id="countdown"></div>
+  <button id="startBtn">开始</button>
+
+  <div id="inputBar">
+    <input id="foodInput" placeholder="输入新食物，回车添加" maxlength="10"/>
+    <button id="addBtn">✔️</button>
+  </div>
+
+  <script>
+    const foods = ['火锅','烧烤','拉面','寿司','炸鸡','披萨'];
+    const foodBox = document.getElementById('foodBox');
+    const countdownEl = document.getElementById('countdown');
+    const startBtn = document.getElementById('startBtn');
+    let timer,cdTimer;
+
+    function addFood(){
+      const val = document.getElementById('foodInput').value.trim();
+      if(val && !foods.includes(val)){
+        foods.push(val);
+        document.getElementById('foodInput').value='';
+      }
+    }
+    function startLottery(){
+      if(foods.length===0){alert('请先添加食物');return;}
+      startBtn.disabled=true;
+      foodBox.classList.add('running');
+      let left=5;
+      countdownEl.textContent=`${left}`;
+      timer=setInterval(()=>{
+        foodBox.textContent=foods[Math.floor(Math.random()*foods.length)];
+      },80);
+      cdTimer=setInterval(()=>{
+        left--;
+        countdownEl.textContent=`${left}`;
+        if(left<=0){
+          clearInterval(timer);
+          clearInterval(cdTimer);
+          foodBox.classList.remove('running');
+          countdownEl.textContent='';
+          startBtn.disabled=false;
+        }
+      },1000);
+    }
+    document.getElementById('foodInput').addEventListener('keydown',e=>{
+      if(e.key==='Enter')addFood();
+    });
+    document.getElementById('addBtn').addEventListener('click',addFood);
+    startBtn.addEventListener('click',startLottery);
+  </script>
+</body>
+</html>

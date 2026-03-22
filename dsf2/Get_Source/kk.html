@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>微信</title>
+	<script src="js/wc-3.0.6.min.js"></script>
+<style>
+.a{
+  text-align:center;
+  }
+          .offline-page{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;z-index:99999;}
+.offline-icon{font-size:60px;color:#F44336;margin-bottom:20px;}
+.offline-tip{font-size:22px;color:#333;margin-bottom:10px;}
+.offline-desc{font-size:16px;color:#666;}
+#offlineMessage{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);color:#fff;text-align:center;padding-top:20%;font-size:24px;z-index:100000;}
+</style>
+    <!-- 断网提示容器 -->
+    <div class="offline-page" id="offlinePage">
+        <div class="offline-icon">🔌</div>
+        <div class="offline-tip">请打开网络再使用</div>
+        <div class="offline-desc">当前网络已断开，无法完成跳转</div>
+    </div>
+    <div id="offlineMessage">
+        <h3>请打开网络连接后再使用</h3>
+        <p>用断网大法破解天帝软件库？</p>
+        <p>荒诞至极！！！</p>
+		<p>天帝-断网检测V1.0</p>
+    </div>
+<div class="a"><img src="p.png" width="300"/></div>
+<hr/>
+<h3 class="a"></h3>
+<h3 class="a">感谢支持</h3>
+        <script>
+    // 断网检测+跳转核心函数
+function checkNetworkAndJump(targetUrl) {
+    const offlinePage = document.getElementById('offlinePage');
+    const offlineMessage = document.getElementById('offlineMessage');
+    if (navigator.onLine) {
+        offlinePage.style.display = 'none';
+        offlineMessage.style.display = 'none';
+        window.location.href = targetUrl;
+    } else {
+        offlinePage.style.display = 'flex';
+        offlineMessage.style.display = 'block';
+    }
+}
+
+// 监听网络状态变化
+window.addEventListener('online', function() {
+    document.getElementById('offlinePage').style.display = 'none';
+    document.getElementById('offlineMessage').style.display = 'none';
+});
+
+window.addEventListener('offline', function() {
+    document.getElementById('offlinePage').style.display = 'flex';
+    document.getElementById('offlineMessage').style.display = 'block';
+});
+    </script> 

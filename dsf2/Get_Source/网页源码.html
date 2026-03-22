@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网站源码分析工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .url-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .fetch-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .fetch-btn:hover {
+            background: #2980b9;
+        }
+
+        .fetch-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .results {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .results-header h3 {
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: #34495e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #2c3e50;
+        }
+
+        .copy-btn {
+            background: #27ae60;
+        }
+
+        .copy-btn:hover {
+            background: #219653;
+        }
+
+        .code-container {
+            background: #2c3e50;
+            border-radius: 4px;
+            overflow: hidden;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .code-header {
+            background: #34495e;
+            padding: 10px 15px;
+            color: #ecf0f1;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stats {
+            font-size: 12px;
+            color: #bdc3c7;
+        }
+
+        .source-code {
+            padding: 20px;
+            color: #ecf0f1;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .info-box {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .info-box h4 {
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .analysis-section {
+            background: white;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .analysis-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .analysis-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+
+        .analysis-item h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .analysis-item p {
+            color: #7f8c8d;
+            font-size: 13px;
+        }
+
+        .limitations {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .limitations h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .limitations ul {
+            color: #856404;
+            padding-left: 20px;
+        }
+
+        .limitations li {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        footer {
+            background: #ecf0f1;
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #7f8c8d;
+            border-top: 1px solid #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .action-btn {
+                width: 100%;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>网站源码分析工具</h1>
+            <p>获取并分析网站的HTML结构</p>
+        </header>
+
+        <div class="content">
+            <div class="info-box">
+                <h4>重要说明</h4>
+                <p>此工具获取的是服务器返回的HTML源码</p>
+            </div>
+
+            <div class="input-section">
+                <input type="url" class="url-input" placeholder="请输入完整的网站URL (例如: https://example.com)" value="https://">
+                <button class="fetch-btn" onclick="fetchSourceCode()">获取源码</button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>正在获取网站源码...</p>
+            </div>
+
+            <div class="error" id="error"></div>
+
+            <div class="results" id="results">
+                <div class="results-header">
+                    <h3>网站HTML源码</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="toggleWordWrap()">切换换行</button>
+                        <button class="action-btn copy-btn" onclick="copySourceCode()">复制源码</button>
+                    </div>
+                </div>
+                <div class="code-container">
+                    <div class="code-header">
+                        <span id="codeHeader">HTML源码内容</span>
+                        <span class="stats" id="stats">0 行 | 0 字符</span>
+                    </div>
+                    <pre class="source-code" id="sourceCode"></pre>
+                </div>
+
+                <div class="analysis-section">
+                    <h3>源码分析</h3>
+                    <div class="analysis-grid" id="analysisGrid">
+                        <!-- 分析结果会动态填充到这里 -->
+                    </div>
+                </div>
+
+                <div class="limitations">
+                    <h4>⚠️ 获取的源码可能无法运行的原因：</h4>
+                    <ul>
+                        <li><strong>资源文件缺失：</strong>CSS、JavaScript、图片等文件使用相对路径，无法加载</li>
+                        <li><strong>动态内容：</strong>JavaScript动态生成的内容无法获取</li>
+                        <li><strong>API接口：</strong>网站依赖的后端API无法访问</li>
+                        <li><strong>域名限制：</strong>某些资源文件有域名访问限制</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>网站源码前端查询工具 &copy; 2026 - 仅用于学习和研究目的</p>
+        </footer>
+    </div>
+
+    <script>
+        // 代理服务器配置
+        const PROXY_SERVERS = [
+            {
+                name: 'allorigins',
+                url: 'https://api.allorigins.win/get?url='
+            },
+            {
+                name: 'corsproxy',
+                url: 'https://corsproxy.io/?'
+            }
+        ];
+
+        let currentProxyIndex = 0;
+        let wordWrapEnabled = true;
+        let currentHtmlContent = '';
+
+        // 主要函数：获取网站源码
+        async function fetchSourceCode() {
+            const urlInput = document.querySelector('.url-input');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const error = document.getElementById('error');
+            const sourceCode = document.getElementById('sourceCode');
+            const codeHeader = document.getElementById('codeHeader');
+            const stats = document.getElementById('stats');
+            const fetchBtn = document.querySelector('.fetch-btn');
+            const analysisGrid = document.getElementById('analysisGrid');
+            
+            const url = urlInput.value.trim();
+            
+            // 验证URL
+            if (!url) {
+                showError('请输入有效的URL地址');
+                return;
+            }
+            
+            if (!isValidUrl(url)) {
+                showError('请输入有效的URL格式（例如：https://example.com）');
+                return;
+            }
+            
+            // 显示加载状态
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            error.style.display = 'none';
+            fetchBtn.disabled = true;
+            fetchBtn.textContent = '获取中...';
+            
+            try {
+                const html = await fetchWithRetry(url);
+                currentHtmlContent = html;
+                
+                // 显示原始HTML（不转义）
+                sourceCode.textContent = html;
+                codeHeader.textContent = `HTML源码 - ${url}`;
+                
+                // 更新统计信息
+                const lines = html.split('\n').length;
+                const chars = html.length;
+                stats.textContent = `${lines} 行 | ${chars} 字符`;
+                
+                // 分析HTML内容
+                analyzeHtml(html);
+                
+                results.style.display = 'block';
+                
+            } catch (err) {
+                console.error('获取源码时出错:', err);
+                showError(`无法获取网站源码: ${err.message}`);
+            } finally {
+                loading.style.display = 'none';
+                fetchBtn.disabled = false;
+                fetchBtn.textContent = '获取源码';
+            }
+        }
+
+        // 使用重试机制获取源码
+        async function fetchWithRetry(url, retries = PROXY_SERVERS.length) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const proxy = PROXY_SERVERS[currentProxyIndex];
+                    console.log(`尝试使用代理: ${proxy.name}`);
+                    
+                    let proxyUrl;
+                    if (proxy.name === 'allorigins') {
+                        proxyUrl = `${proxy.url}${encodeURIComponent(url)}`;
+                    } else {
+                        proxyUrl = `${proxy.url}${url}`;
+                    }
+                    
+                    const response = await fetch(proxyUrl, {
+                        method: 'GET',
+                        headers: {
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    let html;
+                    if (proxy.name === 'allorigins') {
+                        const data = await response.json();
+                        html = data.contents;
+                    } else {
+                        html = await response.text();
+                    }
+                    
+                    if (!html || html.trim().length === 0) {
+                        throw new Error('获取到的内容为空');
+                    }
+                    
+                    console.log(`成功使用代理: ${proxy.name}`);
+                    return html;
+                    
+                } catch (err) {
+                    console.warn(`代理 ${PROXY_SERVERS[currentProxyIndex].name} 失败:`, err.message);
+                    
+                    // 切换到下一个代理
+                    currentProxyIndex = (currentProxyIndex + 1) % PROXY_SERVERS.length;
+                    
+                    // 如果是最后一次尝试，抛出错误
+                    if (i === retries - 1) {
+                        throw new Error(`所有代理尝试失败。最后错误: ${err.message}`);
+                    }
+                    
+                    // 等待一段时间后重试
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+        }
+
+        // 分析HTML内容
+        function analyzeHtml(html) {
+            const analysisGrid = document.getElementById('analysisGrid');
+            
+            // 创建临时DOM元素进行分析
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            const analysisData = [
+                {
+                    title: '页面标题',
+                    value: doc.title || '未设置'
+                },
+                {
+                    title: 'CSS文件',
+                    value: doc.querySelectorAll('link[rel="stylesheet"]').length + ' 个'
+                },
+                {
+                    title: 'JavaScript文件',
+                    value: doc.querySelectorAll('script[src]').length + ' 个'
+                },
+                {
+                    title: '图片资源',
+                    value: doc.querySelectorAll('img[src]').length + ' 个'
+                },
+                {
+                    title: '外部链接',
+                    value: doc.querySelectorAll('a[href^="http"]').length + ' 个'
+                },
+                {
+                    title: '表单数量',
+                    value: doc.querySelectorAll('form').length + ' 个'
+                }
+            ];
+            
+            let analysisHTML = '';
+            analysisData.forEach(item => {
+                analysisHTML += `
+                    <div class="analysis-item">
+                        <h4>${item.title}</h4>
+                        <p>${item.value}</p>
+                    </div>
+                `;
+            });
+            
+            analysisGrid.innerHTML = analysisHTML;
+        }
+
+        // 显示错误信息
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.style.display = 'block';
+            
+            const results = document.getElementById('results');
+            results.style.display = 'none';
+            
+            const loading = document.getElementById('loading');
+            loading.style.display = 'none';
+        }
+
+        // 复制源码到剪贴板
+        function copySourceCode() {
+            const sourceCode = document.getElementById('sourceCode');
+            const text = sourceCode.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const copyBtn = document.querySelector('.copy-btn');
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '已复制!';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('复制成功:', err);
+                alert('复制可能成功了吧，我也不知道');
+            });
+        }
+
+        // 切换换行
+        function toggleWordWrap() {
+            const sourceCode = document.getElementById('sourceCode');
+            wordWrapEnabled = !wordWrapEnabled;
+            
+            if (wordWrapEnabled) {
+                sourceCode.style.whiteSpace = 'pre-wrap';
+            } else {
+                sourceCode.style.whiteSpace = 'pre';
+            }
+            
+            const wrapBtn = document.querySelector('.action-buttons .action-btn');
+            wrapBtn.textContent = wordWrapEnabled ? '禁用换行' : '启用换行';
+        }
+
+        // URL验证函数
+        function isValidUrl(string) {
+            try {
+                const url = new URL(string);
+                return url.protocol === 'http:' || url.protocol === 'https:';
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // 按Enter键触发获取
+        document.querySelector('.url-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                fetchSourceCode();
+            }
+        });
+
+        // 页面加载时聚焦输入框
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlInput = document.querySelector('.url-input');
+            urlInput.focus();
+        });
+    </script>
+</body>
+</html>

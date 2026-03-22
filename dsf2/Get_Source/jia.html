@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>天帝解密 · 文件还原工具</title>
+  <style>
+    /* 全局设计 —— 清爽毛玻璃+微光背景 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e9f0fc 0%, #f1f5f9 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+      padding: 1.5rem;
+    }
+
+    /* 主卡片 —— 轻盈玻璃态 */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 32, 64, 0.25), 0 2px 8px 0 rgba(0,0,0,0.02);
+      width: 100%;
+      max-width: 900px;
+      padding: 2rem 2.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      transition: box-shadow 0.2s;
+    }
+
+    .glass-card:hover {
+      box-shadow: 0 30px 60px -12px rgba(28, 84, 148, 0.3);
+    }
+
+    /* 标题区域 */
+    .title-section {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .title-section h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #1d2b3f, #2c3e66);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .title-section h1 span {
+      font-size: 2.4rem;
+      filter: drop-shadow(0 4px 6px rgba(0,80,200,0.2));
+    }
+
+    .sub-desc {
+      color: #4b587c;
+      font-size: 0.95rem;
+      background: rgba(210, 225, 247, 0.5);
+      display: inline-block;
+      padding: 0.3rem 1.2rem;
+      border-radius: 30px;
+      backdrop-filter: blur(4px);
+      margin-top: 8px;
+    }
+
+    /* 上传盒子 —— 优雅虚线框 + 悬浮光效 */
+    .upload-area {
+      border: 2px dashed #b7c9e2;
+      border-radius: 2rem;
+      background: rgba(245, 250, 255, 0.6);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .upload-area.drag-over {
+      border-color: #3471e0;
+      background: rgba(70, 130, 230, 0.08);
+      transform: scale(1.01);
+      box-shadow: 0 20px 30px -10px rgba(45, 110, 220, 0.2);
+    }
+
+    .upload-icon {
+      font-size: 4rem;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      filter: drop-shadow(0 6px 8px #9bb6d4);
+    }
+
+    .upload-area label {
+      display: inline-block;
+      background: #2b3d5f;
+      color: white;
+      font-weight: 500;
+      padding: 0.6rem 2rem;
+      border-radius: 40px;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 10px 18px -8px #1e3b5b;
+      transition: all 0.2s;
+      border: 1px solid rgba(255,255,255,0.2);
+      margin-top: 8px;
+    }
+
+    .upload-area label:hover {
+      background: #1f324f;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 22px -10px #143050;
+    }
+
+    .upload-area .hint-text {
+      color: #4f658d;
+      font-size: 0.9rem;
+      margin-top: 0.8rem;
+      letter-spacing: 0.3px;
+    }
+
+    /* 隐藏的原生input */
+    #fileInput {
+      display: none;
+    }
+
+    /* 文件信息栏 + 清除按钮 */
+    .file-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #eef3fc;
+      border-radius: 60px;
+      padding: 0.7rem 1.2rem 0.7rem 1.6rem;
+      margin: 1.2rem 0 1.8rem 0;
+      border: 1px solid #cddef5;
+      backdrop-filter: blur(4px);
+    }
+
+    .file-details {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      color: #1d2b44;
+      font-weight: 500;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .file-details span:first-child {
+      background: #2b3d5f;
+      color: white;
+      border-radius: 50px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      font-weight: 400;
+    }
+
+    .clear-btn {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: #6b7f9f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+
+    .clear-btn:hover {
+      background: rgba(180, 200, 235, 0.7);
+      color: #1f2c44;
+      transform: rotate(90deg);
+    }
+
+    /* 主按钮 —— 渐变深邃 */
+    .primary-btn {
+      background: linear-gradient(105deg, #203349, #2b456b);
+      border: none;
+      color: white;
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 20px 28px -12px #1f3a5f;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .primary-btn:not(:disabled):hover {
+      background: linear-gradient(105deg, #1f304b, #2f4b78);
+      transform: translateY(-3px);
+      box-shadow: 0 28px 34px -10px #1f3a66;
+    }
+
+    .primary-btn:disabled {
+      opacity: 0.5;
+      box-shadow: none;
+      cursor: not-allowed;
+      background: #95a9c9;
+    }
+
+    /* 结果卡片 */
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0.8rem;
+      color: #1e314c;
+    }
+
+    .result-header h3 {
+      font-size: 1.25rem;
+      font-weight: 550;
+      letter-spacing: -0.2px;
+    }
+
+    .result-header .badge {
+      background: #d9e6ff;
+      border-radius: 30px;
+      padding: 0.15rem 1rem;
+      font-size: 0.8rem;
+      color: #274a7a;
+    }
+
+    .decoded-box {
+      background: #1f2633;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid #3b465b;
+      box-shadow: inset 0 0 0 1px #5b6f8f, 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 280px;
+      background: #121722;
+      border: none;
+      border-radius: 1rem;
+      color: #dde9ff;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      padding: 1.2rem;
+      resize: vertical;
+      outline: 1px solid #3c5070;
+      transition: outline 0.1s;
+    }
+
+    textarea:focus {
+      outline: 2px solid #6086cf;
+    }
+
+    textarea::placeholder {
+      color: #5e739b;
+      font-style: italic;
+      font-size: 0.9rem;
+    }
+
+    /* 微小的装饰脚标 */
+    .footer-note {
+      margin-top: 1rem;
+      text-align: right;
+      color: #7f8fb0;
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-note .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 10px;
+      background: #5d83c7;
+      margin-right: 4px;
+    }
+  </style>
+</head>
+<body>
+<div class="glass-card">
+  <div class="title-section">
+    <h1>
+      <span>🔐</span> 天帝·文件解密 <span>✨</span>
+    </h1>
+    <div class="sub-desc">自定义加密算法 · 还原初始内容</div>
+  </div>
+
+  <!-- 上传区域 (隐藏input + 拖拽支持) -->
+  <div class="upload-area" id="uploadArea">
+    <div class="upload-icon">📂✨</div>
+    <input type="file" id="fileInput" accept="*">
+    <label for="fileInput">选择文件</label>
+    <div class="hint-text">或者直接把文件拖拽到此处</div>
+  </div>
+
+  <!-- 动态文件信息 + 清除按钮 -->
+  <div class="file-status" id="fileStatus">
+    <div class="file-details" id="fileDetails">
+      <span>📄 未选择文件</span>
+      <span></span>
+    </div>
+    <button class="clear-btn" id="clearFileBtn" title="清除选择">✕</button>
+  </div>
+
+  <!-- 解密按钮 -->
+  <button class="primary-btn" id="decryptBtn" disabled>
+    <span>⚡</span> 开始解密 <span>→</span>
+  </button>
+
+  <!-- 结果区域 -->
+  <div class="result-header">
+    <h3>📋 解密结果</h3>
+    <div class="badge">readonly</div>
+  </div>
+  <div class="decoded-box">
+    <textarea id="result" readonly placeholder="解密后的文字将优雅地呈现于此..."></textarea>
+  </div>
+  <div class="footer-note">
+    <span><span class="dot"></span> 仅支持标准密文格式 (双引号内 \u转义)</span>
+    <span>⚙️ 算法 v1</span>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- 解密核心 (保持完全一致) ----------
+    function decryptScript(a) {
+      a = unescape(a);
+      var c = String.fromCharCode(a.charCodeAt(0) - a.length);
+      for (var i = 1; i < a.length; i++) {
+        c += String.fromCharCode(a.charCodeAt(i) - c.charCodeAt(i - 1));
+      }
+      return c;
+    }
+
+    function processContent(content) {
+      // 提取双引号之间的内容 (支持转义引号? 这里按原逻辑仅取第一对双引号)
+      const match = content.match(/"([^"]+)"/);
+      if (!match) {
+        throw new Error("未找到有效的密文字符串 (需要包裹在双引号中)");
+      }
+      let cipher = match[1];
+
+      // 处理 \uXXXX 转义为实际字符
+      cipher = cipher.replace(/\\u([\dA-Fa-f]{4})/g, (m, g) => {
+        return String.fromCharCode(parseInt(g, 16));
+      });
+      return cipher;
+    }
+
+    // ---------- DOM 元素 ----------
+    const fileInput = document.getElementById('fileInput');
+    const decryptBtn = document.getElementById('decryptBtn');
+    const resultArea = document.getElementById('result');
+    const fileDetails = document.getElementById('fileDetails');
+    const clearBtn = document.getElementById('clearFileBtn');
+    const uploadArea = document.getElementById('uploadArea');
+
+    // 当前文件对象 (统一管理)
+    let currentFile = null;
+
+    // ---------- 辅助函数: 更新UI ----------
+    function updateFileInfo(file) {
+      if (file) {
+        const sizeKB = (file.size / 1024).toFixed(2);
+        fileDetails.innerHTML = `<span>📎 ${file.name}</span><span>${sizeKB} KB</span>`;
+        decryptBtn.disabled = false;
+      } else {
+        fileDetails.innerHTML = `<span>📄 未选择文件</span><span></span>`;
+        decryptBtn.disabled = true;
+        resultArea.value = '';    // 清空结果 (可选)
+      }
+    }
+
+    // 清除当前文件 (不改变input的状态, 但重置currentFile)
+    function clearCurrentFile() {
+      if (currentFile) {
+        currentFile = null;
+        updateFileInfo(null);
+        // 注意: 无法直接清除 <input type="file"> 的选中, 但我们可以重新构造一个替换 (不影响功能)
+        // 为了彻底, 将input替换为新元素 (移除遗留文件引用)
+        const oldInput = fileInput;
+        const newInput = document.createElement('input');
+        newInput.type = 'file';
+        newInput.id = 'fileInput';
+        newInput.accept = '*';
+        newInput.style.display = 'none';
+        oldInput.parentNode.replaceChild(newInput, oldInput);
+        // 重新绑定事件
+        newInput.addEventListener('change', onFileInputChange);
+        // 同时更新全局变量
+        window.fileInput = newInput; // 可选
+        // 因为label的for="fileInput"仍然有效, 指向新的input
+      } else {
+        // 如果已经是空，重置一下显示
+        fileDetails.innerHTML = `<span>📄 未选择文件</span><span></span>`;
+        decryptBtn.disabled = true;
+      }
+    }
+
+    // ---------- 事件: input 选择文件 ----------
+    function onFileInputChange(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      currentFile = file;
+      updateFileInfo(file);
+    }
+
+    // 绑定input事件
+    fileInput.addEventListener('change', onFileInputChange);
+
+    // ---------- 拖拽上传 (增强交互) ----------
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('drag-over');
+    });
+
+    uploadArea.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('drag-over');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('drag-over');
+
+      const files = e.dataTransfer.files;
+      if (files.length === 0) return;
+
+      const droppedFile = files[0];
+      // 简单校验是否文件过大或类型 (可选)
+      currentFile = droppedFile;
+      updateFileInfo(droppedFile);
+
+      // 由于input不能同步files, 我们不动input (但是用户若再次点击input可能会选另一个文件)
+      // 但无伤大雅, currentFile永远代表最新操作的文件
+    });
+
+    // 点击上传区本身也模拟点击label (已经通过label实现, 但空白区点击不方便, 添加一个透明门)
+    // 让整个uploadArea点击时触发label点击 (如果点击的是内部label就不重复)
+    uploadArea.addEventListener('click', (e) => {
+      // 如果点击的是label或者内部图标, 跳过, 因为label已经关联input
+      if (e.target.closest('label')) return;
+      // 否则手动触发input点击
+      document.getElementById('fileInput').click();
+    });
+
+    // ---------- 清除按钮 ----------
+    clearBtn.addEventListener('click', (e) => {
+      e.stopPropagation();   // 防止冒泡触发上传区点击
+      clearCurrentFile();
+      currentFile = null;    // 确保置空
+    });
+
+    // ---------- 解密按钮逻辑 ----------
+    decryptBtn.addEventListener('click', () => {
+      if (!currentFile) {
+        resultArea.value = '请先选择一个文件。';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          let content = e.target.result;
+          const cipher = processContent(content);
+          const decoded = decryptScript(cipher);
+          resultArea.value = decoded;
+        } catch (err) {
+          resultArea.value = '❌ 解密失败：\n' + err.message + '\n\n请确保文件内容包含形如 "\\uXXXX..." 的密文。';
+        }
+      };
+      reader.onerror = () => {
+        resultArea.value = '读取文件失败，请重试。';
+      };
+      reader.readAsText(currentFile, 'utf-8');
+    });
+
+    // ---------- 初始化显示 ----------
+    updateFileInfo(null);
+
+    // 额外的美化: 如果拖拽非文件内容, 阻止页面跳转
+    document.addEventListener('dragover', (e) => e.preventDefault());
+    document.addEventListener('drop', (e) => e.preventDefault());
+
+    // 注意: 如果用户通过input选择后, 再拖拽新文件, currentFile会更新, 界面也会更新 —— 没问题.
+    // 并且清除按钮会重置currentFile以及通过替换input来丢弃遗留引用.
+    // 但替换input后会丢失之前拖拽同步的显示？清除后currentFile=null, 与input无关.
+    // 同时确保新的input能正常触发change.
+  })();
+</script>
+</body>
+</html>

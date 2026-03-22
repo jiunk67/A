@@ -1,0 +1,2306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neon渗透测试控制台 v6.0.0 | 未来科技版</title>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bf00ff;
+            --neon-pink: #ff00e4;
+            --neon-green: #00ff66;
+            --dark-bg: #050a15;
+            --glass-bg: rgba(10, 25, 47, 0.6);
+            --border-glow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue), 0 0 15px var(--neon-blue);
+            --text-glow: 0 0 5px currentColor, 0 0 10px currentColor;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-md: 1rem;
+            --font-size-lg: 1.25rem;
+            --header-height: 52px;
+            --input-height: 56px;
+            --nav-height: 60px;
+            --touch-target: 48px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', 'Consolas', 'Courier New', monospace;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--neon-blue);
+            overflow: hidden;
+            height: 100vh;
+            font-size: var(--font-size-sm);
+            text-shadow: var(--text-glow);
+        }
+
+        #bg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: minmax(600px, 3fr) minmax(320px, 1fr);
+            grid-template-rows: var(--header-height) 1fr var(--input-height);
+            grid-template-areas:
+                "header sidebar"
+                "main sidebar"
+                "input sidebar";
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            height: 100%;
+        }
+
+        .header {
+            grid-area: header;
+            border: 1px solid var(--neon-blue);
+            padding: 0 var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 6px;
+            box-shadow: var(--border-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.2), transparent);
+            animation: scanline 3s linear infinite;
+        }
+
+        @keyframes scanline {
+            100% {
+                left: 100%;
+            }
+        }
+
+        .main-terminal {
+            grid-area: main;
+            border: 1px solid var(--neon-blue);
+            padding: var(--spacing-md);
+            overflow-y: auto;
+            position: relative;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 6px;
+            box-shadow: var(--border-glow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar {
+            grid-area: sidebar;
+            border: 1px solid var(--neon-purple);
+            padding: var(--spacing-md);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 6px;
+            box-shadow: 0 0 5px var(--neon-purple), 0 0 10px var(--neon-purple);
+        }
+
+        .command-input {
+            grid-area: input;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--neon-green);
+            padding: 10px var(--spacing-md);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 6px;
+            box-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green);
+            position: relative;
+        }
+
+        .system { color: var(--neon-pink); }
+        .success { color: var(--neon-green); }
+        .error { color: #ff4d4d; }
+        .warning { color: #fff35c; }
+        .info { color: var(--neon-blue); }
+        .debug { color: #a050ff; }
+        .critical { color: var(--neon-pink); font-weight: bold; animation: blink 0.5s infinite; text-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink); }
+        .high { color: #ff7d3b; font-weight: bold; }
+        .medium { color: #fff35c; }
+        .low { color: var(--neon-blue); }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.2rem;
+            background-color: var(--neon-green);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+            box-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .prompt {
+            color: var(--neon-green);
+            margin-right: var(--spacing-xs);
+            white-space: nowrap;
+            font-weight: bold;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        #cmd-input, #mobile-cmd-input {
+            background: transparent;
+            border: none;
+            color: var(--neon-green);
+            font-size: var(--font-size-sm);
+            width: 100%;
+            outline: none;
+            padding: var(--spacing-xs) 0;
+            text-shadow: var(--text-glow);
+        }
+
+        .status-card {
+            border: 1px solid var(--neon-blue);
+            padding: var(--spacing-md);
+            background: rgba(10, 25, 47, 0.4);
+            margin-bottom: var(--spacing-md);
+            border-radius: 6px;
+            box-shadow: 0 0 3px var(--neon-blue);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--neon-blue);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .5s ease;
+        }
+
+        .status-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .status-card h3 {
+            margin-bottom: var(--spacing-sm);
+            padding-bottom: var(--spacing-xs);
+            border-bottom:.5px solid rgba(0, 243, 255, 0.3);
+            color: var(--neon-blue);
+            font-size: var(--font-size-md);
+            display: flex;
+            align-items:center;
+        }
+
+        .status-card h3::before {
+            content: '◈'; 
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .process-list {
+            list-style: none;
+            font-size: var(--font-size-sm);
+        }
+
+        .process-list li {
+            margin: var(--spacing-xs) 0;
+            padding: var(--spacing-xs) 0;
+            border-bottom: 1px dotted rgba(0, 243, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            padding-left: 4px;
+            border-left: 2px solid transparent;
+        }
+
+        .process-list li:hover {
+            background-color: rgba(0, 243, 255, 0.05);
+            padding-left: var(--spacing-xs);
+            border-left: 2px solid var(--neon-blue);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 0.75rem;
+            background-color: rgba(10, 25, 47, 0.5);
+            border: 1px solid var(--neon-blue);
+            margin: var(--spacing-xs) 0;
+            overflow: hidden;
+            border-radius: 3px;
+            box-shadow: 0 0 3px var(--neon-blue);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            width: 0%;
+            transition: width 0.3s;
+            box-shadow: 0 0 5px var(--neon-blue);
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 30%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 1.5s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @media (max-width: 900px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: var(--header-height) auto 1fr auto var(--input-height);
+                grid-template-areas:
+                    "header"
+                    "sidebar"
+                    "main"
+                    "status"
+                    "input";
+            }
+            .sidebar {
+                max-height: none;
+                height: auto;
+                min-height: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: var(--header-height) 1fr auto var(--nav-height);
+                grid-template-areas:
+                    "header"
+                    "main"
+                    "floating-input"
+                    "bottom-nav";
+                padding: var(--spacing-sm);
+                gap: var(--spacing-sm);
+            }
+
+            .sidebar {
+                display: none;
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 85%;
+                height: 100%;
+                z-index: 100;
+                background: var(--glass-bg);
+                backdrop-filter: blur(15px);
+                border-left: 1px solid var(--neon-purple);
+                padding: var(--spacing-md);
+                overflow-y: auto;
+            }
+
+            .sidebar.active {
+                display: flex;
+            }
+
+            .floating-input {
+                grid-area: floating-input;
+                display: flex;
+                align-items: center;
+                border: 1px solid var(--neon-green);
+                padding: var(--spacing-xs) var(--spacing-sm);
+                background: var(--glass-bg);
+                backdrop-filter: blur(10px);
+                border-radius: 30px;
+                box-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green);
+                margin: var(--spacing-sm);
+                position: relative;
+                max-width: calc(100% - 20px);
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .bottom-nav {
+                grid-area: bottom-nav;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                border-top: 1px solid var(--neon-blue);
+                background: var(--glass-bg);
+                backdrop-filter: blur(10px);
+                height: var(--nav-height);
+                box-shadow: 0 -2px 10px rgba(0, 243, 255, 0.2);
+                z-index: 10;
+            }
+
+            .nav-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: var(--neon-blue);
+                width: 100%;
+                height: 100%;
+                padding: var(--spacing-xs);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+            }
+
+            .nav-item.active {
+                background-color: rgba(0, 243, 255, 0.1);
+                box-shadow: inset 0 0 5px var(--neon-blue);
+            }
+
+            .nav-item::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                width: 0;
+                height: 2px;
+                background-color: var(--neon-blue);
+                transition: width 0.3s ease;
+            }
+
+            .nav-item:hover::after {
+                width: 100%;
+            }
+
+            .nav-icon {
+                font-size: 1.2rem;
+                margin-bottom: 4px;
+                text-shadow: var(--text-glow);
+            }
+
+            .nav-text {
+                font-size: var(--font-size-xs);
+            }
+
+            #desktop-input {
+                display: none;
+            }
+
+            #mobile-input {
+                display: flex;
+            }
+        }
+
+        .vuln-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-md) 0;
+            font-size: var(--font-size-sm);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .vuln-table th, .vuln-table td {
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            text-align: left;
+            background-color: rgba(10, 25, 47, 0.3);
+        }
+
+        .vuln-table th {
+            background-color: rgba(0, 243, 255, 0.1);
+            color: var(--neon-blue);
+            position: sticky;
+            top: 0;
+            font-weight: bold;
+        }
+
+        .vuln-table tr:hover td {
+            background-color: rgba(0, 243, 255, 0.05);
+        }
+
+        .scan-animation {
+            background: linear-gradient(
+                to bottom right,
+                transparent 0%,
+                rgba(0, 243, 255, 0.1) 25%,
+                rgba(0, 243, 255, 0.3) 50%,
+                rgba(0, 243, 255, 0.1) 75%,
+                transparent 100%
+            );
+            background-size: 200% 200%;
+            animation: scan 2s linear infinite;
+            height: 20px;
+            margin: var(--spacing-xs) 0;
+            border: 1px solid var(--neon-blue);
+            border-radius: 3px;
+            box-shadow: 0 0 3px var(--neon-blue);
+        }
+
+        .terminal-line {
+            margin: var(--spacing-xs) 0;
+            line-height: 1.5;
+            font-size: var(--font-size-sm);
+            position: relative;
+            padding-left: 4px;
+        }
+
+        .terminal-line::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background-color: var(--neon-blue);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .terminal-line:hover::before {
+            opacity: 0.5;
+        }
+
+        .command-output {
+            margin-top: var(--spacing-xs);
+            padding-left: var(--spacing-md);
+            border-left: 2px solid var(--neon-green);
+            margin-left: 4px;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin: var(--spacing-xs) 0;
+            font-size: var(--font-size-sm);
+            transition: all 0.2s ease;
+            padding: 4px;
+            border-radius: 3px;
+        }
+
+        .metric:hover {
+            background-color: rgba(0, 243, 255, 0.05);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted var(--neon-blue);
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: rgba(10, 25, 47, 0.9);
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+            text-align: center;
+            padding: var(--spacing-xs);
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: var(--font-size-sm);
+            border-radius: 4px;
+            box-shadow: 0 0 5px var(--neon-blue);
+            backdrop-filter: blur(5px);
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: var(--font-size-xs);
+            font-weight: bold;
+            margin-right: var(--spacing-xs);
+            border: 1px solid currentColor;
+        }
+
+        .tag.critical { 
+            color: var(--neon-pink); 
+            background-color: rgba(255, 0, 228, 0.1);
+            box-shadow: 0 0 3px var(--neon-pink);
+        }
+
+        .tag.high { 
+            color: #ff7d3b; 
+            background-color: rgba(255, 125, 59, 0.1);
+            box-shadow: 0 0 3px #ff7d3b;
+        }
+
+        .tag.medium { 
+            color: #fff35c; 
+            background-color: rgba(255, 243, 92, 0.1);
+            box-shadow: 0 0 3px #fff35c;
+        }
+
+        .tag.low { 
+            color: var(--neon-blue); 
+            background-color: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 3px var(--neon-blue);
+        }
+
+        .collapse-panel {
+            margin: var(--spacing-md) 0;
+            border: 1px solid var(--neon-blue);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 0 3px var(--neon-blue);
+            transition: all 0.3s ease;
+        }
+
+        .collapse-panel:hover {
+            box-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+        }
+
+        .collapse-header {
+            padding: var(--spacing-sm);
+            background-color: rgba(0, 243, 255, 0.1);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            font-weight: bold;
+        }
+
+        .collapse-header:hover {
+            background-color: rgba(0, 243, 255, 0.15);
+        }
+
+        .collapse-content {
+            padding: var(--spacing-md);
+            display: none;
+            background-color: rgba(10, 25, 47, 0.3);
+        }
+
+        .collapse-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .port-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: var(--spacing-xs);
+            box-shadow: 0 0 3px currentColor;
+        }
+
+        .port-status.open { background-color: var(--neon-green); color: var(--neon-green); }
+        .port-status.closed { background-color: #ff4d4d; color: #ff4d4d; }
+        .port-status.filtered { background-color: #fff35c; color: #fff35c; }
+
+        .system-status {
+            background-color: rgba(0, 243, 255, 0.05);
+            border-left: 3px solid var(--neon-blue);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .vulnerability-section {
+            background-color: rgba(255, 0, 228, 0.05);
+            border-left: 3px solid var(--neon-pink);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .resource-monitor {
+            background-color: rgba(0, 255, 102, 0.05);
+            border-left: 3px solid var(--neon-green);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .tool-btn {
+            background-color: rgba(0, 243, 255, 0.1);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: var(--spacing-sm);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            text-align: center;
+            transition: all 0.2s ease;
+            min-height: var(--touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 3px var(--neon-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .tool-btn:hover {
+            background-color: rgba(0, 243, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+        }
+
+        .tool-btn:hover::before {
+            left: 100%;
+        }
+
+        .tool-btn:active {
+            transform: translateY(0);
+        }
+
+        .cmd-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-left: var(--spacing-xs);
+        }
+
+        .cmd-btn {
+            width: var(--touch-target);
+            height: var(--touch-target);
+            border-radius: 50%;
+            background-color: rgba(0, 255, 102, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 3px var(--neon-green);
+        }
+
+        .cmd-btn:hover {
+            background-color: rgba(0, 255, 102, 0.2);
+            box-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green);
+            transform: scale(1.1);
+        }
+
+        .cmd-btn:active {
+            transform: scale(1);
+        }
+
+        .ai-suggestion {
+            border-left: 2px solid var(--neon-purple);
+            padding-left: var(--spacing-sm);
+            margin: var(--spacing-sm) 0;
+            font-style: italic;
+            color: var(--neon-purple);
+            animation: fadeIn 1s ease;
+        }
+
+        .hologram {
+            position: relative;
+            perspective: 1000px;
+            margin: var(--spacing-md) 0;
+            height: 180px;
+            border: 1px solid var(--neon-blue);
+            border-radius: 6px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .hologram-content {
+            position: absolute; 
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: rotate 15s linear infinite;
+        }
+
+        .hologram-layer {
+            position: absolute;
+            width: inherit;
+            height: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            opacity: 0.7;
+        }
+
+        .hologram-layer:nth-child(1) { transform: rotateY(0deg) translateZ(80px); }
+        .hologram-layer:nth-child(2) { transform: rotateY(60deg) translateZ(80px); }
+        .hologram-layer:nth-child(3) { transform: rotateY(120deg) translateZ(80px); }
+        .hologram-layer:nth-child(4) { transform: rotateY(180deg) translateZ(80px); }
+        .hologram-layer:nth-child(5) { transform: rotateY(240deg) translateZ(80px); }
+        .hologram-layer:nth-child(6) { transform: rotateY(300deg) translateZ(80px); }
+
+        @keyframes rotate {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        .hologram-node {
+            width: 12px;
+            height: 12px;
+            background-color: var(--neon-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+            position: absolute;
+            animation: pulse 3s infinite;
+        }
+
+        .hologram-link {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            transform-origin: left center;
+            box-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .voice-command-btn {
+            background: none;
+            border: none;
+            color: var(--neon-green);
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 8px;
+            transition: all 0.2s ease;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        .voice-command-btn:hover {
+            transform: scale(1.2);
+            text-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green);
+        }
+
+        .command-suggestions {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(10, 25, 47, 0.9);
+            border: 1px solid var(--neon-green);
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            max-height: 150px;
+            overflow-y: auto;
+            box-shadow: 0 -2px 5px var(--neon-green);
+            z-index: 5;
+            display: none;
+        }
+
+        .command-suggestions.active {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(0, 255, 102, 0.2);
+        }
+
+        .suggestion-item:hover {
+            background-color: rgba(0, 255, 102, 0.1);
+            padding-left: 15px;
+        }
+
+        .suggestion-item.highlighted {
+            background-color: rgba(0, 255, 102, 0.15);
+            border-left: 2px solid var(--neon-green);
+        }
+
+        .scan-3d-view {
+            width: 100%;
+            height: 150px;
+            border: 1px solid var(--neon-purple);
+            border-radius: 6px;
+            margin: var(--spacing-md) 0;
+            box-shadow: 0 0 5px var(--neon-purple);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyberpunk-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            margin: var(--spacing-md) 0;
+            position: relative;
+        }
+
+        .cyberpunk-divider::before, .cyberpunk-divider::after {
+            content: '◈';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--neon-blue);
+        }
+
+        .cyberpunk-divider::before { left: 0; }
+        .cyberpunk-divider::after { right: 0; }
+
+        #voice-status {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 25, 47, 0.9);
+            border: 1px solid var(--neon-green);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: var(--font-size-xs);
+            color: var(--neon-green);
+            box-shadow: 0 0 5px var(--neon-green);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        #voice-status.active {
+            opacity: 1;
+        }
+
+        @media (max-width: 576px) {
+            .vuln-table th:nth-child(4), 
+            .vuln-table td:nth-child(4) {
+                display: none;
+            }
+            
+            .tool-btn {
+                font-size: var(--font-size-xs);
+                padding: var(--spacing-xs);
+            }
+            
+            .hologram {
+                height: 120px;
+            }
+            
+            .cmd-btn {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        .loading-animation {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 255, 102, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--neon-green);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .ai-powered {
+            display: inline-block;
+            font-size: var(--font-size-xs);
+            color: var(--neon-purple);
+            margin-left: 8px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+    </style>
+</head>
+<body>
+    <div id="bg-container"></div>
+    
+    <div class="app-container">
+        <header class="header">
+            <div>Neon渗透测试控制台 v6.0</div>
+            <div id="system-time">2023-10-05 14:32:45</div>
+        </header>
+        
+        <main class="main-terminal" id="main-terminal">
+            <div class="terminal-line system">// 神经连接已建立... 欢迎使用Neon渗透测试系统 //</div>
+            <div class="terminal-line system">// 安全协议: 量子加密 (AES-512 + ECC-384) //</div>
+            <div class="terminal-line system">// 访问级别: ROOT (最高权限) //</div>
+            <div class="terminal-line system">// 会话ID: NEON-${Math.random().toString(36).substr(2, 10).toUpperCase()} //</div>
+            
+            <div class="terminal-line info">&gt; 初始化神经核心模块...</div>
+            <div class="scan-animation"></div>
+            <div class="terminal-line success">√ 量子日志服务已启动</div>
+            <div class="terminal-line success">√ 全息监控模块已加载</div>
+            <div class="terminal-line success">√ 神经加密模块已激活</div>
+            <div class="terminal-line success">√ 漏洞数据库已同步 (CVE-2023.Q4更新)</div>
+            <div class="terminal-line success">√ AI渗透助手已上线 (NeonGPT v2.1)</div>
+            <div class="terminal-line success">√ 三维网络映射引擎初始化完成</div>
+            <div class="terminal-line warning">! 系统提示: 检测到5个高风险攻击向量</div>
+            
+            <div class="terminal-line info">&gt; 正在分析网络数据流...</div>
+            <div class="terminal-line info">协议分布: TCP(68%) | UDP(22%) | ICMP(8%) | 其他(2%)</div>
+            <div class="terminal-line info">流量来源: 本地(72%) | 远程(28%)</div>
+            <div class="terminal-line success">√ 流量分析完成: 检测到3个可疑活动节点</div>
+            
+            <div class="hologram" id="network-hologram">
+                <div class="hologram-content">
+                    <div class="hologram-layer"></div>
+                    <div class="hologram-layer"></div>
+                    <div class="hologram-layer"></div>
+                    <div class="hologram-layer"></div>
+                    <div class="hologram-layer"></div>
+                    <div class="hologram-layer"></div>
+                </div>
+            </div>
+            
+            <div class="terminal-line info">&gt; 最近安全事件:</div>
+            <div class="terminal-line info">[14:28:12] 防火墙拦截: 185.234.12.45:4444 <span class="tag critical">SQL注入</span></div>
+            <div class="terminal-line info">[14:25:07] 认证成功: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2746434a4e4967161e150916111f09160912">[email&#160;protected]</a> <span class="tag success">授权访问</span></div>
+            <div class="terminal-line info">[14:19:33] 认证失败: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="402735253334007270736e7178796e75766e7772">[email&#160;protected]</a> <span class="tag warning">3次尝试</span></div>
+            <div class="terminal-line info">[14:15:42] 检测到端口扫描: 45.33.12.154 <span class="tag high">可疑活动</span></div>
+            <div class="terminal-line info">[14:10:21] 系统更新完成 - 量子补丁已应用 <span class="tag success">安全</span></div>
+            
+            <div class="terminal-line info">&gt; 输入 <span class="warning">help</span>显示所有可用命令</div>
+            <div class="ai-suggestion">AI助手: 尝试输入 "scan target.com" 开始网络扫描</div>
+            
+            <div class="terminal-line prompt">neon@pentest:~#</div>
+        </main>
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="status-card resource-monitor">
+                <h3>神经资源监控</h3>
+                <div class="metric">CPU使用率: <span id="cpu-usage" class="info">62%</span></div>
+                <div class="progress-container">
+                    <div id="cpu-bar" class="progress-bar" style="width: 62%"></div>
+                </div>
+                
+                <div class="metric">内存使用: <span id="mem-usage" class="info">48%</span></div>
+                <div class="progress-container">
+                    <div id="mem-bar" class="progress-bar" style="width: 48%"></div>
+                </div>
+                
+                <div class="metric">量子磁盘: <span id="disk-usage" class="info">24%</span></div>
+                <div class="progress-container">
+                    <div id="disk-bar" class="progress-bar" style="width: 24%"></div>
+                </div>
+                
+                <div class="metric">网络吞吐: <span id="net-usage" class="info">18Mbps</span></div>
+                <div class="progress-container">
+                    <div id="net-bar" class="progress-bar" style="width: 24%"></div>
+                </div>
+            </div>
+            
+            <div class="status-card system-status">
+                <h3>网络节点 (12)</h3>
+                <ul class="process-list">
+                    <li>192.168.1.1 <span class="tag low">网关</span></li>
+                    <li>192.168.1.5 <span class="tag medium">工作站</span></li>
+                    <li>192.168.1.10 <span class="tag high">服务器</span></li>
+                    <li>192.168.1.15 <span class="tag low">打印机</span></li>
+                    <li class="critical"><span class="critical">192.168.1.20</span> <span class="tag critical">NAS存储</span></li>
+                </ul>
+            </div>
+            
+            <div class="status-card vulnerability-section">
+                <h3>神经攻击向量分析</h3>
+                <div class="metric">SQL注入: <span class="critical-value">17次</span></div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 85%; background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);"></div>
+                </div>
+                
+                <div class="metric">XSS跨站脚本: <span class="critical-value">12次</span></div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 60%; background: linear-gradient(90deg, transparent, #ff7d3b, transparent);"></div>
+                </div>
+                
+                <div class="metric">命令注入: <span class="critical-value">8次</span></div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 40%; background: linear-gradient(90deg, transparent, #fff35c, transparent);"></div>
+                </div>
+                
+                <div class="metric">文件上传漏洞: <span class="critical-value">5次</span></div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 25%; background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);"></div>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>神经工具矩阵</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <button class="tool-btn" onclick="runQuickCommand('nmap -sV -O {target}')">量子扫描</button>
+                    <button class="tool-btn" onclick="runQuickCommand('msfconsole -x {exploit}')">神经渗透</button>
+                    <button class="tool-btn" onclick="runQuickCommand('sqlmap -u {url}')">SQL注入</button>
+                    <button class="tool-btn" onclick="runQuickCommand('hydra -L user.txt -P pass.txt {target}')">密码破解</button>
+                    <button class="tool-btn" onclick="runQuickCommand('john --wordlist=rockyou.txt {hash}')">哈希破解</button>
+                    <button class="tool-btn" onclick="runQuickCommand('nikto -h {target}')">Web扫描</button>
+                </div>
+            </div>
+            
+            <div class="status-card system-status">
+                <h3>AI渗透助手</h3>
+                <div class="metric">漏洞预测准确率: <span class="success">92.7%</span></div>
+                <div class="metric">利用成功率: <span class="success">86.3%</span></div>
+                <div class="metric">威胁识别速度: <span class="success">0.42秒</span></div>
+                <div style="margin-top: 10px; text-align: center;">
+                    <button class="tool-btn" style="width: 100%; background-color: rgba(191, 0, 255, 0.1); border-color: var(--neon-purple); color: var(--neon-purple); box-shadow: 0 0 3px var(--neon-purple);" onclick="showAISuggestion()">获取攻击建议</button>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>最近扫描历史</h3>
+                <ul class="process-list" id="scan-history">
+                    <li>
+                        <span class="tooltip">http://test.com<span class="tooltiptext">2023-10-05 14:32:45</span></span>
+                        <span class="tag high">12个漏洞</span>
+                    </li>
+                    <li>
+                        <span class="tooltip">192.168.1.10<span class="tooltiptext">2023-10-05 13:15:22</span></span>
+                        <span class="tag medium">5个漏洞</span>
+                    </li>
+                    <li>
+                        <span class="tooltip">https://example.org<span class="tooltiptext">2023-10-05 11:08:47</span></span>
+                        <span class="tag low">2个漏洞</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        
+        <div class="command-input" id="desktop-input">
+            <span class="prompt">neon@pentest:~#</span>
+            <input type="text" id="cmd-input" autocomplete="off" placeholder="输入命令或使用语音控制...">
+            <span class="cursor"></span>
+            <div class="command-suggestions" id="command-suggestions"></div>
+            <div class="cmd-actions">
+                <button class="cmd-btn" id="history-btn" title="命令历史">⇅</button>
+                <button class="cmd-btn" id="ai-btn" title="AI辅助">AI</button>
+                <button class="cmd-btn" id="voice-btn" title="语音命令">🎤</button>
+            </div>
+            <div id="voice-status">正在聆听...</div>
+        </div>
+        
+        <div class="floating-input" id="mobile-input" style="display:none;">
+            <span class="prompt">neon@pentest:~#</span>
+            <input type="text" id="mobile-cmd-input" autocomplete="off" placeholder="输入命令...">
+            <span class="cursor"></span>
+            <div class="cmd-actions">
+                <button class="cmd-btn" id="mobile-ai-btn" title="AI辅助">AI</button>
+                <button class="cmd-btn" id="mobile-voice-btn" title="语音命令">🎤</button>
+            </div>
+        </div>
+        
+        <div class="bottom-nav" id="bottom-nav" style="display:none;">
+            <div class="nav-item active" id="home-nav" onclick="switchView('home')">
+                <div class="nav-icon">⌂</div>
+                <div class="nav-text">首页</div>
+            </div>
+            <div class="nav-item" id="scan-nav" onclick="switchView('scan')">
+                <div class="nav-icon">🔍</div>
+                <div class="nav-text">扫描</div>
+            </div>
+            <div class="nav-item" id="tools-nav" onclick="switchView('tools')">
+                <div class="nav-icon">🛠️</div>
+                <div class="nav-text">工具</div>
+            </div>
+            <div class="nav-item" id="network-nav" onclick="switchView('network')">
+                <div class="nav-icon">🌐</div>
+                <div class="nav-text">网络</div>
+                </div>
+            <div class="nav-item" id="menu-nav" onclick="toggleSidebar()">
+                <div class="nav-icon">☰</div>
+                <div class="nav-text">菜单</div>
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // 初始化3D背景
+        let scene, camera, renderer;
+        let particles = [];
+        
+        function init3DBackground() {
+            if (!window.THREE) return;
+            
+            const container = document.getElementById('bg-container');
+            
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setClearColor(0x000000, 0);
+            container.appendChild(renderer.domElement);
+            
+            // 创建粒子几何体
+            const geometry = new THREE.BufferGeometry();
+            const particleCount = 150;
+            const positions = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount * 3; i++) {
+                positions[i] = (Math.random() - 0.5) * 10;
+            }
+            
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            
+            // 创建粒子材质
+            const material = new THREE.PointsMaterial({
+                color: 0x00f3ff,
+                size: 0.05,
+                transparent: true,
+                opacity: 0.7,
+                blending: THREE.AdditiveBlending
+            });
+            
+            // 创建粒子系统
+            const particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+            
+            // 创建线条
+            const lineGeometry = new THREE.BufferGeometry();
+            const linePositions = new Float32Array(20 * 3 * 2);
+            
+            for (let i = 0; i < 20 * 3 * 2; i += 6) {
+                linePositions[i] = (Math.random() - 0.5) * 10;
+                linePositions[i + 1] = (Math.random() - 0.5) * 10;
+                linePositions[i + 2] = (Math.random() - 0.5) * 10;
+                linePositions[i + 3] = (Math.random() - 0.5) * 10;
+                linePositions[i + 4] = (Math.random() - 0.5) * 10;
+                linePositions[i + 5] = (Math.random() - 0.5) * 10;
+            }
+            
+            lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+            
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: 0x00f3ff,
+                transparent: true,
+                opacity: 0.3,
+                linewidth: 1
+            });
+            
+            for (let i = 0; i < 20; i++) {
+                const line = new THREE.LineSegments(lineGeometry, lineMaterial);
+                scene.add(line);
+                particles.push({ object: line, speed: Math.random() * 0.005 });
+            }
+            
+            camera.position.z = 5;
+            
+            // 动画循环
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                particles.forEach(p => {
+                    p.object.rotation.x += p.speed;
+                    p.object.rotation.y += p.speed;
+                });
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // 窗口大小调整
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth / 2, container.clientHeight / 2);
+            });
+        }
+        
+        // 创建网络全息图
+        function createNetworkHologram() {
+            const hologram = document.getElementById('network-hologram');
+            const layers = hologram.querySelectorAll('.hologram-layer');
+            
+            // 创建节点
+            const nodeCount = 8;
+            const nodes = [];
+            
+            for (let i = 0; i < nodeCount; i++) {
+                const node = document.createElement('div');
+                node.className = 'hologram-node';
+                
+                // 随机位置
+                const x = Math.random() * 90 + 5;
+                const y = Math.random() * 90 + 5;
+                
+                node.style.left = `${x}%`;
+                node.style.top = `${y}%`;
+                
+                nodes.push({ element: node, x, y });
+                
+                // 添加到所有层
+                layers.forEach(layer => {
+                    const clone = node.cloneNode(true);
+                    clone.style.left = `${x}%`;
+                    clone.style.top = `${y}%`;
+                    layer.appendChild(clone);
+                });
+            }
+            
+            // 创建连接
+            layers.forEach(layer => {
+                // 随机连接节点
+                for (let i = 0; i < nodes.length; i++) {
+                    const connections = Math.floor(Math.random() * 3) + 1;
+                    
+                    for (let j = 0; j < connections; j++) {
+                        const targetIndex = (i + Math.floor(Math.random() * (nodes.length - 1)) + 1) % nodes.length;
+                        
+                        if (i !== targetIndex) {
+                            const link = document.createElement('div');
+                            link.className = 'hologram-link';
+                            
+                            const startX = nodes[i].x;
+                            const startY = nodes[i].y;
+                            const endX = nodes[targetIndex].x;
+                            const endY = nodes[targetIndex].y;
+                            
+                            // 计算长度和角度
+                            const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+                            const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+                            
+                            // 设置位置和旋转
+                            link.style.width = `${length}%`;  
+                            link.style.left = `${startX}%`;
+                            link.style.top = `${startY}%`;
+                            link.style.transform = `rotate(${angle}deg)`;
+                            
+                            layer.appendChild(link);
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 页面加载完成后初始化
+        window.addEventListener('load', function() {
+            checkMobileView();
+            initCommandSuggestions();
+            setupEventListeners();
+            initNetworkScanSimulation();
+            
+            // 初始化3D背景和全息图
+            try {
+                init3DBackground();
+            } catch(e) {
+                console.log('3D背景初始化失败:', e);
+            }
+            
+            createNetworkHologram();
+            
+            // 启动AI助手
+            setTimeout(() => {
+                showAISuggestion();
+            }, 5000);
+        });
+        
+        // 检测设备类型并显示相应界面元素
+        function checkMobileView() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('mobile-input').style.display = 'flex';
+                document.getElementById('bottom-nav').style.display = 'flex';
+                document.getElementById('desktop-input').style.display = 'none';
+            } else {
+                document.getElementById('mobile-input').style.display = 'none';
+                document.getElementById('bottom-nav').style.display = 'none';
+                document.getElementById('desktop-input').style.display = 'flex';
+            }
+        }
+        
+        // 监听窗口大小变化，动态调整视图
+        window.addEventListener('resize', checkMobileView);
+        
+        // 侧边栏切换显示
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+        
+        // 底部导航切换视图
+        function switchView(view) {
+            // 重置所有导航项状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 激活当前导航项
+            document.getElementById(`${view}-nav`).classList.add('active');
+            
+            // 根据选择的视图显示不同内容
+            switch(view) {
+                case 'home':
+                    // 显示主终端界面
+                    document.querySelector('.main-terminal').style.display = 'flex';
+                    break;
+                case 'scan':
+                    // 快速进入扫描模式
+                    const input = window.innerWidth <= 768 ? 
+                        document.getElementById('mobile-cmd-input') : 
+                        document.getElementById('cmd-input');
+                    input.value = 'scan ';
+                    input.focus();
+                    break;
+                case 'tools':
+                    // 显示工具列表
+                    toggleSidebar();
+                    break;
+                case 'network':
+                    // 显示网络拓扑
+                    addTerminalLine('> 显示三维网络拓扑图', 'info');
+                    document.getElementById('network-hologram').style.display = 'block';
+                    break;
+            }
+        }
+        
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 命令输入框事件
+            const desktopInput = document.getElementById('cmd-input');
+            const mobileInput = document.getElementById('mobile-cmd-input');
+            
+            desktopInput.addEventListener('input', handleCommandInput);
+            mobileInput.addEventListener('input', handleCommandInput);
+            
+            desktopInput.addEventListener('keydown', handleKeyDown);
+            mobileInput.addEventListener('keydown', handleKeyDown);
+            
+            // AI按钮事件
+            document.getElementById('ai-btn').addEventListener('click', showAISuggestion);
+            document.getElementById('mobile-ai-btn').addEventListener('click', showAISuggestion);
+            
+            // 语音命令按钮事件
+            document.getElementById('voice-btn').addEventListener('click', toggleVoiceCommand);
+            document.getElementById('mobile-voice-btn').addEventListener('click', toggleVoiceCommand);
+            
+            // 命令历史按钮事件
+            document.getElementById('history-btn').addEventListener('click', showCommandHistory);
+        }
+        
+        // 命令建议系统
+        let currentSuggestionIndex = -1;
+        const commandHistory = [];
+        let historyIndex = -1;
+        
+        const commandDatabase = [
+            'scan [目标IP/URL] - 扫描目标系统漏洞',
+            'brute [目标] - 暴力破解认证',
+            'exploit [漏洞ID] [目标] - 利用指定漏洞',
+            'nmap [目标] - 高级端口扫描',
+            'sqlmap -u [URL] - SQL注入检测',
+            'msfconsole - 启动Metasploit控制台',
+            'netstat - 显示网络连接状态',
+            'arp-scan - 扫描局域网设备',
+            'whois [域名] - 查询域名信息',
+            'dig [域名] - DNS查询',
+            'traceroute [目标] - 跟踪路由路径',
+            'hydra -L user.txt -P pass.txt [目标] - 多协议破解',
+            'john --wordlist=rockyou.txt [哈希文件] - 哈希破解',
+            'nikto -h [目标] - Web服务器扫描',
+            'wireshark - 启动数据包捕获',
+            'ai-analyze [目标] - AI漏洞分析',
+            'status - 显示系统状态',
+            'logs - 查看系统日志',
+            'processes - 显示进程列表',
+            'clear - 清空终端',
+            'help - 显示帮助信息'
+        ];
+        
+        // 初始化命令建议
+        function initCommandSuggestions() {
+            const suggestionsContainer = document.getElementById('command-suggestions');
+            
+            // 点击建议项自动填充
+            suggestionsContainer.addEventListener('click', function(e) {
+                const item = e.target.closest('.suggestion-item');
+                if (item) {
+                    const input = document.activeElement.id === 'mobile-cmd-input' ? 
+                        document.getElementById('mobile-cmd-input') : 
+                        document.getElementById('cmd-input');
+                    
+                    input.value = item.dataset.command.split(' ')[0];
+                    input.focus();
+                    suggestionsContainer.classList.remove('active');
+                    currentSuggestionIndex = -1;
+                }
+            });
+        }
+        
+        // 处理命令输入
+        function handleCommandInput(e) {
+            const input = e.target;
+            const value = input.value.trim();
+            const suggestionsContainer = document.getElementById('command-suggestions');
+            
+            if (value.length < 2) {
+                suggestionsContainer.classList.remove('active');
+                return;
+            }
+            
+            // 过滤匹配的命令
+            const matches = commandDatabase.filter(cmd => 
+                cmd.toLowerCase().startsWith(value.toLowerCase())
+            );
+            
+            if (matches.length > 0) {
+                suggestionsContainer.innerHTML = '';
+                matches.forEach((cmd, index) => {
+                    const item = document.createElement('div');
+                    item.className = `suggestion-item ${index === 0 ? 'highlighted' : ''}`;
+                    item.dataset.command = cmd;
+                    
+                    // 命令高亮显示
+                    const cmdName = cmd.split(' ')[0];
+                    const cmdArgs = cmd.substring(cmdName.length);
+                    
+                    item.innerHTML = `<strong>${cmdName}</strong>${cmdArgs}`;
+                    suggestionsContainer.appendChild(item);
+                });
+                
+                suggestionsContainer.classList.add('active');
+                currentSuggestionIndex = 0;
+            } else {
+                suggestionsContainer.classList.remove('active');
+            }
+        }
+        
+        // 处理键盘事件
+        function handleKeyDown(e) {
+            const suggestionsContainer = document.getElementById('command-suggestions');
+            const input = e.target;
+            
+            // 处理方向键选择建议
+            if (suggestionsContainer.classList.contains('active')) {
+                const items = suggestionsContainer.querySelectorAll('.suggestion-item');
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    currentSuggestionIndex = (currentSuggestionIndex + 1) % items.length;
+                    updateSuggestionHighlights(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    currentSuggestionIndex = (currentSuggestionIndex - 1 + items.length) % items.length;
+                    updateSuggestionHighlights(items);
+                } else if (e.key === 'Tab') {
+                    e.preventDefault();
+                    if (currentSuggestionIndex >= 0 && currentSuggestionIndex < items.length) {
+                        const selectedCmd = items[currentSuggestionIndex].dataset.command.split(' ')[0];
+                        input.value = selectedCmd;
+                    }
+                } else if (e.key === 'Escape') {
+                    suggestionsContainer.classList.remove('active');
+                    currentSuggestionIndex = -1;
+                }
+            }
+            
+            // 处理命令历史
+            if (e.key === 'ArrowUp' && !suggestionsContainer.classList.contains('active')) {
+                if (commandHistory.length > 0) {
+                    e.preventDefault();
+                    
+                    if (historyIndex === -1) {
+                        historyIndex = commandHistory.length - 1;
+                    } else if (historyIndex > 0) {
+                        historyIndex--;
+                    }
+                    
+                    input.value = commandHistory[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown' && !suggestionsContainer.classList.contains('active') && historyIndex !== -1) {
+                e.preventDefault();
+                
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    input.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = -1;
+                    input.value = '';
+                }
+            }
+            
+            // 处理回车执行命令
+            if (e.key === 'Enter') {
+                const command = input.value.trim();
+                if (command) {
+                    // 添加到命令历史
+                    if (commandHistory.indexOf(command) === -1) {
+                        commandHistory.push(command);
+                        if (commandHistory.length > 50) {
+                            commandHistory.shift();
+                        }
+                    }
+                    
+                    historyIndex = -1;
+                    
+                    // 执行命令
+                    executeCommand(command);
+                    
+                    // 清空输入框
+                    input.value = '';
+                    
+                    // 隐藏建议
+                    suggestionsContainer.classList.remove('active');
+                }
+            }
+        }
+        
+        // 更新建议高亮
+        function updateSuggestionHighlights(items) {
+            items.forEach((item, index) => {
+                if (index === currentSuggestionIndex) {
+                    item.classList.add('highlighted');
+                } else {
+                    item.classList.remove('highlighted');
+                }
+            });
+        }
+        
+        // 显示命令历史
+        function showCommandHistory() {
+            addTerminalLine('> 最近使用的命令:', 'info');
+            
+            if (commandHistory.length === 0) {
+                addTerminalLine('  暂无命令历史', 'info');
+                return;
+            }
+            
+            const recentCommands = commandHistory.slice(-5).reverse();
+            
+            recentCommands.forEach((cmd, index) => {
+                addTerminalLine(`  ${index + 1}. ${cmd}`, 'info');
+            });
+            
+            addTerminalLine('> 按上下箭头可浏览历史命令', 'info');
+        }
+        
+        // 执行命令
+        function executeCommand(command) {
+            // 添加命令到终端
+            addTerminalLine(`<span class="prompt">neon@pentest:~#</span> ${command}`);
+            
+            // 解析命令和参数
+            const parts = command.split(' ');
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+            
+            // 根据命令类型执行不同操作
+            switch(cmd) {
+                case 'scan':
+                    handleScanCommand(args);
+                    break;
+                case 'ai-analyze':
+                case 'ai':
+                    handleAICommand(args);
+                    break;
+                case 'help':
+                    showHelp();
+                    break;
+                case 'status':
+                    showSystemStatus();
+                    break;
+                case 'clear':
+                    clearTerminal();
+                    break;
+                case 'netstat':
+                    showNetstat();
+                    break;
+                case 'logs':
+                    showLogs();
+                    break;
+                case 'processes':
+                    showProcesses();
+                    break;
+                default:
+                    // 未知命令
+                    addTerminalLine(`<span class="error">错误: 未知命令 '${cmd}'</span>`, 'error');
+                    addTerminalLine(`<span class="info">输入 'help' 查看可用命令</span>`, 'info');
+                    
+                    // AI建议相似命令
+                    setTimeout(() => {
+                        const similarCommands = findSimilarCommands(cmd);
+                        if (similarCommands.length > 0) {
+                            addTerminalLine(`<span class="ai-suggestion">AI助手: 您是否想输入 '${similarCommands[0]}'?</span>`, 'info');
+                        }
+                    }, 1000);
+                    break;
+            }
+        }
+        
+        // 查找相似命令
+        function findSimilarCommands(input) {
+            return commandDatabase
+                .map(cmd => cmd.split(' ')[0])
+                .filter(cmd => cmd.includes(input) || input.includes(cmd) || 
+                             levenshteinDistance(cmd, input) < 3)
+                .slice(0, 3);
+        }
+        
+        // Levenshtein距离算法（计算字符串相似度）
+        function levenshteinDistance(a, b) {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
+            
+            const matrix = [];
+            
+            for (let i = 0; i <= b.length; i++) {
+                matrix[i] = [i];
+            }
+            
+            for (let j = 0; j <= a.length; j++) {
+                matrix[0][j] = j;
+            }
+            
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+                        );
+                    }
+                }
+            }
+            
+            return matrix[b.length][a.length];
+        }
+        
+        // 处理扫描命令
+        function handleScanCommand(args) {
+            if (args.length === 0) {
+                addTerminalLine(`<span class="error">错误: 缺少目标参数</span>`, 'error');
+                addTerminalLine(`<span class="info">用法: scan [目标IP/URL]</span>`, 'info');
+                return;
+            }
+            
+            const target = args[0];
+            addTerminalLine(`> 启动量子扫描引擎: <span class="warning">${target}</span>`, 'info');
+            
+            // 显示扫描动画
+            const scanDiv = document.createElement('div');
+            scanDiv.className = 'scan-animation';
+            addTerminalLine(scanDiv.outerHTML);
+            
+            // 模拟扫描进度
+            simulateScanProgress(target);
+        }
+        
+        // 模拟扫描进度
+        function simulateScanProgress(target) {
+            const steps = [
+                '初始化扫描参数', 
+                '建立量子隧道连接',
+                '端口状态检测',
+                '服务版本识别',
+                '操作系统指纹识别',
+                '漏洞数据库匹配',
+                '攻击向量分析',
+                '生成扫描报告'
+            ];
+            
+            let stepIndex = 0;
+            
+            const progressInterval = setInterval(() => {
+                if (stepIndex < steps.length) {
+                    addTerminalLine(`  [${Math.round((stepIndex / steps.length) * 100)}%] ${steps[stepIndex]}`, 'info');
+                    stepIndex++;
+                } else {
+                    clearInterval(progressInterval);
+                    
+                    // 扫描完成，生成结果
+                    setTimeout(() => {
+                        addTerminalLine(`<span class="success">√ 量子扫描完成</span>`, 'success');
+                        
+                        // 生成随机漏洞结果
+                        const portCount = Math.floor(Math.random() * 5) + 3;
+                        const vulnCount = Math.floor(Math.random() * 8) + 2;
+                        
+                        addTerminalLine(`> 发现 <span class="high">${portCount} 个开放端口</span> 和 <span class="critical">${vulnCount} 个漏洞</span>`, 'info');
+                        
+                        // 显示端口扫描结果
+                        addTerminalLine(`> 开放端口:`, 'info');
+                        const portTable = generatePortTable();
+                        addTerminalLine(portTable);
+                        
+                        // 显示漏洞结果
+                        addTerminalLine(`> 漏洞摘要:`, 'info');
+                        const vulnSummary = generateVulnerabilitySummary();
+                        addTerminalLine(vulnSummary);
+                        
+                        // AI分析建议
+                        setTimeout(() => {
+                            addTerminalLine(`<span class="ai-suggestion">AI助手: 建议优先处理 ${vulnSummary.match(/严重/)} 漏洞，可使用 'exploit [漏洞ID] ${target}' 尝试利用</span>`, 'info');
+                        }, 1000);
+                    }, 1000);
+                }
+            }, 1500);
+        }
+        
+        // 生成端口扫描结果表格
+        function generatePortTable() {
+            const ports = [
+                { port: 21, service: 'FTP', status: 'open', version: 'vsftpd 3.0.3' },
+                { port: 22, service: 'SSH', status: 'open', version: 'OpenSSH 7.6p1' },
+                { port: 80, service: 'HTTP', status: 'open', version: 'Apache httpd 2.4.29' },
+                { port: 443, service: 'HTTPS', status: 'open', version: 'nginx 1.14.0' },
+                { port: 3306, service: 'MySQL', status: 'open', version: 'MySQL 5.7.25' },
+                { port: 8080, service: 'HTTP', status: 'open', version: 'Tomcat 9.0.12' },
+                { port: 23, service: 'Telnet', status: 'closed', version: '未知' },
+                { port: 139, service: 'SMB', status: 'filtered', version: '未知' }
+            ];
+            
+            // 随机选择几个端口
+            const shuffledPorts = [...ports].sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 5) + 3);
+            
+            let tableHtml = `<table class="vuln-table"><thead><tr><th>端口</th><th>服务</th><th>状态</th><th>版本</th></tr></thead><tbody>`;
+            
+            shuffledPorts.forEach(port => {
+                const statusClass = port.status === 'open' ? 'success' : port.status === 'closed' ? 'error' : 'warning';
+                const statusText = port.status === 'open' ? '开放' : port.status === 'closed' ? '关闭' : '过滤';
+                
+                tableHtml += `<tr>
+                    <td>${port.port}</td>
+                    <td>${port.service}</td>
+                    <td class="${statusClass}">${statusText}</td>
+                    <td>${port.version}</td>
+                </tr>`;
+            });
+            
+            tableHtml += `</tbody></table>`;
+            
+            return tableHtml;
+        }
+        
+        // 生成漏洞摘要
+        function generateVulnerabilitySummary() {
+            const vulnerabilities = [
+                { type: 'SQL注入', severity: '严重', cve: 'CVE-2023-4567', cvss: 9.8 },
+                { type: '远程代码执行', severity: '严重', cve: 'CVE-2023-1234', cvss: 9.3 },
+                { type: '跨站脚本(XSS)', severity: '高', cve: 'CVE-2023-2345', cvss: 7.5 },
+                { type: '权限提升', severity: '高', cve: 'CVE-2023-3456', cvss: 7.8 },
+                { type: '文件上传漏洞', severity: '高', cve: 'CVE-2023-5678', cvss: 8.1 },
+                { type: 'CSRF', severity: '中', cve: 'CVE-2023-6789', cvss: 6.1 },
+                { type: '目录遍历', severity: '中', cve: 'CVE-2023-7890', cvss: 6.5 },
+                { type: '信息泄露', severity: '低', cve: 'CVE-2023-8901', cvss: 4.3 }
+            ];
+            
+            // 随机选择漏洞
+            const selectedVulns = [...vulnerabilities]
+                .sort(() => 0.5 - Math.random())
+                .slice(0, Math.floor(Math.random() * 4) + 2);
+            
+            let vulnHtml = `<div class="collapse-panel">`;
+            
+            // 按严重程度分组
+            const criticalVulns = selectedVulns.filter(v => v.severity === '严重');
+            const highVulns = selectedVulns.filter(v => v.severity === '高');
+            const mediumVulns = selectedVulns.filter(v => v.severity === '中');
+            const lowVulns = selectedVulns.filter(v => v.severity === '低');
+            
+            // 添加严重漏洞
+            if (criticalVulns.length > 0) {
+                vulnHtml += `
+                <div class="collapse-header">
+                    严重漏洞 <span class="tag critical">${criticalVulns.length}个</span>
+                    <span>▼</span>
+                </div>
+                <div class="collapse-content active">
+                    <table class="vuln-table">
+                        <thead>
+                            <tr>
+                                <th>类型</th>
+                                <th>严重性</th>
+                                <th>CVSS</th>
+                                <th>CVE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${criticalVulns.map(v => `
+                            <tr>
+                                <td>${v.type}</td>
+                                <td class="critical">${v.severity}</td>
+                                <td>${v.cvss}</td>
+                                <td>${v.cve}</td>
+                            </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+            }
+            
+            // 添加高风险漏洞
+            if (highVulns.length > 0) {
+                vulnHtml += `
+                <div class="collapse-header">
+                    高风险漏洞 <span class="tag high">${highVulns.length}个</span>
+                    <span>▼</span>
+                </div>
+                <div class="collapse-content">
+                    <table class="vuln-table">
+                        <thead>
+                            <tr>
+                                <th>类型</th>
+                                <th>严重性</th>
+                                <th>CVSS</th>
+                                <th>CVE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${highVulns.map(v => `
+                            <tr>
+                                <td>${v.type}</td>
+                                <td class="high">${v.severity}</td>
+                                <td>${v.cvss}</td>
+                                <td>${v.cve}</td>
+                            </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+            }
+            
+            vulnHtml += `</div>`;
+            
+            return vulnHtml;
+        }
+        
+        // 处理AI命令
+        function handleAICommand(args) {
+            if (args.length === 0) {
+                showAISuggestion();
+                return;
+            }
+            
+            const target = args[0];
+            addTerminalLine(`> 启动NeonGPT渗透分析: <span class="warning">${target}</span>`, 'info');
+            
+            // 显示AI分析动画
+            const loadingDiv = document.createElement('div');
+            loadingDiv.innerHTML = `<span class="loading-animation"></span> AI正在分析目标系统...`;
+            addTerminalLine(loadingDiv.outerHTML);
+            
+            // 模拟AI分析过程
+            setTimeout(() => {
+                const aiAnalysis = generateAIAnalysis(target);
+                addTerminalLine(`<span class="ai-suggestion">${aiAnalysis}</span>`, 'info');
+            }, 3000);
+        }
+        
+        // 显示AI建议
+        function showAISuggestion() {
+            const suggestions = [
+                '根据网络拓扑分析，192.168.1.20 (NAS存储)存在高风险漏洞，建议优先扫描',
+                '检测到目标系统可能存在Log4j漏洞(CVE-2021-44228)，可尝试使用"exploit CVE-2021-44228 192.168.1.10"进行利用',
+                '推荐使用"ai-analyze http://test.com"获取目标系统的AI安全评估报告',
+                '发现您最近进行了多次SQL注入测试，是否需要启动自动化SQL注入工具?',
+                '系统资源使用率较高，建议优化扫描任务或增加计算节点'
+            ];
+            
+            const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+            addTerminalLine(`<span class="ai-suggestion">AI助手: ${randomSuggestion}</span>`, 'info');
+        }
+        
+        // 生成AI分析结果
+        function generateAIAnalysis(target) {
+            const analyses = [
+                `目标系统${target}的漏洞利用成功率评估: SQL注入(92%) > 远程代码执行(78%) > 权限提升(65%)。推荐优先尝试CVE-2023-1234漏洞利用。`,
+                `神经网络预测${target}存在未知0day漏洞的概率为37%，建议实施深度防御策略并部署行为监控。`,
+                `基于历史渗透数据，${target}所属网段的平均漏洞修复时间为7.2天，可重点关注未及时修复的高危漏洞。`,
+                `量子加密分析显示${target}的SSL/TLS配置存在3个安全缺陷，易受BEAST和CRIME攻击，建议立即更新TLS协议版本。`,
+                `AI社会工程学评估: ${target}的员工对钓鱼攻击的易感性评分为8.3/10，建议开展安全意识培训。`
+            ];
+            
+            return analyses[Math.floor(Math.random() * analyses.length)];
+        }
+        
+        // 显示帮助信息
+        function showHelp() {
+            addTerminalLine(`<span class="warning">=== 神经渗透测试控制台帮助 ===</span>`, 'info');
+            addTerminalLine(`<span class="info">基础命令:</span>`, 'info');
+            
+            const helpCommands = commandDatabase.slice(0, 10);
+            
+            helpCommands.forEach(cmd => {
+                const cmdName = cmd.split(' ')[0];
+                const cmdDesc = cmd.substring(cmd.indexOf('-') + 2);
+                addTerminalLine(`  <span class="warning">${cmdName}</span> - ${cmdDesc}`, 'info');
+            });
+            
+            addTerminalLine(`<span class="info">输入 'help advanced' 查看高级命令</span>`, 'info');
+        }
+        
+        // 显示系统状态
+        function showSystemStatus() {
+            addTerminalLine(`> 神经核心状态: <span class="success">正常运行中</span>`, 'info');
+            addTerminalLine(`  启动时间: 2023-10-05 08:15:32`, 'info');
+            addTerminalLine(`  当前用户: <span class="warning">neon-admin</span> (量子权限)`, 'info');
+            addTerminalLine(`  会话ID: SESS-${Math.random().toString(36).substr(2, 8).toUpperCase()}`, 'info');
+            addTerminalLine(`  活跃连接: ${Math.floor(Math.random() * 20) + 5} 个`, 'info');
+            addTerminalLine(`  安全等级: <span class="success">最高</span> (量子加密启用)`, 'info');
+        }
+        
+        // 清空终端
+        function clearTerminal() {
+            const mainTerminal = document.getElementById('main-terminal');
+            
+            // 保留头部信息
+            const headerLines = mainTerminal.querySelectorAll('.terminal-line:nth-child(-n+10)');
+            const headerHtml = Array.from(headerLines).map(line => line.outerHTML).join('');
+            
+            // 清空并添加头部信息
+            mainTerminal.innerHTML = headerHtml;
+            
+            // 添加提示符
+            addTerminalLine(`<span class="prompt">neon@pentest:~#</span>`);
+        }
+        
+        // 显示网络连接状态
+        function showNetstat() {
+            addTerminalLine(`> 活动网络连接:`, 'info');
+            
+            const connections = [
+                { proto: 'TCP', local: '192.168.1.5:80', remote: '203.0.113.45:5678', state: 'ESTABLISHED' },
+                { proto: 'TCP', local: '192.168.1.5:443', remote: '198.51.100.12:1234', state: 'ESTABLISHED' },
+                { proto: 'UDP', local: '192.168.1.5:53', remote: '*:*', state: 'LISTEN' },
+                { proto: 'TCP', local: '192.168.1.5:22', remote: '172.16.0.8:9876', state: 'ESTABLISHED' },
+                { proto: 'TCP', local: '192.168.1.5:3389', remote: '10.0.0.15:6543', state: 'TIME_WAIT' },
+                { proto: 'UDP', local: '192.168.1.5:67', remote: '*:*', state: 'LISTEN' }
+            ];
+            
+            connections.forEach(conn => {
+                const stateClass = conn.state === 'ESTABLISHED' ? 'success' : conn.state === 'LISTEN' ? 'info' : 'warning';
+                addTerminalLine(`  ${conn.proto} ${conn.local} → ${conn.remote} (<span class="${stateClass}">${conn.state}</span>)`, 'info');
+            });
+        }
+        
+        // 显示系统日志
+        function showLogs() {
+            addTerminalLine(`> 系统事件日志 (最近10条):`, 'info');
+            
+            const logTypes = ['INFO', 'WARNING', 'ERROR', 'SUCCESS', 'CRITICAL'];
+            const logMessages = [
+                '量子加密模块已同步',
+                '检测到异常网络流量',
+                '漏洞数据库更新失败',
+                '安全补丁已成功应用',
+                '高权限用户登录',
+                '防火墙规则更新',
+                '磁盘空间低于阈值',
+                '远程备份完成',
+                '入侵检测系统触发警报',
+                '系统时间同步完成'
+            ];
+            
+            for (let i = 0; i < 8; i++) {
+                const hour = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+                const minute = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+                const second = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+                const logType = logTypes[Math.floor(Math.random() * logTypes.length)];
+                const logMsg = logMessages[Math.floor(Math.random() * logMessages.length)];
+                
+                const logClass = logType === 'INFO' ? 'info' : 
+                                logType === 'WARNING' ? 'warning' : 
+                                logType === 'ERROR' ? 'error' : 
+                                logType === 'SUCCESS' ? 'success' : 'critical';
+                
+                addTerminalLine(`[${hour}:${minute}:${second}] <span class="${logClass}">${logType}</span>: ${logMsg}`, 'info');
+            }
+        }
+        
+        // 显示进程列表
+        function showProcesses() {
+            addTerminalLine(`> 活跃进程:`, 'info');
+            addTerminalLine(`  PID | 进程名 | CPU% | 内存% | 状态`, 'info');
+            
+            const processes = [
+                { pid: 1248, name: 'neurod', cpu: 8, mem: 4, status: '运行中' },
+                { pid: 3562, name: 'cryptd', cpu: 12, mem: 6, status: '运行中' },
+                { pid: 7821, name: 'logserver', cpu: 5, mem: 3, status: '运行中' },
+                { pid: 2105, name: 'scanner', cpu: 22, mem: 15, status: '运行中' },
+                { pid: 4690, name: 'ai-assist', cpu: 18, mem: 12, status: '运行中' },
+                { pid: 5123, name: 'hologram', cpu: 14, mem: 8, status: '运行中' },
+                { pid: 6782, name: 'quantum', cpu: 9, mem: 5, status: '睡眠中' },
+                { pid: 8901, name: 'updater', cpu: 3, mem: 2, status: '等待中' }
+            ];
+            
+            processes.forEach(p => {
+                const cpuClass = p.cpu > 20 ? 'critical' : p.cpu > 10 ? 'high' : 'info';
+                addTerminalLine(`  ${p.pid} | ${p.name.padEnd(10)} | <span class="${cpuClass}">${p.cpu}%</span> | ${p.mem}% | ${p.status}`, 'info');
+            });
+        }
+        
+        // 添加终端行
+        function addTerminalLine(content, className = '') {
+            const mainTerminal = document.getElementById('main-terminal');
+            const terminalLine = document.createElement('div');
+            
+            if (typeof content === 'string') {
+                terminalLine.className = `terminal-line ${className}`;
+                terminalLine.innerHTML = content;
+            } else {
+                terminalLine = content;
+            }
+            
+            const promptLine = mainTerminal.querySelector('.terminal-line.prompt:last-child');
+            
+            if (promptLine) {
+                mainTerminal.insertBefore(terminalLine, promptLine);
+            } else {
+                mainTerminal.appendChild(terminalLine);
+            }
+            
+            mainTerminal.scrollTop = mainTerminal.scrollHeight;
+            return terminalLine;
+        }
+        
+        // 语音命令功能
+        let isListening = false;
+        let recognition;
+        
+        function toggleVoiceCommand() {
+            if (isListening) {
+                stopVoiceRecognition();
+            } else {
+                startVoiceRecognition();
+            }
+        }
+        
+        function startVoiceRecognition() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                addTerminalLine(`<span class="error">错误: 浏览器不支持语音识别</span>`, 'error');
+                return;
+            }
+            
+            // 创建语音识别对象
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'zh-CN';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            
+            // 显示正在聆听状态
+            const voiceStatus = document.getElementById('voice-status');
+            voiceStatus.classList.add('active');
+            
+            // 语音识别结果处理
+            recognition.onresult = function(event) {
+                const speechResult = event.results[0][0].transcript.trim();
+                addTerminalLine(`> 语音命令识别: <span class="success">${speechResult}</span>`, 'info');
+                
+                // 转换为命令
+                const command = convertSpeechToCommand(speechResult);
+                if (command) {
+                    // 执行命令
+                    executeCommand(command);
+                } else {
+                    addTerminalLine(`<span class="error">无法识别的语音命令</span>`, 'error');
+                }
+                
+                stopVoiceRecognition();
+            };
+            
+            // 识别结束
+            recognition.onend = function(event) {
+                if (isListening) {
+                    recognition.start(); // 持续监听
+                } else {
+                    stopVoiceRecognition();
+                }
+            };
+            
+            // 识别错误
+            recognition.onerror = function(event) {
+                addTerminalLine(`<span class="error">语音识别错误: ${event.error}</span>`, 'error');
+                stopVoiceRecognition();
+            };
+            
+            // 开始识别
+            recognition.start();
+            isListening = true;
+        }
+        
+        function stopVoiceRecognition() {
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            isListening = false;
+            
+            // 隐藏聆听状态
+            const voiceStatus = document.getElementById('voice-status');
+            voiceStatus.classList.remove('active');
+        }
+        
+        // 语音转命令
+        function convertSpeechToCommand(speech) {
+            // 简单的语音命令映射
+            const commandMap = {
+                '扫描': 'scan',
+                '扫描目标': 'scan',
+                '漏洞扫描': 'scan',
+                '端口扫描': 'nmap',
+                'SQL注入': 'sqlmap',
+                '暴力破解': 'brute',
+                '网络状态': 'netstat',
+                '系统状态': 'status',
+                '日志': 'logs',
+                '进程': 'processes',
+                '帮助': 'help',
+                '清空': 'clear',
+                'AI分析': 'ai-analyze',
+                'AI助手': 'ai-analyze'
+            };
+            
+            // 查找匹配的命令
+            for (const [keyword, command] of Object.entries(commandMap)) {
+                if (speech.includes(keyword)) {
+                    // 提取目标参数
+                    const targetMatch = speech.match(/(目标|地址|IP|网址)\s*[:：]?\s*([^\s]+)/);
+                    const target = targetMatch ? targetMatch[2] : '';
+                    
+                    return target ? `${command} ${target}` : command;
+                }
+            }
+            
+            return null;
+        }
+        
+        // 初始化网络扫描模拟
+        function initNetworkScanSimulation() {
+            // 模拟系统资源波动
+            setInterval(simulateResourceUsage, 3000);
+            
+            // 更新系统时间
+            updateSystemTime();
+            setInterval(updateSystemTime, 1000);
+        }
+        
+        // 更新系统时间
+        function updateSystemTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('zh-CN', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit', 
+                hour12: false 
+            }).replace(/\//g, '-');
+            document.getElementById('system-time').textContent = timeString;
+        }
+        
+        // 模拟系统资源波动
+        function simulateResourceUsage() {
+            const cpu = document.getElementById('cpu-usage');
+            const cpuBar = document.getElementById('cpu-bar');
+            const mem = document.getElementById('mem-usage');
+            const memBar = document.getElementById('mem-bar');
+            const disk = document.getElementById('disk-usage');
+            const diskBar = document.getElementById('disk-bar');
+            const net = document.getElementById('net-usage');
+            const netBar = document.getElementById('net-bar');
+            
+            // 小幅度波动当前值
+            let currentCpu = parseInt(cpu.textContent);
+            let currentMem = parseInt(mem.textContent);
+            let currentDisk = parseInt(disk.textContent);
+            
+            currentCpu = Math.max(30, Math.min(90, currentCpu + (Math.random() * 10 - 5)));
+            currentMem = Math.max(20, Math.min(70, currentMem + (Math.random() * 5 - 2.5)));
+            currentDisk = Math.max(10, Math.min(50, currentDisk + (Math.random() * 3 * 0.5)));
+            
+            cpu.textContent = Math.round(currentCpu) + '%';
+            cpuBar.style.width = currentCpu + '%';
+            
+            mem.textContent = Math.round(currentMem) + '%';
+            memBar.style.width = currentMem + '%';
+            
+            disk.textContent = Math.round(currentDisk) + '%';
+            diskBar.style.width = currentDisk + '%';
+            
+            // 随机网络速度
+            const netSpeed = Math.round(Math.random() * 30 + 5);
+            net.textContent = netSpeed + 'Mbps';
+            netBar.style.width = (netSpeed / 75 * Mbps) + '%';
+            
+            // 颜色变化
+            if (currentCpu > 80) {
+                cpu.className = 'critical';
+                cpuBar.style.backgroundColor = 'var(--neon-pink)';
+                cpuBar.style.boxShadow = '0 0 5px var(--neon-pink)';
+            } else if (currentCpu > 60) {
+                cpu.className = 'high';
+                cpuBar.style.backgroundColor = '#ff7d3b';
+                cpuBar.style.boxShadow = '0 0 5px #ff7d3b';
+            } else {
+                cpu.className = 'info';
+                cpuBar.style.backgroundColor = 'var(--neon-blue)';
+                cpuBar.style.boxShadow = '0 0 5px var(--neon-blue)';
+            }
+            
+            if (currentMem > 75) {
+                mem.className = 'critical';
+                memBar.style.backgroundColor = 'var(--neon-pink)';
+                memBar.style.boxShadow = '0 0 5px var(--neon-pink)';
+            } else if (currentMem > 50) {
+                mem.className = 'high';
+                memBar.style.backgroundColor = '#ff7d3b';
+                memBar.style.boxShadow = '0 0 5px #ff7d3b';
+            } else {
+                mem.className = 'info';
+                memBar.style.backgroundColor = 'var(--neon-blue)';
+                memBar.style.boxShadow = '0 0 5px var(--neon-blue)';
+            }
+        }
+    </script>
+</body>
+</html>

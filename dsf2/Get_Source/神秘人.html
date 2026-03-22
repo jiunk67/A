@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>神秘人软件库</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<style>
+		:root {
+			--primary: #405DE6;
+			--secondary: #5851DB;
+			--purple: #833AB4;
+			--pink: #C13584;
+			--red: #E1306C;
+			--orange: #FD1D1D;
+			--yellow: #FCAF45;
+			--gradient: linear-gradient(45deg, var(--primary), var(--secondary), var(--purple), var(--pink), var(--red), var(--orange), var(--yellow));
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+		}
+
+		body {
+			background: #fafafa;
+			color: #262626;
+			position: relative;
+			overflow-x: hidden;
+		}
+
+		body::before {
+			content: "";
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(135deg, rgba(64,93,230,0.1) 0%, rgba(193,53,132,0.1) 100%);
+			z-index: -1;
+			opacity: 0.5;
+		}
+
+		/* 浮动粒子背景 */
+		.particles {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: -1;
+			pointer-events: none;
+		}
+
+		.particle {
+			position: absolute;
+			background: rgba(64,93,230,0.2);
+			border-radius: 50%;
+			animation: float 15s infinite linear;
+		}
+
+		@keyframes float {
+			0% {
+				transform: translateY(0) rotate(0deg);
+				opacity: 1;
+			}
+			100% {
+				transform: translateY(-1000px) rotate(720deg);
+				opacity: 0;
+			}
+		}
+
+		/* 顶部区域 */
+		.header {
+			text-align: center;
+			padding: 30px 20px 20px;
+			position: relative;
+			margin-bottom: 30px;
+		}
+
+		.header::after {
+			content: "";
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 80%;
+			height: 1px;
+			background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+		}
+		
+	/* 头像容器样式 */
+.avatar-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+/* 切换背景按钮样式 */
+.bg-toggle-btn {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    background: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 2;
+    color: #333;
+    overflow: hidden;
+}
+
+.bg-toggle-btn:hover {
+    background: linear-gradient(45deg, var(--primary), var(--pink));
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.bg-toggle-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.bg-toggle-btn i {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.bg-toggle-btn:hover i {
+    transform: scale(1.1);
+}
+
+.btn-text {
+    transition: all 0.3s ease;
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+    .bg-toggle-btn {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+    .bg-toggle-btn .btn-text {
+        display: none;
+    }
+    .bg-toggle-btn i {
+        margin-right: 0;
+    }
+}
+
+/* 动态背景样式 */
+body.dynamic-bg {
+    background-image: url('icon.png');
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+body.dynamic-bg::before {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+		.avatar {
+			width: 100px;
+			height: 100px;
+			border-radius: 50%;
+			object-fit: cover;
+			border: 3px solid white;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+			transition: all 0.3s ease;
+			margin-bottom: 15px;
+		}
+
+		.avatar:hover {
+			transform: scale(1.05);
+			box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+		}
+
+		.title {
+			font-size: 24px;
+			font-weight: 600;
+			color: #262626;
+			margin-bottom: 10px;
+			background: linear-gradient(45deg, var(--primary), var(--pink));
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			display: inline-block;
+		}
+
+		/* 进度条 */
+		.progress-container {
+			width: 90%;
+			max-width: 400px;
+			height: 6px;
+			background: rgba(0,0,0,0.05);
+			border-radius: 3px;
+			margin: 20px auto 30px;
+			overflow: hidden;
+			position: relative;
+		}
+
+		.progress-bar {
+			height: 100%;
+			width: 0;
+			background: linear-gradient(90deg, var(--primary), var(--pink));
+			border-radius: 3px;
+			transition: width 0.5s ease;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.progress-bar::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(90deg, 
+				transparent, 
+				rgba(255,255,255,0.4), 
+				transparent);
+			animation: shimmer 2s infinite;
+		}
+
+		@keyframes shimmer {
+			0% { transform: translateX(-100%); }
+			100% { transform: translateX(100%); }
+		}
+
+		/* 卡片区域 */
+		.section {
+			padding: 0 15px;
+			margin-bottom: 30px;
+		}
+
+		.section-title {
+			font-size: 18px;
+			font-weight: 600;
+			color: #262626;
+			margin-bottom: 15px;
+			padding-left: 10px;
+			position: relative;
+			display: flex;
+			align-items: center;
+		}
+
+		.section-title::before {
+			content: "";
+			display: inline-block;
+			width: 4px;
+			height: 18px;
+			background: linear-gradient(var(--primary), var(--pink));
+			border-radius: 2px;
+			margin-right: 8px;
+		}
+
+		.card-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+			gap: 15px;
+		}
+
+		.card {
+			background: white;
+			border-radius: 12px;
+			padding: 15px;
+			box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+			transition: all 0.3s ease;
+			position: relative;
+			overflow: hidden;
+			text-align: center;
+			height: 80px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+
+		.card::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 3px;
+			background: linear-gradient(90deg, var(--primary), var(--pink));
+		}
+
+		.card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+		}
+
+		.card a {
+			color: #262626;
+			text-decoration: none;
+			font-size: 14px;
+			font-weight: 500;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			width: 100%;
+		}
+
+		.card i {
+			margin-right: 8px;
+			color: var(--primary);
+			font-size: 16px;
+		}
+
+		/* 音乐播放器 */
+		.music-player {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			width: 50px;
+			height: 50px;
+			background: white;
+			border-radius: 50%;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			z-index: 100;
+			transition: all 0.3s ease;
+		}
+
+		.music-player:hover {
+			transform: scale(1.1);
+			background: linear-gradient(var(--primary), var(--pink));
+			color: white;
+		}
+
+		.music-player i {
+			font-size: 20px;
+		}
+
+		/* 浮动按钮 */
+		.float-btn {
+			position: fixed;
+			bottom: 80px;
+			right: 20px;
+			width: 50px;
+			height: 50px;
+			background: linear-gradient(var(--primary), var(--pink));
+			color: white;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+			cursor: pointer;
+			z-index: 100;
+			transition: all 0.3s ease;
+			animation: pulse 2s infinite;
+		}
+
+		.float-btn:hover {
+			transform: scale(1.1);
+		}
+
+		@keyframes pulse {
+			0% { box-shadow: 0 0 0 0 rgba(64,93,230,0.4); }
+			70% { box-shadow: 0 0 0 10px rgba(64,93,230,0); }
+			100% { box-shadow: 0 0 0 0 rgba(64,93,230,0); }
+		}
+
+		/* 响应式设计 */
+		@media (max-width: 768px) {
+			.card-grid {
+				grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+			}
+			
+			.card {
+				height: 70px;
+			}
+			
+			.card a {
+				font-size: 13px;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.card-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		/* 动画效果 */
+		@keyframes fadeIn {
+			from { opacity: 0; transform: translateY(20px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+
+		.section {
+			animation: fadeIn 0.5s ease forwards;
+			opacity: 0;
+		}
+
+		.section:nth-child(1) { animation-delay: 0.1s; }
+		.section:nth-child(2) { animation-delay: 0.2s; }
+		.section:nth-child(3) { animation-delay: 0.3s; }
+		.section:nth-child(4) { animation-delay: 0.4s; }
+		.section:nth-child(5) { animation-delay: 0.5s; }
+		.section:nth-child(6) { animation-delay: 0.6s; }
+		.section:nth-child(7) { animation-delay: 0.7s; }
+		.section:nth-child(8) { animation-delay: 0.8s; }
+		.section:nth-child(9) { animation-delay: 0.9s; }
+		.section:nth-child(10) { animation-delay: 1.0s; }
+	</style>
+</head>
+<body>
+	<!-- 浮动粒子背景 -->
+	<div class="particles" id="particles"></div>
+	
+	<!-- 顶部区域 -->
+	<div class="header">
+    <div class="avatar-container">
+        <img src="toux.png" alt="头像" class="avatar" />
+        <button class="bg-toggle-btn" id="bg-toggle" title="切换背景">
+            <i class="fas fa-image"></i>
+            <span class="btn-text">切换背景</span>
+        </button>
+    </div>
+    <h1 class="title">神秘人软件库</h1>
+</div>
+	
+	<!-- 进度条 -->
+	<div class="progress-container">
+		<div class="progress-bar" id="progress-bar"></div>
+	</div>
+	
+<div class="section">
+    <h2 class="section-title"><i class="fas fa-ellipsis-h"></i>滑下去获取资源</h2>
+    <div class="card-grid">
+        <div class="card">
+            <a href="https://m.dajiazhao.com/sm/"><i class="fas fa-star"></i> 生辰八字算命</a>
+        </div>
+        <div class="card">
+            <a href="https://m.xzw.com/cx/"><i class="fas fa-star"></i> 星座运势</a>
+        </div>
+        <div class="card">
+            <a href="https://m.ishaohuang.com/"><i class="fas fa-box-open"></i> 烧荒软件园</a>
+        </div>
+        <div class="card">
+            <a href="https://m.edowning.net/"><i class="fas fa-box-open"></i> E线软件园</a>
+        </div>
+        <div class="card">
+            <a href="https://m.danji100.com/"><i class="fas fa-mobile-alt"></i> 100手游网</a>
+        </div>
+        <div class="card">
+            <a href="https://m.962.net/goodgame.html"><i class="fas fa-gamepad"></i> 乐游网</a>
+        </div>
+        <div class="card">
+            <a href="https://m.289.com/"><i class="fas fa-gamepad"></i> 289手游网</a>
+        </div>
+        <div class="card">
+            <a href="https://m.hnfcjr.com/"><i class="fas fa-box-open"></i> 火火资源网</a>
+        </div>
+        <!-- 新增的10个以上链接 -->
+        <div class="card">
+            <a href="https://m.52pk.com/"><i class="fas fa-gamepad"></i> 52PK游戏网</a>
+        </div>
+        <div class="card">
+            <a href="https://m.3dmgame.com/"><i class="fas fa-gamepad"></i> 3DM手游</a>
+        </div>
+        <div class="card">
+            <a href="https://m.duote.com/"><i class="fas fa-box-open"></i> 多特软件站</a>
+        </div>
+        <div class="card">
+            <a href="https://m.pc6.com/"><i class="fas fa-box-open"></i> PC6下载站</a>
+        </div>
+        <div class="card">
+            <a href="https://m.cr173.com/"><i class="fas fa-box-open"></i> 绿色资源网</a>
+        </div>
+        <div class="card">
+            <a href="https://m.orsoon.com/"><i class="fas fa-box-open"></i> 未来软件园</a>
+        </div>
+        <div class="card">
+            <a href="https://m.3987.com/"><i class="fas fa-gamepad"></i> 3987手游网</a>
+        </div>
+        <div class="card">
+            <a href="https://m.youxi369.com/"><i class="fas fa-gamepad"></i> 游戏369</a>
+        </div>
+        <div class="card">
+            <a href="https://m.ali213.net/"><i class="fas fa-gamepad"></i> 游侠手游</a>
+        </div>
+        <div class="card">
+            <a href="https://m.gamersky.com/"><i class="fas fa-gamepad"></i> 游民星空手游</a>
+        </div>
+        <div class="card">
+            <a href="https://m.9game.cn/"><i class="fas fa-mobile-alt"></i> 九游手游</a>
+        </div>
+        <div class="card">
+            <a href="https://m.tap.io/"><i class="fas fa-mobile-alt"></i> TapTap手游</a>
+        </div>
+    </div>
+</div>
+</div>
+	
+	<!-- 音乐播放器 -->
+	<div class="music-player" id="music-btn">
+		<i class="fas fa-music"></i>
+	</div>
+	
+	<!-- 返回顶部按钮 -->
+	<div class="float-btn" id="back-to-top">
+		<i class="fas fa-arrow-up"></i>
+	</div>
+	
+	<script>
+		// 创建浮动粒子
+		function createParticles() {
+			const particlesContainer = document.getElementById('particles');
+			const particleCount = 20;
+			
+			for (let i = 0; i < particleCount; i++) {
+				const particle = document.createElement('div');
+				particle.classList.add('particle');
+				
+				// 随机大小
+				const size = Math.random() * 10 + 5;
+				particle.style.width = `${size}px`;
+				particle.style.height = `${size}px`;
+				
+				// 随机位置
+				particle.style.left = `${Math.random() * 100}%`;
+				particle.style.top = `${Math.random() * 100}%`;
+				
+				// 随机动画延迟
+				particle.style.animationDelay = `${Math.random() * 15}s`;
+				particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+				
+				// 随机透明度
+				particle.style.opacity = Math.random() * 0.5 + 0.1;
+				
+				particlesContainer.appendChild(particle);
+			}
+		}
+		
+		// 进度条动画
+		function animateProgressBar() {
+			const progressBar = document.getElementById('progress-bar');
+			let width = 0;
+			const interval = setInterval(() => {
+				width += 1;
+				progressBar.style.width = `${width}%`;
+				
+				if (width >= 100) {
+					clearInterval(interval);
+					// 进度条完成后改变颜色
+					setTimeout(() => {
+						progressBar.style.background = 'linear-gradient(90deg, #4CAF50, #8BC34A)';
+					}, 500);
+				}
+			}, 30);
+		}
+		
+		// 切换背景功能
+document.getElementById('bg-toggle').addEventListener('click', function() {
+    const body = document.body;
+    const isDynamic = body.classList.contains('dynamic-bg');
+    
+    if (isDynamic) {
+        body.classList.remove('dynamic-bg');
+        this.innerHTML = '<i class="fas fa-image"></i><span class="btn-text">切换背景</span>';
+        this.title = "切换背景";
+    } else {
+        body.classList.add('dynamic-bg');
+        this.innerHTML = '<i class="fas fa-times"></i><span class="btn-text">恢复默认</span>';
+        this.title = "恢复默认背景";
+    }
+    
+    // 添加点击动画
+    this.classList.add('clicked');
+    setTimeout(() => {
+        this.classList.remove('clicked');
+    }, 300);
+});
+
+// 添加点击动画样式
+const style = document.createElement('style');
+style.textContent = `
+    .bg-toggle-btn.clicked {
+        animation: pulse 0.5s ease;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.9); }
+        100% { transform: scale(1); }
+    }
+`;
+document.head.appendChild(style);
+		
+		// 返回顶部
+		document.getElementById('back-to-top').addEventListener('click', () => {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
+		});
+		
+
+		
+		// 页面加载完成后执行
+		window.addEventListener('DOMContentLoaded', () => {
+			createParticles();
+			animateProgressBar();
+			
+			// 显示滚动到顶部按钮
+			window.addEventListener('scroll', () => {
+				const backToTop = document.getElementById('back-to-top');
+				if (window.scrollY > 300) {
+					backToTop.style.opacity = '1';
+					backToTop.style.visibility = 'visible';
+				} else {
+					backToTop.style.opacity = '0';
+					backToTop.style.visibility = 'hidden';
+				}
+			});
+		});
+	</script>
+	<body>
+</body>
+</body>
+</html>

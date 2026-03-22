@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            background: #f5f5f5;
+        }
+
+        /* 背景图 */
+        .bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .top-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .top-btn {
+            padding: 8px 16px;
+            background-color: rgba(0, 0, 0, 0.35);
+            border-radius: 20px;
+            font-size: 14px;
+            color: #fff;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .top-btn:hover,
+        .top-btn:active {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* 底部卡片 */
+        .bottom-card {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 140px;
+            background: #fff;
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            z-index: 5;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(100%);
+            animation: slideUp 0.6s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .bottom-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 16px;
+            flex-shrink: 0;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: iconPop 0.4s 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+
+        .bottom-card-icon img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .bottom-card-content {
+            flex: 1;
+            min-width: 0;
+            opacity: 0;
+            transform: translateX(-10px);
+            animation: contentSlide 0.5s 0.7s ease-out forwards;
+        }
+
+        .bottom-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .bottom-card-subtitle {
+            font-size: 15px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 动画定义 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to   { transform: translateY(0); }
+        }
+
+        @keyframes iconPop {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes contentSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        * {
+    user-select: none;
+    -webkit-user-select: none;
+    user-drag: none;
+    -webkit-user-drag: none;
+    pointer-events: auto;
+}
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 400px;
+            max-width: 90%;
+            padding: 20px;
+            position: relative;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .modal-content {
+            margin-bottom: 20px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-container input {
+            margin-right: 8px;
+        }
+        
+        .close-btn {
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .close-btn:hover {
+            background-color: #40a9ff;
+        }
+        
+        .close-btn:disabled {
+            background-color: #d9d9d9;
+            cursor: not-allowed;
+        }
+        
+        .countdown {
+            color: #999;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        .offline-page{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;z-index:99999;}
+.offline-icon{font-size:60px;color:#F44336;margin-bottom:20px;}
+.offline-tip{font-size:22px;color:#333;margin-bottom:10px;}
+.offline-desc{font-size:16px;color:#666;}
+#offlineMessage{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);color:#fff;text-align:center;padding-top:20%;font-size:24px;z-index:100000;}
+    </style>
+</head>
+<body>
+    <!-- 断网提示容器 -->
+    <div class="offline-page" id="offlinePage">
+        <div class="offline-icon">🔌</div>
+        <div class="offline-tip">请打开网络再使用</div>
+        <div class="offline-desc">当前网络已断开，无法完成跳转</div>
+    </div>
+    <div id="offlineMessage">
+        <h3>请打开网络连接后再使用</h3>
+        <p>用断网大法破解天帝软件库？</p>
+        <p>荒诞至极！！！</p>
+		<p>天帝-断网检测V1.0</p>
+    </div>
+        <div class="modal-overlay" id="announcementModal">
+        <div class="modal-container">
+            <div class="modal-header">重要公告</div>
+            <div class="modal-content">
+                <p>欢迎来到天帝软件库5.8.3版本，本软件库仅供娱乐，出现任何违法事情，作者概不承担，最终解释权归天帝所有，如果有侵权请加QQ群1081858464联系群主并说明情况</p>
+            </div>
+            <div class="modal-footer">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="dontShowAgain">
+                    <label for="dontShowAgain">一天内不再显示</label>
+                </div>
+                <div>
+                    <button class="close-btn" id="closeBtn" disabled>关闭 (<span id="countdown">3</span>秒)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 全屏背景图 -->
+    <img class="bg" src="背景2.png" alt="背景">
+
+    <!-- 顶部按钮区域 -->
+    <div class="top-buttons">
+
+        <a href="导航网.html" class="top-btn" id="skipBtn">跳过 34s</a>
+    </div>
+
+    <!-- 底部卡片 -->
+    <div class="bottom-card">
+        <div class="bottom-card-icon">
+            <img src="appIcon.png" alt="图标">
+        </div>
+        <div class="bottom-card-content">
+            <div class="bottom-card-title">天帝软件库5.8.3Pro</div> 
+            <div class="bottom-card-subtitle">好用｜300+功能｜实惠</div>
+        </div>
+    </div>
+
+    <script>
+        const skipBtn = document.getElementById('skipBtn');
+        
+        let countdown = 34; // 已改为34秒
+        let timer = null;
+        
+        // 启动倒计时
+        function startCountdown() {
+            timer = setInterval(() => {
+                countdown--;
+                skipBtn.textContent = `跳过 ${countdown}s`;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    window.location.href = "导航.html";
+                }
+            }, 1000);
+        }
+        
+        // 初始化倒计时
+        startCountdown();
+
+        skipBtn.addEventListener('click', () => {
+            clearInterval(timer);
+        });
+
+      
+
+        // 禁止手势缩放
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', e => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 500) e.preventDefault();
+            lastTouchEnd = now;
+        }, { passive: false });
+    </script>
+    <script src="offline-control.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查是否设置了不显示
+            const dontShowUntil = localStorage.getItem('dontShowAnnouncementUntil');
+            const now = new Date().getTime();
+            
+            if (dontShowUntil && now < parseInt(dontShowUntil)) {
+                document.getElementById('announcementModal').style.display = 'none';
+                return;
+            }
+            
+            // 倒计时功能
+            const closeBtn = document.getElementById('closeBtn');
+            const countdownEl = document.getElementById('countdown');
+            let secondsLeft = 3;
+            
+            const countdownInterval = setInterval(() => {
+                secondsLeft--;
+                countdownEl.textContent = secondsLeft;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    closeBtn.disabled = false;
+                    countdownEl.parentNode.removeChild(countdownEl);
+                    closeBtn.textContent = '关闭';
+                }
+            }, 1000);
+            
+            // 关闭按钮事件
+            closeBtn.addEventListener('click', function() {
+                const dontShowAgain = document.getElementById('dontShowAgain').checked;
+                
+                if (dontShowAgain) {
+                    // 设置24小时内不再显示
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    localStorage.setItem('dontShowAnnouncementUntil', tomorrow.getTime().toString());
+                }
+                
+                document.getElementById('announcementModal').style.display = 'none';
+            });
+        });
+    </script>
+    <script>
+    // 断网检测+跳转核心函数
+function checkNetworkAndJump(targetUrl) {
+    const offlinePage = document.getElementById('offlinePage');
+    const offlineMessage = document.getElementById('offlineMessage');
+    if (navigator.onLine) {
+        offlinePage.style.display = 'none';
+        offlineMessage.style.display = 'none';
+        window.location.href = targetUrl;
+    } else {
+        offlinePage.style.display = 'flex';
+        offlineMessage.style.display = 'block';
+    }
+}
+
+// 监听网络状态变化
+window.addEventListener('online', function() {
+    document.getElementById('offlinePage').style.display = 'none';
+    document.getElementById('offlineMessage').style.display = 'none';
+});
+
+window.addEventListener('offline', function() {
+    document.getElementById('offlinePage').style.display = 'flex';
+    document.getElementById('offlineMessage').style.display = 'block';
+});
+    </script> 
+</body>
+</html>

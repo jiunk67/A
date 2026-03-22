@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQ注册时间查询</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            background-image: url('https://xiaodi.jujukai.cn/Api/sjsn.php');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1 {
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        
+        .description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            font-size: 1rem;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .card {
+            background-color: transparent;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            border: 1.5px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+            color: #fff;
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        input:focus {
+            border-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1.5px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .loading {
+            text-align: center;
+            color: #fff;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+        
+        .error {
+            display: none;
+            background: rgba(231, 76, 60, 0.2);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            border: 1px solid rgba(231, 76, 60, 0.5);
+        }
+        
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 30px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            font-size: 0.9rem;
+        }
+        
+        /* 菜单按钮样式 */
+        .menu-btn {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            background: transparent;
+            border: 1.5px solid rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .menu-btn span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+        
+        /* 菜单面板样式 - 透明版本 */
+        .menu-panel {
+            position: fixed;
+            top: 80px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform: translateY(-10px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            min-width: 220px;
+        }
+        
+        .menu-panel.active {
+            display: flex;
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .menu-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+        
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 底部弹窗样式 */
+        .result-modal {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            transition: all 0.4s ease;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .result-modal.active {
+            bottom: 0;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-title {
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+        
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .user-details {
+            flex: 1;
+        }
+        
+        .nickname {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        
+        .qq-id {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+        
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .level {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #ffcc00;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .status {
+            text-align: center;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .history-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .history-title {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .history-list {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .history-qq {
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .history-date {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .menu-btn {
+                top: 20px;
+                right: 20px;
+            }
+            
+            .menu-panel {
+                top: 70px;
+                right: 20px;
+                min-width: 200px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-modal {
+                height: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 菜单按钮 -->
+    <div class="menu-btn" id="menu-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    
+    <!-- 菜单面板 -->
+    <div class="menu-panel" id="menu-panel">
+        <div class="menu-item">
+            <a href="https://h5.lot-ml.com/ProductEn/Index/b750d8f352b57682" target="_blank" class="menu-link">
+                <i class="fas fa-external-link-alt"></i> 
+                <span style="flex: 1; margin-left: 10px;">跳转链接一</span>
+            </a>
+            <button class="copy-btn" data-url="https://h5.lot-ml.com/ProductEn/Index/b750d8f352b57682">
+                <i class="fas fa-copy"></i> 复制链接
+            </button>
+        </div>
+        <div class="menu-item">
+            <a href="https://hy.yunhaoka.com/#/pages/micro_store/index?agent_id=bf8c54a6890519bd2210db56129c38e0" target="_blank" class="menu-link">
+                <i class="fas fa-external-link-alt"></i> 
+                <span style="flex: 1; margin-left: 10px;">跳转链接二</span>
+            </a>
+            <button class="copy-btn" data-url="https://hy.yunhaoka.com/#/pages/micro_store/index?agent_id=bf8c54a6890519bd2210db56129c38e0">
+                <i class="fas fa-copy"></i> 复制链接
+            </button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h1><i class="fab fa-qq"></i> QQ注册时间查询</h1>
+        <p class="description">输入QQ号查询账号注册时间及相关信息</p>
+        
+        <div class="card">
+            <div class="input-group">
+                <input type="text" id="qq-input" placeholder="请输入QQ号码" maxlength="15">
+            </div>
+            
+            <button class="btn" id="query-btn">
+                <i class="fas fa-search"></i> 查询注册时间
+            </button>
+            
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner fa-spin"></i> 正在查询中，请稍候...
+            </div>
+            
+            <div class="error" id="error"></div>
+        </div>
+        
+        <footer>
+            <p>数据来源：QQ注册时间查询API | 本工具仅用于查询，请勿用于非法用途</p>
+        </footer>
+    </div>
+    
+    <!-- 底部弹窗 -->
+    <div class="result-modal" id="result-modal">
+        <div class="modal-header">
+            <div class="modal-title">查询结果</div>
+            <button class="close-btn" id="close-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-content">
+            <div class="user-info">
+                <img id="avatar" class="avatar" src="" alt="QQ头像">
+                <div class="user-details">
+                    <div class="nickname" id="nickname"></div>
+                    <div class="qq-id" id="qq-id"></div>
+                </div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">注册时间</div>
+                    <div class="info-value" id="reg-time"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">注册天数</div>
+                    <div class="info-value" id="reg-days"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">注册年数</div>
+                    <div class="info-value" id="reg-years"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">头像修改时间</div>
+                    <div class="info-value" id="avatar-time"></div>
+                </div>
+            </div>
+            
+            <div class="level" id="level"></div>
+            <div class="status" id="status"></div>
+            
+            <div class="history-section">
+                <div class="history-title">查询记录</div>
+                <div class="history-list" id="history-list">
+                    <!-- 查询记录将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const qqInput = document.getElementById('qq-input');
+            const queryBtn = document.getElementById('query-btn');
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('error');
+            const resultModal = document.getElementById('result-modal');
+            const closeModalBtn = document.getElementById('close-modal');
+            const menuBtn = document.getElementById('menu-btn');
+            const menuPanel = document.getElementById('menu-panel');
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            const historyList = document.getElementById('history-list');
+            
+            const avatarEl = document.getElementById('avatar');
+            const nicknameEl = document.getElementById('nickname');
+            const qqIdEl = document.getElementById('qq-id');
+            const regTimeEl = document.getElementById('reg-time');
+            const regDaysEl = document.getElementById('reg-days');
+            const regYearsEl = document.getElementById('reg-years');
+            const avatarTimeEl = document.getElementById('avatar-time');
+            const levelEl = document.getElementById('level');
+            const statusEl = document.getElementById('status');
+            
+            // 加载查询记录
+            loadQueryHistory();
+            
+            // 查询按钮点击事件
+            queryBtn.addEventListener('click', function() {
+                const qq = qqInput.value.trim();
+                
+                if (!qq) {
+                    showError('请输入QQ号码');
+                    return;
+                }
+                
+                if (!/^[1-9][0-9]{4,14}$/.test(qq)) {
+                    showError('请输入正确的QQ号码');
+                    return;
+                }
+                
+                queryQQInfo(qq);
+            });
+            
+            // 回车键触发查询
+            qqInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    queryBtn.click();
+                }
+            });
+            
+            // 关闭弹窗按钮
+            closeModalBtn.addEventListener('click', function() {
+                resultModal.classList.remove('active');
+            });
+            
+            // 菜单按钮事件
+            menuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menuPanel.classList.toggle('active');
+            });
+            
+            // 点击页面其他地方关闭菜单
+            document.addEventListener('click', function() {
+                menuPanel.classList.remove('active');
+            });
+            
+            // 阻止菜单面板内的点击事件冒泡
+            menuPanel.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // 复制按钮事件
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const url = this.getAttribute('data-url');
+                    copyToClipboard(url);
+                    
+                    // 显示复制成功反馈
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                    this.style.background = 'rgba(46, 204, 113, 0.3)';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.style.background = '';
+                    }, 2000);
+                });
+            });
+            
+            // 查询QQ信息
+            function queryQQInfo(qq) {
+                loadingEl.style.display = 'block';
+                errorEl.style.display = 'none';
+                
+                const apiUrl = `https://xiaodi.jujukai.cn/Api/zcsj.php?qq=${qq}`;
+                
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('网络请求失败');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        loadingEl.style.display = 'none';
+                        
+                        if (data && data.uin) {
+                            displayResult(data);
+                            saveQueryHistory(qq, data.name);
+                        } else {
+                            showError('未查询到该QQ号的信息，请检查QQ号是否正确');
+                        }
+                    })
+                    .catch(error => {
+                        loadingEl.style.display = 'none';
+                        showError('查询失败：' + error.message);
+                    });
+            }
+            
+            // 显示查询结果
+            function displayResult(data) {
+                // 设置头像
+                avatarEl.src = data.img;
+                
+                // 设置昵称和QQ号
+                nicknameEl.textContent = data.name || '未知';
+                qqIdEl.textContent = `QQ: ${data.uin}`;
+                
+                // 设置注册时间信息
+                regTimeEl.textContent = data['注册时间'] || '未知';
+                regDaysEl.textContent = `${data['注册天数'] || 0} 天`;
+                regYearsEl.textContent = `${data['注册约年数'] || 0} 年`;
+                
+                // 设置头像修改时间
+                avatarTimeEl.textContent = data['头像修改时间'] || '未知';
+                
+                // 设置等级和状态
+                levelEl.textContent = `QQ等级: ${data.Level || 0} 级`;
+                statusEl.textContent = `状态: ${data['状态'] || '未知'}`;
+                
+                // 显示结果弹窗
+                resultModal.classList.add('active');
+            }
+            
+            // 显示错误信息
+            function showError(message) {
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
+                loadingEl.style.display = 'none';
+            }
+            
+            // 保存查询记录到本地存储
+            function saveQueryHistory(qq, name) {
+                let history = JSON.parse(localStorage.getItem('qqQueryHistory') || '[]');
+                
+                // 检查是否已存在相同QQ号
+                const existingIndex = history.findIndex(item => item.qq === qq);
+                if (existingIndex !== -1) {
+                    history.splice(existingIndex, 1);
+                }
+                
+                // 添加新记录到开头
+                history.unshift({
+                    qq: qq,
+                    name: name,
+                    date: new Date().toLocaleString()
+                });
+                
+                // 限制记录数量为10条
+                if (history.length > 10) {
+                    history = history.slice(0, 10);
+                }
+                
+                // 保存到本地存储
+                localStorage.setItem('qqQueryHistory', JSON.stringify(history));
+                
+                // 更新显示
+                loadQueryHistory();
+            }
+            
+            // 加载查询记录
+            function loadQueryHistory() {
+                const history = JSON.parse(localStorage.getItem('qqQueryHistory') || '[]');
+                
+                if (history.length === 0) {
+                    historyList.innerHTML = '<div style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">暂无查询记录</div>';
+                    return;
+                }
+                
+                let html = '';
+                history.forEach(item => {
+                    html += `
+                        <div class="history-item">
+                            <div class="history-qq">${item.qq} - ${item.name || '未知'}</div>
+                            <div class="history-date">${item.date}</div>
+                        </div>
+                    `;
+                });
+                
+                historyList.innerHTML = html;
+            }
+            
+            // 复制到剪贴板
+            function copyToClipboard(text) {
+                if (navigator.clipboard && window.isSecureContext) {
+                    // 使用新的 Clipboard API
+                    navigator.clipboard.writeText(text);
+                } else {
+                    // 使用传统的 document.execCommand 方法
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    textArea.style.position = "fixed";
+                    textArea.style.opacity = "0";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                    } catch (err) {
+                        console.error('复制失败:', err);
+                    }
+                    document.body.removeChild(textArea);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

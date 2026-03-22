@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>羽雫软件库-小凯</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            outline: none; /* 添加这一行来隐藏选中边框 */
+        }
+        
+        body {
+            background-image: url('res/背景图.png');
+            background-size: cover;           
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        
+        body:before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.2);
+            z-index: -1;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: 500;
+        }
+        
+        .settings-icon {
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .api-card {
+            background-color: rgba(255, 255, 255, 0);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .api-info {
+            flex: 1;
+        }
+        
+        .api-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .api-name {
+            color: white;
+            font-size: 20px;
+            font-weight: 500;
+            margin-right: 10px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .status-badge {
+            background-color: #4CAF50;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+        }
+        
+        .api-usage {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+        }
+        
+        .docs-button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+        }
+        
+        .docs-button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>软件列表</h1>
+        <div class="settings-icon">
+            <i class="fas fa-cog"></i>
+        </div>
+    </header>
+    
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="搜索软件...">
+    </div>
+    
+    <div class="api-card">
+        <div class="api-info">
+            <div class="api-title">
+                <span class="api-name">影视动漫</span>
+                <span class="status-badge">正常</span>
+            </div>
+            <div class="api-usage">汇集着许多免费观看视频动漫的软件</div>
+        </div>
+        <button class="docs-button" onclick="window.open('https://pan.baidu.com/s/1Q8mMgUwlS4eQlzRoUeRryQ?pwd=xknb')">下载</button>
+    </div>
+    
+    <div class="api-card">
+        <div class="api-info">
+            <div class="api-title">
+                <span class="api-name">音乐漫画</span>
+                <span class="status-badge">正常</span>
+            </div>
+            <div class="api-usage">汇集着许多免费实用的音乐软件与漫画软件</div>
+        </div>
+        <button class="docs-button" onclick="window.open('https://pan.baidu.com/s/1rZbDoSgq8qygCGtBrYozRA?pwd=xknb')">下载</button>
+    </div>
+    
+    <div class="api-card">
+        <div class="api-info">
+            <div class="api-title">
+                <span class="api-name">工具美化</span>
+                <span class="status-badge">正常</span>
+            </div>
+            <div class="api-usage">汇集着许多免费实用的美化软件与工具</div>
+        </div>
+        <button class="docs-button" onclick="window.open('https://pan.baidu.com/s/1ighFWIyWXbZ65OoBDbr1mw?pwd=xknb')">下载</button>
+    </div>
+    
+    <div class="api-card">
+        <div class="api-info">
+            <div class="api-title">
+                <span class="api-name">短剧小说</span>
+                <span class="status-badge">正常</span>
+            </div>
+            <div class="api-usage">汇集着许多免费实用的短剧软件与小说软件</div>
+        </div>
+        <button class="docs-button" onclick="window.open('https://pan.baidu.com/s/1a36PU8J24Zo9eB2YjV2beQ?pwd=xknb')">下载</button>
+    </div>
+    
+    <div class="api-card">
+        <div class="api-info">
+            <div class="api-title">
+                <span class="api-name">电视软件</span>
+                <span class="status-badge">正常</span>
+            </div>
+            <div class="api-usage">汇集着许多免费实用的电视端软件</div>
+        </div>
+        <button class="docs-button" onclick="window.open('https://pan.baidu.com/s/1YGii_fQNtAEWH9RUqzGcwA?pwd=xknb')">下载</button>
+    </div>
+    
+    <div class="api-card">
+        <div class="api-info">
+            <div class="api-title">
+                <span class="api-name">iOS苹果软件</span>
+                <span class="status-badge">正常</span>
+            </div>
+            <div class="api-usage">汇集着许多免费实用的iOS苹果手机软件</div>
+        </div>
+        <button class="docs-button" onclick="window.open('https://pan.baidu.com/s/19EScwtzZ8cKJuaSGCfjL1Q?pwd=xknb')">下载</button>
+    </div>
+
+    <div class="api-card">
+        <div class="api-info">
+            <div class="api-title">
+                <span class="api-name">破解游戏</span>
+                <span class="status-badge">正常</span>
+            </div>
+            <div class="api-usage">汇集着少量免费破解的游戏【目前没有很多】</div>
+        </div>
+        <button class="docs-button" onclick="window.open('https://pan.baidu.com/s/1cafI0ao4jwnczqMjVf1mHg?pwd=xknb')">下载</button>
+    </div>
+    
+    <div class="api-card">
+        <div class="api-info">
+            <div class="api-title">
+                <span class="api-name">游戏辅助</span>
+                <span class="status-badge">正常</span>
+            </div>
+            <div class="api-usage">汇集着大量免费稳定的游戏辅助</div>
+        </div>
+        <button class="docs-button" onclick="window.open('https://pan.baidu.com/s/1RARhyvu-cUU4jKRLNmxfeA?pwd=xknb')">下载</button>
+    </div>
+
+    <script>
+        const searchInput = document.querySelector('.search-input');
+        const apiCards = document.querySelectorAll('.api-card');
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            apiCards.forEach(card => {
+                const apiName = card.querySelector('.api-name').textContent.toLowerCase();
+                if (apiName.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+
+        document.querySelector('.settings-icon').addEventListener('click', function() {
+            alert('设置功能即将上线');
+        });    
+</script>
+</body>
+</html>

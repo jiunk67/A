@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./favicon.ico" type="image/x-icon" rel="icon">
+    <title>在线生成链接</title>
+    <meta name="Keywords" content="在线工具,链接生成">
+    <meta name="description" content="在线生成链接是一个协助站长获取批量链接的一个工具。">
+    <style>
+        body,div,p,ul,ol,li,dl,dt,dd,table,tr,td,form,hr,h1,h2,h3,h4,h5,h6,fieldset,img,input {
+            margin: 0;
+            padding: 0;
+        }
+        body,html {
+            width: 100%;
+            min-height: 100%;
+        }
+        body{
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            /* background: linear-gradient(135deg, #272727, #4a4a4a, #6d6d6d, #909090, #b3b3b3, #d6d6d6, #f9f9f9); */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 6px;
+            box-sizing: border-box;
+        }
+        .tp-layer{
+            width: 100%;
+            max-width: 760px;
+            height: 80%;
+            background: rgba(255,255,255,.3);
+            border: 3px solid #fff;
+            padding: 32px;
+            box-sizing: border-box;
+            border-radius: 16px;
+        }
+        .tp-layer .form-list{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            box-sizing: border-box;
+        }
+        .tp-layer .form-list label{
+            font-size: 18px;
+            font-weight: 700;
+            display: block;
+            width: 20%;
+        }
+        .tp-layer .form-list input{
+            width: 70%;
+            line-height: 24px;
+            padding: 6px;
+            box-sizing: border-box;
+            border-radius: 6px;
+        }
+        .tp-layer .tp-button{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 0;
+            box-sizing: border-box;
+        }
+        .tp-layer .tp-button button{
+            color: #fff;
+            font-size: 14px;
+            line-height: 24px;
+            cursor: pointer;
+            width: 30%;
+            border-radius: 4px;
+            background: #4E78FF;
+            margin: 0 1%;
+        }
+        #output{
+            width: 100%;
+            border: 3px solid #4E78FF;
+            border-radius: 16px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="tp-layer">
+        <div class="form-list">
+            <label for="prefix"> 😁网址前缀：</label>
+            <input type="text" id="prefix" value="http://m.webcats.cn/bx/123051/49853" placeholder="请输入前缀，如 http://m.webcats.cn/bx/123051/49853">
+        </div>
+        <div class="form-list">
+            <label for="start"> 😛开始数字：</label>
+            <input type="number" id="start" min="1" placeholder="请输入开始数字">
+        </div>
+        <div class="form-list">
+            <label for="end"> 😋结束数字：</label>
+            <input type="number" id="end" min="1" placeholder="请输入结束数字">
+        </div>
+        <div class="form-list">
+            <label for="suffix"> 🥰网址后缀：</label>
+            <input type="text" id="suffix" value=".html" placeholder="请输入网址后缀，如 .html">
+        </div>
+        <div class="tp-button">
+            <button onclick="generateLinks()"> 💊生成链接</button>
+            <button onclick="exportLinks()"> 🎁导出链接</button>
+            <button onclick="copyLinks()"> 🎫一键复制</button>
+        </div>
+        <textarea id="output" rows="20" cols="50" placeholder="输出结果，自动生成"></textarea>
+    </div>
+    <script>
+        // 生成
+        function generateLinks() {
+            const prefix = document.getElementById('prefix').value;
+            const start = parseInt(document.getElementById('start').value);
+            const end = parseInt(document.getElementById('end').value);
+            const suffix = document.getElementById('suffix').value;
+            if (start > end) {
+                alert("结束数字必须大于或等于开始数字");
+                return;
+            }
+            const output = document.getElementById('output');
+            let links = '';
+            links = Array.from({ length: end - start + 1 }, (_, index) => `${prefix}${start + index}${suffix}`).join('\n');
+            output.value = links;
+        }
+        // 导出
+        function exportLinks() {
+            const links = document.getElementById('output').value;
+            const blob = new Blob([links], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'links.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        // 复制
+        function copyLinks() {
+            var range = document.createRange();
+            range.selectNode(document.getElementById('output'));
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            alert("已复制成功！");
+        }
+    </script>
+</body>
+</html>

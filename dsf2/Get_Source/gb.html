@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>会员登录</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        :root {
+            --white: #ffffff;
+            --gray-50: #fafbfc;
+            --gray-100: #f4f6f8;
+            --gray-200: #e5e9f0;
+            --gray-300: #d0d7e5;
+            --gray-400: #a3aec2;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --black: #000000;
+            
+            --bg-primary: var(--white);
+            --bg-secondary: var(--gray-100);
+            --text-primary: var(--gray-900);
+            --text-secondary: var(--gray-700);
+            --text-tertiary: var(--gray-500);
+            --border-color: var(--gray-300);
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.08);
+            --transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        body {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 11px;
+            line-height: 1.2;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            transform: scale(0.82);
+            transform-origin: top center;
+            width: 121.95%;
+            margin-left: -10.98%;
+            letter-spacing: -0.02em;
+            font-weight: 400;
+        }
+        
+        /* 顶栏样式 */
+        .header {
+            background-color: var(--bg-primary);
+            box-shadow: var(--shadow-sm);
+            padding: 0 9px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 38px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .logo-icon {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: var(--gray-200);
+        }
+        
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(0.9);
+        }
+        
+        .logo-text {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 0.01em;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 9.5px;
+            font-weight: 500;
+            padding: 2px 0;
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        
+        .nav-link.active {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: var(--gray-800);
+        }
+        
+        /* 主内容区域 */
+        .main-container {
+            padding: 9px;
+            max-width: 100%;
+            margin-top: -18px;
+        }
+        
+        .page-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+            padding-left: 7px;
+            position: relative;
+            letter-spacing: -0.01em;
+        }
+        
+        .page-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 11px;
+            background-color: var(--gray-500);
+        }
+        
+        .page-subtitle {
+            font-size: 9.5px;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+            padding-left: 7px;
+        }
+        
+        /* 登录卡片 */
+        .login-card {
+            background-color: var(--bg-primary);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+        }
+        
+        .login-header {
+            background-color: var(--gray-50);
+            padding: 9px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        
+        .login-header-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-600);
+            font-size: 13px;
+        }
+        
+        .login-header-text h3 {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1px;
+            letter-spacing: 0.01em;
+        }
+        
+        .login-header-text p {
+            font-size: 8.5px;
+            color: var(--text-secondary);
+        }
+        
+        .login-body {
+            padding: 12px 9px;
+        }
+        
+        /* 登录表单样式 */
+        .form-group {
+            margin-bottom: 11px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 9.5px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            letter-spacing: 0.015em;
+        }
+        
+        .password-input-container {
+            position: relative;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 9px 11px;
+            border: 1px solid var(--border-color);
+            font-size: 11px;
+            background-color: var(--bg-primary);
+            transition: var(--transition);
+            color: var(--text-primary);
+            -webkit-appearance: none;
+            appearance: none;
+            letter-spacing: 0.04em;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: var(--gray-500);
+            box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.08);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 7px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            font-size: 10px;
+            padding: 1px;
+            transition: var(--transition);
+        }
+        
+        .password-toggle:hover {
+            color: var(--gray-700);
+        }
+        
+        .password-hint {
+            font-size: 8.5px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+            margin-bottom: 1px;
+            line-height: 1.25;
+        }
+        
+        .password-hint code {
+            background-color: var(--gray-100);
+            padding: 1px 3px;
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            color: var(--text-secondary);
+            font-size: 7.5px;
+            margin: 0 1px;
+            letter-spacing: 0.04em;
+        }
+        
+        /* 密码强度指示器 */
+        .password-strength {
+            height: 1.5px;
+            background-color: var(--gray-200);
+            margin-top: 7px;
+            overflow: hidden;
+        }
+        
+        .strength-meter {
+            height: 100%;
+            width: 0%;
+            transition: var(--transition);
+            background-color: var(--gray-600);
+        }
+        
+        /* 按钮样式 */
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .btn {
+            padding: 9px 13px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            width: 100%;
+            letter-spacing: 0.025em;
+        }
+        
+        .btn-login {
+            background-color: var(--gray-900);
+            color: var(--white);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-login:hover, .btn-login:active {
+            background-color: var(--gray-800);
+            transform: translateY(-0.5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-purchase {
+            background-color: var(--bg-primary);
+            color: var(--gray-900);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-purchase:hover, .btn-purchase:active {
+            background-color: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+        
+        /* 状态信息 */
+        .status-info {
+            margin-top: 9px;
+            padding: 7px 9px;
+            font-size: 9.5px;
+            display: none;
+            align-items: flex-start;
+            gap: 5px;
+            border-left: 1.5px solid var(--gray-600);
+            background-color: var(--gray-50);
+        }
+        
+        .status-error {
+            color: var(--gray-800);
+            border-left-color: var(--gray-700);
+        }
+        
+        .status-success {
+            color: var(--gray-800);
+            border-left-color: var(--gray-600);
+        }
+        
+        .status-icon {
+            font-size: 10px;
+            flex-shrink: 0;
+            margin-top: 0;
+        }
+        
+        /* 高级选项 */
+        .advanced-options {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .advanced-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 4px 0;
+            user-select: none;
+        }
+        
+        .advanced-title {
+            font-size: 9.5px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            letter-spacing: 0.015em;
+        }
+        
+        .advanced-title i {
+            font-size: 8.5px;
+            transition: var(--transition);
+            color: var(--gray-500);
+        }
+        
+        .advanced-content {
+            display: none;
+            font-size: 9.5px;
+            color: var(--text-secondary);
+            line-height: 1.35;
+            padding: 7px 0 1px;
+        }
+        
+        .advanced-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .advanced-content li {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: flex-start;
+            gap: 4px;
+            padding-left: 1px;
+        }
+        
+        .advanced-content li i {
+            color: var(--gray-500);
+            font-size: 6.5px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        
+        /* 记住我选项 */
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9.5px;
+            color: var(--text-secondary);
+            margin-top: 9px;
+        }
+        
+        .remember-checkbox {
+            width: 11px;
+            height: 11px;
+            accent-color: var(--gray-700);
+        }
+        
+        /* 安全提示 */
+        .security-note {
+            background-color: var(--gray-50);
+            padding: 7px 9px;
+            margin-top: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 5px;
+            border-left: 1.5px solid var(--gray-400);
+        }
+        
+        .security-note i {
+            color: var(--gray-600);
+            font-size: 10px;
+            margin-top: 0;
+        }
+        
+        .security-note p {
+            font-size: 8.5px;
+            color: var(--text-secondary);
+            line-height: 1.25;
+        }
+        
+        /* 页脚 */
+        .footer {
+            background-color: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            padding: 12px 9px;
+            margin-top: 10px;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-bottom: 9px;
+            justify-content: center;
+        }
+        
+        .footer-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 9.5px;
+            transition: var(--transition);
+        }
+        
+        .footer-link:hover {
+            color: var(--text-primary);
+        }
+        
+        .copyright {
+            font-size: 7.5px;
+            color: var(--text-tertiary);
+            text-align: center;
+            line-height: 1.15;
+        }
+        
+        /* 工具提示 */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 150px;
+            background-color: var(--gray-900);
+            color: var(--gray-100);
+            text-align: center;
+            padding: 4px 7px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 8.5px;
+            line-height: 1.15;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* 加载状态 */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 11px;
+            height: 11px;
+            top: 50%;
+            left: 50%;
+            margin-top: -5.5px;
+            margin-left: -5.5px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 移动端优化 */
+        @media (hover: none) and (pointer: coarse) {
+            .btn {
+                padding: 10px 13px;
+            }
+            
+            .password-input {
+                padding: 11px;
+                font-size: 12px;
+            }
+            
+            .nav-link, .footer-link {
+                padding: 4px 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 9px;
+            }
+            
+            .nav-link span:not(.nav-link i) {
+                display: none;
+            }
+            
+            .nav-link i {
+                font-size: 11px;
+            }
+            
+            .main-container {
+                padding: 7px;
+            }
+            
+            .login-body {
+                padding: 9px 7px;
+            }
+            
+            .page-title {
+                font-size: 11px;
+            }
+        }
+                .offline-page{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;z-index:99999;}
+.offline-icon{font-size:60px;color:#F44336;margin-bottom:20px;}
+.offline-tip{font-size:22px;color:#333;margin-bottom:10px;}
+.offline-desc{font-size:16px;color:#666;}
+#offlineMessage{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);color:#fff;text-align:center;padding-top:20%;font-size:24px;z-index:100000;}
+
+    </style>
+</head>
+<body>
+        <!-- 断网提示容器 -->
+    <div class="offline-page" id="offlinePage">
+        <div class="offline-icon">🔌</div>
+        <div class="offline-tip">请打开网络再使用</div>
+        <div class="offline-desc">当前网络已断开，无法完成跳转</div>
+    </div>
+    <div id="offlineMessage">
+        <h3>请打开网络连接后再使用</h3>
+        <p>用断网大法破解天帝软件库？</p>
+        <p>荒诞至极！！！</p>
+		<p>天帝-断网检测V1.0</p>
+    </div>
+    <!-- 顶栏 -->
+    <header class="header">
+        <div class="logo-container">
+            <div class="logo-icon">
+                <img src="appIcon.png" alt="图标">
+            </div>
+            <div class="logo-text">天帝软件库</div>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="Xe.html" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="" class="nav-link">
+                <i class="fas fa-gamepad"></i>
+                <span>游戏库</span>
+            </a>
+            <a href="" class="nav-link active">
+                <i class="fas fa-crown"></i>
+                <span>会员</span>
+            </a>
+            <a href="" class="nav-link">
+                <i class="fas fa-question-circle"></i>
+                <span>帮助</span>
+            </a>
+        </nav>
+    </header>
+    
+    <!-- 主内容区域 -->
+    .
+    <main class="main-container">
+        <h1 class="page-title">天帝软件库</h1>
+        <p class="page-subtitle">请输入您的会员密码以访问专属特权</p>
+        
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-header-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                <div class="login-header-text">
+                    <h3>密码会员验证</h3>
+                    <p>输入会员卡密登录您的账户</p>
+                </div>
+            </div>
+            
+            <div class="login-body">
+                <!-- 登录表单 -->
+                <div class="form-group">
+                    <label class="form-label">会员密码 <span class="tooltip">(?)<span class="tooltip-text">请输入您的会员专属密码，每个密码对应不同等级的会员权限</span></span></label>
+                    <div class="password-input-container">
+                        <input type="password" class="password-input" id="password" placeholder="请输入套餐会员密码" autocomplete="off">
+                        <button class="password-toggle" id="toggle-password" type="button">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-hint">
+                              </div>
+                    <div class="password-strength" id="password-strength">
+                        <div class="strength-meter" id="strength-meter"></div>
+                    </div>
+                </div>
+                
+                <!-- 记住我选项 -->
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" class="remember-checkbox">
+                    <label for="remember">在此设备上记住我</label>
+                </div>
+                
+                <!-- 高级选项 -->
+                <div class="advanced-options">
+                    <div class="advanced-toggle" id="advanced-toggle">
+                        <div class="advanced-title">
+                            <i class="fas fa-cog"></i>
+                            <span>高级选项</span>
+                        </div>
+                        <i class="fas fa-chevron-down" id="toggle-icon"></i>
+                    </div>
+                    <div class="advanced-content" id="advanced-content">
+                        <ul>
+                            <li><i class="fas fa-circle"></i> 使用会员卡密可直接登录对应等级套餐的会员账号</li>
+                            <li><i class="fas fa-circle"></i> 每个会员等级对应不同的游戏特权与加速节点</li>
+                            <li><i class="fas fa-circle"></i> 如需购买会员，请点击下方"购买会员"按钮</li>
+                            <li><i class="fas fa-circle"></i> 忘记密码请联系客服进行重置</li>
+                            <li><i class="fas fa-circle"></i> 根据规定:退款仅可退5%</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 安全提示 -->
+                <div class="security-note">
+                    <i class="fas fa-shield-alt"></i>
+                    <p>我们使用行业标准加密技术保护您的信息安全，所有会员密码均经过加密存储 使用一机一卡密 卡密只对一个机型有效 绑定之后不做更改，确保您的账户安全。</p>
+                </div>
+                
+                <!-- 状态信息 -->
+                <div class="status-info" id="status-message">
+                    <i class="fas fa-info-circle status-icon"></i>
+                    <div id="status-text">请输入会员密码登录您的账户</div>
+                </div>
+                
+                <!-- 按钮 -->
+                <div class="buttons-container">
+                    <button class="btn btn-login" id="login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>登录会员账户</span>
+                    </button>
+                    <button class="btn btn-purchase" id="purchase-btn">
+                        <i class="fas fa-crown"></i>
+                        <span>购买会员</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="" class="footer-link">隐私政策</a>
+            <a href="" class="footer-link">用户协议</a>
+            <a href="" class="footer-link">联系我们</a>
+        </div>
+        
+        <div class="copyright">
+            &copy; 天帝软件库 版权所有<br>
+            版本号: 5.8.2 | 备案号: 沪ICP备12345678号
+        </div>
+    </footer>
+            <script>
+    // 断网检测+跳转核心函数
+function checkNetworkAndJump(targetUrl) {
+    const offlinePage = document.getElementById('offlinePage');
+    const offlineMessage = document.getElementById('offlineMessage');
+    if (navigator.onLine) {
+        offlinePage.style.display = 'none';
+        offlineMessage.style.display = 'none';
+        window.location.href = targetUrl;
+    } else {
+        offlinePage.style.display = 'flex';
+        offlineMessage.style.display = 'block';
+    }
+}
+
+// 监听网络状态变化
+window.addEventListener('online', function() {
+    document.getElementById('offlinePage').style.display = 'none';
+    document.getElementById('offlineMessage').style.display = 'none';
+});
+
+window.addEventListener('offline', function() {
+    document.getElementById('offlinePage').style.display = 'flex';
+    document.getElementById('offlineMessage').style.display = 'block';
+});
+    </script> 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const passwordInput = document.getElementById('password');
+            const togglePasswordBtn = document.getElementById('toggle-password');
+            const loginBtn = document.getElementById('login-btn');
+            const purchaseBtn = document.getElementById('purchase-btn');
+            const statusMessage = document.getElementById('status-message');
+            const statusText = document.getElementById('status-text');
+            const passwordStrength = document.getElementById('password-strength');
+            const strengthMeter = document.getElementById('strength-meter');
+            const advancedToggle = document.getElementById('advanced-toggle');
+            const advancedContent = document.getElementById('advanced-content');
+            const toggleIcon = document.getElementById('toggle-icon');
+            
+            // 密码与对应页面的映射
+            const passwordMap = {
+                'tiandinb': 'kkk.html'
+            };
+            
+            // 显示密码/隐藏密码
+            let isPasswordVisible = false;
+            togglePasswordBtn.addEventListener('click', function() {
+                isPasswordVisible = !isPasswordVisible;
+                passwordInput.type = isPasswordVisible ? 'text' : 'password';
+                togglePasswordBtn.innerHTML = isPasswordVisible ? 
+                    '<i class="fas fa-eye-slash"></i>' : 
+                    '<i class="fas fa-eye"></i>';
+            });
+            
+            // 显示状态信息
+            function showStatus(message, isError = false, isSuccess = false) {
+                statusText.textContent = message;
+                
+                if (isError) {
+                    statusMessage.className = 'status-info status-error';
+                    statusMessage.innerHTML = `<i class="fas fa-exclamation-circle status-icon"></i><div id="status-text">${message}</div>`;
+                } else if (isSuccess) {
+                    statusMessage.className = 'status-info status-success';
+                    statusMessage.innerHTML = `<i class="fas fa-check-circle status-icon"></i><div id="status-text">${message}</div>`;
+                } else {
+                    statusMessage.className = 'status-info';
+                    statusMessage.innerHTML = `<i class="fas fa-info-circle status-icon"></i><div id="status-text">${message}</div>`;
+                }
+                
+                statusMessage.style.display = 'flex';
+                
+                // 5秒后隐藏信息（如果是成功或错误消息）
+                if (isError || isSuccess) {
+                    setTimeout(() => {
+                        statusMessage.style.display = 'none';
+                    }, 5000);
+                }
+            }
+            
+            // 检查密码强度
+            function checkPasswordStrength(password) {
+                if (!password) {
+                    passwordStrength.style.display = 'none';
+                    return;
+                }
+                
+                passwordStrength.style.display = 'block';
+                let strength = 0;
+                
+                // 长度检查
+                if (password.length >= 6) strength += 25;
+                if (password.length >= 8) strength += 25;
+                
+                // 复杂度检查
+                if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 25;
+                if (/\d/.test(password)) strength += 15;
+                if (/[^a-zA-Z0-9]/.test(password)) strength += 10;
+                
+                // 限制最大为100%
+                strength = Math.min(strength, 100);
+                
+                // 更新强度指示器
+                strengthMeter.style.width = strength + '%';
+                
+                // 设置颜色 - 使用不同灰度
+                if (strength < 40) {
+                    strengthMeter.style.backgroundColor = 'var(--gray-400)';
+                } else if (strength < 70) {
+                    strengthMeter.style.backgroundColor = 'var(--gray-600)';
+                } else {
+                    strengthMeter.style.backgroundColor = 'var(--gray-800)';
+                }
+            }
+            
+            // 登录功能
+            loginBtn.addEventListener('click', function() {
+                const password = passwordInput.value.trim();
+                
+                if (!password) {
+                    showStatus('请输入会员密码', true);
+                    passwordInput.focus();
+                    return;
+                }
+                
+                // 显示加载状态
+                loginBtn.classList.add('btn-loading');
+                loginBtn.disabled = true;
+                
+                // 模拟网络请求延迟
+                setTimeout(() => {
+                    if (passwordMap[password]) {
+                        showStatus('登录成功，正在跳转到会员页面...', false, true);
+                        
+                        // 模拟跳转延迟
+                        setTimeout(() => {
+                            window.location.href = passwordMap[password];
+                        }, 1200);
+                    } else {
+                        showStatus('密码错误，请检查后重试', true);
+                        passwordInput.focus();
+                        loginBtn.classList.remove('btn-loading');
+                        loginBtn.disabled = false;
+                    }
+                }, 800);
+            });
+            
+            // 购买会员按钮
+            purchaseBtn.addEventListener('click', function() {
+                showStatus('正在跳转到会员购买页面...', false, true);
+                
+                // 模拟跳转延迟
+                setTimeout(() => {
+                    window.location.href = 'hhh.html';
+                }, 800);
+            });
+            
+            // 回车键登录
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginBtn.click();
+                }
+            });
+            
+            // 实时检查密码强度
+            passwordInput.addEventListener('input', function() {
+                checkPasswordStrength(this.value);
+            });
+            
+            // 高级选项切换
+            advancedToggle.addEventListener('click', function() {
+                if (advancedContent.style.display === 'block') {
+                    advancedContent.style.display = 'none';
+                    toggleIcon.style.transform = 'rotate(0deg)';
+                } else {
+                    advancedContent.style.display = 'block';
+                    toggleIcon.style.transform = 'rotate(180deg)';
+                }
+            });
+            
+            // 页面加载后显示初始信息
+            setTimeout(() => {
+                showStatus('请输入会员密码登录。如果没有会员密码，请点击"购买会员"按钮。');
+            }, 800);
+            
+            // 输入框获得焦点时显示提示
+            passwordInput.addEventListener('focus', function() {
+                showStatus('请输入您的会员密码。每个密码对应不同等级的会员权限。');
+            });
+            
+            // 移动端触摸反馈优化
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                btn.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

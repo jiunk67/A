@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>海盒影视聚合 </title>
+<style>
+:root{--p:#667eea;--s:#764ba2;--bg:#f8fafc;--c:#fff;--t:#1e293b;--m:#64748b;--r:18px;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+body{background:var(--bg);color:var(--t);padding:20px}
+.container{max-width:1000px;margin:0 auto}
+.header{position:sticky;top:0;z-index:1000;margin:0 auto 40px;text-align:center;background:var(--bg);padding:10px 0}
+.title{font-size:2.2rem;font-weight:700;background:linear-gradient(135deg,var(--p),var(--s));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px}
+.card{background:var(--c);border-radius:var(--r);box-shadow:0 2px 12px rgba(0,0,0,.06);padding:18px 8px;text-align:center;cursor:pointer;transition:.35s;font-size:.9rem}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 28px rgba(0,0,0,.1)}
+@media(max-width:600px){.title{font-size:1.8rem}.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="header"><h1 class="title">海盒影视聚合 </h1></header>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+const sites = [
+// 1-10 经典综合
+{name:"看片狂人",url:"https://www.kpkuang.fun"},
+{name:"555电影",url:"https://www.5iltmgi.shop"},
+{name:"YY6090",url:"https://www.mydys2.com"},
+{name:"可可影视",url:"https://www.kkys03.com"},
+{name:"追影猫",url:"https://zhuiyingmao5.com"},
+{name:"搜片.com",url:"https://soupian.plus"},
+{name:"皮皮影视",url:"https://www.pipiys2.com"},
+{name:"飞飞影视",url:"https://www.ffys.fun"},
+{name:"Libvio",url:"https://www.libvio.fun"},
+{name:"茶杯狐",url:"https://www.cupfox.app"},
+
+// 11-20 动漫/日韩
+{name:"AGE动漫",url:"https://www.agemys.org"},
+{name:"樱花动漫",url:"https://www.yinghuavod.com"},
+{name:"韩剧TV",url:"https://www.hanjutv.cc"},
+{name:"独播库",url:"https://www.duboku.tv"},
+{name:"剧迷",url:"https://www.gimy.tv"},
+{name:"在线之家",url:"https://www.zxzj.pro"},
+{name:"HD在线",url:"https://www.zxzjhd.com"},
+{name:"蛋蛋赞",url:"https://www.dandanzan.cc"},
+{name:"ikanbot",url:"https://ikanbot.com"},
+{name:"NOVIP",url:"https://www.novipnoad.com"},
+
+// 21-30 4K/蓝光
+{name:"4K影视小站",url:"https://4kysxz.top"},
+{name:"4KHDR世界",url:"https://www.4khdr.cn"},
+{name:"蓝光网",url:"http://www.languangdy.com"},
+{name:"Hao4K",url:"https://www.hao4k.cn"},
+{name:"片库网",url:"https://www.pianku.tv"},
+{name:"电影天堂",url:"https://www.dytt8.net"},
+{name:"BT天堂",url:"https://www.bttt.la"},
+{name:"飘花电影",url:"https://www.piaohua.com"},
+{name:"阳光电影",url:"https://www.ygdy8.com"},
+{name:"西瓜网",url:"https://www.xigua4k.com"},
+
+// 31-40 小众/极速
+{name:"游子视频",url:"https://yoztv.com"},
+{name:"人人影视PRO",url:"http://www.renren.pro"},
+{name:"MyFlixer",url:"https://myflixer.to"},
+{name:"七味影视",url:"https://www.qiwei.tv"},
+{name:"粤语站",url:"https://www.yakgj.com"},
+{name:"TAOLIX",url:"https://www.taolix.com"},
+{name:"优质资源库",url:"https://1080zyk2.com"},
+{name:"搜片APP",url:"https://soupian.app"},
+{name:"影猫仓库",url:"https://ymck.me"},
+{name:"66影视",url:"https://www.66ys.co"},
+
+// 41-50 正版/付费(免登/试用)
+{name:"爱奇艺",url:"https://www.iqiyi.com"},
+{name:"腾讯视频",url:"https://v.qq.com"},
+{name:"优酷视频",url:"https://www.youku.com"},
+{name:"芒果TV",url:"https://www.mgtv.com"},
+{name:"哔哩哔哩",url:"https://www.bilibili.com"},
+{name:"Netflix",url:"https://www.netflix.com"},
+{name:"WeTV",url:"https://wetv.vip"},
+{name:"LINE TV",url:"https://www.linetv.tw"},
+{name:"KKTV",url:"https://www.kktv.me"},
+{name:"哔咪动漫",url:"https://www.bimiacg.com"}
+];
+
+const grid = document.getElementById('grid');
+grid.innerHTML = sites.map(s=>`<div class="card" onclick="window.open('${s.url}','_blank')">${s.name}</div>`).join('');
+</script>
+</body>
+</html>

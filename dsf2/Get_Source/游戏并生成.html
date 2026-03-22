@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>无限随机游戏网名生成器</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft Yahei", sans-serif;}
+        body {background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh;}
+        .generator-box {width: 500px; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);}
+        h2 {text-align: center; color: #333; margin-bottom: 30px; font-size: 24px;}
+        .style-select {margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;}
+        .style-select label {display: inline-block; padding: 8px 15px; background: #f8f9fa; border-radius: 20px; cursor: pointer; color: #555; transition: all 0.2s;}
+        .style-select input:checked + label {background: #409eff; color: #fff;}
+        .style-select input {display: none;}
+        button {width: 100%; padding: 14px; background-color: #409eff; color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: background 0.3s; margin-bottom: 25px;}
+        button:hover {background-color: #337ecc;}
+        .result-area {padding: 20px; background-color: #f8f9fa; border-radius: 8px; min-height: 100px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center;}
+        .result-item {padding: 6px 12px; background: #e8f4fc; border-radius: 4px; color: #333;}
+    </style>
+</head>
+<body>
+    <div class="generator-box">
+        <h2>无限随机游戏网名生成器</h2>
+        <div class="style-select">
+            <input type="radio" name="nameStyle" id="cool" value="cool" checked>
+            <label for="cool">炫酷拽</label>
+            <input type="radio" name="nameStyle" id="cute" value="cute">
+            <label for="cute">可爱萌</label>
+            <input type="radio" name="nameStyle" id="lazy" value="lazy">
+            <label for="lazy">摆烂风</label>
+            <input type="radio" name="nameStyle" id="mysterious" value="mysterious">
+            <label for="mysterious">高冷范</label>
+        </div>
+        <button onclick="generateGameName()">点击生成10个网名</button>
+        <div class="result-area" id="nameResult"></div>
+    </div>
+
+    <script>
+        const nameParts = {
+            cool: {
+                prefix: ["弑神","野区","巅峰","星河","一剑","极夜","电竞","破空","狂鲨","焚天"],
+                middle: ["之","破","噬","斩","猎","霸","屠","陨","裂","撼"],
+                suffix: ["枪","者","上","魔","法","客","匪","刃","魂","王"]
+            },
+            cute: {
+                prefix: ["奶盖","偷吃","软萌","草莓","猫耳","芝士","芋泥","蜜桃","糖豆","布丁"],
+                middle: ["小","的","一口","啵啵","出逃","趴","糯","甜","圆","啾"],
+                suffix: ["团子","甜","趴菜","冰","记","熊","叽","糍","球","酱"]
+            },
+            lazy: {
+                prefix: ["躺平","混分","摸鱼","随缘","摆烂","峡谷","下饭","划水","挂机","佛系"],
+                middle: ["的","小","第一名","不","专业","顶级","资深","快乐","摸鱼","摆烂"],
+                suffix: ["能手","艺术家","员","玩家","冠军","咸鱼","懒人","大师","选手","躺王"]
+            },
+            mysterious: {
+                prefix: ["月下","雾中","无声","冷夜","深渊","匿名","孤影","暗鸦","寒星","烬"],
+                middle: ["渡","访","潜","行","孤","回","观","匿","藏","寂"],
+                suffix: ["鸦","客","影","星","响","者","魂","灵","刃","墟"]
+            }
+        };
+
+        function randomPick(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function generateGameName() {
+            const resultEl = document.getElementById("nameResult");
+            resultEl.innerHTML = "";
+            const selectedStyle = document.querySelector('input[name="nameStyle"]:checked').value;
+            const parts = nameParts[selectedStyle];
+            
+            const names = new Set();
+            while (names.size < 10) {
+                const name = randomPick(parts.prefix) + randomPick(parts.middle) + randomPick(parts.suffix);
+                names.add(name);
+            }
+
+            names.forEach(name => {
+                const item = document.createElement("div");
+                item.className = "result-item";
+                item.textContent = name;
+                resultEl.appendChild(item);
+            });
+        }
+    </script>
+</body>
+</html>

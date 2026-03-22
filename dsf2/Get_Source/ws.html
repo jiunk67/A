@@ -1,0 +1,462 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>节奏大师/钢琴块,随机刷新按键</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: white;
+            font-family: Arial, sans-serif;
+            touch-action: manipulation;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .lane {
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border: 1px solid #ccc;
+            position: relative;
+            overflow: hidden;
+        }
+        .note {
+            width: 100%;
+            height: 100px;
+            background-color: black;
+            position: absolute;
+            top: -50px;
+            transition: top var(--fall-speed) linear;
+        }
+        .target {
+            width: 100%;
+            height: 80px;
+            background-color: gray;
+            position: absolute;
+            bottom: 0;
+        }
+        .start-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            font-size: 20px;
+            color: white;
+            background-color: lightblue;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            color: black;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        .combo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: black;
+        }
+        .difficulty-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .difficulty-panel input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100px;
+        }
+        .difficulty-panel button {
+            padding: 10px 20px;
+            background-color: yellow;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .difficulty-button, .pause-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: green;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .pause-button {
+            left: 150px;
+            background-color: orange;
+        }
+        .pause-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .pause-panel button {
+            padding: 10px 20px;
+            background-color: lightblue;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 50px;
+            color: rgba(0, 8, 8, 7.7);
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+            body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .button {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            width: 100px;
+            height: 40px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .overlay .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            color: red;
+        }
+        .overlay p {
+            font-size: 13px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+ <div class="container">         <!-- 可以复制并创建多键，默认四键 -->
+        <div class="lane" id="lane1">
+            <div class="target"></div>
+        </div>
+        <div class="lane" id="lane2">
+            <div class="target"></div>
+        </div>
+        <div class="lane" id="lane3">
+            <div class="target"></div>
+        </div>
+        <div class="lane" id="lane4">
+            <div class="target"></div>
+        </div>
+    </div>
+    <!-- 下面这行是音效 -->
+    <audio id="beepSound" src="Audio-17-12-48.mp3"></audio>
+    <button class="start-button" onclick="startCountdown()">开始</button>
+    <div class="countdown" id="countdown">3</div>
+    <div class="combo" id="combo">连击数: 0</div>
+
+    <!-- 难度选择面板 -->
+    <div class="difficulty-panel" id="difficultyPanel">难度选择：
+        <label for="fallSpeed">下落速度 (0.100-∞秒):</label>
+        <input type="number" id="fallSpeed" min="0.2" max="3" step="0.1" value="1">
+        <label for="densityMin">数量密度 (0.100-∞秒之间随机刷新):</label>
+        <input type="number" id="densityMin" min="0.2" max="3" step="0.1" value="0.2">
+        <input type="number" id="densityMax" min="0.2" max="3" step="0.1" value="3">
+        <button onclick="applyDifficulty()">确认并重新开始</button>
+    </div>
+
+    <!-- 暂停面板 -->
+    <div class="pause-panel" id="pausePanel">
+        <button onclick="resumeGame()">继续游戏</button>
+        <button onclick="restartGame()">重新开始</button>
+    </div>
+
+    <!-- 难度选择和暂停按钮 -->
+    <button class="difficulty-button" onclick="showDifficultyPanel()">难度选择</button>
+    <button class="pause-button" onclick="showPausePanel()">暂停</button>
+
+<!-- 说明介绍游戏玩法 -->
+    <button class="button">玩法介绍</button>
+    <div class="overlay">
+        <span class="close">X</span>
+        <p>手机横屏请保持竖着看说明，因为我没有添加此面板的滑动查看功能</p>
+        <p>这是一个与钢琴块和节奏大师极其相似的游戏，需要考验眼力和手速的反应能力，爱玩音游的玩家应该不会对这觉得难</p>
+        <p>无法自定义编辑按键位置，所以不能自制谱，只能通过更改难度进行随机刷新下落并点击，点击后会在右上角显示连击数，断连会重新计算</p>
+        <p>该玩法主要是没有长条键，只有普通的单点黑键，也没有更多其他音效，需自行修改，暂时没有设定单独音效，按键不能被滑动，不能和节奏大师一样用拇指滑两个按键，要求严一些</p>
+        <p>首先一开始可以直接点击开始进行游戏，也可以点击“难度选择”进行调整难度，第一个输入框是表示这个按键会以默认的1秒种准确实时下落，按键被点击可支持多指同时点击（触控），而且还支持垂直判定</p>
+        <p>第二个和第三个输入框是多少与多少秒之间的刷新速度，你想要更难的玩法就可以输入0.100这样带三位数到0.300之间，数值越小黑键越容易并行，也可以更高如1秒出现到任意秒之间内刷新黑色按键下落，放心，最极限难度的密度并没有节奏大师的难</p>
+        <p>调整难度后的黑键下落就会持续整局游戏，过程没有血条，因此可以随便玩，1秒开头刷新是对音游人来说是非常非常简单的，建议0.001秒😂（开玩笑的，随便都可以），按键下落的逻辑没有真正的完善，只要靠近灰色方框附近就可以被点击，点击后提示“完美”，缺点就是没有顺序判断，所以不会限制先按快到的按键，只要靠近下面的灰色方框就可以点击了</p>
+        <p>目前手机平板都可以正常游玩，可以横屏与竖屏玩，平板横屏状态不过按键会很扁，手机横屏玩的按键间隔很短，而且按键调整高难度时看起来是黏在一起的，平板在竖着的状态过程再横屏可能会使游戏重新开始，建议锁屏玩，本人手机无影响</p>
+        <p>横屏没有专门优化代码，所以手机横屏可降低难度，要不然不够视野看到黑色按键，除非你🐂🍺，可挑战极限</p>
+        <p>暂停键有bug😅，黑色按键下落过程再点击暂停的话，黑色按键会停留在灰色方框里，点击后正常会加分😏</p>
+        <p>游戏会在你的设备后天正常运作，在退出前请点击右上角三个点选择“退出”或选择直接删后台，祝你玩得愉快😎</p>
+    </div>
+
+<!-- ，butt是黑色按键的，note是指黑色按键的元素样式，然后可在CSS更换颜色等样式 -->
+    <script>
+        document.querySelector('.button').addEventListener('click', function() {
+            document.querySelector('.overlay').style.display = 'block';
+        });
+
+        document.querySelector('.close').addEventListener('click', function() {
+            document.querySelector('.overlay').style.display = 'none';
+        });
+    </script>
+      <script>
+        const lanes = document.querySelectorAll('.lane');
+        const countdownElement = document.getElementById('countdown');
+        const comboElement = document.getElementById('combo');
+        const difficultyPanel = document.getElementById('difficultyPanel');
+        const pausePanel = document.getElementById('pausePanel');
+        let gameStarted = false;
+        let isPaused = false;
+        let combo = 0;
+        let fallSpeed = 1; // 默认下落速度
+        let densityMin = 0.2; // 默认最小刷新间隔
+        let densityMax = 3; // 默认最大刷新间隔
+        let intervals = []; // 用于存储刷新间隔
+
+        // 显示难度选择面板
+        function showDifficultyPanel() {
+            difficultyPanel.style.display = 'flex';
+        }
+
+        // 应用难度设置
+        function applyDifficulty() {
+            fallSpeed = parseFloat(document.getElementById('fallSpeed').value);
+            densityMin = parseFloat(document.getElementById('densityMin').value);
+            densityMax = parseFloat(document.getElementById('densityMax').value);
+
+
+<!-- 没用的限制😂 -->
+
+
+            // 限制输入范围
+            if (fallSpeed < 0.2) fallSpeed = 0.2;
+            if (fallSpeed > 3) fallSpeed = 3;
+            if (densityMin < 0.2) densityMin = 0.2;
+            if (densityMin > 3) densityMin = 3;
+            if (densityMax < 0.2) densityMax = 0.2;
+            if (densityMax > 3) densityMax = 3;
+
+            difficultyPanel.style.display = 'none';
+            resetGame();
+        }
+
+        // 显示暂停面板
+        function showPausePanel() {
+            isPaused = true;
+            pausePanel.style.display = 'flex';
+            document.querySelectorAll('.note').forEach(note => {
+                note.style.transition = 'none'; // 停止移动
+            });
+        }
+
+        // 继续游戏
+        function resumeGame() {
+            isPaused = false;
+            pausePanel.style.display = 'none';
+            document.querySelectorAll('.note').forEach(note => {
+                note.style.transition = `top ${fallSpeed}s linear`; // 恢复移动
+            });
+        }
+
+        // 重新开始游戏
+        function restartGame() {
+            isPaused = false;
+            pausePanel.style.display = 'none';
+            resetGame();
+        }
+
+        // 重置游戏
+        function resetGame() {
+            gameStarted = false;
+            combo = 0;
+            comboElement.textContent = `Combo: ${combo}`;
+            lanes.forEach(lane => {
+                lane.innerHTML = '<div class="target"></div>';
+            });
+            document.querySelector('.start-button').style.display = 'block';
+            intervals.forEach(interval => clearInterval(interval)); // 清除所有刷新间隔
+            intervals = [];
+        }
+
+        // 开始倒计时
+        function startCountdown() {
+            document.querySelector('.start-button').style.display = 'none';
+            countdownElement.style.display = 'block';
+            let count = 1;
+            const countdownInterval = setInterval(() => {
+                countdownElement.textContent = count;
+                count--;
+                if (count < 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.style.display = 'none';
+                    startGame();
+                }
+            }, 100);
+        }
+
+        // 创建黑色按键
+        function createNote(lane) {
+            const note = document.createElement('div');
+            note.classList.add('note');
+            note.style.setProperty('--fall-speed', `${fallSpeed}s`); // 设置下落速度
+            lane.appendChild(note);
+            setTimeout(() => {
+                note.style.top = `${lane.clientHeight - 70}px`; // 移动到灰色方框附近
+            }, 10);
+            note.addEventListener('transitionend', () => {
+                if (lane.contains(note)) {
+                    lane.removeChild(note);
+                    resetCombo(); // 未点击成功，重置连击
+                }
+            });
+        }
+      
+      //播放音效
+      function playSound() {
+            const sound = document.getElementById('beepSound');
+            sound.currentTime = 0; // 重置音频时间，以便可以连续播放
+            sound.play();
+        }
+
+        // 处理触控事件
+        lanes.forEach(lane => {
+            lane.addEventListener('touchstart', (e) => {
+                if (!gameStarted || isPaused) return;
+                e.preventDefault(); // 阻止默认行为
+                const touches = e.changedTouches;
+                for (let i = 0; i < touches.length; i++) {
+                    const touch = touches[i];
+                    const note = lane.querySelector('.note');
+                    if (note) {
+                        const noteBottom = note.getBoundingClientRect().bottom;
+                        const targetTop = lane.querySelector('.target').getBoundingClientRect().top;
+                        if (noteBottom >= targetTop - 25) { // 接近灰色方框即可点击
+                            lane.removeChild(note);
+                            increaseCombo(); // 增加连击
+                            showFeedback(lane); // 显示“厉害”字样
+                            playSound(); // 播放音效
+                        }
+                    }
+                }
+            });
+        });
+
+        // 启动游戏
+        function startGame() {
+            gameStarted = true;
+            lanes.forEach(lane => {
+                const interval = setInterval(() => {
+                    if (!isPaused && Math.random() < 0.5) { // 随机生成黑色按键
+                        createNote(lane);
+                    }
+                }, Math.random() * (densityMax - densityMin) * 1000 + densityMin * 1000); // 随机间隔
+                intervals.push(interval); // 存储刷新间隔
+            });
+        }
+ 
+        // 显示“完美”字样
+        function showFeedback(lane) {
+            const feedback = document.createElement('div');
+            feedback.classList.add('feedback');
+            feedback.textContent = '完美';
+            lane.appendChild(feedback);
+            setTimeout(() => {
+                feedback.style.opacity = '1';
+            }, 10);
+            setTimeout(() => {
+                feedback.style.opacity = '0';
+                setTimeout(() => {
+                    lane.removeChild(feedback);
+                }, 300);
+            }, 300);
+        }
+
+        // 增加连击
+        function increaseCombo() {
+            combo++;
+            comboElement.textContent = `Combo: ${combo}`;
+        }
+
+        // 重置连击
+        function resetCombo() {
+            combo = 0;
+            comboElement.textContent = `Combo: ${combo}`;
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQ临时会话生成器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 20px;
+            background-color: #f5f5f5;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            font-size: 24px;
+            color: #12b7f5; /* QQ蓝 */
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #12b7f5;
+            box-shadow: 0 0 0 3px rgba(18, 183, 245, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background-color: #12b7f5;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #0da5e0;
+        }
+
+        .tip {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f7f7f7;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .tip strong {
+            color: #e53935;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">QQ 临时会话生成器</h1>
+
+        <div class="input-group">
+            <label for="qqNum">对方 QQ 号</label>
+            <input type="number" id="qqNum" placeholder="请输入要联系的QQ号" required>
+        </div>
+
+        <div class="input-group">
+            <label for="msgContent">自定义消息（可选）</label>
+            <input type="text" id="msgContent" placeholder="输入会话时自动发送的消息（如：您好，我是从网站来的）">
+        </div>
+
+        <button class="btn" onclick="openQQChat()">发起临时会话</button>
+
+        <div class="tip">
+            <strong>使用说明：</strong><br>
+            1. 电脑端：需提前安装 QQ 客户端，点击按钮后会自动唤起 QQ<br>
+            2. 手机端：需安装手机 QQ，支持直接跳转会话（部分浏览器需选择“打开方式”为 QQ）<br>
+            3. 对方需开启“允许临时会话”（QQ 设置 → 隐私 → 允许临时会话）<br>
+            4. 若无法唤起，请复制下方链接手动打开：<span id="linkText"></span>
+        </div>
+    </div>
+
+    <script>
+        function openQQChat() {
+            const qqNum = document.getElementById('qqNum').value.trim();
+            const msgContent = document.getElementById('msgContent').value.trim();
+            const linkText = document.getElementById('linkText');
+
+            // 验证QQ号
+            if (!/^\d{5,13}$/.test(qqNum)) {
+                alert('请输入有效的QQ号！');
+                return;
+            }
+
+            // 构建QQ临时会话链接（兼容电脑和手机）
+            let qqLink = '';
+            if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                // 手机端协议
+                qqLink = `mqqwpa://im/chat?chat_type=wpa&uin=${qqNum}&version=1&src_type=web`;
+                if (msgContent) {
+                    qqLink += `&message=${encodeURIComponent(msgContent)}`;
+                }
+            } else {
+                // 电脑端协议
+                qqLink = `tencent://message/?uin=${qqNum}&Site=网站名称&Menu=yes`;
+                if (msgContent) {
+                    qqLink += `&msg=${encodeURIComponent(msgContent)}`;
+                }
+            }
+
+            // 显示链接（备用）
+            linkText.textContent = qqLink;
+            linkText.style.color = '#12b7f5';
+            linkText.style.fontWeight = 'bold';
+
+            // 唤起QQ
+            window.open(qqLink);
+
+            // 备用方案：复制链接到剪贴板（防止唤起失败）
+            navigator.clipboard.writeText(qqLink).then(() => {
+                // 复制成功，不弹窗干扰
+            }).catch(err => {
+                console.log('复制链接失败：', err);
+            });
+        }
+    </script>
+</body>
+</html>

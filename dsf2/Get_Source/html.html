@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML代码加密器</title>
+    <style>
+        /* 基础重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* 容器 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 头部样式 */
+        header {
+            text-align: center;
+            padding: 40px 0 30px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 2px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            max-width: 800px;
+            margin: 0 auto 25px;
+            line-height: 1.7;
+        }
+        
+        /* 好处列表 */
+        .benefits {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0 40px;
+        }
+        
+        .benefit-item {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 12px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            transition: all 0.3s ease;
+            min-width: 180px;
+        }
+        
+        .benefit-item:hover {
+            transform: translateY(-5px);
+            border-color: #3b82f6;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+        }
+        
+        .benefit-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .benefit-1 .benefit-icon { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .benefit-2 .benefit-icon { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .benefit-3 .benefit-icon { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+        .benefit-4 .benefit-icon { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        
+        .benefit-text {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #f1f5f9;
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 输入输出区域 */
+        .section-card {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .section-card:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 2px;
+        }
+        
+        /* 文本区域 */
+        textarea {
+            width: 100%;
+            min-height: 320px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            border-radius: 12px;
+            color: #f1f5f9;
+            font-size: 15px;
+            line-height: 1.6;
+            resize: vertical;
+            transition: all 0.3s;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        #htmlInput {
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        
+        #htmlOutput {
+            background: rgba(15, 23, 42, 0.8);
+        }
+        
+        /* 控制区域 */
+        .controls {
+            margin-top: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            border-radius: 10px;
+            color: #f1f5f9;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* 按钮 */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .btn-encrypt {
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+            color: white;
+        }
+        
+        .btn-encrypt:hover {
+            background: linear-gradient(90deg, #2563eb, #4f46e5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-decrypt {
+            background: rgba(30, 41, 59, 0.9);
+            color: #e2e8f0;
+            border: 1px solid rgba(100, 116, 139, 0.4);
+        }
+        
+        .btn-decrypt:hover {
+            background: rgba(51, 65, 85, 0.9);
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+        
+        .btn-copy {
+            background: linear-gradient(90deg, #10b981, #059669);
+            color: white;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .btn-copy:hover {
+            background: linear-gradient(90deg, #059669, #047857);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* 使用说明 */
+        .instructions {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 40px 0;
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .instructions h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #e2e8f0;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        .instructions h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 70px;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 2px;
+        }
+        
+        .instructions ul {
+            list-style-type: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 18px;
+        }
+        
+        .instructions li {
+            padding: 15px 0 15px 25px;
+            position: relative;
+            border-bottom: 1px solid rgba(100, 116, 139, 0.1);
+        }
+        
+        .instructions li:last-child {
+            border-bottom: none;
+        }
+        
+        .instructions li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 15px;
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 40px;
+            border-top: 1px solid rgba(100, 116, 139, 0.2);
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+        
+        /* 通知 */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            border-radius: 10px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            max-width: 350px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .notification.info {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #3b82f6;
+        }
+        
+        .notification.success {
+            background: rgba(21, 128, 61, 0.9);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #bbf7d0;
+        }
+        
+        .notification.error {
+            background: rgba(127, 29, 29, 0.9);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fecaca;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .benefits {
+                gap: 15px;
+            }
+            
+            .benefit-item {
+                min-width: 140px;
+                padding: 15px;
+            }
+            
+            .main-content {
+                gap: 20px;
+            }
+            
+            .section-card {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .instructions ul {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HTML代码加密器</h1>
+            <p class="subtitle">HTML代码保护工具，将您的HTML代码加密为无法直接查看源代码的安全文件。加密后的文件无需密码即可正常浏览。但要注意，代码中尽量不要出现表情，部分表情不支持解析，可能会导致乱码。</p>
+            
+            <!-- 好处列表 -->
+            <div class="benefits">
+                <div class="benefit-item benefit-1">
+                    <div class="benefit-icon">🌐</div>
+                    <div class="benefit-text">域名保护</div>
+                </div>
+                <div class="benefit-item benefit-2">
+                    <div class="benefit-icon">🛡️</div>
+                    <div class="benefit-text">防源码窃取</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section section-card">
+                <h2 class="section-title">输入HTML代码</h2>
+                <textarea id="htmlInput" placeholder="在此处粘贴您的HTML代码..."></textarea>
+                
+                <div class="controls">
+                    <div class="input-group">
+                        <label for="password" class="input-label">加密/解密密码</label>
+                        <input type="password" id="password" class="input-field" placeholder="请输入加密密码">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="domain" class="input-label">允许访问的域名</label>
+                        <input type="text" id="domain" class="input-field" placeholder="请输入完整域名">
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="encryptBtn" class="btn btn-encrypt">
+                            <span>🔒</span>
+                            加密HTML
+                        </button>
+                        <button id="decryptBtn" class="btn btn-decrypt">
+                            <span>🔓</span>
+                            解密代码
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="output-section section-card">
+                <h2 class="section-title">加密后的HTML</h2>
+                <textarea id="htmlOutput" placeholder="加密后的HTML代码将显示在这里..." readonly></textarea>
+                
+                <button id="copyBtn" class="btn btn-copy">
+                    <span>📋</span>
+                    复制加密后的HTML
+                </button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>使用说明</h2>
+            <ul>
+                <li><span class="highlight">加密HTML</span>：将HTML代码粘贴到左侧输入框，设置密码和允许访问的域名，点击"加密HTML"按钮。加密后的代码将显示在右侧。</li>
+                <li><span class="highlight">域名验证</span>：加密后的HTML文件只能在指定的域名下运行，否则会显示盗版提示。</li>
+                <li><span class="highlight">重要提示</span>：域名必须输入完整，如`yy-gp.com`。系统会自动去除`http://`、`https://`和`www.`前缀。</li>
+                <li><span class="highlight">加密后的文件</span>：复制右侧的加密代码，保存为.html文件。这个文件可以直接在浏览器中运行，显示原始页面内容。</li>
+                <li><span class="highlight">保护源代码</span>：查看加密后的HTML文件源代码时，只能看到加密代码，无法直接阅读原始HTML。</li>
+                <li><span class="highlight">解密代码</span>：如需查看原始HTML代码，将加密后的HTML代码粘贴到左侧输入框，输入正确密码和域名，点击"解密代码"按钮。</li>
+                <li><span class="highlight">重要提示</span>：请牢记您的密码和域名！如果忘记密码或域名，将无法解密HTML代码。</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>HTML文件加密器 &copy; 2026 | 专业级HTML源码保护解决方案</p>
+        </footer>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+    
+    <!-- JavaScript部分保持不变 -->
+    <script>
+        // 获取DOM元素
+        const htmlInput = document.getElementById('htmlInput');
+        const htmlOutput = document.getElementById('htmlOutput');
+        const passwordInput = document.getElementById('password');
+        const domainInput = document.getElementById('domain');
+        const encryptBtn = document.getElementById('encryptBtn');
+        const decryptBtn = document.getElementById('decryptBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const notification = document.getElementById('notification');
+        
+        // 显示通知
+        function showNotification(message, type = 'info') {
+            notification.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add(type);
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 将字符串转换为Base64，支持Unicode字符
+        function encodeToBase64(str) {
+            // 首先将字符串转换为UTF-8字节数组
+            const utf8Bytes = new TextEncoder().encode(str);
+            
+            // 将字节数组转换为二进制字符串
+            let binaryString = '';
+            for (let i = 0; i < utf8Bytes.length; i++) {
+                binaryString += String.fromCharCode(utf8Bytes[i]);
+            }
+            
+            // 使用btoa将二进制字符串转换为Base64
+            return btoa(binaryString);
+        }
+        
+        // 加密函数
+        function encryptHTML(html, password, domain) {
+            if (!html.trim()) {
+                throw new Error('请输入要加密的HTML代码');
+            }
+            
+            if (!password) {
+                throw new Error('请输入加密密码');
+            }
+            
+            if (!domain) {
+                throw new Error('请输入允许访问的域名');
+            }
+            
+            // 清理域名输入
+            domain = domain.trim().toLowerCase();
+            domain = domain.replace(/^https?:\/\//, '');
+            domain = domain.replace(/^www\./, '');
+            domain = domain.replace(/\/.*$/, '');
+            
+            // 生成密钥
+            const key = Array.from(password).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+            
+            // 生成域名验证密钥
+            const domainKey = Array.from(domain).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+            
+            // 将HTML转换为字符数组并加密
+            const encryptedChars = Array.from(html).map((char, index) => {
+                const charCode = char.charCodeAt(0);
+                // 使用简单的XOR加密，结合字符位置和密钥
+                const encryptedCode = charCode ^ (key + index % 256);
+                return String.fromCharCode(encryptedCode);
+            });
+            
+            // 转换为base64
+            const encryptedString = encodeToBase64(encryptedChars.join(''));
+            
+            // 创建加密后的HTML模板
+            const encryptedHTML = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加密的HTML文件</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .decrypt-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .decrypt-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .decrypt-box h2 {
+            margin-bottom: 20px;
+        }
+        .decrypt-box p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        .decrypt-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+        }
+        .decrypt-btn {
+            padding: 12px 30px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .decrypt-btn:hover {
+            background: #45a049;
+        }
+        .hidden {
+            display: none !important;
+        }
+        #contentContainer {
+            all: initial !important;
+        }
+        .domain-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #c62828;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            text-align: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .domain-warning h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ffcdd2;
+        }
+        .domain-warning p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            max-width: 800px;
+        }
+        .domain-warning .current-domain {
+            color: #ffcdd2;
+            font-weight: bold;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .domain-warning .allowed-domain {
+            color: #c8e6c9;
+            font-weight: bold;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .debug-info {
+            font-size: 0.9rem;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: left;
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body>
+    <div id="domainWarning" class="domain-warning hidden">
+        <h1>盗版警告！</h1>
+        <p>此HTML文件只能在指定的授权域名下运行。</p>
+        <p>当前域名：<span id="currentDomainDisplay" class="current-domain"></span></p>
+        <p>授权域名：<span id="allowedDomainDisplay" class="allowed-domain"></span></p>
+        <div id="debugInfo" class="debug-info"></div>
+        <p style="margin-top: 30px; font-size: 1rem; opacity: 0.8;">如需正常使用，请联系文件作者获取授权版本。</p>
+    </div>
+
+    <div id="decryptPrompt" class="decrypt-container">
+        <div class="decrypt-box">
+            <h2>需要密码查看源代码</h2>
+            <p>此HTML文件已加密。要查看源代码，请输入密码：</p>
+            <input type="password" id="decryptPassword" class="decrypt-input" placeholder="输入密码">
+            <button id="showSourceBtn" class="decrypt-btn">显示源代码</button>
+            <p style="font-size: 14px; margin-top: 20px; opacity: 0.7;">注意：此页面内容可以正常浏览，无需密码。</p>
+        </div>
+    </div>
+
+    <div id="contentContainer" class="hidden"></div>
+
+    <script>
+        // 域名验证和加密的数据
+        const allowedDomainKey = ${domainKey};
+        const allowedDomain = "${domain}";
+        const encryptedData = "${encryptedString}";
+        const passwordKey = ${key};
+        
+        // 域名验证函数
+        function validateDomain() {
+            try {
+                // 获取当前域名（不包含端口和协议）
+                let currentDomain = window.location.hostname.toLowerCase();
+                
+                // 移除www.前缀进行统一比较
+                currentDomain = currentDomain.replace(/^www\\./, '');
+                let allowedDomainClean = allowedDomain.toLowerCase().replace(/^www\\./, '');
+                
+                // 调试信息
+                let debugHtml = '<strong>调试信息：</strong><br>';
+                debugHtml += '原始当前域名: ' + window.location.hostname + '<br>';
+                debugHtml += '处理后的当前域名: ' + currentDomain + '<br>';
+                debugHtml += '原始授权域名: ' + allowedDomain + '<br>';
+                debugHtml += '处理后的授权域名: ' + allowedDomainClean + '<br>';
+                debugHtml += '当前域名密钥: ' + Array.from(currentDomain).reduce((sum, char) => sum + char.charCodeAt(0), 0) + '<br>';
+                debugHtml += '授权域名密钥: ' + allowedDomainKey + '<br>';
+                
+                // 计算当前域名的密钥
+                const currentDomainKey = Array.from(currentDomain).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+                
+                debugHtml += '密钥匹配: ' + (currentDomainKey === allowedDomainKey ? '是' : '否') + '<br>';
+                debugHtml += '直接域名匹配: ' + (currentDomain === allowedDomainClean ? '是' : '否') + '<br>';
+                
+                // 验证域名
+                if (currentDomainKey === allowedDomainKey) {
+                    // 密钥匹配，允许访问
+                    document.getElementById('debugInfo').innerHTML = debugHtml + '<br><span style="color: green;">验证成功！</span>';
+                    return true;
+                } else {
+                    // 显示调试信息
+                    document.getElementById('debugInfo').innerHTML = debugHtml + '<br><span style="color: red;">验证失败！</span>';
+                    
+                    // 也尝试直接比较域名（作为备用验证）
+                    if (currentDomain === allowedDomainClean) {
+                        document.getElementById('debugInfo').innerHTML += '<br><span style="color: green;">直接域名匹配成功！</span>';
+                        return true;
+                    }
+                    
+                    showDomainWarning(currentDomain, allowedDomainClean);
+                    return false;
+                }
+            } catch (e) {
+                console.error('域名验证失败:', e);
+                document.getElementById('debugInfo').innerHTML = '验证异常: ' + e.message;
+                return false;
+            }
+        }
+        
+        // 显示域名警告
+        function showDomainWarning(current, allowed) {
+            const warning = document.getElementById('domainWarning');
+            const currentDisplay = document.getElementById('currentDomainDisplay');
+            const allowedDisplay = document.getElementById('allowedDomainDisplay');
+            
+            if (warning && currentDisplay && allowedDisplay) {
+                currentDisplay.textContent = current;
+                allowedDisplay.textContent = allowed;
+                warning.classList.remove('hidden');
+                
+                // 隐藏其他所有内容
+                document.getElementById('decryptPrompt')?.classList.add('hidden');
+                document.getElementById('contentContainer')?.classList.add('hidden');
+            }
+        }
+        
+        // 支持Unicode的Base64解码函数
+        function decodeBase64(base64) {
+            try {
+                // 将Base64解码为二进制字符串
+                const binaryString = atob(base64);
+                
+                // 将二进制字符串转换为字节数组
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                
+                // 将UTF-8字节数组解码为字符串
+                return new TextDecoder().decode(bytes);
+            } catch (e) {
+                console.error('Base64解码失败:', e);
+                return "";
+            }
+        }
+        
+        // 解密函数
+        function decryptHTML(encryptedData, key) {
+            try {
+                // 从base64解码
+                const decodedData = decodeBase64(encryptedData);
+                if (!decodedData) {
+                    return "<p style='color: red;'>解密失败：数据损坏</p>";
+                }
+                
+                // 解密字符
+                const decryptedChars = [];
+                for (let i = 0; i < decodedData.length; i++) {
+                    const charCode = decodedData.charCodeAt(i);
+                    // 使用相同的XOR解密
+                    const decryptedCode = charCode ^ (key + i % 256);
+                    decryptedChars.push(String.fromCharCode(decryptedCode));
+                }
+                
+                return decryptedChars.join('');
+            } catch (e) {
+                console.error('解密失败:', e);
+                return "<p style='color: red;'>解密失败。请检查密码是否正确。</p>";
+            }
+        }
+        
+        // 显示原始HTML内容 - 使用document.write完全替换当前文档
+        function showOriginalContent() {
+            try {
+                // 先验证域名
+                if (!validateDomain()) {
+                    return;
+                }
+                
+                const decryptedHTML = decryptHTML(encryptedData, passwordKey);
+                
+                // 使用document.write完全替换当前文档
+                document.open();
+                document.write(decryptedHTML);
+                document.close();
+            } catch (e) {
+                console.error('显示内容失败:', e);
+                alert('显示内容失败，请检查密码是否正确');
+            }
+        }
+        
+        // 显示源代码
+        function showSourceCode(password) {
+            try {
+                const userKey = Array.from(password).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+                
+                if (userKey === passwordKey) {
+                    const decryptedHTML = decryptHTML(encryptedData, passwordKey);
+                    
+                    // 创建新窗口显示源代码
+                    const sourceWindow = window.open();
+                    if (!sourceWindow) {
+                        alert('弹出窗口被阻止，请允许弹出窗口后重试');
+                        return;
+                    }
+                    
+                    sourceWindow.document.write(
+                        '<!DOCTYPE html><html><head><title>HTML源代码</title>' +
+                        '<style>body { font-family: monospace; background: #f5f5f5; padding: 20px; } pre { background: white; padding: 20px; border-radius: 5px; overflow: auto; }</style></head>' +
+                        '<body><h2>HTML源代码</h2><pre>' + 
+                        decryptedHTML
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#039;') + 
+                        '</pre></body></html>'
+                    );
+                    sourceWindow.document.close();
+                } else {
+                    alert('密码错误！');
+                }
+            } catch (e) {
+                console.error('显示源代码失败:', e);
+                alert('显示源代码失败');
+            }
+        }
+        
+        // 页面加载时自动显示原始内容
+        window.addEventListener('DOMContentLoaded', function() {
+            showOriginalContent();
+        });
+        
+        // 设置查看源代码按钮事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 由于document.write会替换整个文档，我们需要重新获取元素
+            setTimeout(function() {
+                const sourceBtn = document.getElementById('showSourceBtn');
+                const passwordInput = document.getElementById('decryptPassword');
+                
+                if (sourceBtn && passwordInput) {
+                    sourceBtn.addEventListener('click', function() {
+                        const password = passwordInput.value;
+                        if (password) {
+                            showSourceCode(password);
+                        } else {
+                            alert('请输入密码');
+                        }
+                    });
+                    
+                    // 允许按Enter键提交密码
+                    passwordInput.addEventListener('keyup', function(event) {
+                        if (event.key === 'Enter') {
+                            sourceBtn.click();
+                        }
+                    });
+                }
+            }, 100);
+        });
+    <\/script>
+</body>
+</html>`;
+            
+            return encryptedHTML;
+        }
+        
+        // 解密函数
+        function decryptHTML(encryptedHTML, password, domain) {
+            if (!encryptedHTML.trim()) {
+                throw new Error('请输入要解密的HTML代码');
+            }
+            
+            if (!password) {
+                throw new Error('请输入解密密码');
+            }
+            
+            if (!domain) {
+                throw new Error('请输入允许访问的域名');
+            }
+            
+            // 清理域名输入
+            domain = domain.trim().toLowerCase();
+            domain = domain.replace(/^https?:\/\//, '');
+            domain = domain.replace(/^www\./, '');
+            domain = domain.replace(/\/.*$/, '');
+            
+            // 从加密的HTML中提取数据
+            const domainKeyMatch = encryptedHTML.match(/const allowedDomainKey = (\d+)/);
+            const domainMatch = encryptedHTML.match(/const allowedDomain = "([^"]+)"/);
+            const dataMatch = encryptedHTML.match(/const encryptedData = "([^"]+)"/);
+            const keyMatch = encryptedHTML.match(/const passwordKey = (\d+)/);
+            
+            if (!domainKeyMatch || !domainMatch || !dataMatch || !keyMatch) {
+                throw new Error('这不是有效的加密HTML文件');
+            }
+            
+            const storedDomainKey = parseInt(domainKeyMatch[1]);
+            const storedDomain = domainMatch[1];
+            const encryptedData = dataMatch[1];
+            const storedKey = parseInt(keyMatch[1]);
+            
+            // 从密码和域名计算密钥
+            const userKey = Array.from(password).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+            const userDomainKey = Array.from(domain).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+            
+            // 验证密码和域名
+            if (userKey !== storedKey) {
+                throw new Error('密码错误');
+            }
+            
+            if (userDomainKey !== storedDomainKey && domain !== storedDomain.replace(/^www\./, '')) {
+                throw new Error('域名不匹配');
+            }
+            
+            // 支持Unicode的Base64解码函数
+            function decodeBase64(base64) {
+                try {
+                    const binaryString = atob(base64);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    return new TextDecoder().decode(bytes);
+                } catch (e) {
+                    return "";
+                }
+            }
+            
+            // 解密数据
+            try {
+                const decodedData = decodeBase64(encryptedData);
+                
+                const decryptedChars = Array.from(decodedData).map((char, index) => {
+                    const charCode = char.charCodeAt(0);
+                    const decryptedCode = charCode ^ (storedKey + index % 256);
+                    return String.fromCharCode(decryptedCode);
+                });
+                
+                return decryptedChars.join('');
+            } catch (e) {
+                throw new Error('解密失败');
+            }
+        }
+        
+        // 加密按钮点击事件
+        encryptBtn.addEventListener('click', () => {
+            try {
+                const html = htmlInput.value;
+                const password = passwordInput.value;
+                const domain = domainInput.value;
+                
+                const encryptedHTML = encryptHTML(html, password, domain);
+                htmlOutput.value = encryptedHTML;
+                
+                showNotification('HTML加密成功！复制右侧代码并保存为.html文件即可使用。', 'success');
+            } catch (error) {
+                showNotification(`加密失败: ${error.message}`, 'error');
+            }
+        });
+        
+        // 解密按钮点击事件
+        decryptBtn.addEventListener('click', () => {
+            try {
+                const html = htmlInput.value;
+                const password = passwordInput.value;
+                const domain = domainInput.value;
+                
+                const decryptedHTML = decryptHTML(html, password, domain);
+                htmlOutput.value = decryptedHTML;
+                
+                showNotification('HTML解密成功！原始代码已显示在右侧。', 'success');
+            } catch (error) {
+                showNotification(`解密失败: ${error.message}`, 'error');
+            }
+        });
+        
+        // 复制按钮点击事件
+        copyBtn.addEventListener('click', () => {
+            if (!htmlOutput.value.trim()) {
+                showNotification('没有内容可复制', 'error');
+                return;
+            }
+            
+            htmlOutput.select();
+            document.execCommand('copy');
+            
+            showNotification('加密的HTML代码已复制到剪贴板！', 'success');
+        });
+        
+        // 自动调整文本区域高度
+        function autoResizeTextarea(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+        
+        htmlInput.addEventListener('input', function() {
+            autoResizeTextarea(this);
+        });
+        
+        // 初始调整
+        autoResizeTextarea(htmlInput);
+    </script>
+</body>
+</html>

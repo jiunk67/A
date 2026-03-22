@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP归属地查询工具</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6C5CE7;
+            --primary-dark: #5649C0;
+            --secondary-color: #00B894;
+            --error-color: #D63031;
+            --warning-color: #FDCB6E;
+            --background: linear-gradient(135deg, #1a1a2e, #16213e);
+            --surface: rgba(255, 255, 255, 0.08);
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --divider: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 星链粒子特效 */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: transparent;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--surface);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--divider);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        header h1 {
+            font-weight: 500;
+            margin-left: 12px;
+            font-size: 22px;
+            position: relative;
+        }
+
+        .material-icons {
+            font-size: 32px;
+            position: relative;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-direction: column;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .input-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: var(--background);
+            padding: 0 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            z-index: 1;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--divider);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
+            background-color: rgba(108, 92, 231, 0.1);
+        }
+
+        .btn {
+            padding: 14px 24px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover::after {
+            opacity: 1;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .result-section {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--divider);
+            backdrop-filter: blur(8px);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--divider);
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .info-item {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 15px;
+            font-weight: 500;
+            padding: 10px 12px;
+            background-color: rgba(108, 92, 231, 0.1);
+            border-radius: 8px;
+            word-break: break-word;
+            transition: all 0.3s ease;
+            border: 1px solid var(--divider);
+        }
+
+        .info-value:hover {
+            background-color: rgba(108, 92, 231, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .raw-data-btn {
+            background: linear-gradient(135deg, var(--secondary-color), #00a884);
+            flex: 1;
+        }
+
+        .close-panel-btn {
+            background: linear-gradient(135deg, #636e72, #2d3436);
+            flex: 1;
+        }
+
+        .raw-data-section {
+            display: none;
+            margin-top: 16px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .raw-data-content {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--divider);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 16px;
+            border: 4px solid rgba(108, 92, 231, 0.1);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: var(--error-color);
+            margin-top: 12px;
+            padding: 12px;
+            background-color: rgba(214, 48, 49, 0.1);
+            border-radius: 12px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            border: 1px solid rgba(214, 48, 49, 0.3);
+            text-align: center;
+        }
+
+        .time-display {
+            background: rgba(108, 92, 231, 0.15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--divider);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .time-display div {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .time-display .date {
+            color: var(--text-primary);
+        }
+
+        .time-display .time {
+            color: var(--primary-color);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            padding: 20px;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+                border-radius: 14px;
+            }
+            
+            header {
+                padding: 16px;
+            }
+            
+            .content {
+                padding: 16px;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .info-value {
+                font-size: 14px;
+                padding: 8px 10px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* 特殊高亮样式 */
+        .highlight {
+            background: linear-gradient(90deg, transparent 0%, rgba(108, 92, 231, 0.2) 50%, transparent 100%);
+            animation: highlight 2s ease infinite;
+        }
+
+        @keyframes highlight {
+            0% { background-position: -100% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    
+    <div class="container">
+        <header>
+            <i class="material-icons">search</i>
+            <h1>IP归属地查询工具</h1>
+        </header>
+
+        <div class="content">
+            <div class="input-section">
+                <div class="input-container">
+                    <span class="input-label">IP地址 (IPv4/IPv6)</span>
+                    <input type="text" id="ip-input" class="input-field" placeholder="例如: 58.30.0.0，空白输入查询本机IP">
+                </div>
+                <button id="query-btn" class="btn">
+                    <i class="material-icons">search</i>
+                    <span>查询</span>
+                </button>
+            </div>
+            <div id="error-message" class="error-message"></div>
+
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>正在查询中，请稍候...</p>
+            </div>
+
+            <div id="result-section" class="result-section">
+                <div class="time-display">
+                    <div class="date" id="current-date">2025年X月X日 星期X</div>
+                    <div class="time" id="current-time">00:00:01</div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-header">
+                        <h2 class="result-title">IP归属地信息</h2>
+                    </div>
+                    <div class="result-grid" id="result-grid">
+                        <!-- 动态填充结果 -->
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="raw-data-btn" class="btn raw-data-btn">
+                        <i class="material-icons">code</i>
+                        <span>查看原始数据</span>
+                    </button>
+                    <button id="close-panel-btn" class="btn close-panel-btn">
+                        <i class="material-icons">close</i>
+                        <span>关闭面板</span>
+                    </button>
+                </div>
+
+                <div id="raw-data-section" class="raw-data-section">
+                    <div class="result-header">
+                        <h2 class="result-title">原始响应数据</h2>
+                    </div>
+                    <div id="raw-data-content" class="raw-data-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>数据由 ip9.com.cn API 提供 | &copy; 2025 IP查询工具</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化粒子效果
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": {
+                        "value": 80,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#6C5CE7"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.3,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#6C5CE7",
+                        "opacity": 0.2,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 2,
+                        "direction": "none",
+                        "random": true,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 0.5
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200,
+                            "duration": 0.4
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+
+            // 获取DOM元素
+            const ipInput = document.getElementById('ip-input');
+            const queryBtn = document.getElementById('query-btn');
+            const resultSection = document.getElementById('result-section');
+            const resultGrid = document.getElementById('result-grid');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            const rawDataBtn = document.getElementById('raw-data-btn');
+            const rawDataSection = document.getElementById('raw-data-section');
+            const rawDataContent = document.getElementById('raw-data-content');
+            const closePanelBtn = document.getElementById('close-panel-btn');
+            const currentDate = document.getElementById('current-date');
+            const currentTime = document.getElementById('current-time');
+
+            // 更新时间显示
+            function updateTime() {
+                const now = new Date();
+                const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+                
+                const year = now.getFullYear();
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const day = now.getDate().toString().padStart(2, '0');
+                const weekday = weekdays[now.getDay()];
+                
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                
+                currentDate.textContent = `${year}年${month}月${day}日 ${weekday}`;
+                currentTime.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+            
+            // 每秒更新时间
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            // IP地址验证
+            function isValidIP(ip) {
+                // IPv4验证
+                const ipv4Pattern = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+                
+                // IPv6验证 (简化版)
+                const ipv6Pattern = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
+                
+                return ipv4Pattern.test(ip) || ipv6Pattern.test(ip);
+            }
+
+            // 输入过滤
+            ipInput.addEventListener('input', function(e) {
+                const value = e.target.value;
+                if (value.length > 0 && !/^[0-9.:a-fA-F]*$/.test(value)) {
+                    e.target.value = value.replace(/[^0-9.:a-fA-F]/g, '');
+                }
+            });
+
+            // 查询按钮点击事件
+            queryBtn.addEventListener('click', function() {
+                const ip = ipInput.value.trim();
+                
+                // 验证IP
+                if (ip && !isValidIP(ip)) {
+                    showError('请输入有效的IPv4或IPv6地址');
+                    return;
+                }
+                
+                // 清除错误和之前的结果
+                hideError();
+                resultSection.style.display = 'none';
+                loading.style.display = 'block';
+                queryBtn.disabled = true;
+                
+                // 构建API URL
+                let apiUrl = 'https://ip9.com.cn/get';
+                if (ip) {
+                    apiUrl += `?ip=${encodeURIComponent(ip)}`;
+                }
+                
+                // 发起请求
+                axios.get(apiUrl)
+                    .then(response => {
+                        loading.style.display = 'none';
+                        queryBtn.disabled = false;
+                        
+                        if (response.data.ret === 200) {
+                            displayResults(response.data);
+                            resultSection.style.display = 'block';
+                        } else {
+                            showError('查询失败: ' + (response.data.message || '未知错误'));
+                        }
+                    })
+                    .catch(error => {
+                        loading.style.display = 'none';
+                        queryBtn.disabled = false;
+                        showError('请求失败: ' + (error.message || '网络错误'));
+                        console.error('API请求错误:', error);
+                    });
+            });
+
+            // 显示错误信息
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+
+            // 隐藏错误信息
+            function hideError() {
+                errorMessage.style.display = 'none';
+            }
+
+            // 显示查询结果
+            function displayResults(data) {
+                // 清空之前的结果
+                resultGrid.innerHTML = '';
+                
+                const ipData = data.data || {};
+                
+                // 添加IP信息项
+                addInfoItem('IP地址', ipInput.value.trim() || '当前IP');
+                addInfoItem('国家/地区', `${ipData.country || '未知'} (${ipData.country_code || '未知'})`);
+                addInfoItem('省份', ipData.prov || '未知');
+                addInfoItem('城市', ipData.city || '未知');
+                addInfoItem('区县', ipData.area || '未知');
+                addInfoItem('邮政编码', ipData.post_code || '未知');
+                addInfoItem('电话区号', ipData.area_code || '未知');
+                addInfoItem('ISP提供商', ipData.isp || '未知');
+                addInfoItem('城市代码', ipData.city_code || '未知');
+                addInfoItem('城市简称', ipData.city_short_code || '未知');
+                addInfoItem('国内大区', ipData.big_area || '未知');
+                addInfoItem('经度', ipData.Ing || ipData.lgt || '未知');
+                addInfoItem('纬度', ipData.lat || '未知');
+                addInfoItem('Long IP', ipData.long_ip || '未知');
+                addInfoItem('查询时间', `${data.qt || 0}秒`);
+                
+                // 存储原始数据用于显示
+                rawDataContent.textContent = JSON.stringify(data, null, 2);
+            }
+
+            // 添加信息项到结果网格
+            function addInfoItem(label, value) {
+                if (!value || value === '未知') return;
+                
+                const item = document.createElement('div');
+                item.className = 'info-item';
+                
+                const labelEl = document.createElement('div');
+                labelEl.className = 'info-label';
+                labelEl.textContent = label;
+                
+                const valueEl = document.createElement('div');
+                valueEl.className = 'info-value';
+                valueEl.textContent = value;
+                
+                // 为重要信息添加高亮效果
+                if (label === 'IP地址' || label === '国家/地区') {
+                    valueEl.classList.add('highlight');
+                }
+                
+                item.appendChild(labelEl);
+                item.appendChild(valueEl);
+                resultGrid.appendChild(item);
+            }
+
+            // 显示原始数据
+            rawDataBtn.addEventListener('click', function() {
+                if (rawDataSection.style.display === 'none' || !rawDataSection.style.display) {
+                    rawDataSection.style.display = 'block';
+                    rawDataBtn.innerHTML = '<i class="material-icons">code</i><span>隐藏原始数据</span>';
+                } else {
+                    rawDataSection.style.display = 'none';
+                    rawDataBtn.innerHTML = '<i class="material-icons">code</i><span>查看原始数据</span>';
+                }
+            });
+
+            // 关闭面板
+            closePanelBtn.addEventListener('click', function() {
+                resultSection.style.display = 'none';
+                rawDataSection.style.display = 'none';
+                rawDataBtn.innerHTML = '<i class="material-icons">code</i><span>查看原始数据</span>';
+            });
+
+            // 回车键触发查询
+            ipInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    queryBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

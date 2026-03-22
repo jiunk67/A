@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>智能对话助手</title>
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-light: #EEF2FF;
+      --white: #FFFFFF;
+      --gray-100: #F9FAFB;
+      --gray-200: #F3F4F6;
+      --gray-300: #E5E7EB;
+      --gray-600: #6B7280;
+      --gray-900: #111827;
+      --danger: #EF4444;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.05);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 20px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--gray-100);
+      overflow: hidden;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background-color: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-900);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-title svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--primary);
+    }
+
+    .settings-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background-color: var(--gray-100);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .settings-btn:hover {
+      background-color: var(--gray-200);
+    }
+
+    .settings-btn:active {
+      transform: scale(0.95);
+    }
+
+    .settings-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--gray-600);
+    }
+
+    .model-selector {
+      position: absolute;
+      top: 62px;
+      right: 20px;
+      width: 230px;
+      background-color: var(--white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+      display: none;
+      z-index: 100;
+      animation: popIn 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    .model-selector.show {
+      display: block;
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .model-selector-header {
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--gray-600);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .model-option {
+      padding: 13px 16px;
+      font-size: 15px;
+      color: var(--gray-900);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .model-option:hover {
+      background-color: var(--gray-100);
+    }
+
+    .model-option.active {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .model-option.active::after {
+      content: "✓";
+      font-size: 16px;
+    }
+
+    .chat-container {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      scrollbar-width: thin;
+    }
+
+    .chat-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb {
+      background-color: var(--gray-300);
+      border-radius: 3px;
+    }
+
+    .chat-container::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+
+    .message {
+      max-width: 75%;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      line-height: 1.6;
+      font-size: 15px;
+      animation: fadeIn 0.3s ease-out;
+      position: relative;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
+      background-color: var(--primary);
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 2px 5px rgba(79, 70, 229, 0.15);
+    }
+
+    .message.assistant {
+      background-color: var(--white);
+      color: var(--gray-900);
+      border: 1px solid var(--gray-200);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .message.system {
+      align-self: center;
+      max-width: 60%;
+      padding: 8px 14px;
+      background-color: var(--gray-100);
+      color: var(--gray-600);
+      font-size: 13px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .message.error {
+      color: var(--danger);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .input-area {
+      padding: 15px 20px;
+      background-color: var(--white);
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    #message-input {
+      flex: 1;
+      min-height: 42px;
+      max-height: 140px;
+      padding: 12px 16px;
+      border: 1px solid var(--gray-300);
+      border-radius: 22px;
+      outline: none;
+      resize: none;
+      font-size: 15px;
+      line-height: 1.5;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #message-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+    }
+
+    #message-input::placeholder {
+      color: var(--gray-400);
+    }
+
+    #send-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    #send-btn:hover {
+      background-color: #4338CA;
+    }
+
+    #send-btn:active {
+      transform: scale(0.93);
+    }
+
+    #send-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .loading {
+      align-self: flex-start;
+      padding: 12px 16px;
+      background-color: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      color: var(--gray-600);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .loading-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--primary);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+
+    .loading-dot:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    .loading-dot:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+      }
+
+      40% {
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .header {
+        padding: 12px 16px;
+      }
+
+      .model-selector {
+        width: 200px;
+        right: 16px;
+      }
+
+      .chat-container {
+        padding: 16px;
+        gap: 14px;
+      }
+
+      .message {
+        max-width: 85%;
+        font-size: 14px;
+        padding: 12px 16px;
+      }
+
+      .input-area {
+        padding: 12px 16px;
+      }
+
+      #message-input {
+        min-height: 40px;
+        font-size: 14px;
+      }
+
+      #send-btn {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 顶部导航栏 -->
+  <div class="header">
+    <div class="header-title">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
+      </svg>
+      极客匣AI助手
+    </div>
+    <button class="settings-btn" id="settings-btn">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41L9.25 5.35C8.66 5.59 8.12 5.92 7.63 6.29l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- 模型选择弹窗（已删除 gemma 模型选项） -->
+  <div class="model-selector" id="model-selector">
+    <div class="model-selector-header">选择AI模型</div>
+    <div class="model-option active" data-model="qwen" data-url="https://api.fohok.xin/API/qwen.php">通义千问</div>
+    <div class="model-option" data-model="deepseek" data-url="https://api.fohok.xin/API/DeepSeek-R1.php">DeepSeek-R1</div>
+    <div class="model-option" data-model="qingyunke" data-url="https://api.fohok.xin/API/qyk.php">青云客AI</div>
+    <div class="model-option" data-model="yunzhiTWOS" data-url="https://api.fohok.xin/API/jkyai.php">云智TWOS模型</div>
+  </div>
+
+  <!-- 聊天容器 -->
+  <div class="chat-container" id="chat-container">
+    <div class="message system">今天是 <span id="current-date"></span>，很高兴为你服务</div>
+    <div class="message assistant">你好！我是极客匣AI助手，有什么可以帮助你的吗？官群:1059805159</div>
+  </div>
+
+  <!-- 输入区域 -->
+  <div class="input-area">
+    <textarea id="message-input" placeholder="请输入你的问题..."></textarea>
+    <button id="send-btn">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2.05 13h19.9c.07-.23.1-.46.1-.7s-.03-.47-.1-.7H2.05c-.07.23-.1.46-.1.7s.03.47.1.7zM12 17.25c-1.43 0-2.61-1.45-2.61-3.25s1.18-3.25 2.61-3.25 2.61 1.45 2.61 3.25-1.18 3.25-2.61 3.25zm0-5c-.41 0-.75.34-.75.75s.34.75.75.75.75-.34.75-.75-.34-.75-.75-.75z" fill="currentColor"/>
+        <path d="M22 2.05V12h-2V4.59l-9.19 9.19-.71-.71L19.41 4H12V2h10c.55 0 1 .45 1 1.05z" fill="currentColor"/>
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    // 初始化日期显示
+    const currentDateElement = document.getElementById('current-date');
+    if (currentDateElement) {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.toLocaleString('zh-CN', { month: 'long' });
+        const day = now.getDate();
+        const weekday = now.toLocaleString('zh-CN', { weekday: 'long' });
+        currentDateElement.textContent = `${year}年${month}${day}日 ${weekday}`;
+    }
+
+    // 全局模型配置（已无 gemma 相关）
+    let currentModel = {
+        name: "qwen",
+        url: "https://api.fohok.xin/API/qwen.php",
+        type: "json"
+    };
+
+    // DOM 元素获取
+    const settingsBtn = document.getElementById("settings-btn");
+    const modelSelector = document.getElementById("model-selector");
+    const modelOptions = document.querySelectorAll(".model-option");
+    const sendBtn = document.getElementById("send-btn");
+    const messageInput = document.getElementById("message-input");
+    const chatContainer = document.getElementById("chat-container");
+
+    // 设置按钮交互逻辑
+    settingsBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        modelSelector.classList.toggle("show");
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!modelSelector.contains(e.target) && e.target!== settingsBtn) {
+            modelSelector.classList.remove("show");
+        }
+    });
+
+    // 模型切换逻辑（含清空聊天内容，无 gemma 相关处理）
+    modelOptions.forEach(option => {
+        option.addEventListener("click", () => {
+            modelOptions.forEach(opt => opt.classList.remove("active"));
+            option.classList.add("active");
+
+            currentModel = {
+                name: option.getAttribute("data-model"),
+                url: option.getAttribute("data-url"),
+                type: "json" 
+            };
+
+            // 清空聊天内容，保留初始系统消息
+            chatContainer.innerHTML = `
+                <div class="message system">今天是 <span id="current-date"></span>，很高兴为你服务</div>
+                <div class="message assistant">你好！我是极客匣AI助手，有什么可以帮助你的吗？官群:1059805159</div>
+            `;
+
+            modelSelector.classList.remove("show");
+            scrollToBottom();
+        });
+    });
+
+    // 消息发送逻辑（适配剩余模型，无 gemma 相关处理）
+    sendBtn.addEventListener("click", sendMessage);
+    messageInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" &&!e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        addMessage("user", message);
+        messageInput.value = "";
+        adjustInputHeight();
+
+        const loadingDiv = createLoadingElement();
+        chatContainer.appendChild(loadingDiv);
+        scrollToBottom();
+
+        let params;
+        if (currentModel.name === "yunzhiTWOS") {
+            params = new URLSearchParams({
+                msg: message
+            });
+        } else {
+            params = new URLSearchParams({
+                msg: message,
+                type: currentModel.type 
+            });
+        }
+
+        fetch(`${currentModel.url}?${params}`, { method: "GET" })
+           .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP 错误: ${response.status}`);
+                }
+                return response.json();
+            })
+           .then(data => {
+                chatContainer.removeChild(loadingDiv);
+                console.log("接口返回数据:", data);
+
+                let reply = "";
+                if (currentModel.name === "yunzhiTWOS") {
+                    if (data.status === "success" && data.code === 200) {
+                        reply = data.data?.response || "未获取到有效回复";
+                    } else {
+                        reply = `请求失败: [${data.code || "未知"}] ${data.message || "无详细信息"}`;
+                    }
+                } else {
+                    if (data?.status === "success" && data?.code === 200) {
+                        reply = data.data?.response || data.response || "未获取到有效回复内容"; 
+                    } else {
+                        reply = `请求失败: [${data?.code || "未知"}] ${data?.message || "无详细错误信息"}`;
+                    }
+                }
+
+                if (reply.trim() === "" || reply === "未获取到有效回复内容") {
+                    reply = "抱歉，未能获取到有效回复，请尝试重新提问或换个问题";
+                }
+
+                addMessage("assistant", reply);
+            })
+           .catch(error => {
+                chatContainer.removeChild(loadingDiv);
+                addMessage("assistant", `接口调用失败: ${error.message}`, true);
+            });
+    }
+
+    // 辅助函数 - 创建加载元素
+    function createLoadingElement() {
+        const loadingDiv = document.createElement("div");
+        loadingDiv.className = "loading";
+        loadingDiv.innerHTML = `
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+            <span>正在生成回复...</span>
+        `;
+        return loadingDiv;
+    }
+
+    // 辅助函数 - 添加消息到聊天窗口
+    function addMessage(role, content, isError = false) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${role}`;
+        if (isError) messageDiv.classList.add("error");
+        messageDiv.textContent = content;
+        chatContainer.appendChild(messageDiv);
+        scrollToBottom();
+    }
+
+    // 辅助函数 - 滚动到底部
+    function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // 辅助函数 - 调整输入框高度
+    function adjustInputHeight() {
+        messageInput.style.height = "auto";
+        messageInput.style.height = Math.min(messageInput.scrollHeight, 140) + "px";
+    }
+
+    messageInput.addEventListener("input", adjustInputHeight);
+  </script>
+</body>
+</html>

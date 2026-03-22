@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>王者荣耀战力查询</title>
+    <style>
+        /* 基础样式 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: #f7f8fa;
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 20px;
+        }
+        
+        /* 主容器 */
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        /* 卡片通用样式 */
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        /* 头部卡片 */
+        .header-card {
+            background: linear-gradient(135deg, #7649FC, #4F8BFF, #4DC9FF);
+            margin-bottom: 20px;
+            padding: 5px;
+        }
+        
+        .header-title {
+            padding: 15px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.4rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 用户信息区域 */
+        .user-info {
+            padding: 25px 15px;
+            background: linear-gradient(to bottom, #ffffff, #f9fbff);
+        }
+        
+        .user-info-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 4px solid #ffffff;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(65, 132, 234, 0.2);
+            flex-shrink: 0;
+        }
+        
+        .user-status {
+            background-color: rgba(73, 182, 255, 0.1);
+            color: #4F8BFF;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(79, 139, 255, 0.1);
+            font-weight: 500;
+        }
+        
+        /* 输入区域 */
+        .input-area {
+            padding: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+        
+        .input-group:focus-within {
+            box-shadow: 0 4px 12px rgba(79, 139, 255, 0.15);
+            background-color: #ffffff;
+        }
+        
+        .input-label {
+            padding: 14px 18px;
+            color: #7649FC;
+            font-weight: 500;
+            min-width: 90px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+        
+        .input-field {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            font-size: 1rem;
+            outline: none;
+            background-color: transparent;
+        }
+        
+        .select-field {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            font-size: 1rem;
+            background-color: transparent;
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%237649FC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
+        /* 按钮样式 */
+        .btn-query {
+            background: linear-gradient(135deg, #7649FC, #4F8BFF);
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(79, 139, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-query:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
+            pointer-events: none;
+        }
+        
+        .btn-query:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 139, 255, 0.4);
+        }
+        
+        .btn-query:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(79, 139, 255, 0.3);
+        }
+        
+        /* 加载动画 */
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(79, 139, 255, 0.1);
+            border-top: 3px solid #4F8BFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 结果区域 */
+        .result-container {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .result-header {
+            background: linear-gradient(135deg, #7649FC, #4F8BFF);
+            padding: 15px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        
+        .result-header:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+        
+        .result-content {
+            padding: 20px;
+        }
+        
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-table th {
+            background-color: #f8f9fa;
+            padding: 14px;
+            text-align: center;
+            font-weight: 600;
+            color: #4F8BFF;
+        }
+        
+        .result-table td {
+            padding: 14px;
+            text-align: center;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .result-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .result-table tr:nth-child(even) {
+            background-color: #f9fbff;
+        }
+        
+        .badge {
+            display: inline-block;
+            width: 60px;
+            text-align: center;
+            padding: 6px 0;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .badge-gold {
+            background-color: #FFF3D8;
+            color: #E6B322;
+        }
+        
+        .badge-silver {
+            background-color: #F0F2F5;
+            color: #909399;
+        }
+        
+        .badge-bronze {
+            background-color: #FBE7D9;
+            color: #B87333;
+        }
+        
+        /* 底部链接 */
+        .footer-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .footer-link a {
+            color: #7649FC;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            background-color: rgba(118, 73, 252, 0.08);
+        }
+        
+        .footer-link a:hover {
+            background-color: rgba(118, 73, 252, 0.12);
+            transform: translateY(-2px);
+        }
+        
+        /* 水波纹动画效果 */
+        @keyframes ripple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 576px) {
+            .app-container {
+                padding: 12px;
+            }
+            
+            .card {
+                border-radius: 14px;
+            }
+            
+            .header-title {
+                font-size: 1.3rem;
+            }
+            
+            .input-label {
+                min-width: 80px;
+                padding: 14px 15px;
+            }
+            
+            .input-field, .select-field {
+                padding: 14px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部标题卡片 -->
+        <div class="card header-card">
+            <div class="header-title">
+                王者荣耀战力查询
+            </div>
+        </div>
+        
+        <!-- 用户信息区域 -->
+        <div class="card user-info">
+            <div class="user-info-container">
+                <img class="user-avatar" src="https://wz.853260.com/tp.png" id="photo" alt="用户头像">
+                <div class="user-status" id="alias">战区只能在星期一修改</div>
+            </div>
+        </div>
+        
+        <!-- 输入区域 -->
+        <div class="card input-area">
+            <div class="input-group">
+                <span class="input-label">英雄全称</span>
+                <input type="text" class="input-field" placeholder="请输入要查询的英雄" id="yxname">
+            </div>
+            
+            <div class="input-group">
+                <span class="input-label">查询大区</span>
+                <select class="select-field" id="seltname">
+                    <option value="aqq">安卓QQ</option>
+                    <option value="awx">安卓VX</option>
+                    <option value="iqq">苹果QQ</option>
+                    <option value="iwx">苹果VX</option>
+                </select>
+            </div>
+            
+            <button id="queryBtn" class="btn-query">
+                开始查询
+            </button>
+        </div>
+        
+        <!-- 加载动画 -->
+        <div class="loader" id="loader">
+            <div class="loader-spinner"></div>
+            <p style="margin-top: 12px; color: #666;">正在查询中...</p>
+        </div>
+        
+        <!-- 结果区域 -->
+        <div class="card result-container" id="resultContainer">
+            <div class="result-header">
+                查询结果展示
+            </div>
+            <div class="result-content">
+                <table class="result-table" id="resultTable">
+                    <!-- 结果将通过JavaScript动态填充 -->
+                </table>
+            </div>
+        </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+// 添加点击水波纹效果
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.btn-query');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            const x = e.clientX - e.target.getBoundingClientRect().left;
+            const y = e.clientY - e.target.getBoundingClientRect().top;
+            
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+    
+    // 初始化时隐藏加载和结果区域
+    $('#loader').hide();
+    $('#resultContainer').hide();
+});
+
+// 查询功能
+document.getElementById('queryBtn').addEventListener('click', function() {
+    startQueryWithRetry();
+});
+
+// 允许按下Enter键查询
+document.getElementById('yxname').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        startQueryWithRetry();
+    }
+});
+
+// 查询函数，带重试机制
+function startQueryWithRetry(retryCount = 0, maxRetries = 2) {
+    const hero = $('#yxname').val().trim(); // 清理输入两端的空格
+    const type = $('#seltname').val();
+    
+    // 输入验证
+    if (!hero) {
+        alert("请输入需要查询的英雄名称");
+        return;
+    }
+    
+    // 显示加载动画并隐藏结果区域
+    $('#loader').show();
+    $('#resultContainer').hide();
+    $('#queryBtn').prop('disabled', true); // 禁用按钮防止重复点击
+    
+    // 拼接请求的 URL
+    const url = "https://www.sapi.run/hero/select.php?hero=" + encodeURIComponent(hero) + "&type=" + type;
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        timeout: 5000, // 设置5秒超时
+        success: function(res) {
+            handleQuerySuccess(res);
+        },
+        error: function(xhr, status, error) {
+            // 如果还有重试次数，等待1秒后重试
+            if (retryCount < maxRetries) {
+                console.log(`查询失败，第${retryCount + 1}次重试...`);
+                setTimeout(() => {
+                    startQueryWithRetry(retryCount + 1, maxRetries);
+                }, 1000);
+            } else {
+                handleQueryError("请求失败，请检查网络或稍后重试");
+            }
+        }
+    });
+}
+
+// 处理查询成功的函数
+function handleQuerySuccess(res) {
+    $('#loader').hide();
+    $('#queryBtn').prop('disabled', false);
+    
+    if (res.code === 200 && res.data) {
+        var html = '';
+        
+        // 表头
+        html += '<tr>';
+        html += '<th>奖牌</th>';
+        html += '<th>区域</th>';
+        html += '<th>分数</th>';
+        html += '</tr>';
+        
+        // 金牌数据
+        html += '<tr>';
+        html += '<td><span class="badge badge-gold">金牌</span></td>';
+        html += '<td>' + (res.data.province || '无数据') + '</td>';
+        html += '<td>' + (res.data.provincePower || '0') + '</td>';
+        html += '</tr>';
+        
+        // 银牌数据
+        html += '<tr>';
+        html += '<td><span class="badge badge-silver">银牌</span></td>';
+        html += '<td>' + (res.data.city || '无数据') + '</td>';
+        html += '<td>' + (res.data.cityPower || '0') + '</td>';
+        html += '</tr>';
+        
+        // 铜牌数据
+        html += '<tr>';
+        html += '<td><span class="badge badge-bronze">铜牌</span></td>';
+        html += '<td>' + (res.data.area || '无数据') + '</td>';
+        html += '<td>' + (res.data.areaPower || '0') + '</td>';
+        html += '</tr>';
+        
+        // 更新时间
+        html += '<tr>';
+        html += '<td colspan="3" style="color: #888; font-size: 0.9rem;">更新时间：' + (res.data.updatetime || '未知') + '</td>';
+        html += '</tr>';
+        
+        // 更新页面内容
+        $('#resultTable').html(html);
+        $('#resultContainer').show();
+        $('#alias').text(res.data.alias || '战区只能在星期一修改');
+        $('#photo').attr('src', res.data.photo || 'https://wz.853260.com/tp.png');
+        
+        // 平滑滚动到结果区域
+        document.getElementById('resultContainer').scrollIntoView({
+            behavior: 'smooth'
+        });
+    } else {
+        alert("查询失败：英雄不存在或暂无数据，请确认英雄名称是否正确");
+    }
+}
+
+// 处理查询错误的函数
+function handleQueryError(message) {
+    $('#loader').hide();
+    $('#queryBtn').prop('disabled', false);
+    alert(message);
+}
+</script>
+</body>
+</html>
