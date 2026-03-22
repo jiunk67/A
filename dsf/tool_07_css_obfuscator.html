@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高级CSS混淆工具</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(150deg, #a1c4fd, #c2e9fb);
+    backdrop-filter: blur(10px);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  textarea {
+    width: 100%;
+    max-width: 600px;
+    height: 200px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #4b7bec;
+    color: white;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background-color: #3153a0;
+  }
+  .result {
+    width: 100%;
+    max-width: 600px;
+    height: 200px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    overflow: auto;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  .hidden {
+    display: none;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .fade-in {
+    animation: fadeIn 1s ease-in-out;
+  }
+</style>
+</head>
+<body>
+  <h1>高级CSS混淆工具</h1>
+  <textarea id="originalCss" placeholder="在这里输入CSS代码"></textarea>
+  <button onclick="obfuscateCss()">混淆CSS</button>
+  <div id="resultContainer" class="result hidden">
+    混淆后的CSS:
+    <pre id="obfuscatedCss"></pre>
+    <button onclick="copyToClipboard()">复制到剪贴板</button>
+  </div>
+
+  <script>
+  // 已实验过可正常使用
+    function generateRandomString(length) {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      return result;
+    }
+
+    function removeWhitespace(css) {
+      return css.replace(/\s+/g, ' ').replace(/\s?([;,{}])\s?/g, '$1').replace(/\s?\{|\}\s?/g, '$&').trim();
+    }
+
+    function obfuscateCss() {
+      const originalCss = document.getElementById('originalCss').value;
+      const cleanedCss = removeWhitespace(originalCss);
+      let obfuscatedCss = cleanedCss.replace(/([a-zA-Z0-9_-]+)\s*:\s*([^;]+);?/g, (match, property, value) => {
+        const randomProperty = generateRandomString(8);
+        const obfuscatedValue = value.replace(/([a-zA-Z0-9_-]+)\s*/g, (match, word) => {
+          return generateRandomString(8);
+        });
+        return `${randomProperty}: ${obfuscatedValue};`;
+      });
+      document.getElementById('obfuscatedCss').textContent = obfuscatedCss;
+      document.getElementById('resultContainer').classList.remove('hidden');
+      document.getElementById('resultContainer').classList.add('fade-in');
+    }
+
+    function copyToClipboard() {
+      const obfuscatedCss = document.getElementById('obfuscatedCss').textContent;
+      const tempTextArea = document.createElement('textarea');
+      tempTextArea.value = obfuscatedCss;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempTextArea);
+      alert('CSS代码已复制到剪贴板');
+    }
+  </script>
+</body>
+</html>

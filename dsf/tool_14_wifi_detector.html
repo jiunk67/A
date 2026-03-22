@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WiFi信号检测</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            color: #e0e0e0;
+            font-size: 16px;
+        }
+        
+        .wifi-icon {
+            font-size: 70px;
+            text-align: center;
+            margin: 20px 0;
+            color: #4CAF50;
+            text-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .label {
+            font-weight: 500;
+            color: #e0e0e0;
+        }
+        
+        .value {
+            font-weight: 600;
+        }
+        
+        .signal-section {
+            margin: 25px 0;
+        }
+        
+        .signal-title {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .signal-bars {
+            display: flex;
+            height: 30px;
+            align-items: flex-end;
+            gap: 4px;
+            margin: 15px 0;
+        }
+        
+        .bar {
+            width: 25%;
+            background: #4CAF50;
+            border-radius: 3px 3px 0 0;
+            transition: height 0.5s ease;
+        }
+        
+        .bar-1 { height: 20%; }
+        .bar-2 { height: 40%; }
+        .bar-3 { height: 60%; }
+        .bar-4 { height: 80%; }
+        .bar-5 { height: 100%; }
+        
+        .signal-strength {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .signal-dbm {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .quality-scale {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+        
+        .instructions {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(to right, #2193b0, #6dd5ed);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 50px;
+            width: 100%;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(33, 147, 176, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+        }
+        
+        .refresh-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 10px rgba(33, 147, 176, 0.6);
+        }
+        
+        .signal-quality {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+            gap: 10px;
+        }
+        
+        .quality-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #888;
+        }
+        
+        .quality-dot.active {
+            box-shadow: 0 0 10px currentColor;
+        }
+        
+        footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        @media (max-width: 500px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .wifi-icon {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>WiFi信号检测器</h1>
+            <p class="subtitle">实时监测您的WiFi连接状态</p>
+        </header>
+        
+        <div class="wifi-icon">
+            <i class="fas fa-wifi"></i>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-row">
+                <span class="label">网络名称 (SSID):</span>
+                <span class="value" id="ssid">正在获取...</span>
+            </div>
+            <div class="info-row">
+                <span class="label">BSSID:</span>
+                <span class="value" id="bssid">正在获取...</span>
+            </div>
+            <div class="info-row">
+                <span class="label">IP地址:</span>
+                <span class="value" id="ip">正在获取...</span>
+            </div>
+            <div class="info-row">
+                <span class="label">连接频段:</span>
+                <span class="value" id="frequency">正在获取...</span>
+            </div>
+        </div>
+        
+        <div class="signal-section">
+            <div class="signal-title">
+                <span class="label">信号强度</span>
+                <span class="label">dBm值: <span id="dbm-value">--</span></span>
+            </div>
+            
+            <div class="signal-bars">
+                <div class="bar bar-1"></div>
+                <div class="bar bar-2"></div>
+                <div class="bar bar-3"></div>
+                <div class="bar bar-4"></div>
+                <div class="bar bar-5"></div>
+            </div>
+            
+            <div class="signal-strength" id="signal-text">正在检测...</div>
+            <div class="signal-dbm" id="dbm-text">-- dBm</div>
+            
+            <div class="signal-quality">
+                <div class="quality-dot" style="background: #4CAF50;"></div>
+                <div class="quality-dot" style="background: #FFEB3B;"></div>
+                <div class="quality-dot" style="background: #FF9800;"></div>
+                <div class="quality-dot" style="background: #F44336;"></div>
+                <div class="quality-dot" style="background: #000;"></div>
+            </div>
+            
+            <div class="quality-scale">
+                <span>极佳</span>
+                <span>良好</span>
+                <span>一般</span>
+                <span>较差</span>
+                <span>无信号</span>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <p><i class="fas fa-info-circle"></i> 信号强度说明：</p>
+            <p>-30 dBm 至 -50 dBm: 信号极佳</p>
+            <p>-50 dBm 至 -60 dBm: 信号良好</p>
+            <p>-60 dBm 至 -70 dBm: 信号一般</p>
+            <p>-70 dBm 至 -90 dBm: 信号较差</p>
+            <p>低于 -90 dBm: 信号极差或无信号</p>
+        </div>
+        
+        <button class="refresh-btn" id="refresh-btn">
+            <i class="fas fa-sync-alt"></i> 刷新信号信息
+        </button>
+    </div>
+    
+    <footer>
+        <p>WiFi信号检测工具 &copy; 2023</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const refreshBtn = document.getElementById('refresh-btn');
+            const ssidElement = document.getElementById('ssid');
+            const bssidElement = document.getElementById('bssid');
+            const ipElement = document.getElementById('ip');
+            const frequencyElement = document.getElementById('frequency');
+            const dbmValueElement = document.getElementById('dbm-value');
+            const dbmTextElement = document.getElementById('dbm-text');
+            const signalTextElement = document.getElementById('signal-text');
+            const bars = document.querySelectorAll('.bar');
+            const qualityDots = document.querySelectorAll('.quality-dot');
+            
+            // 初始化颜色
+            updateSignalUI(-100); // 初始化为无信号状态
+            
+            // 尝试获取网络信息
+            function getNetworkInfo() {
+                // 注意：这些API在大多数浏览器中可能无法直接使用
+                // 这里使用模拟数据来演示
+                
+                // 模拟WiFi数据
+                const simulatedSSID = "Home_Network_5G";
+                const simulatedBSSID = "A4:2B:8C:1D:3E:5F";
+                const simulatedIP = "192.168.1.105";
+                const simulatedFrequency = "5 GHz";
+                
+                // 生成随机的信号强度（-30到-100 dBm）
+                const simulatedDbm = Math.floor(Math.random() * 71) - 100;
+                
+                // 更新UI
+                ssidElement.textContent = simulatedSSID;
+                bssidElement.textContent = simulatedBSSID;
+                ipElement.textContent = simulatedIP;
+                frequencyElement.textContent = simulatedFrequency;
+                
+                // 更新信号强度显示
+                updateSignalUI(simulatedDbm);
+            }
+            
+            function updateSignalUI(dbm) {
+                // 更新dBm显示
+                dbmValueElement.textContent = dbm;
+                dbmTextElement.textContent = dbm + " dBm";
+                
+                // 根据dBm值确定信号质量和颜色
+                let quality, color, strengthText;
+                
+                if (dbm >= -50) {
+                    quality = 5;
+                    color = "#4CAF50"; // 绿色
+                    strengthText = "信号极佳";
+                } else if (dbm >= -60) {
+                    quality = 4;
+                    color = "#8BC34A"; // 浅绿
+                    strengthText = "信号良好";
+                } else if (dbm >= -70) {
+                    quality = 3;
+                    color = "#FFEB3B"; // 黄色
+                    strengthText = "信号一般";
+                } else if (dbm >= -80) {
+                    quality = 2;
+                    color = "#FF9800"; // 橙色
+                    strengthText = "信号较弱";
+                } else if (dbm >= -90) {
+                    quality = 1;
+                    color = "#F44336"; // 红色
+                    strengthText = "信号很差";
+                } else {
+                    quality = 0;
+                    color = "#000"; // 黑色
+                    strengthText = "无信号";
+                }
+                
+                // 更新信号文本
+                signalTextElement.textContent = strengthText;
+                signalTextElement.style.color = color;
+                
+                // 更新信号条
+                bars.forEach((bar, index) => {
+                    if (index < quality) {
+                        bar.style.background = color;
+                    } else {
+                        bar.style.background = "#555";
+                    }
+                });
+                
+                // 更新质量指示点
+                qualityDots.forEach((dot, index) => {
+                    if (index < quality) {
+                        dot.classList.add('active');
+                        dot.style.background = color;
+                    } else {
+                        dot.classList.remove('active');
+                        dot.style.background = "#555";
+                    }
+                });
+                
+                // 更新WiFi图标颜色
+                document.querySelector('.wifi-icon i').style.color = color;
+                document.querySelector('.wifi-icon i').style.textShadow = `0 0 15px ${color}80`;
+            }
+            
+            // 添加刷新按钮事件监听
+            refreshBtn.addEventListener('click', getNetworkInfo);
+            
+            // 初始获取网络信息
+            getNetworkInfo();
+            
+            // 每10秒自动更新一次
+            setInterval(getNetworkInfo, 10000);
+        });
+    </script>
+</body>
+</html>

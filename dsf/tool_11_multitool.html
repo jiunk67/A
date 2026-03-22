@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多功能工具箱</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tool-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .tool-btn {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tool-btn i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .tool-panel {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .result-box {
+            background-color: var(--light);
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 3px solid var(--primary);
+            word-break: break-all;
+        }
+
+        /* 计算器样式 */
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .calculator-display {
+            grid-column: span 4;
+            background-color: var(--light);
+            padding: 15px;
+            text-align: right;
+            font-size: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            min-height: 60px;
+        }
+
+        .calculator-btn {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .calculator-btn:hover {
+            background-color: #e2e8f0;
+        }
+
+        .calculator-btn.operator {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .calculator-btn.equals {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .calculator-btn.clear {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        /* 摩斯密码样式 */
+        .morse-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .morse-radio {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .morse-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .morse-table th, .morse-table td {
+            border: 1px solid var(--border);
+            padding: 8px;
+            text-align: left;
+        }
+
+        .morse-table th {
+            background-color: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>多功能工具箱</h1>
+            <p>点击下方按钮使用各种工具</p>
+        </div>
+
+        <!-- 工具按钮 -->
+        <div class="tool-buttons">
+            <button class="tool-btn" onclick="openTool('calculator')">
+                <i class="fas fa-calculator"></i>
+                <span>计算器</span>
+            </button>
+            <button class="tool-btn" onclick="openTool('notepad')">
+                <i class="fas fa-edit"></i>
+                <span>记事本</span>
+            </button>
+            <button class="tool-btn" onclick="openTool('password')">
+                <i class="fas fa-key"></i>
+                <span>密码生成</span>
+            </button>
+            <button class="tool-btn" onclick="openTool('text-to-base')">
+                <i class="fas fa-code"></i>
+                <span>文本转进制</span>
+            </button>
+            <button class="tool-btn" onclick="openTool('base-to-text')">
+                <i class="fas fa-font"></i>
+                <span>进制转文本</span>
+            </button>
+            <button class="tool-btn" onclick="openTool('unit-converter')">
+                <i class="fas fa-ruler-combined"></i>
+                <span>单位换算</span>
+            </button>
+            <button class="tool-btn" onclick="openTool('audio-visualizer')">
+                <i class="fas fa-music"></i>
+                <span>音频可视化</span>
+            </button>
+            <button class="tool-btn" onclick="openTool('image-to-base64')">
+                <i class="fas fa-image"></i>
+                <span>图片转Base64</span>
+            </button>
+            <button class="tool-btn" onclick="openTool('qrcode')">
+                <i class="fas fa-qrcode"></i>
+                <span>二维码生成</span>
+            </button>
+            <button class="tool-btn" onclick="window.location.href='https://www.baidu.com'">
+                <i class="fas fa-search"></i>
+                <span>百度搜索</span>
+            </button>
+            <button class="tool-btn" onclick="openTool('web-source')">
+                <i class="fas fa-code"></i>
+                <span>网页取源</span>
+            </button>
+            <button class="tool-btn" onclick="openTool('ai-assistant')">
+                <i class="fas fa-robot"></i>
+                <span>AI助手</span>
+            </button>
+            <button class="tool-btn" onclick="openTool('morse-code')">
+                <i class="fas fa-signal"></i>
+                <span>摩斯密码</span>
+            </button>
+        </div>
+
+        <!-- 计算器面板 -->
+        <div id="calculator-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">计算器</h2>
+                <button class="close-btn" onclick="closeTool('calculator')">&times;</button>
+            </div>
+            <div class="calculator">
+                <div class="calculator-display" id="calc-display">0</div>
+                <button class="calculator-btn clear" onclick="clearCalculator()">C</button>
+                <button class="calculator-btn" onclick="appendToCalc('(')">(</button>
+                <button class="calculator-btn" onclick="appendToCalc(')')">)</button>
+                <button class="calculator-btn operator" onclick="appendToCalc('/')">/</button>
+                <button class="calculator-btn" onclick="appendToCalc('7')">7</button>
+                <button class="calculator-btn" onclick="appendToCalc('8')">8</button>
+                <button class="calculator-btn" onclick="appendToCalc('9')">9</button>
+                <button class="calculator-btn operator" onclick="appendToCalc('*')">×</button>
+                <button class="calculator-btn" onclick="appendToCalc('4')">4</button>
+                <button class="calculator-btn" onclick="appendToCalc('5')">5</button>
+                <button class="calculator-btn" onclick="appendToCalc('6')">6</button>
+                <button class="calculator-btn operator" onclick="appendToCalc('-')">-</button>
+                <button class="calculator-btn" onclick="appendToCalc('1')">1</button>
+                <button class="calculator-btn" onclick="appendToCalc('2')">2</button>
+                <button class="calculator-btn" onclick="appendToCalc('3')">3</button>
+                <button class="calculator-btn operator" onclick="appendToCalc('+')">+</button>
+                <button class="calculator-btn" onclick="appendToCalc('0')">0</button>
+                <button class="calculator-btn" onclick="appendToCalc('.')">.</button>
+                <button class="calculator-btn equals" onclick="calculate()">=</button>
+            </div>
+        </div>
+
+        <!-- 记事本面板 -->
+        <div id="notepad-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">记事本</h2>
+                <button class="close-btn" onclick="closeTool('notepad')">&times;</button>
+            </div>
+            <textarea id="note-content" placeholder="输入笔记内容..."></textarea>
+            <div>
+                <button class="btn btn-primary" onclick="saveNote()">保存</button>
+                <button class="btn btn-danger" onclick="clearNote()">清空</button>
+            </div>
+            <div id="notes-list" style="margin-top: 15px;"></div>
+        </div>
+
+        <!-- 密码生成器面板 -->
+        <div id="password-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">密码生成</h2>
+                <button class="close-btn" onclick="closeTool('password')">&times;</button>
+            </div>
+            <div>
+                <label>长度: <span id="pass-length">12</span></label>
+                <input type="range" id="pass-length-slider" min="4" max="32" value="12" oninput="updatePassLength()">
+            </div>
+            <div style="margin: 10px 0;">
+                <label><input type="checkbox" id="pass-upper" checked> 大写字母 (A-Z)</label>
+                <label><input type="checkbox" id="pass-lower" checked> 小写字母 (a-z)</label>
+                <label><input type="checkbox" id="pass-numbers" checked> 数字 (0-9)</label>
+                <label><input type="checkbox" id="pass-symbols" checked> 符号 (!@#$%^&*)</label>
+            </div>
+            <button class="btn btn-primary" onclick="generatePassword()">生成密码</button>
+            <button class="btn btn-secondary" onclick="copyPassword()">复制</button>
+            <div id="password-result" class="result-box">点击"生成密码"按钮生成密码</div>
+        </div>
+
+        <!-- 文本转进制面板 -->
+        <div id="text-to-base-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">文本转进制</h2>
+                <button class="close-btn" onclick="closeTool('text-to-base')">&times;</button>
+            </div>
+            <textarea id="text-to-convert" placeholder="输入要转换的文本..."></textarea>
+            <div style="margin: 10px 0;">
+                <label><input type="checkbox" id="to-binary" checked> 二进制</label>
+                <label><input type="checkbox" id="to-octal"> 八进制</label>
+                <label><input type="checkbox" id="to-decimal"> 十进制</label>
+                <label><input type="checkbox" id="to-hex" checked> 十六进制</label>
+            </div>
+            <button class="btn btn-primary" onclick="convertTextToBase()">转换</button>
+            <button class="btn btn-secondary" onclick="copyTextToBaseResult()">复制</button>
+            <div id="text-to-base-result" class="result-box">转换结果将显示在这里</div>
+        </div>
+
+        <!-- 进制转文本面板 -->
+        <div id="base-to-text-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">进制转文本</h2>
+                <button class="close-btn" onclick="closeTool('base-to-text')">&times;</button>
+            </div>
+            <textarea id="base-to-text-input" placeholder="输入二进制、八进制、十进制或十六进制编码，用空格分隔..."></textarea>
+            <select id="base-type">
+                <option value="binary">二进制 → 文字</option>
+                <option value="octal">八进制 → 文字</option>
+                <option value="decimal">十进制 → 文字</option>
+                <option value="hex">十六进制 → 文字</option>
+            </select>
+            <button class="btn btn-primary" onclick="convertBaseToText()">解码</button>
+            <button class="btn btn-secondary" onclick="copyBaseToTextResult()">复制</button>
+            <div id="base-to-text-result" class="result-box">解码结果将显示在这里</div>
+        </div>
+
+        <!-- 单位换算面板 -->
+        <div id="unit-converter-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">单位换算</h2>
+                <button class="close-btn" onclick="closeTool('unit-converter')">&times;</button>
+            </div>
+            <input type="number" id="unit-value" placeholder="输入数值">
+            <select id="unit-from">
+                <option value="meter">米 (m)</option>
+                <option value="kilometer">千米 (km)</option>
+                <option value="centimeter">厘米 (cm)</option>
+                <option value="millimeter">毫米 (mm)</option>
+                <option value="mile">英里 (mi)</option>
+                <option value="yard">码 (yd)</option>
+                <option value="foot">英尺 (ft)</option>
+                <option value="inch">英寸 (in)</option>
+                <option value="celsius">摄氏度 (°C)</option>
+                <option value="fahrenheit">华氏度 (°F)</option>
+                <option value="kelvin">开尔文 (K)</option>
+                <option value="kilogram">千克 (kg)</option>
+                <option value="gram">克 (g)</option>
+                <option value="pound">磅 (lb)</option>
+                <option value="ounce">盎司 (oz)</option>
+                <option value="liter">升 (L)</option>
+                <option value="milliliter">毫升 (mL)</option>
+                <option value="gallon">加仑 (gal)</option>
+                <option value="quart">夸脱 (qt)</option>
+            </select>
+            <select id="unit-to">
+                <option value="meter">米 (m)</option>
+                <option value="kilometer">千米 (km)</option>
+                <option value="centimeter">厘米 (cm)</option>
+                <option value="millimeter">毫米 (mm)</option>
+                <option value="mile">英里 (mi)</option>
+                <option value="yard">码 (yd)</option>
+                <option value="foot">英尺 (ft)</option>
+                <option value="inch">英寸 (in)</option>
+                <option value="celsius">摄氏度 (°C)</option>
+                <option value="fahrenheit">华氏度 (°F)</option>
+                <option value="kelvin">开尔文 (K)</option>
+                <option value="kilogram">千克 (kg)</option>
+                <option value="gram">克 (g)</option>
+                <option value="pound">磅 (lb)</option>
+                <option value="ounce">盎司 (oz)</option>
+                <option value="liter">升 (L)</option>
+                <option value="milliliter">毫升 (mL)</option>
+                <option value="gallon">加仑 (gal)</option>
+                <option value="quart">夸脱 (qt)</option>
+            </select>
+            <button class="btn btn-primary" onclick="convertUnits()">换算</button>
+            <div id="unit-result" class="result-box">换算结果将显示在这里</div>
+        </div>
+
+        <!-- 音频可视化面板 -->
+        <div id="audio-visualizer-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">音频可视化</h2>
+                <button class="close-btn" onclick="closeTool('audio-visualizer')">&times;</button>
+            </div>
+            <input type="file" id="audio-file" accept="audio/*">
+            <canvas id="waveform" style="width: 100%; height: 150px; margin: 15px 0; border: 1px solid var(--border);"></canvas>
+            <div>
+                <button class="btn btn-primary" id="play-btn" disabled>播放</button>
+                <button class="btn btn-danger" id="stop-btn" disabled>停止</button>
+            </div>
+        </div>
+
+        <!-- 图片转Base64面板 -->
+        <div id="image-to-base64-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">图片转Base64</h2>
+                <button class="close-btn" onclick="closeTool('image-to-base64')">&times;</button>
+            </div>
+            <input type="file" id="image-file" accept="image/*">
+            <div id="image-preview" style="text-align: center; margin: 15px 0;">
+                <p>图片预览将显示在这里</p>
+            </div>
+            <button class="btn btn-primary" onclick="convertImageToBase64()">转换</button>
+            <button class="btn btn-secondary" onclick="copyBase64Image()">复制</button>
+            <div id="base64-image-result" class="result-box">Base64编码将显示在这里</div>
+        </div>
+
+        <!-- 二维码生成面板 -->
+        <div id="qrcode-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">二维码生成</h2>
+                <button class="close-btn" onclick="closeTool('qrcode')">&times;</button>
+            </div>
+            <input type="text" id="qr-content" placeholder="输入要生成二维码的内容">
+            <button class="btn btn-primary" onclick="generateQRCode()">生成</button>
+            <button class="btn btn-secondary" onclick="downloadQRCode()">下载</button>
+            <div id="qrcode" style="margin: 15px 0; display: flex; justify-content: center;"></div>
+        </div>
+
+        <!-- 网页取源面板 -->
+        <div id="web-source-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">网页取源</h2>
+                <button class="close-btn" onclick="closeTool('web-source')">&times;</button>
+            </div>
+            <input type="url" id="source-url" placeholder="输入网页URL (例如: https://example.com)">
+            <button class="btn btn-primary" onclick="fetchSourceCode()">获取源码</button>
+            <button class="btn btn-secondary" onclick="copySourceCode()">复制</button>
+            <div id="source-code-result" class="result-box" style="max-height: 300px; overflow-y: auto;">网页源码将显示在这里</div>
+        </div>
+
+        <!-- AI助手面板 -->
+        <div id="ai-assistant-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">AI助手</h2>
+                <button class="close-btn" onclick="closeTool('ai-assistant')">&times;</button>
+            </div>
+            <div id="ai-messages" style="height: 300px; overflow-y: auto; background: var(--light); padding: 15px; margin-bottom: 15px; border: 1px solid var(--border);">
+                <div style="background: white; padding: 10px; border-radius: 6px; border: 1px solid var(--border);">你好！我是AI助手，有什么可以帮助你的吗？</div>
+            </div>
+            <textarea id="ai-input" placeholder="输入您的问题..."></textarea>
+            <button class="btn btn-primary" onclick="sendAIMessage()">发送</button>
+        </div>
+
+        <!-- 摩斯密码面板 -->
+        <div id="morse-code-panel" class="tool-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">摩斯密码</h2>
+                <button class="close-btn" onclick="closeTool('morse-code')">&times;</button>
+            </div>
+            <div class="morse-options">
+                <div class="morse-radio">
+                    <input type="radio" id="to-morse" name="morse-direction" value="toMorse" checked>
+                    <label for="to-morse">文本 → 摩斯密码</label>
+                </div>
+                <div class="morse-radio">
+                    <input type="radio" id="from-morse" name="morse-direction" value="fromMorse">
+                    <label for="from-morse">摩斯密码 → 文本</label>
+                </div>
+            </div>
+            <textarea id="morse-input" placeholder="输入文本或摩斯密码(用空格分隔字母，/分隔单词)..."></textarea>
+            <button class="btn btn-primary" onclick="convertMorseCode()">转换</button>
+            <button class="btn btn-secondary" onclick="copyMorseResult()">复制</button>
+            <div id="morse-result" class="result-box">转换结果将显示在这里</div>
+            
+            <h3 style="margin-top: 15px;">摩斯密码对照表</h3>
+            <table class="morse-table">
+                <thead>
+                    <tr>
+                        <th>字符</th>
+                        <th>摩斯密码</th>
+                        <th>字符</th>
+                        <th>摩斯密码</th>
+                    </tr>
+                </thead>
+                <tbody id="morse-code-table">
+                    <!-- 摩斯密码表将在这里动态生成 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 工具面板控制
+        function openTool(toolId) {
+            document.querySelectorAll('.tool-panel').forEach(panel => {
+                panel.style.display = 'none';
+            });
+            document.getElementById(`${toolId}-panel`).style.display = 'block';
+            
+            // 初始化特定工具
+            if (toolId === 'morse-code') {
+                initMorseTable();
+            }
+        }
+
+        function closeTool(toolId) {
+            document.getElementById(`${toolId}-panel`).style.display = 'none';
+        }
+
+        // 计算器功能
+        let calcValue = '0';
+        function appendToCalc(value) {
+            if (calcValue === '0' && value !== '.') {
+                calcValue = value;
+            } else {
+                calcValue += value;
+            }
+            document.getElementById('calc-display').textContent = calcValue;
+        }
+
+        function clearCalculator() {
+            calcValue = '0';
+            document.getElementById('calc-display').textContent = calcValue;
+        }
+
+        function calculate() {
+            try {
+                const result = eval(calcValue);
+                calcValue = result.toString();
+                document.getElementById('calc-display').textContent = calcValue;
+            } catch (e) {
+                document.getElementById('calc-display').textContent = '错误';
+                calcValue = '0';
+            }
+        }
+
+        // 记事本功能
+        function saveNote() {
+            const content = document.getElementById('note-content').value;
+            if (!content) {
+                alert('请输入笔记内容！');
+                return;
+            }
+            
+            const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+            const title = content.substring(0, 20) + (content.length > 20 ? '...' : '');
+            const timestamp = new Date().toISOString();
+            
+            notes.push({ title, content, timestamp });
+            localStorage.setItem('notes', JSON.stringify(notes));
+            loadNotes();
+            alert('笔记已保存！');
+        }
+
+        function clearNote() {
+            if (confirm('确定要清空笔记吗？')) {
+                document.getElementById('note-content').value = '';
+            }
+        }
+
+        function loadNotes() {
+            const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+            const notesList = document.getElementById('notes-list');
+            notesList.innerHTML = '';
+            
+            if (notes.length === 0) {
+                notesList.innerHTML = '<p>没有保存的笔记</p>';
+                return;
+            }
+            
+            notes.forEach((note, index) => {
+                const noteDiv = document.createElement('div');
+                noteDiv.style.borderBottom = '1px solid var(--border)';
+                noteDiv.style.padding = '5px 0';
+                noteDiv.innerHTML = `
+                    <strong>${note.title}</strong>
+                    <button onclick="viewNote(${index})" style="float: right;">查看</button>
+                    <button onclick="deleteNote(${index})" style="float: right; margin-right: 5px;">删除</button>
+                `;
+                notesList.appendChild(noteDiv);
+            });
+        }
+
+        function viewNote(index) {
+            const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+            if (notes[index]) {
+                document.getElementById('note-content').value = notes[index].content;
+            }
+        }
+
+        function deleteNote(index) {
+            const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+            if (confirm('确定要删除此笔记吗？')) {
+                notes.splice(index, 1);
+                localStorage.setItem('notes', JSON.stringify(notes));
+                loadNotes();
+            }
+        }
+
+        // 密码生成器功能
+        function updatePassLength() {
+            const length = document.getElementById('pass-length-slider').value;
+            document.getElementById('pass-length').textContent = length;
+        }
+
+        function generatePassword() {
+            const length = parseInt(document.getElementById('pass-length').textContent);
+            const uppercase = document.getElementById('pass-upper').checked;
+            const lowercase = document.getElementById('pass-lower').checked;
+            const numbers = document.getElementById('pass-numbers').checked;
+            const symbols = document.getElementById('pass-symbols').checked;
+            
+            let charset = '';
+            if (uppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (lowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (numbers) charset += '0123456789';
+            if (symbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            if (!charset) {
+                alert('请至少选择一种字符类型！');
+                return;
+            }
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += charset[Math.floor(Math.random() * charset.length)];
+            }
+            
+            document.getElementById('password-result').textContent = password;
+        }
+
+        function copyPassword() {
+            const password = document.getElementById('password-result').textContent;
+            if (password && password !== '点击"生成密码"按钮生成密码') {
+                navigator.clipboard.writeText(password);
+                alert('密码已复制！');
+            }
+        }
+
+        // 文本转进制功能
+        function convertTextToBase() {
+            const text = document.getElementById('text-to-convert').value;
+            if (!text) {
+                alert('请输入要转换的文本！');
+                return;
+            }
+            
+            const toBinary = document.getElementById('to-binary').checked;
+            const toOctal = document.getElementById('to-octal').checked;
+            const toDecimal = document.getElementById('to-decimal').checked;
+            const toHex = document.getElementById('to-hex').checked;
+            
+            let result = '';
+            
+            if (toBinary) {
+                result += '二进制:\n';
+                for (let i = 0; i < text.length; i++) {
+                    const code = text.charCodeAt(i);
+                    result += code.toString(2).padStart(8, '0') + ' ';
+                }
+                result += '\n\n';
+            }
+            
+            if (toOctal) {
+                result += '八进制:\n';
+                for (let i = 0; i < text.length; i++) {
+                    const code = text.charCodeAt(i);
+                    result += code.toString(8) + ' ';
+                }
+                result += '\n\n';
+            }
+            
+            if (toDecimal) {
+                result += '十进制:\n';
+                for (let i = 0; i < text.length; i++) {
+                    const code = text.charCodeAt(i);
+                    result += code + ' ';
+                }
+                result += '\n\n';
+            }
+            
+            if (toHex) {
+                result += '十六进制:\n';
+                for (let i = 0; i < text.length; i++) {
+                    const code = text.charCodeAt(i);
+                    result += code.toString(16).toUpperCase() + ' ';
+                }
+                result += '\n\n';
+            }
+            
+            document.getElementById('text-to-base-result').textContent = result.trim();
+        }
+
+        function copyTextToBaseResult() {
+            const result = document.getElementById('text-to-base-result').textContent;
+            if (result && result !== '转换结果将显示在这里') {
+                navigator.clipboard.writeText(result);
+                alert('结果已复制！');
+            }
+        }
+
+        // 进制转文本功能
+        function convertBaseToText() {
+            const input = document.getElementById('base-to-text-input').value.trim();
+            if (!input) {
+                alert('请输入要解码的内容！');
+                return;
+            }
+            
+            const baseType = document.getElementById('base-type').value;
+            const codes = input.split(/\s+/);
+            let result = '';
+            
+            try {
+                for (const code of codes) {
+                    let codePoint;
+                    
+                    switch (baseType) {
+                        case 'binary':
+                            if (!/^[01]+$/.test(code)) throw new Error(`无效的二进制输入: ${code}`);
+                            codePoint = parseInt(code, 2);
+                            break;
+                        case 'octal':
+                            if (!/^[0-7]+$/.test(code)) throw new Error(`无效的八进制输入: ${code}`);
+                            codePoint = parseInt(code, 8);
+                            break;
+                        case 'decimal':
+                            if (!/^\d+$/.test(code)) throw new Error(`无效的十进制输入: ${code}`);
+                            codePoint = parseInt(code, 10);
+                            break;
+                        case 'hex':
+                            if (!/^[0-9A-Fa-f]+$/.test(code)) throw new Error(`无效的十六进制输入: ${code}`);
+                            codePoint = parseInt(code, 16);
+                            break;
+                        default:
+                            throw new Error('未知的解码类型');
+                    }
+                    
+                    if (codePoint > 0x10FFFF) {
+                        throw new Error(`无效的Unicode码点: ${codePoint}`);
+                    }
+                    
+                    result += String.fromCodePoint(codePoint);
+                }
+                
+                document.getElementById('base-to-text-result').textContent = result;
+            } catch (error) {
+                document.getElementById('base-to-text-result').textContent = `解码错误: ${error.message}`;
+            }
+        }
+
+        function copyBaseToTextResult() {
+            const result = document.getElementById('base-to-text-result').textContent;
+            if (result && result !== '解码结果将显示在这里') {
+                navigator.clipboard.writeText(result);
+                alert('结果已复制！');
+            }
+        }
+
+        // 单位换算功能
+        function convertUnits() {
+            const value = parseFloat(document.getElementById('unit-value').value);
+            if (isNaN(value)) {
+                alert('请输入有效的数值！');
+                return;            }
+            
+            const fromUnit = document.getElementById('unit-from').value;
+            const toUnit = document.getElementById('unit-to').value;
+            
+            // 转换因子
+            const units = {
+                // 长度
+                meter: 1,
+                kilometer: 1000,
+                centimeter: 0.01,
+                millimeter: 0.001,
+                mile: 1609.344,
+                yard: 0.9144,
+                foot: 0.3048,
+                inch: 0.0254,
+                // 温度
+                celsius: { convert: (v, to) => {
+                    if (to === 'fahrenheit') return v * 9/5 + 32;
+                    if (to === 'kelvin') return v + 273.15;
+                    return v;
+                }},
+                fahrenheit: { convert: (v, to) => {
+                    if (to === 'celsius') return (v - 32) * 5/9;
+                    if (to === 'kelvin') return (v - 32) * 5/9 + 273.15;
+                    return v;
+                }},
+                kelvin: { convert: (v, to) => {
+                    if (to === 'celsius') return v - 273.15;
+                    if (to === 'fahrenheit') return (v - 273.15) * 9/5 + 32;
+                    return v;
+                }},
+                // 重量
+                kilogram: 1,
+                gram: 0.001,
+                pound: 0.453592,
+                ounce: 0.0283495,
+                // 体积
+                liter: 1,
+                milliliter: 0.001,
+                gallon: 3.78541,
+                quart: 0.946353
+            };
+            
+            let result;
+            
+            // 温度转换特殊处理
+            if (fromUnit === 'celsius' || fromUnit === 'fahrenheit' || fromUnit === 'kelvin') {
+                result = units[fromUnit].convert(value, toUnit);
+            } else if (toUnit === 'celsius' || toUnit === 'fahrenheit' || toUnit === 'kelvin') {
+                result = units[toUnit].convert(value, fromUnit);
+            } else {
+                // 其他单位转换
+                const fromFactor = units[fromUnit];
+                const toFactor = units[toUnit];
+                
+                if (!fromFactor || !toFactor) {
+                    alert('不支持的单位转换！');
+                    return;
+                }
+                
+                // 转换为米/千克/升等基准单位
+                const baseValue = value * fromFactor;
+                // 从基准单位转换为目标单位
+                result = baseValue / toFactor;
+            }
+            
+            document.getElementById('unit-result').textContent = `${value} ${fromUnit} = ${result.toFixed(6)} ${toUnit}`;
+        }
+
+        // 音频可视化功能
+        let audioContext;
+        let analyser;
+        let source;
+        let audioBuffer;
+        let isPlaying = false;
+
+        document.getElementById('audio-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                audioContext.decodeAudioData(e.target.result)
+                    .then(buffer => {
+                        audioBuffer = buffer;
+                        document.getElementById('play-btn').disabled = false;
+                        drawWaveform(buffer);
+                    })
+                    .catch(err => {
+                        console.error('Error decoding audio data', err);
+                        alert('无法解码音频文件！');
+                    });
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        function drawWaveform(buffer) {
+            const canvas = document.getElementById('waveform');
+            const ctx = canvas.getContext('2d');
+            const data = buffer.getChannelData(0);
+            const step = Math.ceil(data.length / canvas.width);
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#6366f1';
+            
+            for (let i = 0; i < canvas.width; i++) {
+                const start = i * step;
+                const end = Math.min(start + step, data.length);
+                let sum = 0;
+                
+                for (let j = start; j < end; j++) {
+                    sum += Math.abs(data[j]);
+                }
+                
+                const avg = sum / (end - start);
+                const height = avg * canvas.height;
+                const y = (canvas.height - height) / 2;
+                
+                ctx.fillRect(i, y, 1, height);
+            }
+        }
+
+        document.getElementById('play-btn').addEventListener('click', function() {
+            if (!audioBuffer || isPlaying) return;
+            
+            source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
+            source.start(0);
+            isPlaying = true;
+            document.getElementById('stop-btn').disabled = false;
+            
+            source.onended = function() {
+                isPlaying = false;
+                document.getElementById('stop-btn').disabled = true;
+            };
+        });
+
+        document.getElementById('stop-btn').addEventListener('click', function() {
+            if (!isPlaying) return;
+            
+            source.stop();
+            isPlaying = false;
+            document.getElementById('stop-btn').disabled = true;
+        });
+
+        // 图片转Base64功能
+        let base64Image = '';
+        
+        document.getElementById('image-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                
+                img.onload = function() {
+                    const preview = document.getElementById('image-preview');
+                    preview.innerHTML = '';
+                    
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // 限制预览大小
+                    const maxWidth = 300;
+                    const maxHeight = 200;
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > maxWidth) {
+                        height *= maxWidth / width;
+                        width = maxWidth;
+                    }
+                    
+                    if (height > maxHeight) {
+                        width *= maxHeight / height;
+                        height = maxHeight;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    preview.appendChild(canvas);
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function convertImageToBase64() {
+            const file = document.getElementById('image-file').files[0];
+            if (!file) {
+                alert('请先选择图片文件！');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                base64Image = e.target.result;
+                document.getElementById('base64-image-result').textContent = base64Image.split(',')[1] || base64Image;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function copyBase64Image() {
+            if (!base64Image) {
+                alert('没有可复制的Base64编码！');
+                return;
+            }
+            
+            const base64String = base64Image.split(',')[1] || base64Image;
+            navigator.clipboard.writeText(base64String);
+            alert('Base64编码已复制！');
+        }
+
+        // 二维码生成功能
+        let qrcode = new QRCode(document.getElementById('qrcode'), {
+            width: 200,
+            height: 200
+        });
+
+        function generateQRCode() {
+            const content = document.getElementById('qr-content').value.trim();
+            if (!content) {
+                alert('请输入要生成二维码的内容！');
+                return;
+            }
+            
+            // 清除现有二维码
+            document.getElementById('qrcode').innerHTML = '';
+            
+            // 重新初始化QRCode对象
+            qrcode = new QRCode(document.getElementById('qrcode'), {
+                text: content,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        function downloadQRCode() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) {
+                alert('请先生成二维码！');
+                return;
+            }
+            
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // 网页取源功能
+        async function fetchSourceCode() {
+            const url = document.getElementById('source-url').value.trim();
+            if (!url) {
+                alert('请输入网页URL！');
+                return;
+            }
+            
+            if (!/^https?:\/\//i.test(url)) {
+                alert('URL格式错误，请包含http://或https://');
+                return;
+            }
+            
+            try {
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
+                
+                if (!data.contents) {
+                    throw new Error(data.error || '获取源码失败');
+                }
+                
+                document.getElementById('source-code-result').textContent = data.contents;
+            } catch (err) {
+                document.getElementById('source-code-result').textContent = `错误: ${err.message}`;
+            }
+        }
+
+        function copySourceCode() {
+            const sourceCode = document.getElementById('source-code-result').textContent;
+            if (!sourceCode || sourceCode === '网页源码将显示在这里') {
+                alert('没有可复制的源码！');
+                return;
+            }
+            
+            navigator.clipboard.writeText(sourceCode);
+            alert('源码已复制！');
+        }
+
+        // AI助手功能
+        function sendAIMessage() {
+            const input = document.getElementById('ai-input').value.trim();
+            if (!input) {
+                alert('请输入您的问题！');
+                return;
+            }
+            
+            // 添加用户消息
+            const messagesContainer = document.getElementById('ai-messages');
+            const userMessage = document.createElement('div');
+            userMessage.style.textAlign = 'right';
+            userMessage.style.marginBottom = '10px';
+            userMessage.innerHTML = `
+                <div style="background: var(--primary); color: white; padding: 10px; border-radius: 6px; display: inline-block;">
+                    ${input}
+                </div>
+            `;
+            messagesContainer.appendChild(userMessage);
+            
+            // 清空输入框
+            document.getElementById('ai-input').value = '';
+            
+            // 添加AI回复
+            const reply = getAIResponse(input);
+            const aiMessage = document.createElement('div');
+            aiMessage.style.marginBottom = '10px';
+            aiMessage.innerHTML = `
+                <div style="background: white; padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
+                    ${reply}
+                </div>
+            `;
+            messagesContainer.appendChild(aiMessage);
+            
+            // 滚动到底部
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // 简单的AI回复逻辑
+        function getAIResponse(message) {
+            const normalizedMessage = message.toLowerCase();
+            
+            // 知识库
+            const knowledgeBase = [
+                {
+                    keywords: ["你好", "嗨", "哈喽", "早上好"],
+                    answers: [
+                        "你好！我是AI助手，很高兴为你服务。",
+                        "嗨~ 有什么我可以帮助你的吗？"
+                    ]
+                },
+                {
+                    keywords: ["时间", "几点", "现在"],
+                    answers: [
+                        `现在是 ${new Date().toLocaleTimeString()}`,
+                        `当前时间：${new Date().getHours()}时${new Date().getMinutes()}分`
+                    ]
+                },
+                {
+                    keywords: ["日期", "今天", "星期", "几号"],
+                    answers: [
+                        `今天是 ${new Date().toLocaleDateString()}`,
+                        `${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日`
+                    ]
+                },
+                {
+                    keywords: ["计算器", "计算"],
+                    answers: [
+                        "你可以使用本工具箱中的计算器功能进行数学运算。",
+                        "请在计算器工具中输入您的计算需求。"
+                    ]
+                },
+                {
+                    keywords: ["密码", "生成密码"],
+                    answers: [
+                        "你可以使用密码生成器工具创建安全密码。",
+                        "请在密码生成器中选择需要的选项生成密码。"
+                    ]
+                },
+                {
+                    keywords: ["进制", "二进制", "十六进制"],
+                    answers: [
+                        "本工具箱提供了文本与进制相互转换的功能。",
+                        "请在'文本转进制'或'进制转文本'工具中进行转换。"
+                    ]
+                },
+                {
+                    keywords: ["单位", "换算"],
+                    answers: [
+                        "你可以使用单位换算工具进行各种单位转换。",
+                        "请在单位换算工具中选择要转换的单位类型。"
+                    ]
+                },
+                {
+                    keywords: ["音频", "音乐", "可视化"],
+                    answers: [
+                        "你可以上传音频文件并使用音频可视化工具查看效果。",
+                        "请在音频可视化工具中上传音频文件进行体验。"
+                    ]
+                },
+                {
+                    keywords: ["图片", "base64", "编码"],
+                    answers: [
+                        "你可以使用图片转Base64工具将图片转换为Base64编码。",
+                        "请在图片转Base64工具中上传图片进行转换。"
+                    ]
+                },
+                {
+                    keywords: ["二维码", "QR码"],
+                    answers: [
+                        "你可以使用二维码生成器创建自定义二维码。",
+                        "请在二维码生成器中输入内容生成二维码。"
+                    ]
+                },
+                {
+                    keywords: ["搜索", "百度"],
+                    answers: [
+                        "你可以点击百度搜索按钮直接跳转到百度首页。",
+                        "百度搜索功能可以直接跳转到百度网站。"
+                    ]
+                },
+                {
+                    keywords: ["网页", "源码", "源代码"],
+                    answers: [
+                        "你可以使用网页取源工具获取网页的HTML源码。",
+                        "请在网页取源工具中输入URL获取网页源代码。"
+                    ]
+                },
+                {
+                    keywords: ["摩斯密码", "摩尔斯"],
+                    answers: [
+                        "你可以使用摩斯密码工具进行文本和摩斯密码的相互转换。",
+                        "请在摩斯密码工具中输入要转换的内容。"
+                    ]
+                },
+                {
+                    keywords: ["谢谢", "感谢"],
+                    answers: [
+                        "不客气，很高兴能帮到你！",
+                        "随时为你服务！"
+                    ]
+                }
+            ];
+            
+            // 查找匹配的回答
+            let bestMatch = null;
+            let maxScore = 0;
+            
+            knowledgeBase.forEach(item => {
+                let score = 0;
+                item.keywords.forEach(keyword => {
+                    if (normalizedMessage.includes(keyword)) {
+                        score += 1;
+                    }
+                });
+                
+                if (score > maxScore) {
+                    maxScore = score;
+                    bestMatch = item;
+                }
+            });
+            
+            if (bestMatch && maxScore > 0) {
+                const answers = bestMatch.answers;
+                return answers[Math.floor(Math.random() * answers.length)];
+            } else {
+                return "这个问题我还在学习中，你可以尝试问些其他问题或使用工具箱中的相关功能。";
+            }
+        }
+
+        // 摩斯密码功能
+        const morseCodeMap = {
+            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 
+            'F': '..-.', 'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 
+            'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 
+            'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 
+            'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--', 
+            'Z': '--..', '0': '-----', '1': '.----', '2': '..---', 
+            '3': '...--', '4': '....-', '5': '.....', '6': '-....', 
+            '7': '--...', '8': '---..', '9': '----.', '.': '.-.-.-', 
+            ',': '--..--', '?': '..--..', "'": '.----.', '!': '-.-.--', 
+            '/': '-..-.', '(': '-.--.', ')': '-.--.-', '&': '.-...', 
+            ':': '---...', ';': '-.-.-.', '=': '-...-', '+': '.-.-.', 
+            '-': '-....-', '_': '..--.-', '"': '.-..-.', '$': '...-..-', 
+            '@': '.--.-.', ' ': '/'
+        };
+
+        // 初始化摩斯密码表
+        function initMorseTable() {
+            const tableBody = document.getElementById('morse-code-table');
+            tableBody.innerHTML = '';
+            
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            const symbols = '.,?\'!/()&=:;+-_"$@';
+            
+            // 添加字母
+            for (let i = 0; i < letters.length; i += 2) {
+                const row = document.createElement('tr');
+                
+                const cell1 = document.createElement('td');
+                cell1.textContent = letters[i];
+                row.appendChild(cell1);
+                
+                const cell2 = document.createElement('td');
+                cell2.textContent = morseCodeMap[letters[i]];
+                row.appendChild(cell2);
+                
+                if (i + 1 < letters.length) {
+                    const cell3 = document.createElement('td');
+                    cell3.textContent = letters[i + 1];
+                    row.appendChild(cell3);
+                    
+                    const cell4 = document.createElement('td');
+                    cell4.textContent = morseCodeMap[letters[i + 1]];
+                    row.appendChild(cell4);
+                }
+                
+                tableBody.appendChild(row);
+            }
+            
+            // 添加数字和符号
+            for (let i = 0; i < numbers.length; i += 2) {
+                const row = document.createElement('tr');
+                
+                const cell1 = document.createElement('td');
+                cell1.textContent = numbers[i];
+                row.appendChild(cell1);
+                
+                const cell2 = document.createElement('td');
+                cell2.textContent = morseCodeMap[numbers[i]];
+                row.appendChild(cell2);
+                
+                if (i + 1 < numbers.length) {
+                    const cell3 = document.createElement('td');
+                    cell3.textContent = numbers[i + 1];
+                    row.appendChild(cell3);
+                    
+                    const cell4 = document.createElement('td');
+                    cell4.textContent = morseCodeMap[numbers[i + 1]];
+                    row.appendChild(cell4);
+                }
+                
+                tableBody.appendChild(row);
+            }
+        }
+
+        function convertMorseCode() {
+            const input = document.getElementById('morse-input').value.trim();
+            if (!input) {
+                alert('请输入要转换的内容！');
+                return;
+            }
+            
+            const direction = document.querySelector('input[name="morse-direction"]:checked').value;
+            let result;
+            
+            try {
+                if (direction === 'toMorse') {
+                    result = textToMorse(input);
+                } else {
+                    result = morseToText(input);
+                }
+                
+                document.getElementById('morse-result').textContent = result;
+            } catch (error) {
+                document.getElementById('morse-result').textContent = `转换错误: ${error.message}`;
+            }
+        }
+
+        function textToMorse(text) {
+            return text.toUpperCase().split('').map(char => {
+                if (morseCodeMap[char]) {
+                    return morseCodeMap[char];
+                } else {
+                    throw new Error(`无法编码字符: ${char}`);
+                }
+            }).join(' ');
+        }
+
+        function morseToText(morse) {
+            const reverseMap = {};
+            for (const key in morseCodeMap) {
+                reverseMap[morseCodeMap[key]] = key;
+            }
+            
+            const words = morse.split(' / ');
+            let result = [];
+            
+            for (const word of words) {
+                const letters = word.split(' ');
+                let decodedWord = '';
+                
+                for (const code of letters) {
+                    if (reverseMap[code]) {
+                        decodedWord += reverseMap[code];
+                    } else if (code === '') {
+                        // 忽略空代码
+                    } else {
+                        throw new Error(`无法解码摩斯密码: ${code}`);
+                    }
+                }
+                
+                result.push(decodedWord);
+            }
+            
+            return result.join(' ');
+        }
+
+        function copyMorseResult() {
+            const result = document.getElementById('morse-result').textContent;
+            if (result && result !== '转换结果将显示在这里') {
+                navigator.clipboard.writeText(result);
+                alert('结果已复制！');
+            }
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('load', function() {
+            // 初始化摩斯密码表
+            initMorseTable();
+            
+            // 加载笔记
+            loadNotes();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=no">
+  <title>Base64加密/解密</title>
+  <style>
+    @font-face {
+      font-family: 'MyCustomFont';
+      src: url('shuhei.otf') format('truetype'); /* Replace with your font file path */
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      font-family: 'MyCustomFont', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      color: #000000;
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    .night-mode {
+      background-color: #121212;
+      color: #ffffff;
+    }
+
+    .sci-fi-mode {
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      color: #ffffff;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      transition: background 0.5s, box-shadow 0.5s;
+    }
+
+    .night-mode .container {
+      background: rgba(18, 18, 18, 0.85);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .sci-fi-mode .container {
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 90%;
+      height: 100px;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      transition: background 0.3s, border 0.3s;
+    }
+
+    .night-mode textarea, .sci-fi-mode textarea {
+      background: rgba(18, 18, 18, 0.9);
+      color: #fff;
+      border: 2px solid #555;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      margin: 10px 0;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #333;
+      color: #ffffff;
+      transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    .night-mode button {
+      background-color: #00aaff;
+    }
+
+    .night-mode button:hover {
+      background-color: #0088cc;
+    }
+
+    #mode-toggle-btn {
+      background-color: #28a745;
+      color: #ffffff;
+    }
+
+    #mode-toggle-btn:hover {
+      background-color: #218838;
+    }
+
+    .night-mode #mode-toggle-btn {
+      background-color: #d9534f;
+      color: #ffffff;
+    }
+
+    .night-mode #mode-toggle-btn:hover {
+      background-color: #c9302c;
+    }
+
+    #copy-btn {
+      background-color: #ffc107;
+      color: #000;
+    }
+
+    #copy-btn:hover {
+      background-color: #e0a800;
+    }
+
+    .night-mode #copy-btn {
+      background-color: #00aaff;
+      color: #ffffff;
+    }
+
+    .night-mode #copy-btn:hover {
+      background-color: #0088cc;
+    }
+  </style>
+<!-- 由Coodbt制作，交流群号:241155924 -->
+</head>
+<body>
+  <div class="container">
+    <h1>Base64加密/解密</h1>
+
+    <textarea id="input-text" placeholder="输入要加密或解密的文本..."></textarea>    
+    <button id="encrypt-btn" onclick="encryptText()">加密</button>
+    <button id="decrypt-btn" onclick="decryptText()">解密</button>   
+    <textarea id="output-text" placeholder="这里显示加密或解密后的结果..." readonly></textarea>
+    <button id="copy-btn" onclick="copyText()">复制结果</button>
+    <button id="mode-toggle-btn" onclick="toggleMode()">切换白天/黑夜模式</button>
+  </div>
+
+  <script>
+    function encryptText() {
+      var input = document.getElementById('input-text').value;
+      var encrypted = btoa(input); // Base64 encoding
+      document.getElementById('output-text').value = encrypted;
+    }
+
+    function decryptText() {
+      var input = document.getElementById('output-text').value;
+      var decrypted = atob(input); // Base64 decoding
+      document.getElementById('input-text').value = decrypted;
+    }
+
+    function copyText() {
+      var outputText = document.getElementById('output-text');
+      outputText.select();
+      outputText.setSelectionRange(0, 99999); // For mobile devices
+      document.execCommand("copy");
+      alert("复制成功: " + outputText.value);;
+    }
+
+    function toggleMode() {
+      var body = document.body;
+      body.classList.toggle('night-mode');
+      body.classList.toggle('sci-fi-mode');
+    }
+  </script>
+</body>
+</html>

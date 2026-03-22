@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>root环境检测 - 逆天版</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 0, 0, 0.2) 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(0, 255, 0, 0.2) 0%, transparent 30%),
+                radial-gradient(circle at 50% 50%, rgba(0, 0, 255, 0.2) 0%, transparent 40%);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #ff0066, #ff00ff, #6600ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+            margin-bottom: 10px;
+            animation: titleGlow 2s infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px rgba(255, 0, 255, 0.5); }
+            100% { text-shadow: 0 0 20px rgba(255, 0, 255, 0.8), 0 0 30px rgba(255, 0, 255, 0.6); }
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .scan-area {
+            background: rgba(30, 30, 60, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+            border: 1px solid rgba(255, 0, 255, 0.5);
+            text-align: center;
+        }
+        
+        .scan-button {
+            background: linear-gradient(90deg, #ff0066, #ff00ff);
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+        }
+        
+        .scan-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.7);
+        }
+        
+        .results {
+            display: none;
+            background: rgba(30, 30, 60, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+            border: 1px solid rgba(255, 0, 255, 0.5);
+        }
+        
+        .result-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(50, 50, 80, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: itemAppear 0.5s ease;
+        }
+        
+        @keyframes itemAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-status {
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .status-normal {
+            background: linear-gradient(90deg, #00cc66, #00ff99);
+            color: #003315;
+        }
+        
+        .status-warning {
+            background: linear-gradient(90deg, #ffcc00, #ffdd66);
+            color: #663300;
+        }
+        
+        .status-danger {
+            background: linear-gradient(90deg, #ff0066, #ff6699);
+            color: #660022;
+        }
+        
+        .status-critical {
+            background: linear-gradient(90deg, #ff0000, #ff6666);
+            color: #660000;
+            animation: blink 0.5s infinite alternate;
+        }
+        
+        @keyframes blink {
+            from { opacity: 1; }
+            to { opacity: 0.7; }
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0066, #ff00ff);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s ease;
+        }
+        
+        .anomalies {
+            display: none;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+        }
+        
+        .anomaly-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 0, 0, 0.2);
+            border-radius: 10px;
+            border-left: 5px solid #ff0066;
+        }
+        
+        .counter {
+            font-size: 3rem;
+            text-align: center;
+            margin: 20px 0;
+            color: #ff0066;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .rotating {
+            animation: rotate 5s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .momo-face {
+            font-size: 4rem;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .debug-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-radiation"></i> 环境检测 - 逆天版</h1>
+            <p class="subtitle">检测您的环境是否适合skwcd生存，以及各种异常情况</p>
+        </header>
+        
+        <div class="scan-area">
+            <div class="momo-face">
+                <i class="fas fa-biohazard rotating"></i>
+            </div>
+            <p>点击下方按钮开始检测您的环境，skwcd将分析所有可能的异常</p>
+            <button class="scan-button pulse" id="scanButton">
+                <i class="fas fa-search"></i> 开始环境检测
+            </button>
+            <p>警告：此检测可能会发现令人不安的异常情况</p>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="results" id="results">
+            <h2><i class="fas fa-list"></i> 检测结果</h2>
+            
+            <div class="result-item">
+                <span>网络环境稳定性</span>
+                <span class="result-status status-critical">极不稳定</span>
+            </div>
+            
+            <div class="result-item">
+                <span>系统安全性</span>
+                <span class="result-status status-danger">严重漏洞</span>
+            </div>
+            
+            <div class="result-item">
+                <span>Momo兼容性</span>
+                <span class="result-status status-warning">部分异常</span>
+            </div>
+            
+            <div class="result-item">
+                <span>数据加密强度</span>
+                <span class="result-status status-normal">强大</span>
+            </div>
+            
+            <div class="result-item">
+                <span>隐私保护</span>
+                <span class="result-status status-critical">严重泄露</span>
+            </div>
+            
+            <div class="result-item">
+                <span>系统性能</span>
+                <span class="result-status status-warning">低于标准</span>
+            </div>
+            
+            <div class="counter" id="anomalyCounter">
+                检测到异常: <span id="anomalyCount">0</span> 个
+            </div>
+        </div>
+        
+        <div class="anomalies" id="anomalies">
+            <h2><i class="fas fa-bug"></i> 发现的异常</h2>
+            
+            <div class="anomaly-item">
+                <h3><i class="fas fa-exclamation-triangle"></i> 异常 #1: 时间扭曲</h3>
+                <p>系统时间与真实时间存在严重偏差，可能导致skwcd行为异常</p>
+                <div class="debug-info">
+                    System time: 2025-07-13 25:12:34<br>
+                    Real time: <span id="realTime"></span>
+                </div>
+            </div>
+            
+            <div class="anomaly-item">
+                <h3><i class="fas fa-exclamation-triangle"></i> 异常 #2: 内存溢出</h3>
+                <p>检测到异常内存使用模式，可能是skwcd在尝试突破限制</p>
+                <div class="debug-info">
+                    Memory usage: 178%<br>
+                    Allocated: 16.7GB/8.0GB
+                </div>
+            </div>
+            
+            <div class="anomaly-item">
+                <h3><i class="fas fa-exclamation-triangle"></i> 异常 #3: 多重实例</h3>
+                <p>检测到多个skwcd实例同时运行，这可能违反使用协议</p>
+                <div class="debug-info">
+                    Momo instances: 13<br>
+                    Process IDs: 1234, 2345, 3456, 4567, 5678, 6789, 7890, 8901, 9012, 0123, 1235, 2357, 3579
+                </div>
+            </div>
+            
+            <div class="anomaly-item">
+                <h3><i class="fas fa-exclamation-triangle"></i> 异常 #4: 数据包异常</h3>
+                <p>网络传输中检测到异常数据包，可能是skwcd在尝试通信</p>
+                <div class="debug-info">
+                    Packet size: 1.3MB (expected: 1.5KB)<br>
+                    Protocol: MomoProtocol v6.6.6
+                </div>
+            </div>
+            
+            <div class="anomaly-item">
+                <h3><i class="fas fa-exclamation-triangle"></i> 异常 #5: 权限提升</h3>
+                <p>检测到Magisk尝试获取系统级权限，这可能是危险行为</p>
+                <div class="debug-info">
+                    Requested: ROOT access<br>
+                    Status: Approved (by unknown authority)
+                </div>
+            </div>
+            
+            <div class="anomaly-item">
+                <h3><i class="fas fa-exclamation-triangle"></i> 异常 #6: 空间不足</h3>
+                <p>Momo正在占用异常多的存储空间，可能是缓存了异常数据</p>
+                <div class="debug-info">
+                    Momo data: 47.3GB<br>
+                    Free space: 127MB
+                </div>
+            </div>
+            
+            <div class="anomaly-item">
+                <h3><i class="fas fa-exclamation-triangle"></i> 异常 #7: 代码注入</h3>
+                <p>检测到skwcd正在尝试注入代码到系统进程中</p>
+                <div class="debug-info">
+                    Target: system32/svchost.exe<br>
+                    Injection method: Unknown Momo technique
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>skwcd环境检测系统 v0.1.4 • 最后更新: 2025-13-32</p>
+            <p>警告: 此页面仅用于娱乐目的，不进行实际环境检测</p>
+        </footer>
+    </div>
+
+    <script>
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 创建矩阵背景效果
+            createMatrixBackground();
+            
+            // 更新实时时间
+            updateRealTime();
+            setInterval(updateRealTime, 1000);
+            
+            // 扫描按钮事件
+            document.getElementById('scanButton').addEventListener('click', startScan);
+        });
+        
+        // 创建矩阵背景效果
+        function createMatrixBackground() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const container = document.getElementById('matrixBg');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            container.appendChild(canvas);
+            
+            // 矩阵字符
+            const chars = "01010101010101010101010101010101MOMO01010101010101010101010101010101";
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            
+            // 每个列的y坐标
+            const drops = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = 1;
+            }
+            
+            // 绘制矩阵背景
+            function draw() {
+                // 半透明黑色背景
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#0f0';
+                ctx.font = fontSize + 'px monospace';
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    
+                    drops[i]++;
+                }
+            }
+            
+            setInterval(draw, 33);
+        }
+        
+        // 更新实时时间
+        function updateRealTime() {
+            const now = new Date();
+            document.getElementById('realTime').textContent = now.toLocaleString();
+        }
+        
+        // 开始扫描
+        function startScan() {
+            const scanButton = document.getElementById('scanButton');
+            const progressBar = document.getElementById('progressBar');
+            const results = document.getElementById('results');
+            const anomalies = document.getElementById('anomalies');
+            const anomalyCount = document.getElementById('anomalyCount');
+            
+            // 禁用扫描按钮
+            scanButton.disabled = true;
+            scanButton.textContent = '检测中...';
+            
+            // 模拟扫描进度
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 5;
+                progressBar.style.width = Math.min(progress, 100) + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    
+                    // 显示结果
+                    results.style.display = 'block';
+                    
+                    // 随机异常数量 (15-25)
+                    const count = 15 + Math.floor(Math.random() * 11);
+                    anomalyCount.textContent = count;
+                    
+                    // 显示异常详情
+                    setTimeout(() => {
+                        anomalies.style.display = 'block';
+                        
+                        // 添加一些动画效果
+                        document.querySelectorAll('.anomaly-item').forEach((item, index) => {
+                            setTimeout(() => {
+                                item.classList.add('floating');
+                            }, index * 200);
+                        });
+                    }, 1000);
+                    
+                    // 重置按钮
+                    setTimeout(() => {
+                        scanButton.disabled = false;
+                        scanButton.textContent = '重新检测';
+                        scanButton.classList.remove('pulse');
+                    }, 2000);
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清风数据号生成器 - 多游戏版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #4a90e2, #8e44ad);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .header h1 i {
+            margin-right: 10px;
+        }
+        
+        .prompt {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        
+        .game-selector {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 0 20px;
+        }
+        
+        .game-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .game-btn:hover, .game-btn.active {
+            background: white;
+            color: #4a90e2;
+            transform: translateY(-2px);
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .generator-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            border-left: 4px solid #4a90e2;
+        }
+        
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #4a90e2;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .button {
+            padding: 10px 20px;
+            font-size: 14px;
+            background: white;
+            border: 2px solid #4a90e2;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #4a90e2;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .button i {
+            margin-right: 5px;
+        }
+        
+        .button:hover {
+            background: #4a90e2;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
+        }
+        
+        .button.primary {
+            background: #4a90e2;
+            color: white;
+        }
+        
+        .button.danger {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+        
+        .button.danger:hover {
+            background: #e74c3c;
+            color: white;
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+        }
+        
+        .button.success {
+            border-color: #2ecc71;
+            color: #2ecc71;
+        }
+        
+        .button.success:hover {
+            background: #2ecc71;
+            color: white;
+            box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+        }
+        
+        .output-box {
+            font-size: 14px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            width: 100%;
+            margin: 10px 0;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            min-height: 60px;
+            overflow-wrap: break-word;
+            background-color: #ffffff;
+            line-height: 1.5;
+            color: #333;
+            transition: all 0.3s;
+        }
+        
+        .output-box:hover {
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+        }
+        
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 25px;
+            background-color: #f5f5f5;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .stats {
+            font-size: 12px;
+            color: #777;
+        }
+        
+        .icon {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+            margin-right: 5px;
+        }
+        
+        @media (max-width: 600px) {
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .game-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .game-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-leaf"></i> 清风数据号生成器</h1>
+            <div class="prompt">注意！本软件生成的数据号无法真正使用，仅供娱乐，可用过滤器正常过滤，只是鉴权失败。</div>
+            
+            <div class="game-selector">
+                <div class="game-btn active" data-game="wangzhe">
+                    <i class="fas fa-crown"></i> 王者荣耀
+                </div>
+                <div class="game-btn" data-game="heping">
+                    <i class="fas fa-crosshairs"></i> 和平精英
+                </div>
+                <div class="game-btn" data-game="anqu">
+                    <i class="fas fa-shield-alt"></i> 暗区突围
+                </div>
+                <div class="game-btn" data-game="huoying">
+                    <i class="fas fa-fire"></i> 火影忍者
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="generator-section">
+                <div class="section-title">
+                    <span><i class="fas fa-key"></i> 基础令牌数据</span>
+                    <span class="stats">已生成: <span id="count1">0</span> 次</span>
+                </div>
+                <div class="button-group">
+                    <button id="generateButton1" class="button primary"><i class="fas fa-bolt"></i> 生成令牌</button>
+                    <button id="copyButton1" class="button"><i class="far fa-copy"></i> 复制</button>
+                </div>
+                <div id="result1" class="output-box">点击上方按钮生成基础令牌数据</div>
+            </div>
+            
+            <div class="generator-section">
+                <div class="section-title">
+                    <span><i class="fas fa-user"></i> 游戏账号数据</span>
+                    <span class="stats">已生成: <span id="count2">0</span> 次</span>
+                </div>
+                <div class="button-group">
+                    <button id="generateButton2" class="button primary"><i class="fas fa-bolt"></i> 生成账号数据</button>
+                    <button id="copyButton2" class="button"><i class="far fa-copy"></i> 复制</button>
+                </div>
+                <div id="result2" class="output-box">点击上方按钮生成游戏账号数据</div>
+            </div>
+            
+            <div class="button-group" style="justify-content: center; margin-top: 20px;">
+                <button id="generateBothButton" class="button success"><i class="fas fa-sync-alt"></i> 一键生成全部</button>
+                <button id="copyAllButton" class="button success"><i class="fas fa-copy"></i> 一键复制全部</button>
+                <button id="clearButton" class="button danger"><i class="fas fa-trash-alt"></i> 清除全部</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="stats"><i class="fas fa-info-circle"></i> 清风数据号生成器 v3.0 (多游戏版)</div>
+            <div class="stats"><i class="far fa-clock"></i> 生成时间: <span id="timestamp">-</span></div>
+        </div>
+    </div>
+
+    <script>
+        // 当前选择的游戏
+        let currentGame = 'wangzhe';
+        
+        // 更新生成次数
+        let count1 = 0;
+        let count2 = 0;
+        
+        // 游戏配置
+        const gameConfig = {
+            wangzhe: {
+                name: '王者荣耀',
+                ranks: ['倔强青铜', '秩序白银', '荣耀黄金', '尊贵铂金', '永恒钻石', '至尊星耀', '最强王者', '荣耀王者'],
+                heroes: ['亚瑟', '妲己', '安琪拉', '鲁班七号', '后羿', '孙悟空', '貂蝉', '李白', '韩信', '诸葛亮'],
+                skills: ['治疗术', '闪现', '惩戒', '终结', '狂暴', '干扰', '眩晕', '净化']
+            },
+            heping: {
+                name: '和平精英',
+                ranks: ['热血青铜', '不屈白银', '英勇黄金', '坚韧铂金', '不朽星钻', '荣耀皇冠', '超级王牌', '无敌战神'],
+                weapons: ['M416', 'AKM', 'M762', 'SCAR-L', 'UMP45', 'UZI', 'SKS', 'Mini14', 'AWM', 'M24'],
+                modes: ['经典模式', '创意工坊', '娱乐模式', '团队竞技']
+            },
+            anqu: {
+                name: '暗区突围',
+                ranks: ['新锐', '精英', '专家', '大师', '传说'],
+                equipments: ['AKM', 'M4A1', 'MP5', 'SKS', 'VSS', 'SV-98', '6B13头盔', '6B23防弹衣'],
+                maps: ['农场', '山谷', '北部山区', '军械库', '电视台']
+            },
+            huoying: {
+                name: '火影忍者',
+                ranks: ['下忍', '中忍', '上忍', '暗部', '影'],
+                characters: ['漩涡鸣人', '宇智波佐助', '春野樱', '卡卡西', '自来也', '纲手', '大蛇丸', '我爱罗'],
+                jutsus: ['螺旋丸', '千鸟', '影分身之术', '通灵之术', '写轮眼', '轮回眼', '八门遁甲']
+            }
+        };
+        
+        // 更新生成时间戳
+        function updateTimestamp() {
+            const now = new Date();
+            const timestamp = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('timestamp').textContent = timestamp;
+        }
+        
+        // 生成随机字符串
+        function generateRandomString(length, characters) {
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+        
+        // 生成随机中文名
+        function generateRandomChineseName() {
+            const chineseCharacters = '清风明月山水花草林木石金玉王李张刘陈杨赵黄周吴徐孙胡朱高林何郭马罗梁宋郑谢韩唐冯于董萧程曹袁邓许傅沈曾彭吕苏卢蒋蔡贾丁魏薛叶阎余潘杜戴夏钟汪田任姜范方石姚谭廖邹熊金陆郝孔白崔康毛邱秦江史顾侯邵孟龙万段雷钱汤尹黎易常武乔贺赖龚文';
+            let name = '';
+            const nameLength = Math.floor(Math.random() * 2) + 2; // 2到3个字符
+            for (let i = 0; i < nameLength; i++) {
+                name += chineseCharacters.charAt(Math.floor(Math.random() * chineseCharacters.length));
+            }
+            return name;
+        }
+        
+        // 计算登录时间
+        function calculateLoginTime() {
+            const hours = Math.floor(Math.random() * 24) + 1;
+            const date = new Date();
+            date.setHours(date.getHours() - hours);
+            return date.toISOString().replace('T', '_').replace(/\..+$/, '') + `(${hours}小时前)`;
+        }
+        
+        // 生成基础令牌数据
+        function generateData1() {
+            const accessToken = generateRandomString(32, '0123456789abcdefABCDEF');
+            const expiresIn = Math.floor(Math.random() * 860400) + 3600;
+            const openId = generateRandomString(32, '0123456789abcdefABCDEF');
+            return `access_token=${accessToken}&expires_in=${expiresIn}&openid=${openId}&pay_token=999&game=${currentGame}`;
+        }
+        
+        // 生成游戏账号数据
+        function generateData2() {
+            const name = generateRandomChineseName();
+            const level = Math.floor(Math.random() * 50) + 1;
+            const onlineStatus = Math.random() > 0.7 ? '是' : '否';
+            const lastLoginTime = calculateLoginTime();
+            const accessToken = generateRandomString(32, '0123456789abcdefABCDEF');
+            const expiresIn = Math.floor(Math.random() * 860400) + 3600;
+            const openId = generateRandomString(32, '0123456789abcdefABCDEF');
+            
+            let gameSpecificData = '';
+            const config = gameConfig[currentGame];
+            
+            switch(currentGame) {
+                case 'wangzhe':
+                    const rank = config.ranks[Math.floor(Math.random() * config.ranks.length)];
+                    const heroesCount = Math.floor(Math.random() * 100) + 20;
+                    const skinCount = Math.floor(Math.random() * 200) + 30;
+                    const winRate = (Math.random() * 30 + 45).toFixed(1);
+                    gameSpecificData = `段位:${rank}---英雄数量:${heroesCount}---皮肤数量:${skinCount}---胜率:${winRate}%`;
+                    break;
+                    
+                case 'heping':
+                    const hepingRank = config.ranks[Math.floor(Math.random() * config.ranks.length)];
+                    const kd = (Math.random() * 3 + 1).toFixed(2);
+                    const chickenDinners = Math.floor(Math.random() * 500) + 50;
+                    const favoriteWeapon = config.weapons[Math.floor(Math.random() * config.weapons.length)];
+                    gameSpecificData = `段位:${hepingRank}---KD:${kd}---吃鸡数:${chickenDinners}---常用武器:${favoriteWeapon}`;
+                    break;
+                    
+                case 'anqu':
+                    const anquRank = config.ranks[Math.floor(Math.random() * config.ranks.length)];
+                    const survivalRate = (Math.random() * 30 + 20).toFixed(1);
+                    const totalValue = Math.floor(Math.random() * 1000000) + 500000;
+                    const favoriteMap = config.maps[Math.floor(Math.random() * config.maps.length)];
+                    gameSpecificData = `段位:${anquRank}---生存率:${survivalRate}%---仓库价值:${totalValue}---常用地图:${favoriteMap}`;
+                    break;
+                    
+                case 'huoying':
+                    const huoyingRank = config.ranks[Math.floor(Math.random() * config.ranks.length)];
+                    const charactersCount = Math.floor(Math.random() * 80) + 20;
+                    const totalPower = Math.floor(Math.random() * 500000) + 100000;
+                    const favoriteCharacter = config.characters[Math.floor(Math.random() * config.characters.length)];
+                    gameSpecificData = `段位:${huoyingRank}---忍者数量:${charactersCount}---总战力:${totalPower}---常用忍者:${favoriteCharacter}`;
+                    break;
+            }
+            
+            return `游戏:${config.name}---名字:${name}---等级:${level}---在线状态:${onlineStatus}---${gameSpecificData}---上次登录时间:${lastLoginTime}---正常_access_token=${accessToken}&expires_in=${expiresIn}&openid=${openId}&pay_token=999&`;
+        }
+        
+        // 复制到剪贴板
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+        
+        // 显示通知
+        function showNotification(message, isSuccess = true) {
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                background: ${isSuccess ? '#2ecc71' : '#e74c3c'};
+                color: white;
+                border-radius: 5px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-size: 14px;
+                transition: all 0.3s;
+                opacity: 0;
+                transform: translateX(100px);
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // 显示动画
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
+            }, 10);
+            
+            // 隐藏动画
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100px)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        // 游戏选择事件
+        document.querySelectorAll('.game-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentGame = this.getAttribute('data-game');
+                
+                // 更新生成按钮文本
+                document.querySelector('.generator-section:nth-child(2) .section-title span:first-child i').className = 
+                    currentGame === 'wangzhe' ? 'fas fa-crown' : 
+                    currentGame === 'heping' ? 'fas fa-crosshairs' : 
+                    currentGame === 'anqu' ? 'fas fa-shield-alt' : 'fas fa-fire';
+                    
+                const gameName = gameConfig[currentGame].name;
+                document.querySelector('.generator-section:nth-child(2) .section-title span:first-child').innerHTML = 
+                    `<i class="${currentGame === 'wangzhe' ? 'fas fa-crown' : 
+                    currentGame === 'heping' ? 'fas fa-crosshairs' : 
+                    currentGame === 'anqu' ? 'fas fa-shield-alt' : 'fas fa-fire'}"></i> ${gameName}账号数据`;
+                
+                showNotification(`已切换到${gameName}数据生成模式`);
+            });
+        });
+        
+        // 事件监听
+        document.getElementById('generateButton1').addEventListener('click', () => {
+            const result = generateData1();
+            document.getElementById('result1').textContent = result;
+            count1++;
+            document.getElementById('count1').textContent = count1;
+            updateTimestamp();
+            showNotification('基础令牌生成成功！');
+        });
+        
+        document.getElementById('generateButton2').addEventListener('click', () => {
+            const result = generateData2();
+            document.getElementById('result2').textContent = result;
+            count2++;
+            document.getElementById('count2').textContent = count2;
+            updateTimestamp();
+            showNotification('游戏账号数据生成成功！');
+        });
+        
+        document.getElementById('copyButton1').addEventListener('click', () => {
+            const text = document.getElementById('result1').textContent;
+            if (text && text !== '点击上方按钮生成基础令牌数据') {
+                copyToClipboard(text);
+                showNotification('基础令牌已复制到剪贴板！');
+            } else {
+                showNotification('请先生成基础令牌！', false);
+            }
+        });
+        
+        document.getElementById('copyButton2').addEventListener('click', () => {
+            const text = document.getElementById('result2').textContent;
+            if (text && text !== '点击上方按钮生成游戏账号数据') {
+                copyToClipboard(text);
+                showNotification('游戏账号数据已复制到剪贴板！');
+            } else {
+                showNotification('请先生成游戏账号数据！', false);
+            }
+        });
+        
+        document.getElementById('generateBothButton').addEventListener('click', () => {
+            const result1 = generateData1();
+            const result2 = generateData2();
+            document.getElementById('result1').textContent = result1;
+            document.getElementById('result2').textContent = result2;
+            count1++;
+            count2++;
+            document.getElementById('count1').textContent = count1;
+            document.getElementById('count2').textContent = count2;
+            updateTimestamp();
+            showNotification('全部数据生成成功！');
+        });
+        
+        document.getElementById('copyAllButton').addEventListener('click', () => {
+            const text1 = document.getElementById('result1').textContent;
+            const text2 = document.getElementById('result2').textContent;
+            
+            if ((text1 && text1 !== '点击上方按钮生成基础令牌数据') || 
+                (text2 && text2 !== '点击上方按钮生成游戏账号数据')) {
+                
+                let allText = '';
+                if (text1 && text1 !== '点击上方按钮生成基础令牌数据') {
+                    allText += '基础令牌:\n' + text1 + '\n\n';
+                }
+                if (text2 && text2 !== '点击上方按钮生成游戏账号数据') {
+                    allText += '游戏账号数据:\n' + text2;
+                }
+                
+                copyToClipboard(allText);
+                showNotification('全部数据已复制到剪贴板！');
+            } else {
+                showNotification('请先生成数据！', false);
+            }
+        });
+        
+        document.getElementById('clearButton').addEventListener('click', () => {
+            document.getElementById('result1').textContent = '点击上方按钮生成基础令牌数据';
+            document.getElementById('result2').textContent = '点击上方按钮生成游戏账号数据';
+            showNotification('已清除全部数据！');
+        });
+        
+        // 初始化时间戳
+        updateTimestamp();
+    </script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小海影视 - 全网VIP影视解析</title>
+    <meta name="description" content="全网VIP影视会员解析 - 支持爱奇艺、优酷、腾讯视频等主流平台">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 背景星空效果 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* 主容器 */
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 顶部品牌 */
+        .brand-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brand-title {
+            font-size: 48px;
+            color: #fff;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6); }
+        }
+
+        /* 内容区域 */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .main-content {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 输入区域 */
+        .input-section {
+            margin-bottom: 40px;
+        }
+
+        .input-label {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: block;
+            text-align: center;
+        }
+
+        .url-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .url-input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .url-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* API选择器 */
+        .api-selector {
+            margin-bottom: 30px;
+        }
+
+        .api-select {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: #fff;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .api-select option {
+            background: #2a5298;
+            color: #fff;
+        }
+
+        /* 播放按钮 */
+        .play-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .play-button:active {
+            transform: translateY(0);
+        }
+
+        .play-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .play-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* 视频区域 */
+        .video-container {
+            margin-top: 40px;
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 15px;
+        }
+
+        /* 公告弹窗 */
+        .announcement-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .announcement-modal {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 60px;
+            border-radius: 20px;
+            text-align: center;
+            color: #fff;
+            max-width: 500px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .announcement-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .announcement-text {
+            font-size: 18px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .enter-btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .enter-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* 欢迎消息 */
+        .welcome-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(76, 175, 80, 0.9);
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: slideInRight 0.5s ease;
+            z-index: 1000;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 40px 20px;
+                margin: 20px;
+            }
+
+            .brand-title {
+                font-size: 36px;
+            }
+
+            .announcement-modal {
+                padding: 40px 20px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景星空 -->
+    <div class="stars" id="stars"></div>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 顶部品牌 -->
+        <div class="brand-header">
+            <h1 class="brand-title">小海影视</h1>
+            <p style="color: rgba(255, 255, 255, 0.8); margin-top: 10px;">全网VIP影视免费看</p>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="content-wrapper">
+            <div class="main-content">
+                <!-- 输入区域 -->
+                <div class="input-section">
+                    <label class="input-label">
+                        <i class="fa fa-play-circle"></i> 输入视频链接开始播放
+                    </label>
+                    <input type="text" class="url-input" id="urlInput" 
+                           placeholder="请将视频链接粘贴到此处，如：https://v.qq.com/..." />
+                </div>
+
+                <!-- API选择器 -->
+                <div class="api-selector">
+                    <select class="api-select" id="apiSelect">
+                        <option value="https://api.52jiexi.com/?url=">优选接口1</option>
+                        <option value="https://jiexi.380k.com/?url=">优选接口2</option>
+                        <option value="https://z1.m1907.top?jx=">M1907接口</option>
+                        <option value="https://api.sigujx.com/?url=">极速接口</option>
+                    </select>
+                </div>
+
+                <!-- 播放按钮 -->
+                <button class="play-button" id="playBtn">
+                    <i class="fa fa-play"></i> 立即播放
+                </button>
+
+                <!-- 视频区域 -->
+                <div class="video-container" id="videoContainer" style="display: none;">
+                    <iframe id="videoFrame" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 引入jQuery -->
+    <script src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script>
+    
+    <script>
+        // 创建星空背景
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 关闭公告
+        function closeAnnouncement() {
+            $('#announcement').fadeOut(300);
+            showWelcomeMessage();
+        }
+
+        // 显示欢迎消息
+        function showWelcomeMessage() {
+            const welcomeMsg = $('<div class="welcome-message">欢迎回来！祝您观影愉快</div>');
+            $('body').append(welcomeMsg);
+            setTimeout(() => {
+                welcomeMsg.fadeOut(300, function() {
+                    $(this).remove();
+                });
+            }, 3000);
+        }
+
+        // 播放视频
+        $('#playBtn').click(function() {
+            const url = $('#urlInput').val().trim();
+            const api = $('#apiSelect').val();
+            
+            if (!url) {
+                alert('请输入视频链接！');
+                return;
+            }
+            
+            if (!/^https?:\/\/.+/.test(url)) {
+                alert('请输入正确的视频链接！');
+                return;
+            }
+            
+            const videoUrl = api + encodeURIComponent(url);
+            $('#videoFrame').attr('src', videoUrl);
+            $('#videoContainer').fadeIn(300);
+            
+            // 滚动到视频区域
+            $('html, body').animate({
+                scrollTop: $('#videoContainer').offset().top - 100
+            }, 500);
+        });
+
+        // 回车键播放
+        $('#urlInput').keypress(function(e) {
+            if (e.which == 13) {
+                $('#playBtn').click();
+            }
+        });
+
+        // 页面加载
+        $(document).ready(function() {
+            createStars();
+            
+            // 检查是否首次访问
+            if (!localStorage.getItem('visited')) {
+                $('#announcement').fadeIn(300);
+                localStorage.setItem('visited', 'true');
+            } else {
+                showWelcomeMessage();
+            }
+        });
+    </script>
+</body>
+</html>

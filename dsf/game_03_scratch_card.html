@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>身份证查询</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #3a7bd5;
+            --background-color: linear-gradient(135deg, #e6e9f0, #eef1f5);
+            --text-color: #333;
+            --border-color: #e1e4e8;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --border-radius: 15px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --loading-color: rgba(74, 144, 226, 0.5);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            padding: 40px 20px;
+            background: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s ease;
+        }
+
+        .container {
+            background-color: white;
+            padding: 60px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-align: center;
+            font-size: 3.2em;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+            transition: text-shadow 0.3s ease;
+        }
+
+        input {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 35px;
+            font-size: 18px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 6px rgba(74, 144, 226, 0.3);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .loading-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 40px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-container {
+            width: 50px;
+            height: 50px;
+            border: 6px solid var(--loading-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 20px;
+            transform-origin: center;
+            animation-timing-function: cubic-bezier(0.5, 0.1, 0.1, 0.9);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .progress-bar {
+            margin-top: 35px;
+            height: 15px;
+            background-color: var(--border-color);
+            border-radius: 7.5px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        #result {
+            margin-top: 50px;
+            padding: 35px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: white;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: box-shadow 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            animation-delay: 0s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message {
+            font-weight: bold;
+            margin-top: 25px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .success-message {
+            color: var(--success-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+        }
+
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            input,
+            button {
+                font-size: 16px;
+                padding: 18px;
+            }
+
+            #result {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>身份证查询</h1>
+        <input type="text" id="idcardInput" placeholder="请输入身份证号码">
+        <button onclick="queryIDCard()">查询</button>
+        <div id="loading-text" class="loading-text">
+            <span>正在查询</span>
+            <div class="loading-container"></div>
+        </div>
+        <div id="result">
+            <div id="success-message" class="message success-message"></div>
+            <div id="error-message" class="message error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        function queryIDCard() {
+            const idcard = document.getElementById('idcardInput').value;
+            const loadingText = document.getElementById('loading-text');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            const result = document.getElementById('result');
+
+            if (idcard.length !== 18) {
+                result.style.opacity = '1';
+                errorMessage.style.opacity = '1';
+                errorMessage.innerText = "请输入有效的18位身份证号码！";
+                successMessage.style.opacity = '0';
+                return;
+            }
+
+            loadingText.style.opacity = '1';
+            successMessage.style.opacity = '0';
+            errorMessage.style.opacity = '0';
+            result.style.opacity = '0';
+
+            fetch(`https://decode.xiaojieapi.com/api/idcard.php?idcard=${idcard}`)
+                .then(response => response.json())
+                .then(data => {
+                    loadingText.style.opacity = '0';
+                    result.style.opacity = '1';
+
+                    if (data.code === 200) {
+                        successMessage.style.opacity = '1';
+                        successMessage.innerHTML = `
+                            <p>身份证号码：${data.result.idcard}</p>
+                            <p>性别：${data.result.sex}</p>
+                            <p>生日：${data.result.birthday}</p>
+                            <p>地址：${data.result.address.province} ${data.result.address.city} ${data.result.address.district}</p>
+                            <p>生肖：${data.result.zodiac}</p>
+                            <p>星座：${data.result.constellation}</p>
+                        `;
+                    } else {
+                        errorMessage.style.opacity = '1';
+                        errorMessage.innerText = "查询失败，错误信息：" + (data.Error || '未知错误');
+                    }
+                })
+                .catch(error => {
+                    loadingText.style.opacity = '0';
+                    result.style.opacity = '1';
+                    errorMessage.style.opacity = '1';
+                    errorMessage.innerText = "网络错误或查询失败，请稍后再试！";
+                });
+        }
+    </script>
+</body>
+</html>

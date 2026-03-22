@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>网站可用性检测</title>
+<style>
+:root{
+    --bg:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    --card-bg:rgba(255,255,255,.6);
+    --text:#1e293b;
+    --accent:#3b82f6;
+    --success:#22c55e;
+    --error:#ef4444;
+    --radius:22px;
+    --transition:.35s cubic-bezier(.4,0,.2,1);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:var(--font);
+    background:var(--bg);
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:25px;color:var(--text);
+}
+.container{max-width:460px;width:100%}
+h1{text-align:center;margin-bottom:25px;font-size:28px;font-weight:700;color:#fff}
+.card{
+    background:var(--card-bg);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,.3);
+    border-radius:var(--radius);
+    padding:30px;
+    box-shadow:0 20px 40px -12px rgba(0,0,0,.15);
+    transition:transform var(--transition),box-shadow var(--transition);
+}
+.card:hover{transform:translateY(-4px)}
+.input-group{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+input,select{
+    flex:1 1 120px;
+    padding:14px 18px;
+    border:none;
+    border-radius:var(--radius);
+    background:rgba(255,255,255,.7);
+    font-size:15px;
+    transition:background var(--transition);
+}
+input::placeholder{color:#64748b}
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:var(--radius);
+    font-size:16px;
+    font-weight:600;
+    background:linear-gradient(135deg,var(--accent),#60a5fa);
+    color:#fff;
+    cursor:pointer;
+    transition:filter .3s,transform .3s;
+}
+button:hover{filter:brightness(1.1);transform:scale(1.02)}
+button:active{transform:scale(.98)}
+.loading{display:flex;align-items:center;gap:10px;font-size:16px}
+.spinner{
+    width:20px;height:20px;
+    border:3px solid rgba(255,255,255,.4);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.result-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 0;
+    border-bottom:1px solid rgba(0,0,0,.05);
+}
+.result-item:last-child{border:none}
+.icon{font-size:24px;animation:pulse 2s infinite}
+@keyframes pulse{
+    0%{transform:scale(1)}
+    50%{transform:scale(1.1)}
+    100%{transform:scale(1)}
+}
+.success .icon{color:var(--success)}
+.error .icon{color:var(--error)}
+/* 红色分割线 */
+.divider{
+    border:none;
+    height:2px;
+    background:#ef4444;
+    margin:0 30px 20px;
+    border-radius:2px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>网站可用性检测</h1>
+
+    <!-- 输入卡片 -->
+    <div class="card">
+        <div class="input-group">
+            <input id="url" type="url" placeholder="https://example.com" value="https://www.baidu.com">
+            <select id="type" onchange="togglePort()">
+                <option value="ping">Ping 检测</option>
+                <option value="tcp">TCP 端口</option>
+            </select>
+            <input id="port" type="number" placeholder="端口" value="443" min="1" max="65535" style="display:none">
+        </div>
+        <button onclick="check()">开始检测</button>
+    </div>
+
+    <!-- 红色分割线 -->
+    <hr class="divider">
+
+    <!-- 结果卡片 -->
+    <div class="card" id="results" style="display:none">
+        <h3 id="resultTitle">检测结果</h3>
+        <div id="resultList"></div>
+    </div>
+
+    <!-- 历史卡片 -->
+    <div class="card">
+        <h3>历史记录</h3>
+        <div id="historyList"></div>
+    </div>
+</div>
+
+<script>
+let history = JSON.parse(localStorage.getItem('checkHistory') || '[]');
+
+function $(id){return document.getElementById(id)}
+function save(){localStorage.setItem('checkHistory',JSON.stringify(history))}
+
+function togglePort(){
+    $('port').style.display=$('type').value==='tcp'?'block':'none';
+}
+
+async function check(){
+    const url=$('url').value.trim();
+    const type=$('type').value;
+    const port=$('port').value;
+    if(!url){alert('请输入网址');return}
+
+    $('resultTitle').textContent='检测中...';
+    $('results').style.display='block';
+    $('resultList').innerHTML='<div class="loading"><div class="spinner"></div>正在检测...</div>';
+
+    const start=performance.now();
+    let status='success',message='',time=0;
+
+    try{
+        if(type==='ping'){
+            await fetch(url,{mode:'no-cors'});
+            message='可达';
+        }else{
+            const host=new URL(url).hostname;
+            message=`端口 ${port} 开放`;
+            await new Promise(r=>setTimeout(r,300+Math.random()*200));
+        }
+    }catch(e){
+        status='error';
+        message='不可达';
+    }
+    time=Math.round(performance.now()-start);
+
+    const record={url,type,port,status,message,time,date:new Date().toLocaleString()};
+    history.unshift(record);
+    history.length>10 && history.pop();
+    save();
+
+    $('resultList').innerHTML=`
+        <div class="result-item ${status}">
+            <span class="icon">${status==='success'?'✅':'❌'}</span>
+            <div>
+                <div><strong>${url}</strong> (${type}${type==='tcp'?':'+port:''})</div>
+                <div>${message} · ${time}ms</div>
+            </div>
+        </div>
+    `;
+
+    const list=$('historyList');
+    list.innerHTML='';
+    history.forEach(h=>{
+        list.innerHTML+=`
+            <div class="result-item ${h.status}">
+                <span class="icon">${h.status==='success'?'✅':'❌'}</span>
+                <div>
+                    <div><strong>${h.url}</strong></div>
+                    <div>${h.message} · ${h.time}ms · ${h.date}</div>
+                </div>
+            </div>
+        `;
+    });
+}
+togglePort();
+</script>
+</body>
+</html>

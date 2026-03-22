@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>手速检测</title>
+<style>
+:root{
+  --primary:#6366f1;
+  --primary-light:#a78bfa;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:linear-gradient(135deg,var(--primary-light) 0%,var(--primary) 100%);
+}
+.card{
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(10px);
+  border-radius:24px;
+  padding:40px 30px;
+  width:100%;max-width:340px;
+  text-align:center;
+  box-shadow:0 25px 50px -12px rgba(0,0,0,.15);
+  animation:fadeIn .5s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+
+h2{color:var(--primary);margin-bottom:15px;font-size:24px}
+.time-bar{
+  height:6px;border-radius:3px;background:#e2e8f0;margin-bottom:20px;overflow:hidden
+}
+.time-fill{
+  height:100%;width:100%;background:var(--primary);transform-origin:left;
+  animation:shrink 3s linear forwards;
+}
+@keyframes shrink{to{transform:scaleX(0)}}
+
+.ripple-button{
+  position:relative;overflow:hidden;border:none;border-radius:50%;
+  width:180px;height:180px;background:var(--primary);color:#fff;
+  font-size:28px;cursor:pointer;box-shadow:0 8px 20px rgba(99,102,241,.35);
+  transition:transform .2s,box-shadow .2s;
+}
+.ripple-button:active{transform:scale(.95)}
+.ripple-button span{
+  position:absolute;border-radius:50%;background:rgba(255,255,255,.6);
+  transform:translate(-50%,-50%) scale(0);
+  animation:ripple .6s linear;
+}
+@keyframes ripple{to{transform:translate(-50%,-50%) scale(4);opacity:0}}
+
+#result{font-size:18px;margin:15px 0}
+#speedBar{height:8px;border-radius:4px;background:#e2e8f0;margin-top:10px;overflow:hidden}
+#speedFill{height:100%;width:0;background:linear-gradient(90deg,#34d399,var(--primary));transition:width .2s}
+
+.btn-restart{margin-top:15px;padding:10px 20px;border:none;border-radius:12px;background:var(--primary);color:#fff;font-size:14px;cursor:pointer}
+.btn-restart:hover{background:var(--primary-dark)}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>手速测试</h2>
+
+  <div class="time-bar" id="timeBar">
+    <div class="time-fill" id="timeFill"></div>
+  </div>
+
+  <button id="hitBtn" class="ripple-button" disabled>准备</button>
+
+  <div id="result">准备开始</div>
+  <div id="speedBar"><div id="speedFill"></div></div>
+
+  <button class="btn-restart" id="restartBtn" onclick="restart()">重新开始</button>
+</div>
+
+<script>
+const hitBtn = document.getElementById('hitBtn');
+const timeFill = document.getElementById('timeFill');
+const result = document.getElementById('result');
+const speedFill = document.getElementById('speedFill');
+const restartBtn = document.getElementById('restartBtn');
+
+let count = 0;
+let timer = null;
+
+// 3 秒倒计时
+function startTest() {
+  count = 0;
+  hitBtn.disabled = false;
+  result.textContent = '倒计时 3 秒...';
+  timeFill.style.animation = 'none';
+  void timeFill.offsetWidth; // 强制重绘
+  timeFill.style.animation = 'shrink 3s linear forwards';
+
+  setTimeout(() => {
+    result.textContent = '开始！';
+    count = 0;
+    updateUI();
+    timer = setInterval(updateUI, 1000);
+  }, 3000);
+}
+
+// 更新计数 & 进度条
+function updateUI() {
+  speedFill.style.width = Math.min(count / 50 * 100, 100) + '%';
+  result.textContent = `${count} 次`;
+  if (count >= 50) {
+    clearInterval(timer);
+    result.textContent = '🎉 手速爆表！';
+    setTimeout(() => window.location.href = 'inde.html', 800);
+  }
+}
+
+// 点击+1
+hitBtn.addEventListener('click', (e) => {
+  if (hitBtn.disabled) return;
+  count++;
+  updateUI();
+  // 水波纹
+  const ripple = document.createElement('span');
+  ripple.style.left = e.offsetX + 'px';
+  ripple.style.top = e.offsetY + 'px';
+  hitBtn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+});
+
+// 重新开始
+function restart() {
+  clearInterval(timer);
+  startTest();
+}
+
+// 首次启动
+startTest();
+</script>
+</body>
+</html>

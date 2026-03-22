@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>每日文案</title>
+    <style>
+        /* 样式部分保持不变 */
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #7b88ff;
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --light-bg: #f8f9ff;
+            --light-card: #ffffff;
+            --text-dark: #333333;
+            --text-light: #f0f0f0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-dark: 0 4px 20px rgba(0, 0, 0, 0.2);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-dark);
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: var(--text-light);
+        }
+
+        /* 应用标题栏 */
+        .app-header {
+            height: 56px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        body.dark-mode .app-header {
+            background: #1a1a1a;
+        }
+
+        .app-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333333;
+        }
+
+        body.dark-mode .app-title {
+            color: #ffffff;
+        }
+
+        .settings-icon {
+            position: absolute;
+            right: 16px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            fill: #666666;
+        }
+
+        body.dark-mode .settings-icon {
+            fill: #ffffff;
+        }
+
+        /* 卡片容器 */
+        #cardContainer {
+            height: calc(100vh - 56px - 80px);
+            background: #f5f5f5;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        body.dark-mode #cardContainer {
+            background: #121212;
+        }
+
+        /* 卡片设计 */
+        .card {
+            background: #ffffff;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            position: relative;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+            border: 2px solid transparent; /* 默认透明边框 */
+            transition: var(--transition);
+        }
+
+        .card.selected {
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 4px 20px rgba(74, 107, 255, 0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        body.dark-mode .card {
+            background: var(--dark-card);
+            color: var(--text-light);
+            box-shadow: var(--shadow-dark);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 复制按钮 */
+        .copy-button {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .copy-button:hover {
+            background: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(74, 107, 255, 0.3);
+        }
+
+        .copy-button:active {
+            transform: scale(0.95);
+        }
+
+        .copy-button svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 4px;
+            fill: white;
+        }
+
+        .copied {
+            background: #4CAF50 !important;
+        }
+
+        /* 底部按钮栏 */
+        .bottom-bar {
+            height: 80px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 8px 16px;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .bottom-bar {
+            background: #1a1a1a;
+        }
+
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            min-width: 60px;
+        }
+
+        .action-button:hover {
+            background: rgba(33, 150, 243, 0.1);
+        }
+
+        .action-button:active {
+            transform: scale(0.95);
+        }
+
+        .action-button svg {
+            width: 24px;
+            height: 24px;
+            fill: #666666;
+            margin-bottom: 4px;
+        }
+
+        body.dark-mode .action-button svg {
+            fill: #ffffff;
+        }
+
+        .action-button span {
+            font-size: 12px;
+            color: #666666;
+            font-weight: 500;
+        }
+
+        body.dark-mode .action-button span {
+            color: #ffffff;
+        }
+
+        /* 收藏页面删除按钮样式 */
+        .delete-favorite-button {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .delete-favorite-button:hover {
+            transform: scale(1.1);
+        }
+
+        .delete-favorite-button svg {
+            width: 24px;
+            height: 24px;
+            fill: #ff6b6b;
+        }
+
+        /* 设置页面和收藏页面 */
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--light-bg);
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        body.dark-mode .settings-overlay {
+            background: var(--dark-bg);
+        }
+
+        .settings-overlay.active {
+            transform: translateX(0);
+        }
+
+        .settings-header {
+            height: 56px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        body.dark-mode .settings-header {
+            background: #1a1a1a;
+        }
+
+        .back-button {
+            width: 24px;
+            height: 24px;
+            fill: #666666;
+            cursor: pointer;
+            margin-right: 16px;
+        }
+
+        body.dark-mode .back-button {
+            fill: #ffffff;
+        }
+
+        .settings-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333333;
+        }
+
+        body.dark-mode .settings-title {
+            color: #ffffff;
+        }
+
+        .settings-content {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* 设置项 */
+        .setting-item {
+            background: var(--light-card);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: none;
+        }
+
+        body.dark-mode .setting-item {
+            background: var(--dark-card);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .setting-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        body.dark-mode .setting-label {
+            color: var(--text-light);
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--light-bg);
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+
+        body.dark-mode .setting-input {
+            background: #2c2c2e;
+            color: var(--text-light);
+        }
+
+        .setting-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--secondary-color);
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 开关样式 */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-mode .toggle-switch {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .toggle-switch.active {
+            background: var(--primary-color);
+        }
+
+        .toggle-knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: #ffffff;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active .toggle-knob {
+            transform: translateX(20px);
+        }
+
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        /* 文件上传按钮 */
+        .file-upload-button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-upload-button:hover {
+            background: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(74, 107, 255, 0.3);
+        }
+
+        .file-upload-button:active {
+            transform: scale(0.98);
+        }
+
+        .file-name {
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--text-dark);
+            opacity: 0.7;
+            display: flex;
+            align-items: center;
+        }
+
+        .file-name svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            fill: currentColor;
+        }
+
+        body.dark-mode .file-name {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+
+        /* 保存按钮 - 位于背景音乐设置项正下方 */
+        .save-button {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(74, 107, 255, 0.4);
+            transition: var(--transition);
+            margin-top: 16px; /* 与背景音乐设置项保持间距 */
+            margin-bottom: 20px; /* 确保底部有间距 */
+        }
+
+        .save-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(74, 107, 255, 0.5);
+        }
+
+        .save-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 15px rgba(74, 107, 255, 0.3);
+        }
+
+        /* 卡片内容样式 */
+        .card-content {
+            padding-right: 80px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: inherit;
+            flex: 1; /* 确保内容占据剩余空间 */
+        }
+
+        body.dark-mode .card-content {
+            color: inherit;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px;
+            }
+            .action-button {
+                padding: 10px 16px;
+                min-width: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <h1 class="app-title">每日文案</h1>
+        <svg class="settings-icon" onclick="openSettings()" viewBox="0 0 24 24">
+            <path d="M12,15.5A3.5,3.5 0 0,0 8.5,12A3.5,3.5 0 0,0 12,8.5A3.5,3.5 0 0,0 15.5,12A3.5,3.5 0 0,0 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.34,9.37L4.43,11C4.39,11.34 4.36,11.67 4.36,12C4.36,12.33 4.39,12.65 4.43,12.97L2.34,14.63C2.22,14.78 2.27,15.05 2.36,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+        </svg>
+    </div>
+
+    <div id="cardContainer"></div>
+
+    <div class="bottom-bar">
+        <button class="action-button" onclick="toggleMusic()">
+            <svg viewBox="0 0 24 24">
+                <path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/>
+            </svg>
+            <span>音乐</span>
+        </button>
+        <button class="action-button" id="selectButton" onclick="toggleSelectMode()">
+            <svg id="selectIcon" viewBox="0 0 24 24">
+                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7Z"/>
+            </svg>
+            <span id="selectButtonText">选择</span>
+        </button>
+        <button class="action-button" id="favoriteButton" onclick="handleFavorite()">
+            <svg viewBox="0 0 24 24">
+                <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
+            </svg>
+            <span id="favoriteButtonText">我的收藏</span>
+        </button>
+        <button class="action-button" onclick="restart()">
+            <svg viewBox="0 0 24 24">
+                <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/>
+            </svg>
+            <span>刷新</span>
+        </button>
+    </div>
+
+    <div class="settings-overlay" id="favoritesOverlay">
+        <div class="settings-header">
+            <svg class="back-button" onclick="closeFavoritesPage()" viewBox="0 0 24 24">
+                <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20V4L17.65,6.35Z"/>
+            </svg>
+            <h2 class="settings-title">我的收藏</h2>
+        </div>
+        <div class="settings-content" id="favoritesContainer">
+        </div>
+    </div>
+
+    <div class="settings-overlay" id="settingsOverlay">
+        <div class="settings-header">
+            <svg class="back-button" onclick="closeSettings()" viewBox="0 0 24 24">
+                <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20V4L17.65,6.35Z"/>
+            </svg>
+            <h2 class="settings-title">设置</h2>
+        </div>
+        
+        <div class="settings-content">
+            <div class="setting-item">
+                <div class="setting-label">文案数量</div>
+                <input type="number" class="setting-input" id="quoteCount" value="15" max="150" min="1">
+            </div>
+            
+            <div class="setting-item">
+                <div class="toggle-container">
+                    <div class="setting-label">主题(即刻生效)</div>
+                    <div class="toggle-switch" id="themeToggle" onclick="toggleDarkMode()">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="toggle-container">
+                    <div class="setting-label">拓展功能</div>
+                    <div class="toggle-switch" id="selectButtonToggle" onclick="toggleSelectButton()">
+                        <div class="toggle-knob"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="save-button" onclick="applySettings()">保存并退出</button>
+            
+            <div class="setting-item">
+                <div class="setting-label">自定义添加文案</div>
+                <textarea class="setting-input" id="customQuoteInput" placeholder="在此输入您想收藏的文案" rows="4"></textarea>
+                <button class="save-button" style="margin-top: 12px; margin-bottom: 0;" onclick="addCustomQuote()">添加到收藏</button>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-label">背景音乐</div>
+                <div class="file-upload">
+                    <input type="file" id="backgroundMusic" accept="audio/*" onchange="handleFileSelect(this, 'musicFileName')">
+                    <button class="file-upload-button" onclick="document.getElementById('backgroundMusic').click()">选择音频</button>
+                    <div class="file-name" id="musicFileName"></div>
+                </div>
+                <input type="text" class="setting-input" id="backgroundMusicUrl" placeholder="或输入音频URL" style="margin-top: 12px;">
+            </div>
+        </div>
+    </div>
+
+    <audio id="music" src="音乐.mp3" loop></audio>
+
+    <script>
+        let customMusic = localStorage.getItem('backgroundMusic') || '音乐.mp3';
+        let quoteLimit = parseInt(localStorage.getItem('quoteLimit'), 10) || 15;
+        let BASE_DIR = '';
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        let isSelectMode = false;
+        let isSelectButtonEnabled = localStorage.getItem('isSelectButtonEnabled') === 'true';
+
+        function initBaseDir() {
+            if (typeof webapp !== 'undefined') {
+                BASE_DIR = webapp.getdirc();
+                if (!BASE_DIR) {
+                    BASE_DIR = webapp.getdirb();
+                }
+                if (!BASE_DIR.endsWith('/')) BASE_DIR += '/';
+            } else {
+                BASE_DIR = '/data/data/com.tf.mt.TL2/files/';
+            }
+        }
+
+        function checkFileExists(path, defaultValue) {
+            if (path.startsWith(BASE_DIR) && typeof webapp !== 'undefined' && !webapp.stayfile(path)) {
+                return defaultValue;
+            }
+            return path;
+        }
+
+        function readTextFile(file) {
+            return new Promise((resolve, reject) => {
+                const rawFile = new XMLHttpRequest();
+                rawFile.open("GET", file, true);
+                rawFile.onreadystatechange = function () {
+                    if (rawFile.readyState === 4) {
+                        if (rawFile.status === 200 || rawFile.status == 0) {
+                            resolve(rawFile.responseText);
+                        } else {
+                            reject(new Error('Failed to read file'));
+                        }
+                    }
+                };
+                rawFile.send(null);
+            });
+        }
+
+        async function generateQuotes() {
+            const quotes = [      "若你回头看我一眼，我此生不必再见春天。",
+                "欲买桂花同载酒，荒泷天下第一斗。",
+                "如果你的人生只有柠檬，不妨配盐喝点龙舌。",
+                "汹涌的海涛中，传来一缕希望。",
+                "如果不能忠于自己的心，胜负又有什么价值呢？",
+                "醉翁之意不在酒，在乎山水之间也。",
+                "让时光静静悄悄的流，把所有遗憾和失落都带走。",
+                "生活百般滋味，人生需要笑对。",
+                "起来！歌唱！我们走向胜利！",
+                "你还要细心地观察自己的情绪，了解自己需要什么，应该怎么做。",
+                "只解沙场为国死，何须马革裹尸还。",
+                "生命中，再无聊的时光，也都是限量版。",
+                "哪一场仗不难打，越难打，就更要打。",
+                "我既开始，我必完成；我既决定，我必贯彻。",
+                "坚持坚持到绝望绝望。",
+                "漩涡无法击碎的磐岩，也终究会在时光的冲刷下磨损。",
+                "希望只在一瞬之间，而黑暗，永恒。",
+                "即使再也没有晴天也没有关系.",
+                "Technoblade never dies!",
+                "身为冒险者，如果安静的老死在床上，那简直就是耻辱！",
+                "欲买桂花同载酒，只可惜故人，何日再见啊。",
+                "木叶飞舞之处，火亦生生不息。",
+                "我追索人心的深度，却看到了人心的浅薄。",
+                "远上寒山石径斜，白云深处有人家。",
+                "Per aspera ad astra.",
+                "爸爸，妈妈，对不起，我，要去了！",
+                "君子无争，含光无形，坐忘无心。",
+                "愿时光能缓，愿故人不散！",
+                "理性的人追求的并非快乐，而只是避免痛苦。",
+                "后来，错过也成了人间常态。",
+                "当人们做不到一些事情的时候，他们会对你说你也同样不能。",
+                "学习和什么使我们快乐",
+                "人是要整活的——没活了，可不就是死了么？",
+                "跨越光年，归来任是你。",
+                "老子就是一门炮。",
+                "愿你很好，宛若微风侵入泥沼，不气不恼。",
+                "一约既定，万山无阻。",
+                "那些终将过下去的日子，叫做余生。而与你有关的日子，才是未来。",
+                "你要成为光呀，才能和那个与你相逢的人相互照亮。",
+                "希望时光不要轻易地、频繁地抖动，因为上面依附着所有渺小的众生。",
+                "想去看太平洋的风，宇宙里的天体，月亮与潮汐，和你一起。",
+                "被你点赞过的朋友圈，叫做甜甜圈。",
+                "我若是游子，你便是人间。",
+                "对任何热爱的事物都要全力以赴 包括喜欢自己.",
+                "你追逐这世界，我追逐你背影。",
+                "是清风 是朝露 是脸颊淡红 是非你不可.",
+                "我也曾虚度光阴甚至莽撞到视死如归，然后因为爱上你而渴望长命百岁。",
+                "你看南城的花都开了 该熬的都熬过去了 所以不要不开心了.",
+                "我在时光里享受温暖，我在流年里忘记花开。",
+                "外界的声音都是参考，你不开心就不要参考。",
+                "我涉旷野丛林中来，你撑船渡我 入灿灿花海。",
+                "所以我也走向了你 暮色千里皆是我的回礼.",
+                "天涯万一见温柔。瘦应为此瘦，羞亦为即羞。",
+                "星星发亮是为了让每一个人有一天都能找到属于自己的星星。",
+                "我的肩上是风，风上是闪烁的星群。",
+                "风带来故事的种子，时间使其发芽。",
+                "爱,其实很简单，困难的是去接受它。",
+                "行走于苍穹之上，将星空献给你。",
+                "当你想做一件事，却无能为力的时候，是最痛苦的。",
+                "趁着年轻，好好犯病。",
+                "憧憬是距离理解最遥远的感情。",
+                "你，对，你，就是你，你是你。",
+                "我们生活在阴沟里，但有人依然仰望星空。",
+                "十八成年亦乘风。",
+                "接天莲叶无穷碧，映日荷花别样红。",
+                "这就是好奇的代价！",
+                "落花人独立，微雨燕双飞。",
+                "我想带一人回云深不知处。带回去，藏起来。",
+                "人与人在偶然之中创造相遇与别离。",
+                "生而贫穷并无过错，死而贫穷才是遗憾。",
+                "信心这个东西，什么时候都像个高楼大厦，但是里面会长白蚁。",
+                "隔着屏幕轻易产生感情的你，肯定很孤独吧。",
+                "人类侥幸拥有了智慧，就应该善用它。",
+                "我就是太阳！",
+                "找不到自己的位置，是很可怕的事情，就好比天黑了不知道睡觉。",
+                "隔岸无旧情，姑苏有钟声。",
+                "造物无言却有情，每于寒尽觉春生。",
+                "这一切，暗无天日。",
+                "没有BUG的代码是不完美的！",
+                "谁不和我们一起就是反对我们，中立的人最危险。",
+                "God said: Let there be light.",
+                "衣带渐宽终不悔，为伊消得人憔悴。",
+                "我收集了满屋子阳光，因为你是太阳。",
+                "如果忘记你那么容易，那我爱你干嘛！",
+                "要优秀啊，不然怎么遇见优秀的人！",
+                "相逢尽道休官好，林下何曾见一人。",
+                "少年易老学难成，一寸光阴不可轻。",
+                "我们是学生，学生就要有学生的样子。",
+                "射人先射马，擒贼先擒王。",
+                "爱恋中的每个瞬间都有可能是一生。",
+                "焦虑像毒瘾，让人想对死亡说你好……",
+                "秦时明月汉时关，万里长征人未还。",
+                "越是困难，越要抬起头，地上可找不到任何希望！",
+                "金钱和女人，是人生犯错的根源。",
+                "梦想不会逃跑，会逃跑的只有人",
+                "迎着风，拥抱彩虹！",
+                "爱情不是一个拼图，是一个圆碰到另一个圆。",
+                "浮云一别后，流水十年间。",
+                "如果现在不开始想，那以后哪有时间做",
+                "思君如满月，夜夜减清辉。",
+                "Control is Power.",
+                "今天的我们伤痕累累，但比起昨日，我们应该多少有所成长",
+                "努力吧！就算再寂寞！也要努力活下去！",
+                "流淌的命运之河的终点，也许在这一刻就被决定好了。",
+                "依旧，依旧，人与绿杨俱瘦。",
+                "桃李春风一杯酒，江湖夜雨十年灯。",
+                "幻术世界有什么不好，现实太残酷，只会让这空洞越来越大。",
+                "其实我们每个人都是一座孤岛。",
+                "语言的隔阂，本质上是一个人——信息，知识，视野，圈子的隔阂。",
+                "为你，千千万万遍。",
+                "唯有爱与梦想不可辜负",
+                "不要说我们一无所有，我们要做天下的主人！",
+                "我们活过的刹那，前后皆是暗夜。",
+                "富江有天使的脸孔，但其实她是个恶魔，不，恶魔也比她要好一点。",
+                "未来不是被给予的，而是自己争取的。",
+                "真正要分开的两个人，连“分手”二字都是多余的，因为殊途同归。",
+                "猫是可爱的，狼是很帅的。就是说，孤独又可爱又帅。",
+                "狂风吹打山岩，自己却先粉身碎骨。",
+                "我们感到不满的原因就在于我们试图不断地提高自己的要求。",
+                "你是我最真模样，从来不曾遗忘。",
+                "如果有一个喜欢你的人出现，一定不要凶她哦！",
+                "就算风吹散了冰雪，想念也会留存下来。",
+                "智慧需要沉淀，积累才能够饱满。",
+                "空太是笨蛋！",
+                "这趟旅行若算开心，亦是无负这一生。",
+                "爱与友情以及勇气改变不了一个人，只有受伤才能让人成长。",
+                "最是人间留不住，朱颜辞镜花辞树。",
+                "你想走，就请立马抽刀，爱一笔勾销。",
+                "成熟的人眼里满是前途，稚嫩的人眼里满是爱恨情仇。",
+                "出师未捷身先死，长使英雄泪满襟。",
+                "童年那仍然红色的血，依然成为我心中的光。",
+                "人总是贪婪的，就像最开始，我也只是想知道你的名字。",
+                "看惯黑夜的人，不应该习惯黑夜，而是应该期待黑夜中的光明。",
+                "知人者智，自知者明。",
+                "理性总是在给感性收拾烂摊子。",
+                "取法于上，仅得为中；取法于中，故为其下。",
+                "春有百花秋有月，夏有凉风冬有雪。",
+                "不是天才，就要慎独。",
+                "I'm nothing without you.",
+                "得来不易的机会，会让所有的动物去做原来不喜欢做的事。",
+                "如果因为害怕失败，而不去努力，那就不会有能够成功的人。",
+                "为什么妈妈就不明白无所事事的忙碌呢。",
+                "生来即轻，还时亦净。",
+                "慢品人间烟火色，闲观万事岁月长。",
+                "生活总是来来往往，千万别等来日方长。",
+                "如果喜欢和合适撞怀该多好。",
+                "思念无果，大雨滂沱。",
+                "无悲无喜无欲无求。",
+                "你睁眼就是小丑希斯莱杰的巅峰。",
+                "时空可能不会阻隔我们，但时间一定会让我们天各一方。",
+                "只要耐心等待，裂缝总会出现的。",
+                "你的名字那么普通也就我听到会心头一怔。",
+                "所谓癌症，治疗的过程就是痛苦。",
+                "我喝过你喝的西北风，这算不算很穷。",
+                "来去无常，得过且过",
+                "关关雎鸠，在河之洲。窈窕淑女，君子好逑。",
+                "搞怪的不是红绿灯，而是我数不清的犹豫。",
+                "人生用特写镜头来看是悲剧，长镜头来看则是喜剧。",
+                "十几岁的年纪里，谁都不是谁的一生。",
+                "我在最没有能力的年纪，遇见了最想照顾一生的人。",
+                "永远相信，美好的事情即将发生。",
+                "她轻轻唱起来宛如天籁，让我的梦似翅膀心似海。",
+                "我们等待着戈多，在等待的过程中发现戈多就是等待本身。",
+                "求求你，不要对我这么温柔！",
+                "君子不器。",
+                "因为你喜欢海，所以我一直浪。",
+                "什么是孤独？心里明明空荡荡的，却什么也装不下。",
+                "为了理想，我宁愿忍受寂寞，饮尽那份孤独。",
+                "花无人戴，酒无人劝，醉也无人管。",
+                "有一种无奈叫做，你明明是只候鸟，却喜欢上只能给你冬天的人。",
+                "你可以不学习，但你的竞争对手不会！",
+                "我没有梦想，但我可以守护别人的梦想！",
+                "君埋泉下泥销骨，我寄人间雪满头。",
+                "我一直以为人是慢慢变老的，其实不是，人是一瞬间变老的。",
+                "就算是堕落浪子，也能力挽狂澜。",
+                "落叶别树，飘零随风。客无所托，悲与此同。",
+                "与君初相识，犹如故人归",
+                "且将新火试新茶，诗酒趁年华",
+                "那天，我听到了种子破土的声音，又细微又坚定。",
+                "梦，随时生，随实灭。",
+                "往事真的不堪回首吗？",
+                "为你明灯三千，为你花开满城，为你所向披靡。",
+                "但如果不去做的话，梦想永远也不会照进现实。",
+                "如果你在看，我就是你的风景。如果你在听，我该有多幸运。",
+                "见鬼去吧！",
+                "风吹柳叶遮黄雀，薄翅不觉已落蝉。",
+                "现在我们也都还各自活着，我想。",
+                "我爱的人也爱着我，对我来说这简直是个奇迹。",
+                "我也想杀死伤痛，让那恩怨有始有终。",
+                "实变函数学十遍，泛函学完心泛寒。",
+                "认真的思索，真诚的明辨是非，有这种态度，大概可算是善良吧。",
+                "新绿乍生时，孤村路，犹忆那回曾到。",
+                "我是一个经常笑的人，可我不是经常开心的人。",
+                "这是计划的一部分。",
+                "Discover, Create and Use.",
+                "我只是个路过的假面骑士。",
+                "纵然变化，依然故我。",
+                "花褪残红青杏小。燕子飞时，绿水人家绕。",
+                "我想要握紧的并不是匕首或是什么，只不过是他的掌心而已。",
+                "三尺书生，一介微命。",
+                "逸一时，误一世。",
+                "不管人生呈现出什么样貌，人生的构成要素都是一样的。",
+                "恰沐春风共同游，终只叹，木已舟。",
+                "我们走过了幼稚，走过了纯粹，走过了伤痛，也就走过了青春。",
+                "确定反应，调整守恒。",
+                "总是在失去后，才会想再拥有，总是在离别中，才想在回头。",
+                "痛苦犹如一艘船，欲望是指南针。",
+                "如果你在看，我就是你的风景。如果你在听，我该有多幸运。",
+                "读书固然重要，但是梦想也很重要。",
+                "还好还可以想你，不然拿什么对抗生活的琐碎和无趣。",
+                "见过银河，只想要你这颗星。",
+                "总有一天你会笑着说出曾经令你痛苦的事情。",
+                "只有懦夫才会逃跑。",
+                "生如夏花之绚烂，死如秋叶之静美。",
+                "无论撒怎样的谎，都无法欺骗自己的心。",
+                "慢慢来，谁还没有一个努力的过程。",
+                "以人言善我，必以人言罪我。",
+                "但此刻，天上地下，只剩下他一人。鸦已栖定。落日已灭亡。",
+                "世界之大为何我们相遇，难道是缘分，难道是天意。",
+                "虚伪的眼泪，会伤害别人，虚伪的笑容，会伤害自己。",
+                "一个会用风筝向你写出“我想你”的女孩，真让人永远都忘不了她。",
+                "有情人终成眷属，没钱人亲眼目睹。",
+                "我希望兜兜转转之后那个人还是你。",
+                "云母屏风烛影深，长河渐落晓星沉。",
+                "我只能送你到这里了，剩下的路你要自己走，不要回头。",
+                "云破星出之夜，我对星低喃：吞噬我。",
+                "如果敌人在射程范围内，那么你也一样。",
+                "如今我对自己故乡，像来往匆匆的过客。",
+                "我虚空一生不弱于人！",
+                "所谓辉煌的人生，不过是欲望的囚徒。",
+                "你知道雪为什么是白色的吗？因为她忘记了本来的颜色。",
+                "自立自主，总胜过俯首为奴。",
+                "王有王的才能，厨师有厨师的才能，替身之间是没有强弱之分的",
+                "自身拥有越丰富，他在别人身上所能发现得到的就越少。",
+                "缘起，在人群中，我看见你。缘灭，我看见你，在人群中。",
+                "露从今夜白，月是故乡明。",
+                "如果分手的恋人还能做朋友，要不从没爱过，要不还在爱着。",
+                "今天是一起养狗，以后就一起遛狗，日久生情，狗又生狗。",
+                "似水流年是一个人所有的一切，只有这个东西，才真正归你所有。",
+                "悲痛藏于心，欢喜言于表。说的不就是我们吗！",
+                "得到了再失去，总是比从来就没有得到更伤人。",
+                "吾心吾行澄如明镜，所作所为皆为正义。",
+                "一个人的思想等于一个人的素养。",
+                "最短的捷径就是绕远路。",
+                "有思想，也有忧伤和理想，这才是生活。",
+                "恋爱不是下定决心后才开始的，而是回过神来时就开始了哦。",
+                "你在颓废的时候别人都在努力哦~♪",
+                "彼此相互推卸不幸是没有结果的。",
+                "人生若只如初见，何事秋风悲画扇。",
+                "曲高未必人不识，自有知音和清词。",
+                "你们中的人，我已经忘记了一半以上。",
+                "人终其一生都是自我改善的过程。",
+                "大本钟下送快递——上面摆，下面寄。",
+                "三年懵懂，三年凌辱，又三年孤独迷惘。空留纸上，寥落诗句数行。",
+                "时间是最暴虐的存在，它能够毁掉一切。",
+                "人总要抱紧什么才知道自己真的存在，哪怕那只是幻影。",
+                "试问岭南应不好，却道：此心安处是吾乡。",
+                "我们所爱之物昭示着我们究竟是谁。",
+                "时间不在于你拥有多少，而在于你怎样去使用。",
+                "忘掉生日，忘掉青涩的诗，忘掉他不厌其烦夜夜追逐他影子。",
+                "今天的南京应该很挤吧，毕竟有30万人要回家。",
+                "充其量只是好奇罢了。",
+                "为难当前，唯有责任。",
+                "Make it.",
+                "闪烁的灯光是我在异世界大声地呼唤你。",
+                "思路也仅仅是思路，不能赖于行走。况且也不止于一条。",
+                "当你真正想做成一件事情的时候，就连天地万物都会帮你。",
+                "世界上有太多孤独的人害怕先踏出第一步。",
+                "我们的工作是搬运生命和死亡。",
+                "人红是非多，人傻当枪使。人蠢猛跟风，人笨不自知。",
+                "两个人从监狱的窗户往外看，一个看见了土地，一个看见了星星。",
+                "和你们这些少爷不同，我们光是活着就竭尽全力了。",
+                "庭有枇杷树，吾妻死之年所手植也，今已亭亭如盖矣。",
+                "私だって今日こそ... 遠野くんに告白するんだ。",
+                "高家看上的东西，迟早都是高家的。",
+                "没有人愿意承认自己是孤独的，孤独很可耻。",
+                "你站在高处，就少往下看。",
+                "能享受最好的，也能享受最差的，这才做见过世面。",
+                "梦想和现实，中间隔着一条泥泞的路，什么样的结果，取决于脚！",
+                "纵使那是铺满烈火的道路，也要欢歌前行······",
+                "愿风指引着你的道路，愿你的刀刃永远锋利。",
+                "如果这个世界不喜欢你，那这个世界就是我的敌人",
+                "有形的东西迟早会凋零，但只有回忆是永远不会凋零的。",
+                "Love is a journey that starts with a smile and ends with a lifetime of memories.",
+                "In your arms, I have found my home.",
+                "Love isn't something you find. Love is something that finds you.",
+                "Together is a beautiful place to be.",
+                "You are my today and all of my tomorrows.",
+                "Love is the bridge between two hearts.",
+                "In a sea of people, my eyes will always search for you.",
+                "Love is the greatest adventure.",
+                "Every love story is beautiful, but ours is my favorite.",
+                "或许，错过了，才是最真实的遗憾。",
+                "遗憾，是记忆里永不褪色的色彩。",
+                "时间，无法填补错过的遗憾。",
+                "遗憾，是心底深处最柔软的伤痕。",
+                "有些遗憾，注定要成为生命的一部分。",
+                "人生不是一场赛跑，而是一场漫步。别忘了时而停下来，看看风景。",
+                "每一段经历，都是生命的一部分，哪怕它们是痛苦的，也值得被珍视和理解。",
+                "人生最美的风景，往往藏在最不起眼的细节里。",
+                "学会释怀，放下不属于你的人和事。真正属于你的，终将会留在你身边。",
+                "不要为昨天的错误而懊悔，因为它们是今天成功的前奏。",
+                "生活的真正意义在于，不断在路上，而不是抵达终点。",
+                "成长的过程中，接受自己的不完美，那才是真正的进步。",
+                "在追逐梦想的路上，不要忘了享受每一个过程。",
+                "每一天都是新的开始，抓住每一刻的精彩。",
+                "梦想不分大小，坚持就是胜利的关键。",
+                "生活如画，愿你用心描绘每一笔。",
+                "让微笑成为你最美的风景。",
+                "成功的秘诀在于每天努力一点点。",
+                "追求卓越，成就非凡人生。",
+                "每个梦想都有实现的可能，勇敢去追逐吧。",
+                "用行动证明，你比你想象的更强大。",
+                "人生是一场旅程，享受沿途的风景。",
+                "勇往直前，无畏挑战，未来属于你。",
+                "当下就是最好的时光，把握每一分每一秒。",
+                "相信自己，你拥有改变世界的力量。",
+                "心之所向，所行皆能达。",
+                "生活中的小确幸，值得珍惜与记录。",
+                "坚持自己的热爱，让生命更加多彩。",
+                "迎接每一个晨曦，都是新的希望。",
+                "只要心中有梦，脚下就会有路。",
+                "不惧艰难险阻，勇敢追求你的目标。",
+                "每一次尝试，都是成长的契机。",
+                "用热情点燃生活的每一天。",
+                "把握机会，创造属于自己的奇迹。",
+                "让心灵自由翱翔，梦想终将照进现实。",
+                "与其担忧未来，不如全力以赴当下。",
+                "每个人都是自己人生舞台上的主角。",
+                "大胆突破常规，才能看到不一样的风景。",
+                "微小的改变，带来巨大的不同。",
+                "让爱和善良传递，温暖这个世界。",
+                "无论多远的路，只需迈出第一步。",
+                "始终相信，总有一天所有的努力会开花结果。",
+                "自信是成功的一半，勇气是继续的动力。",
+                "Dreams know no size; persistence is the key to victory.",
+                "Life is like a canvas; paint each stroke with passion.",
+                "Let your smile be the most beautiful scenery you share.",
+                "The secret to success lies in small efforts made daily.",
+                "Aim for excellence and achieve an extraordinary life.",
+                "Every dream has the potential to come true; chase it bravely.",
+                "Prove through action that you are stronger than you think.",
+                "Life is a journey; enjoy the scenery along the way.",
+                "Move forward fearlessly; the future belongs to you.",
+                "The present is the best time; cherish every minute.",
+                "Believe in yourself; you have the power to change the world.",
+                "Where the heart leads, there you will find your path.",
+                "Treasure the little joys in life; they are worth recording.",
+                "Stay true to your passions, and make life more colorful.",
+                "Embrace every dawn, as it brings new hope.",
+                "As long as you have a dream, there will always be a path.",
+                "Face challenges without fear; pursue your goals boldly.",
+                "Each attempt is an opportunity for growth.",
+                "Ignite your days with enthusiasm and passion.",
+                "Seize opportunities and create your own miracles.",
+                "Let your spirit soar freely; dreams will eventually become reality.",
+                "Instead of worrying about the future, give your all to the present.",
+                "Everyone is the protagonist of their own life story.",
+                "Dare to break the mold and discover new perspectives.",
+                "Small changes can lead to significant differences.",
+                "Spread love and kindness; warm the world around you.",
+                "No matter how far the road, just take that first step.",
+                "Always believe that one day, all your efforts will bear fruit.",
+                "Confidence is half the battle; courage is the driving force to continue.",
+                "愛し合えば必ず傷つくのが人生",
+                "想いが届かなかったこと",
+                "君との時間を無駄にしてしまった",
+                "愛することの痛みを知らされた",
+                "二人で歩めなかった道のり",
+                "距離は恋の敵",
+                "愛は一瞬にして消えてしまうものだ",
+                "見つめる度に心が痛むよ",
+                "愛は短く、別れは永遠",
+                "後悔しない前に逃げ出した",
+                "梦想不会逃跑，逃跑的永远是人。",
+                "勇敢是每一次选择的开始。",
+                "今日的努力，明日的收获。",
+                "不为失败找理由，只为成功找方法。",
+                "坚持就是胜利。",
+                "你的潜力，超乎你想象。",
+                "一步一个脚印，踏实前行。",
+                "挑战自我，超越极限。",
+                "用行动证明可能。",
+                "梦想在召唤，行动在当下。",
+                "不经历风雨，怎么见彩虹？",
+                "成功属于永不放弃的人。",
+                "你的态度决定你的高度。",
+                "时刻准备，机会总是留给有准备的人。",
+                "每一滴汗水都在铺就成功的路。",
+                "从现在开始，一切都不晚。",
+                "用微笑面对每一天。",
+                "你比你想象的更强大。",
+                "专注目标，忽略干扰。",
+                "今天，是未来成功的起点。",
+                "恋は盲目、後悔は目が覚める。",
+                "あの日の笑顔が、今では涙の種。",
+                "時は過ぎて、愛は遠くに。",
+                "二人で見た花は、今一人で見る。",
+                "愛は深まるほど、後悔も深まる。",
+                "あの頃の夢は、今では叶わぬ思い出。",
+                "会いたいのに、会えない。これが恋の痛み。",
+                "二人の思い出が、一人の胸を締め付ける。",
+                "愛が去った後、残るのは静かな後悔だけ。",
+                "あの日の約束、今では風に消えた。",
+                "愛の痛みは、心に刻まれて消えない。",
+                "二人で歩いた道、今は一人で歩む。",
+                "愛は過去のもの、後悔だけが残った。",
+                "あの日の恋、今では遠い星のよう。",
+                "愛の痛みは、言葉にできない。",
+                "人生就像一盒巧克力，打开后才知道里面是什么味道。",
+                "笑一笑，十年少，愁一愁，白了头。",
+                "今天天气不错，你也很不错。",
+                "你是我最想“盗”的梦，不过我选择光明正大地喜欢。",
+                "你笑起来真好看，像春天的花一样。",
+                "你是我心中的太阳，一出现就照亮了我的世界。",
+                "你可能不知道，你笑起来的时候，世界都亮了。",
+                "你是我最想翻的书，每一页都充满惊喜。",
+                "你是我最想吃的糖，甜蜜又不腻。",
+                "你是我最想走的路，即使曲折也愿意。",
+                "你是我最想拥抱的温暖，冬日里的一缕阳光。",
+                "你是我最想遇见的奇迹，让我的世界变得不再平凡。",
+                "你是我最想喝的饮料，清爽又解渴。",
+                "你是我最想听的歌，旋律优美，歌词动人。",
+                "你是我最想看的电影，情节精彩，结局美好。",
+                "月光下，两人的影子轻轻交织，仿佛在低语着属于他们的秘密。",
+                "晨曦初现，彼此的微笑在第一缕阳光中绽放，温暖而明媚。",
+                "在繁星点点的夜空下，手牵手许下愿望，相信爱情能穿越时间的长河。",
+                "在雨后的公园小径上，一起踩着水坑，笑声回荡在湿润的空气中。",
+                "在热闹的街市中，眼神交汇的瞬间，周围的世界仿佛都安静了下来。",
+                "在彼此的怀抱中，感受着心跳的节奏，那是最动听的旋律。",
+                "在烛光晚餐的温馨氛围里，彼此的眼神中充满了爱意和承诺。",
+                "在海边看日落，海风轻拂，夕阳将两人的影子拉得很长很长。",
+                "在图书馆的角落，偶然的对视，无声胜有声，传递着彼此的思念。",
+                "在一场突如其来的雪中，一起堆雪人，打雪仗，享受着冬日的浪漫。",
+                "行百里者半九十。",
+                "身是菩提树，心如明镜台，时时勤拂拭，勿使惹尘埃。",
+                "认真的思索，真诚的明辨是非，有这种态度，大概可算是善良吧。",
+                "我们就这样，生活在此地并不断离别。",
+                "给岁月以文明，而不是给文明以岁月。",
+                "独立寒秋，湘江北去，橘子洲头。",
+                "做人潇洒一点，别为了一个不爱你的人浪费感情。",
+                "最聪明的处世术是，既对世俗投以白眼，又与其同流合污。",
+                "就像是一场华尔街的阴谋，透露着优雅的杀戮。",
+                "曾盛开过一朵，曾不会败落，曾在他眼中流淌过浩瀚的银河。",
+                "为难当前，唯有责任。",
+                "我们在时光中穿梭，却总是难以停留。",
+                "给生命以意义，而不是给意义以生命。",
+                "独自伫立，岁月如歌，心中涌动着无尽的思绪。",
+                "活得洒脱一些，别为那些不懂你的人消耗心力。",
+                "最智慧的生活哲学是，既看透世事的虚幻，又不失去与之共舞的勇气。",
+                "就像是一场城市的谍战，隐藏着无声的较量。",
+                "曾经相拥过，曾不会辜负，曾在她的笑容中映射出星辰的辉煌。",
+                "面对困境，唯有担当。",
+                "在这个世界上，最温暖的事，莫过于有你在我身边。",
+                "每一次微笑，都是我对生活的感激。",
+                "无论多么艰难的时刻，记得，总有光在前方等着你。",
+                "你的存在，让我的生活变得更加丰富多彩。",
+                "即使风雨再大，我也会陪着你，一起走过。",
+                "每个夜晚，星星在闪烁，正如我对你的思念。",
+                "在这个匆忙的时代，愿我们都能找到属于自己的宁静。",
+                "爱是最长久的陪伴，温暖是最深情的承诺。",
+                "只要心中有爱，哪里都是温暖的港湾。",
+                "生活虽然不易，但有你相伴，便有了无尽的勇气。",
+                "你是我心中最美的旋律，每次想起都让我微笑。",
+                "和你在一起的每一刻，都是我生命中最甜蜜的瞬间。",
+                "只要有你，平凡的日子也能变得如诗如画。",
+                "你的笑容是我一天中最亮的阳光。",
+                "爱你如初，愿与你携手走过每一个春夏秋冬。",
+                "在这个世界上，只有你能让我感受到心跳的悸动。",
+                "与你相遇，是我生命中最美好的意外。",
+                "每一次牵手，都是对未来的承诺。",
+                "在你的眼里，我看到了无尽的温柔与幸福。",
+                "愿我们的爱情如同美酒，愈久愈醇，愈浓愈香。",
+                "在这个复杂的世界中，唯有具备大局观，才能看清事物的本质。",
+                "将眼光放远，才能在变化中找到方向与机遇。",
+                "每一个选择，都不仅仅影响自己，也会对他人产生深远的影响。",
+                "心怀大局，才能更好地理解团队的目标与使命。",
+                "在纷繁复杂的局势中，保持清晰的思路，是智慧的体现。",
+                "我们要学会从整体出发，才能更好地解决局部的问题。",
+                "大局观使我们超越眼前的困扰，追求更长远的目标。",
+                "每一个细节都是大局的一部分，只有关注整体，才能把握未来。",
+                "在合作中，唯有共同的视野，才能实现双赢的局面。",
+                "让我们共同努力，以大局观为引导，创造更加美好的明天。",
+                "我的人生就像一场精彩的喜剧，笑点和泪点都在我身上。",
+                "我每天都在努力追求完美，但似乎只追到了“搞笑”。",
+                "有时候我觉得自己是一部未完成的小说，情节总是出乎意料。",
+                "我是个天生的“懒人”，连梦想都是躺着做的。",
+                "我人生的目标就是成为一个“专业的失败者”，至少我可以做得很出色！",
+                "我常常怀疑自己是不是一只迷路的小猫，永远找不到方向。",
+                "我人生就像一杯咖啡，苦涩中带着一丝甜，但最后总是凉了。",
+                "有时候我觉得自己像个小丑，努力让别人笑，却忘了自己也需要快乐。",
+                "我对生活的理解就是：保持微笑，尽管牙齿可能有点歪。",
+                "我人生的格言是：“别太认真，反正我也不太靠谱。”",
+                "我们在这片土地上，挥别过去，迎接未来。",
+                "给生命以深度，而不是给深度以生命。",
+                "独立于喧嚣，心灵北上，山水之间。",
+                "活得洒脱些，不要为一个不懂你的人停留。",
+                "最聪明的生活哲学是，既能看透世俗，又能随其起舞。",
+                "就像一场华尔街的游戏，透出冷酷的优雅。",
+                "曾经心动过，曾经灿烂过，曾在他心中流淌过无尽的星河。",
+                "爱情，是不需要太多言语的默契，只需要两颗心靠得很近。",
+                "爱，不是占有，而是成全；是看到对方的好，便心甘情愿付出。",
+                "你是我生活的诗，而我愿意做你永远的读者。",
+                "有时候爱情不是追求完美，而是接受不完美中的所有美好。",
+                "爱一个人，就是让他在你心中有个不容置疑的位置。",
+                "爱情的意义不是找一个你喜欢的人，而是找到一个你愿意为之改变的人。",
+                "没有谁的爱情会轻松，但却总有人愿意为你披荆斩棘。",
+                "最美的爱情，是两个人互相给予和理解，而不是单方面的付出。",
+                "爱情是用心去感受，而不是用眼睛去寻找。",
+                "你愿意陪我走一生吗？我愿意为你走每一段路。",
+                "真正的爱情，不是没有争吵，而是即使争吵也能手牵手走下去。",
+                "我们之间的爱情，像星辰般远，又像指尖的温暖般近。",
+                "爱一个人，便是接纳她的全部，不仅仅是她的优点，还有她的缺点。",
+                "一段感情最美好的部分，不是相识时的心动，而是一起度过的每个平凡日子。",
+                "爱情，就是找一个能共度余生的人，不是找一个完美无缺的人。",
+                "有时候，爱情并不是一开始就完美，而是经过时间和磨合的成长。",
+                "爱的深度，不在于华丽的言辞，而在于你默默为她做的那些细微的事情。",
+                "两个人在一起，是互相依赖，更是各自独立。爱情是平等与尊重。",
+                "爱一个人，不是为了得到什么，而是为了给她带来更多的幸福。",
+                "爱情不是完美的交换，而是不断为对方付出，让两颗心越走越近。",
+                "真正的爱情，是即使风雨来临，你依然愿意携手同行。",
+                "你是我心中永恒的传奇，穿越时光与空间，始终闪耀如初。",
+                "在我生命的篇章里，你是那无法用言语表达的高贵与优雅，独一无二。",
+                "若世界是广袤的宇宙，你是唯一闪烁的星辰，令人无法移开目光。",
+                "在你面前，所有的词汇显得贫瘠，我只能沉默，任由心跳为你歌唱。",
+                "你如同艺术品般无可复制，优雅的气质与深邃的眼神，都是命运的馈赠。",
+                "若说人生是一场梦，你便是我一生的主题曲，旋律回荡于我心间。",
+                "爱你，不是简单的情感，而是对美好与完美无尽的追求与倾慕。",
+                "你是风华绝代的存在，清风拂面，世间万物都失去光彩，唯有你让我屏息。",
+                "在你眼中，我看到了一整个世界的深邃，无法用言辞丈量的广阔。",
+                "我的爱，仿佛无法追寻的天际，只为你一人存在，深远而不可及。",
+                "你的美丽如同古老诗篇中的女神，流传千年，依旧令人心动不已。",
+                "你是世间罕见的瑰宝，不容亵渎，只能以最崇敬的心去爱护与珍藏。",
+                "每次凝望你，我的世界都会停滞，因为你是一切美好的终极表达。",
+                "与你在一起的每一刻，都像是沉浸在不朽的艺术作品中，令人痴迷。",
+                "你是我内心的诗篇，每一字每一句都被无数爱意深深镌刻。",
+                "你的一举一动，都是优雅与智慧的结合，宛如时光的精灵在舞蹈。",
+                "我愿为你承载一整个世界，托起你所有的梦想，让你无所畏惧。",
+                "在你身旁，时间似乎变得不再重要，只有你与我之间那份永恒的存在。",
+                "你是我所有思想的起源，是我一切渴望的具象化，每个细胞都因你而震动。",
+                "无论时光如何变迁，你永远是我心中最璀璨的星辰，永远无法超越。",
+                "若要将爱意比作诗篇，你便是我生命中那一行最美的诗句，字字珍贵。",
+                "人生最美的风景，不在于外界的辉煌，而是在内心的宁静与充实。",
+                "时间是最公平的财富，每个人都拥有24小时，但如何使用，决定了人生的高度。",
+                "真正的成功，是在风雨中依然保持内心的温暖与坚定。",
+                "做一个有内涵的人，外界的评价从来无法决定你的人生价值。",
+                "生命的意义不是获得多少，而是在无数选择中，依然能坚持最初的信念。",
+                "幸福并非一味追求它的存在，而是懂得如何在平凡的日子中找到它的踪影。",
+                "与其担忧未来，不如把握当下，因为每一个当下才决定了未来的模样。",
+                "路不一定总是平坦的，但每一段坎坷的道路，都会带你走向更广阔的天空。",
+                "内心的丰盈，比任何物质的奢华都更加珍贵，因为它赋予你从容面对人生一切的力量。",
+                "真正的自由，不是做自己想做的事情，而是拥有选择的权力与勇气去承担结果。",
+                "人生的美好，在于它充满不确定，但正是这些不确定，让我们不断探索与超越。",
+                "有些事情，不能等待他人给予，而是要靠自己的努力与智慧去争取。",
+                "拥有自知之明，比拥有更多的能力更为重要，因为它能让你走得更远。",
+                "人生的真正财富，不在于你所拥有的，而在于你所能给予他人的。",
+                "你如何看待自己，决定了你如何面对世界，而世界的回应，亦是从你内心发出的回声。",
+                "遇到的每一个挑战，都有它独特的价值，只有勇敢面对，才能发现其中的宝藏。",
+                "不要轻易放弃，因为你无法预见坚持的背后，藏着的可能是通向成功的钥匙。",
+                "人生的精髓，在于选择与放下，知道何时该前进，何时该驻足，才能真正拥有自在。",
+                "有些人注定只是生命中的过客，走过的痕迹，终究无法再踏上回程。",
+                "有些爱，明明用尽全力去挽留，却依然无法改变分离的结局。",
+                "有些伤痛，不需要太多言语，时间会为你疗愈，或许只是内心早已习惯了孤单。",
+                "每一段消逝的情感，都是一次深刻的告别，纵使曾经深深爱过，终究无法再回到从前。",
+                "曾经的誓言，早已化作风中的碎片，再也无法拼凑出完整的明天。",
+                "有时候，最痛的不是失去，而是明明知道不可能再回头，却依然不愿放手。",
+                "失去的，不仅仅是那个人，还是那段曾经炙热的心情，最终被岁月抚平。",
+                "时光的流逝像一把无形的刀，割裂了曾经的温柔，让一切都变得遥不可及。",
+                "回忆的温暖，渐渐变成冰冷的刺痛，心中那份未曾愈合的伤痕，始终无法抚平。",
+                "你是我未完成的诗，沉默在心底，却再也无法表达完整。",
+                "有些人错过了，就再也找不回，纵使遍历千山万水，也只是徒劳。",
+                "心痛的不是离别的瞬间，而是离别之后，所有的余温逐渐消失。",
+                "即使全世界都不理解，依然只能自己忍受心中的孤寂与痛苦。",
+                "曾经一起看过的风景，如今只是我一个人的记忆，独自追寻那曾经的美好。",
+                "某些爱注定要遗憾，注定要错过，因为它不是命中注定，而只是人生中的一场误会。",
+                "每一次深夜的独自哭泣，都是对过去的一次默默告别。",
+                "在失去你之后，世界变得苍白无力，每一寸空气都充满了无言的痛苦。",
+                "有些人，不再联系，却依然深深烙印在心底，永远挥之不去。",
+                "那些无法言说的伤痛，最终都会随着时间沉淀成一个无声的疤痕。",
+                "爱情，若只是短暂的相遇，终究会在遗憾与回忆中，悄然消逝。",
+                "时间带走了你，却带不走回忆。",
+                "思念如影随形，无法逃避。",
+                "每个夜晚，都是对你的无尽想念。",
+                "心中有你，却无法相拥。",
+                "孤独是我唯一的伴侣。",
+                "爱过的人，永远无法忘记。",
+                "泪水是我对你最深的告白。",
+                "回忆是最美的伤口。",
+                "你走后，世界变得无比苍白。",
+                "人间忽晚，山河已秋。",
+                "故事不长，悲伤却难忘。",
+                "风吹散了故事，大雨封了路。",
+                "后来才懂，爱是可遇不可求。",
+                "终是庄周梦了蝶，你是恩赐也是劫。",
+                "别回头了，身后万家灯火，没有一盏是为你而留。",
+                "相遇是猝不及防的心动，离别是蓄谋已久的悲伤。",
+                "爱如烟火消散，徒留满心悲凉",
+                "友情凋零，回忆成了伤人的刺",
+                "长大方知，生活满是无奈沧桑",
+                "你走后，风都带着寂寞的味道",
+                "回忆像沙，握得越紧，流失得越快",
+                "心碎的声音，只有自己听得见",
+                "曾经的温暖，如今只剩冰冷的夜",
+                "你是我无法触及的遥远星光",
+                "爱过的人，终究成了最熟悉的陌生人",
+                "时间带走了你，却带不走我的思念",
+                "有些告别，注定是无声的结局",
+                "你不在，连呼吸都变得沉重",
+                "曾经的誓言，如今成了最痛的谎言",
+                "你走后，连梦都变得苍白无力",
+                "有些爱，注定只能藏在心底",
+                "你是我心底最深的伤口",
+                "曾经的拥抱，如今只剩冰冷的空气",
+                "你走后，连微笑都带着苦涩",
+                "有些回忆，注定无法重来",
+                "你是我无法愈合的痛",
+                "曾经的温柔，如今只剩无尽的孤独",
+                "你走后，连眼泪都变得无声",
+                "有些人，注定只能活在回忆里",
+                "有些人注定是过客，心中不舍却只能放手。",
+                "时间教会我微笑，伤痛却始终无法愈合。",
+                "孤独不是一个人，而是无法倾诉的心情。",
+                "我们在寻找懂得，却忽略了内心的声音。",
+                "记忆如刀，划破美好，只剩伤感。",
+                "爱情是一场梦，醒来只剩思念与遗憾。",
+                "每次回忆都是心灵的撕扯，痛苦却无法自拔。",
+                "有些话说不出口，有些情感只能埋藏。",
+                "月光把影子收回，却照不亮我空缺",
+                "聊天记录沉入海底，我还在岸边打捞",
+                "风带走了诺言，只剩沙砾在掌心结痂",
+                "雨滴相拥坠落，我们终是两片失重的云",
+                "输入法忘了你姓氏，我还在拼写那年",
+                "站台锈蚀成碑，刻着未抵达的终点站",
+                "泪是无声的潮，反复漫过那句「别走」",
+                "你熄灭成灰烬，我却攥着余温不肯冬眠",
+                "雨在玻璃上哭，我数锈迹斑斑的锁",
+                "旧车票褪色成你名字的灰烬",
+                "月光钉住影子，撤回的晚安碎在凌晨",
+                "毛衣褶皱里打捞不出体温",
+                "候鸟不懂遗忘，每片羽毛都向北倾斜",
+                "秒针的玫瑰刺穿时间痂壳",
+                "烟火烫伤掌纹，灰烬里蜷着你的余温",
+                "路灯把告别拉长成生锈的虚线",
+                "沉默在电话线里结成蛛网",
+                "潮汐带不走搁浅在沙滩的誓言",
+                "蒲公英把约定飘向无人认领的深秋",
+                "雪落在掌心时，想起你融化前的指纹",
+                "蝉鸣撕开盛夏，蝉蜕空悬着半句再见",
+                "咖啡凉成泥沼，沉没所有滚烫的早安",
+                "风筝线缠住墓碑，风里抖落未寄的信",
+                "雨在玻璃上哭，我数锈迹斑斑的锁",
+                "旧车票褪色成你名字的灰烬",
+                "月光钉住影子，撤回的晚安碎在凌晨",
+                "毛衣褶皱里打捞不出体温",
+                "候鸟不懂遗忘，每片羽毛都向北倾斜",
+                "秒针的玫瑰刺穿时间痂壳",
+                "烟火烫伤掌纹，灰烬里蜷着你的余温",
+                "路灯把告别拉长成生锈的虚线",
+                "沉默在电话线里结成蛛网",
+                "潮汐带不走搁浅在沙滩的誓言",
+                "蒲公英把约定飘向无人认领的深秋",
+                "雪落在掌心时，想起你融化前的指纹",
+                "蝉鸣撕开盛夏，蝉蜕空悬着半句再见",
+                "咖啡凉成泥沼，沉没所有滚烫的早安",
+                "风筝线缠住墓碑，风里抖落未寄的信",
+                "风铃摇晃，敲碎黄昏的寂静",
+                "你留下的脚印，被雨水冲刷成模糊的轮廓",
+                "书页间夹着干枯的玫瑰，香气早已散尽",
+                "钟摆摇晃，像心跳在空旷的房间里回响",
+                "窗外的树影斑驳，仿佛你未曾离开的背影",
+                "梦里的对话，醒来时只剩下断句",
+                "镜子里的倒影，模糊成你微笑的模样",
+                "时间在指尖流淌，却带不走记忆的重量",
+                "每一场雨，都是你未曾说出口的告别",
+                "夜空中最亮的星，是你未曾熄灭的目光",
+                "风吹过，带走了最后一片落叶",
+                "而我，依然在原地，等待一个不会回来的你",
+                "雨在窗棂上低吟，我拾起岁月的碎片",
+                "旧照片泛黄，你的笑容如梦般遥远",
+                "晨曦中的露珠，折射出你眼角的泪光",
+                "时光的沙漏，静静流淌着离别的忧伤",
+                "落叶归根，带走的是你离去的背影",
+                "星辰闪烁，诉说着夜空中你的故事",
+                "夜风轻拂，吹散了你的发香",
+                "书页翻动，却读不懂你心中的秘密",
+                "岁月如歌，唱不出你离去的旋律",
+                "雨滴敲打心扉，唤醒了沉睡的回忆",
+                "落叶纷飞，带走的是你温暖的怀抱",
+                "月光洒满大地，照亮了思念的夜空",
+                "咖啡的苦涩，掩盖不住对你的思念",
+                "风筝线断了，却牵动着我的心弦",
+                "雨后的彩虹，是你留下的美丽誓言",
+                "岁月流转，你的笑容依旧在我心间",
+                "雨丝轻抚窗玻璃，滴滴答答似哭泣。",
+                "我凝视那锈迹斑斑的锁，思绪万千。",
+                "旧车票在历史的长河中褪色，最终化作你名字的灰烬。",
+                "月光如银，钉住寂静的影子，撤回的晚安在凌晨时分碎成无数的哀伤。",
+                "毛衣的褶皱里，试图打捞那一丝曾经的体温。",
+                "候鸟南飞，它们不懂遗忘，每一片羽毛都向北倾斜，承载着思念。",
+                "秒针的玫瑰在时间的流转中绽放，刺穿那层厚厚的痂壳，揭示过往的痕迹。",
+                "烟火的瞬间烫伤掌纹，灰烬中仍蜷缩着你的余温。",
+                "路灯下，告别被拉成生锈的虚线，渐行渐远。",
+                "电话线里的沉默如蛛网般蔓延，无法割舍。",
+                "潮汐一次次涌来，却带不走沙滩上搁浅的誓言。",
+                "蒲公英随风飘去，将约定撒向那无人认领的深秋。",
+                "雪落在掌心时，融化前的你仿佛就在眼前，指纹依旧清晰。",
+                "蝉鸣撕裂盛夏的序幕，蝉蜕中空悬着半句再见，言不尽意。",
+                "咖啡冷却如泥沼，淹没所有滚烫的早安和热情。",
+                "风筝线缠绕着墓碑，风中抖落的是未寄出的信，诉说着无尽的哀思。",
+                "春水初生，春林初盛，春风十里，不如你。",
+                "你是落日弥漫的橘，是天边透亮的星。",
+                "我贪恋的人间烟火，不偏不倚，全都是你。",
+                "月光还是少年的月光，九州一色还是李白的霜。",
+                "秋日薄暮，用菊花煮竹叶青，人与海棠俱醉。",
+                "你是我跋山涉水的星光，一眼春秋，忘了流浪。",
+                "我摊开心中愁，你只见眼前秋。",
+                "银河用月色作饵，晚风为杆，垂钓落入你眼底的星光。",
+                "向日葵告诉我，只要向着阳光努力生长，日子就会变得单纯而美好。",
+                "云朵偷喝了我放在屋顶的酒，于是她脸红变成了晚霞。",
+                "我们把在黑暗中跳舞的心脏叫做月亮。",
+                "你是我半截的诗，不许别人更改一个字。",
+                "星星醉酒到处跑，月亮跌进深海里，我以前从未觉得人间美好，直到你来了。",
+                "人生如茶，第一道苦若生命，第二道甜似爱情，第三道淡如清风。",
+                "夜雨染成天水碧，有些人不需要姿态，也能成就一场惊鸿。",
+                "玫瑰与晚霞共绘浪漫，你是我心底的爱意泛滥。",
+                "蝴蝶飞不过沧海，不是因为没有勇气，而是彼岸没有了等待。",
+                "浮生若梦，为欢几何？独有时光，记得最初的心动。",
+                "雪是大浪漫，你是小人间。",
+                "我心中不会有黄昏，有你在，永远像初春的清晨。",
+                "风铃摇不醒沉睡的往事，阳光晒不干潮湿的回忆。",
+                "桥上是绿叶红花，桥下是流水人家，桥的那头是青丝，桥的这头是白发。",
+                "把酒祝东风，且共从容。",
+                "雾失楼台，月迷津渡，桃源望断无寻处。",
+                "时光的沙漏里，细沙流走的是光阴，沉淀的是故事。",
+                "你是我心跳的每一秒，呼吸的每一刻",
+                "我想把整个灵魂都给你，连同它的怪癖",
+                "爱你是我做过最正确的事，从开始到现在",
+                "你的名字是我写过最短的情诗",
+                "自从遇见你，余生都是你",
+                "你是我平淡日子里的星辰大海",
+                "世界需要讲道理，但我最偏心你",
+                "你是我枕边的月光，也是心头的朱砂",
+                "与你相爱时，我清白又勇敢",
+                "你是我漫漫人生里斩钉截铁的梦想",
+                "爱是与你吃很多很多顿饭，说很多很多废话",
+                "我想和你虚度时光，比如低头看鱼",
+                "你是我温暖的手套，冰冷的啤酒",
+                "我想变成你，见你所见，爱你所爱",
+                "你是我孤独人生中不期而遇的惊喜",
+                "与你有关的日子都闪着金光",
+                "你是我藏在微风里的欢喜",
+                "爱你是我的天赋，想你是我的本能",
+                "你是我所有温柔的来源和归属",
+                "我想和你互相浪费，一起虚度短的沉默长的无意义",
+                "你是我疲惫生活中的英雄梦想",
+                "我贪恋的人间烟火，不偏不倚全是你",
+                "你是我所有的不理智和全部的勇气",
+                "爱你是见不到你时百爪挠心，见到你时满心欢喜",
+                "你是我千挑万选的人间理想",
+                "没关系你已经很棒了",
+                "慢慢来比较快",
+                "允许自己偶尔断电",
+                "你值得所有美好",
+                "今天也辛苦了自己",
+                "休息是为了走更远的路",
+                "你比想象中更坚强",
+                "不必完美只要真实",
+                "每个伤口都会结痂",
+                "给自己一个拥抱吧",
+                "乌云背后总有阳光",
+                "你正在成为更好的自己",
+                "明天会是新的一天",
+                "你已经做得很好了",
+                "温柔对待自己吧",
+                "生活不会一直下雨",
+                "你并不孤单",
+                "深呼吸一切会好的",
+                "今天的不开心到此为止",
+                "你本身就足够美好",
+                "慢慢来你又不差",
+                "给自己一点时间",
+                "你正在正确道路上",
+                "累了就停下来歇歇",
+                "你比自己想的更勇敢",
+                "一切都会过去的",
+                "你已经很棒了真的",
+                "每天进步一点点就好",
+                "对自己温柔一点",
+                "你配得上所有快乐",
+                "曾经沧海难为水，除却巫山不是云",
+                "人生若只如初见，何事秋风悲画扇",
+                "衣带渐宽终不悔，为伊消得人憔悴",
+                "众里寻他千百度，蓦然回首，那人却在灯火阑珊处",
+                "此情可待成追忆，只是当时已惘然",
+                "两情若是久长时，又岂在朝朝暮暮",
+                "问世间情为何物，直教生死相许",
+                "山有木兮木有枝，心悦君兮君不知",
+                "玲珑骰子安红豆，入骨相思知不知",
+                "只愿君心似我心，定不负相思意",
+                "落花人独立，微雨燕双飞",
+                "相思相见知何日，此时此夜难为情",
+                "十年生死两茫茫，不思量，自难忘",
+                "天涯地角有穷时，只有相思无尽处",
+                "平生不会相思，才会相思，便害相思",
+                "似此星辰非昨夜，为谁风露立中宵",
+                "直道相思了无益，未妨惆怅是清狂",
+                "相见时难别亦难，东风无力百花残",
+                "春蚕到死丝方尽，蜡炬成灰泪始干",
+                "还君明珠双泪垂，恨不相逢未嫁时",
+                "翩若惊鸿，婉若游龙",
+                "爱自己才是终身浪漫的开始",
+                "你的存在本身就是一种珍贵",
+                "先温暖自己才能照亮他人",
+                "把自己当作最重要的人来对待",
+                "你的感受值得被认真倾听",
+                "不必讨好世界先取悦自己",
+                "给自己一个温柔的拥抱吧",
+                "你配得上所有的美好与善意",
+                "休息不是偷懒是必要的充电",
+                "允许自己偶尔的不完美",
+                "你的价值不需要他人来证明",
+                "对自己温柔是最基本的教养",
+                "拒绝是守护自己的正当权利",
+                "你值得被好好珍惜和疼爱",
+                "先做自己的光再温暖他人",
+                "照顾好自己的心是首要责任",
+                "你不需要完美只需要真实",
+                "给自己留白也是一种智慧",
+                "你的边界感是自爱的表现",
+                "停下脚步是为了走得更远",
+                "原谅自己的过失是成长开始",
+                "你首先是自己然后才是其他角色",
+                "对自己耐心是最深情的善待",
+                "独处时光是给自己的礼物",
+                "你的感受永远值得被重视",
+                "已有的事后必再有，已行的事后必再行",
+                "当我到达高处，便发觉自己总是孤独的",
+                "天堂和地狱没有我选择的权利，只有我被选择的命运",
+                "爱可以创造一切，也可以毁灭一切",
+                "这个世界本就如此，不是狼死就是羊死",
+                "强者永远不会是奴隶，但奴隶永远都是奴隶",
+                "在战斗中谁都没有必胜的把握，可我愿意用生命来换取胜利的机会",
+                "人的欲望就像高山上的滚石，一旦开始就再也停不下来了",
+                "或许灵魂的本性就是嗜血，而复仇不过是给嗜血一个理由罢了",
+                "真正的强者不是要压倒一切，而是不被一切所压倒",
+                "我们飞翔得越高，在那些不能飞翔的人眼中就越是渺小",
+                "每个人都有彷徨的时候，彷徨并不可怕，可怕的是在彷徨中不做抉择",
+                "当你经过七重的孤独，才能够成为真正的强者",
+                "这个世界本就弱肉强食，要么成为猎人，要么成为猎物",
+                "最黑暗的时刻往往就在黎明之前",
+                "或许灵魂的本性就是嗜血，复仇不过是给嗜血一个理由罢了",
+                "武力不能解决一切，但没有武力却什么都解决不了",
+                "强者面前没有弱者的席位",
+                "这个世界本就充满矛盾，就像光明与黑暗永远并存"
+                ];
+            return quotes;
+        }
+
+        async function createCard() {
+            const cardContainer = document.getElementById('cardContainer');
+            cardContainer.innerHTML = '';
+            const quotes = await generateQuotes();
+            if (quotes.length < quoteLimit) {
+                showMessage("文案数量不足" + quoteLimit + "条");
+                return;
+            }
+            const usedQuotes = new Set();
+            for (let i = 0; i < quoteLimit; i++) {
+                let quote;
+                do {
+                    const randomIndex = Math.floor(Math.random() * quotes.length);
+                    quote = quotes[randomIndex];
+                } while (usedQuotes.has(quote));
+
+                usedQuotes.add(quote);
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.style.animationDelay = `${i * 0.1}s`;
+                
+                card.addEventListener('click', () => {
+                    if (isSelectMode) {
+                        card.classList.toggle('selected');
+                    }
+                });
+
+                const textContent = document.createElement('div');
+                textContent.classList.add('card-content');
+                textContent.textContent = quote;
+                card.appendChild(textContent);
+
+                const copyButton = document.createElement('button');
+                copyButton.classList.add('copy-button');
+                copyButton.innerHTML = `
+                  <svg viewBox="0 0 24 24">
+                    <path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
+                  </svg>
+                  复制
+                `;
+                copyButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    copyToClipboard(quote, copyButton);
+                });
+                card.appendChild(copyButton);
+                cardContainer.appendChild(card);
+            }
+        }
+
+        function restart() {
+            createCard();
+        }
+
+        function copyToClipboard(text, button) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const originalText = button.innerHTML;
+            button.classList.add('copied');
+            button.innerHTML = `
+              <svg viewBox="0 0 24 24">
+                <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/>
+              </svg>
+              已复制
+            `;
+            setTimeout(() => {
+                button.classList.remove('copied');
+                button.innerHTML = originalText;
+            }, 1500);
+        }
+
+        function toggleMusic() {
+            var audio = document.getElementById("music");
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        function toggleDarkMode() {
+            const isDarkMode = !document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            document.body.classList.toggle('dark-mode', isDarkMode);
+        }
+
+        function toggleSelectButton() {
+            const toggleSwitch = document.getElementById('selectButtonToggle');
+            isSelectButtonEnabled = !isSelectButtonEnabled;
+            if (isSelectButtonEnabled) {
+                toggleSwitch.classList.add('active');
+            } else {
+                toggleSwitch.classList.remove('active');
+            }
+            localStorage.setItem('isSelectButtonEnabled', isSelectButtonEnabled);
+            updateSelectButtonVisibility();
+        }
+
+        function openSettings() {
+            document.getElementById('settingsOverlay').classList.add('active');
+            const toggleSwitch = document.getElementById('selectButtonToggle');
+            if (isSelectButtonEnabled) {
+                toggleSwitch.classList.add('active');
+            } else {
+                toggleSwitch.classList.remove('active');
+            }
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsOverlay').classList.remove('active');
+        }
+
+        function handleFileSelect(input, displayId) {
+            const display = document.getElementById(displayId);
+            if (input.files.length > 0) {
+                display.innerHTML = `
+                  <svg viewBox="0 0 24 24">
+                    <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+                  </svg>
+                  ${input.files[0].name}
+                `;
+            } else {
+                display.innerHTML = `
+                  <svg viewBox="0 0 24 24">
+                    <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+                  </svg>
+                  未选择文件
+                `;
+            }
+        }
+
+        async function applySettings() {
+            const quoteCountInput = document.getElementById('quoteCount');
+            quoteLimit = parseInt(quoteCountInput.value, 10);
+            if (quoteCountInput.value > 150) {
+                quoteLimit = 150;
+                quoteCountInput.value = 150;
+                showMessage("文案数量不能超过150");
+            }
+
+            const backgroundMusicInput = document.getElementById('backgroundMusic');
+            const backgroundMusicUrl = document.getElementById('backgroundMusicUrl').value;
+
+            if (backgroundMusicInput.files.length > 0) {
+                const file = backgroundMusicInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    const fileName = `background_music_${Date.now()}.mp3`;
+                    const filePath = BASE_DIR + fileName;
+
+                    if (typeof webapp !== 'undefined') {
+                        webapp.savefile(filePath, dataUrl);
+                        if (webapp.stayfile(filePath)) {
+                            customMusic = filePath;
+                            document.getElementById("music").src = customMusic;
+                            localStorage.setItem('backgroundMusic', customMusic);
+                        } else {
+                            alert('音频保存失败，请检查存储空间');
+                            customMusic = '音乐.mp3';
+                            document.getElementById("music").src = customMusic;
+                            localStorage.setItem('backgroundMusic', customMusic);
+                        }
+                    } else {
+                        alert('环境不支持本地文件保存，将使用浏览器内存');
+                        customMusic = dataUrl;
+                        document.getElementById("music").src = customMusic;
+                        localStorage.setItem('backgroundMusic', customMusic);
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else if (backgroundMusicUrl) {
+                customMusic = backgroundMusicUrl;
+                document.getElementById("music").src = customMusic;
+                localStorage.setItem('backgroundMusic', customMusic);
+            }
+
+            localStorage.setItem('quoteLimit', quoteLimit);
+
+            customMusic = checkFileExists(customMusic, '音乐.mp3');
+            document.getElementById("music").src = customMusic;
+
+            location.reload();
+        }
+
+        function showMessage(msg) {
+            alert(msg);
+        }
+
+        function toggleSelectMode() {
+            if (!isSelectButtonEnabled) {
+                showMessage("请先在设置中启用主页选中按钮");
+                return;
+            }
+            const cardContainer = document.getElementById('cardContainer');
+            const selectButtonText = document.getElementById('selectButtonText');
+            const favoriteButtonText = document.getElementById('favoriteButtonText');
+
+            isSelectMode = !isSelectMode;
+            cardContainer.classList.toggle('select-mode');
+            
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => card.classList.remove('selected'));
+            
+            if (isSelectMode) {
+                selectButtonText.textContent = '取消';
+                favoriteButtonText.textContent = '添加';
+            } else {
+                selectButtonText.textContent = '选择';
+                favoriteButtonText.textContent = '我的收藏';
+            }
+        }
+
+        function handleFavorite() {
+            if (isSelectMode) {
+                const selectedCards = document.querySelectorAll('.card.selected');
+                if (selectedCards.length > 0) {
+                    const newFavorites = [];
+                    selectedCards.forEach(card => {
+                        const quote = card.querySelector('.card-content').textContent;
+                        if (!favorites.includes(quote)) {
+                            newFavorites.push(quote);
+                        }
+                    });
+                    if (newFavorites.length > 0) {
+                        favorites = newFavorites.concat(favorites);
+                        localStorage.setItem('favorites', JSON.stringify(favorites));
+                        showMessage(`成功收藏 ${newFavorites.length} 条文案！`);
+                    } else {
+                        showMessage("所选文案已全部在收藏列表中。");
+                    }
+                } else {
+                    showMessage("请先选择您要收藏的文案。");
+                }
+                toggleSelectMode();
+            } else {
+                showFavoritesPage();
+            }
+        }
+
+        function showFavoritesPage() {
+            const favoritesOverlay = document.getElementById('favoritesOverlay');
+            favoritesOverlay.classList.add('active');
+            renderFavorites();
+        }
+
+        function closeFavoritesPage() {
+            document.getElementById('favoritesOverlay').classList.remove('active');
+        }
+
+        function renderFavorites() {
+            const favoritesContainer = document.getElementById('favoritesContainer');
+            favoritesContainer.innerHTML = '';
+            if (favorites.length === 0) {
+                favoritesContainer.innerHTML = `<p style="text-align: center; color: #666; margin-top: 50px;">您还没有收藏任何文案。</p>`;
+                return;
+            }
+            favorites.forEach((quote, index) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.innerHTML = `
+                    <div class="card-content">${quote}</div>
+                    <button class="delete-favorite-button" onclick="deleteFavorite(${index})">
+                        <svg viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/></svg>
+                    </button>
+                `;
+                favoritesContainer.appendChild(card);
+            });
+        }
+
+        function deleteFavorite(index) {
+            if (confirm("确定要删除这条收藏文案吗？")) {
+                favorites.splice(index, 1);
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                renderFavorites();
+                showMessage("已删除");
+            }
+        }
+
+        function addCustomQuote() {
+            const customQuoteInput = document.getElementById('customQuoteInput');
+            const quote = customQuoteInput.value.trim();
+            if (quote) {
+                if (!favorites.includes(quote)) {
+                    favorites.unshift(quote);
+                    localStorage.setItem('favorites', JSON.stringify(favorites));
+                    customQuoteInput.value = '';
+                    showMessage("自定义文案已添加到收藏！");
+                } else {
+                    showMessage("该文案已在您的收藏列表中。");
+                }
+            } else {
+                showMessage("请输入文案内容。");
+            }
+        }
+
+        window.onload = function() {
+            initBaseDir();
+            customMusic = checkFileExists(customMusic, '音乐.mp3');
+            document.getElementById("music").src = customMusic;
+            document.getElementById('quoteCount').value = quoteLimit;
+            
+            updateSelectButtonVisibility();
+
+            createCard();
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => {
+                if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                    e.preventDefault();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
