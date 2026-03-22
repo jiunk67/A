@@ -164,12 +164,78 @@
             <a href="main4.html" class="custom-btn">工具软件下载</a>
             <a href="main5.html" class="custom-btn">捐赠支持</a>
             <a href="main6.html" class="custom-btn">手机Root使用</a>
+            <a href="main15.html" class="custom-btn">分类</a>
         </div>
 
         <div class="footer-info">
             <p>π颗糖 - 资源分享站点</p>
-            <small>最后更新: 2026.2.28</small>
+            <small>最后更新: 2026.3.22</small>
         </div>
     </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>温馨提示</h2>
+            <p>本网站为AI与本人的共同制作，有些部分可能有错误，请自行分辨使用</p>
+            <button onclick="closeModal()">确定</button>
+        </div>
+    </div>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #60a5fa;
+        }
+        .modal-content p {
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .modal-content button {
+            padding: 12px 40px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .modal-content button:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+        }
+    </style>
+
+    <script>
+        window.onload = function() {
+            if (!localStorage.getItem('modalShown')) {
+                document.getElementById('modal').style.display = 'flex';
+            }
+        }
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            localStorage.setItem('modalShown', 'true');
+        }
+    </script>
 </body>
 </html>
