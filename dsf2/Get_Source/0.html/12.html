@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQ头像查询工具 - 一键获取高清头像</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            padding: 30px;
+            margin-top: 50px;
+        }
+
+        .title {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        #qq-input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        #qq-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .query-btn {
+            background: #667eea;
+            color: #fff;
+        }
+
+        .query-btn:hover {
+            background: #5a6edb;
+            transform: translateY(-2px);
+        }
+
+        .reset-btn {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .reset-btn:hover {
+            background: #e8e8e8;
+        }
+
+        .result-area {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #avatar-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid #f0f0f0;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        .download-btn {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .download-btn:hover {
+            background: #218838;
+        }
+
+        .tips {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #999;
+            text-align: center;
+        }
+
+        /* 响应式适配手机 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                margin-top: 30px;
+            }
+            .input-group {
+                flex-direction: column;
+            }
+            #avatar-img {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">QQ头像查询工具</h1>
+        <div class="input-group">
+            <input type="text" id="qq-input" placeholder="请输入QQ号码" maxlength="13">
+            <button class="btn query-btn" id="query-btn">查询头像</button>
+            <button class="btn reset-btn" id="reset-btn">清空</button>
+        </div>
+
+        <div class="result-area" id="result-area">
+            <img src="" alt="QQ头像" id="avatar-img">
+            <br>
+            <button class="btn download-btn" id="download-btn">下载高清头像</button>
+        </div>
+
+        <div class="tips">
+            提示：本工具仅用于查询公开的QQ头像，请勿用于非法用途
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const qqInput = document.getElementById('qq-input');
+        const queryBtn = document.getElementById('query-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const resultArea = document.getElementById('result-area');
+        const avatarImg = document.getElementById('avatar-img');
+        const downloadBtn = document.getElementById('download-btn');
+
+        // QQ头像查询接口（公开免费接口）
+        function getAvatarUrl(qq) {
+            return `https://q1.qlogo.cn/g?b=qq&nk=${qq}&s=640`;
+        }
+
+        // 查询按钮点击事件
+        queryBtn.addEventListener('click', () => {
+            const qq = qqInput.value.trim();
+            if (!/^\d{5,13}$/.test(qq)) {
+                alert('请输入正确的QQ号码！');
+                return;
+            }
+            // 设置头像地址
+            const avatarUrl = getAvatarUrl(qq);
+            avatarImg.src = avatarUrl;
+            // 显示结果区域
+            resultArea.style.display = 'block';
+        });
+
+        // 清空按钮点击事件
+        resetBtn.addEventListener('click', () => {
+            qqInput.value = '';
+            resultArea.style.display = 'none';
+            avatarImg.src = '';
+        });
+
+        // 下载头像功能
+        downloadBtn.addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.href = avatarImg.src;
+            a.download = `QQ头像_${qqInput.value}.png`;
+            a.click();
+        });
+
+        // 按回车键触发查询
+        qqInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                queryBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>

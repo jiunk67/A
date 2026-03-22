@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>筑梦小说生成器</title>
+    <style>
+        :root { --bg: #f8f9fa; --card: #ffffff; --accent: #2d3436; --text: #2d3436; --border: #e0e0e0; --btn: #1a1a1a; }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg: #121212; --card: #1e1e1e; --accent: #ffffff; --text: #d1d1d1; --border: #333; --btn: #ffffff; }
+        }
+        body { background: var(--bg); color: var(--text); font-family: "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0; display: flex; justify-content: center; min-height: 100vh; }
+        .app-container { width: 90%; max-width: 700px; margin: 40px 0; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-weight: 300; letter-spacing: 2px; color: var(--accent); }
+        .config-card { background: var(--card); padding: 25px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .input-item { margin-bottom: 20px; }
+        .input-item label { display: block; font-size: 12px; text-transform: uppercase; margin-bottom: 8px; color: #888; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: inherit; box-sizing: border-box; outline: none; transition: border 0.3s; }
+        input:focus { border-color: var(--accent); }
+        .btns { display: flex; gap: 12px; }
+        button { flex: 1; padding: 14px; border: none; border-radius: 8px; background: var(--btn); color: var(--bg); cursor: pointer; font-weight: 600; transition: 0.3s; }
+        button:disabled { opacity: 0.3; cursor: not-allowed; }
+        #output { margin-top: 40px; font-family: "Noto Serif SC", "Source Han Serif", serif; line-height: 2; font-size: 1.1em; white-space: pre-wrap; color: var(--text); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header><h1>AI NOVELIST</h1></header>
+    <a href="https://qm.qq.com/q/uLOu8Scecw"
+   target="_blank"
+   style="
+      display:block;
+      margin:40px auto;
+      padding:10px 24px;
+      width:200px;
+      text-align:center;
+      background:linear-gradient(135deg,#4a90e2 0%,#6fabf7 100%);
+      color:#fff;
+      border-radius:20px;
+      text-decoration:none;
+      font-size:16px;
+      box-shadow:0 4px 12px rgba(74,144,226,.35);
+      transition:all .25s;
+   "
+   onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(74,144,226,.45)'"
+   onmouseout="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(74,144,226,.35)'">
+   💬 加入QQ群一起交流学习
+</a>
+
+    <div class="config-card">
+        <div class="input-item"><label>题材</label><input type="text" id="genre" placeholder="如：硬核科幻"></div>
+        <div class="input-item"><label>风格</label><input type="text" id="style" placeholder="如：冷峻、克苏鲁"></div>
+        <div class="input-item"><label>背景设定</label><textarea id="extra" rows="3" placeholder="简述故事开端..."></textarea></div>
+        <div class="btns">
+        
+            <button id="genBtn">立即生成</button>
+            <button id="contBtn" style="display:none">继续创作</button>
+        </div>
+    </div>
+    <article id="output"></article>
+</div>
+
+<script>
+    //筑梦自研API系统 免费给大家使用 禁止滥用 发现直接黑名单
+const CONFIG = {
+    key: 'sk-20260210ZMoon888888888888',
+    url: 'https://api.zmoon.xyz/v1',
+    model: 'default'
+};
+
+const genBtn = document.getElementById('genBtn');
+const contBtn = document.getElementById('contBtn');
+const output = document.getElementById('output');
+const inputs = document.querySelectorAll('input, textarea');
+
+let historyText = "";
+
+async function streamGenerate(isContinue) {
+    const genre = document.getElementById('genre').value;
+    const style = document.getElementById('style').value;
+    const extra = document.getElementById('extra').value;
+
+    toggleState(true);
+    if (!isContinue) { output.textContent = ""; historyText = ""; }
+
+    const userPrompt = isContinue 
+        ? `请紧接上文情节继续创作。严禁输出任何开场白、废话或解释，直接输出小说正文。上文：\n${historyText}`
+        : `请开始创作小说。题材：${genre}；风格：${style}；背景：${extra}。要求：直接输出小说正文内容，严禁任何寒暄、标题或废话。`;
+
+    try {
+        const response = await fetch(CONFIG.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${CONFIG.key}` },
+            body: JSON.stringify({
+                model: CONFIG.model,
+                messages: [
+                    { role: "system", content: "你是一个只写小说正文的机器人，严禁输出任何非小说内容的文字，严禁输出色情、暴力、血腥、政治敏感内容，严禁输出违规内容。" },
+                    { role: "user", content: userPrompt }
+                ],
+                stream: true
+            })
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunks = decoder.decode(value).split('\n');
+            for (const chunk of chunks) {
+                if (chunk.startsWith('data: ') && chunk !== 'data: [DONE]') {
+                    const data = JSON.parse(chunk.substring(6));
+                    const content = data.choices[0].delta.content || "";
+                    output.textContent += content;
+                    historyText += content;
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                }
+            }
+        }
+        contBtn.style.display = 'block';
+    } catch (e) {
+        output.textContent += "\n[连接失败，请检查API配置]";
+    } finally {
+        toggleState(false);
+    }
+}
+
+function toggleState(loading) {
+    genBtn.disabled = loading;
+    contBtn.disabled = loading;
+    inputs.forEach(i => i.disabled = loading);
+}
+
+genBtn.onclick = () => streamGenerate(false);
+contBtn.onclick = () => streamGenerate(true);
+</script>
+</body>
+</html>

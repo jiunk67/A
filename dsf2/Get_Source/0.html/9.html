@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>全球国旗</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #search {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .flags-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .flag-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .flag-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .flag-img {
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .country-name {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+        .country-code {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>全球国旗 (197个国家)</h1>
+        <input type="text" id="search" placeholder="搜索国家...">
+    </div>
+    
+    <div class="flags-grid" id="flagsContainer"></div>
+
+    <script>
+        // 包含所有国家的数据（ISO 3166-1标准）
+        const allCountries = [
+            // A
+            {name: "中国", code: "cn", iso: "CN"},
+            {name: "阿富汗", code: "af", iso: "AF"},
+            {name: "阿尔巴尼亚", code: "al", iso: "AL"},
+            {name: "阿尔及利亚", code: "dz", iso: "DZ"},
+            {name: "安道尔", code: "ad", iso: "AD"},
+            {name: "安哥拉", code: "ao", iso: "AO"},
+            {name: "安提瓜和巴布达", code: "ag", iso: "AG"},
+            {name: "阿根廷", code: "ar", iso: "AR"},
+            {name: "亚美尼亚", code: "am", iso: "AM"},
+            {name: "澳大利亚", code: "au", iso: "AU"},
+            {name: "奥地利", code: "at", iso: "AT"},
+            {name: "阿塞拜疆", code: "az", iso: "AZ"},
+            
+            // B
+            {name: "巴哈马", code: "bs", iso: "BS"},
+            {name: "巴林", code: "bh", iso: "BH"},
+            {name: "孟加拉国", code: "bd", iso: "BD"},
+            {name: "巴巴多斯", code: "bb", iso: "BB"},
+            {name: "白俄罗斯", code: "by", iso: "BY"},
+            {name: "比利时", code: "be", iso: "BE"},
+            {name: "伯利兹", code: "bz", iso: "BZ"},
+            {name: "贝宁", code: "bj", iso: "BJ"},
+            {name: "不丹", code: "bt", iso: "BT"},
+            {name: "玻利维亚", code: "bo", iso: "BO"},
+            {name: "波黑", code: "ba", iso: "BA"},
+            {name: "博茨瓦纳", code: "bw", iso: "BW"},
+            {name: "巴西", code: "br", iso: "BR"},
+            {name: "文莱", code: "bn", iso: "BN"},
+            {name: "保加利亚", code: "bg", iso: "BG"},
+            {name: "布基纳法索", code: "bf", iso: "BF"},
+            {name: "布隆迪", code: "bi", iso: "BI"},
+            
+            // C
+            {name: "柬埔寨", code: "kh", iso: "KH"},
+            {name: "喀麦隆", code: "cm", iso: "CM"},
+            {name: "加拿大", code: "ca", iso: "CA"},
+            {name: "佛得角", code: "cv", iso: "CV"},
+            {name: "中非共和国", code: "cf", iso: "CF"},
+            {name: "乍得", code: "td", iso: "TD"},
+            {name: "智利", code: "cl", iso: "CL"},
+            {name: "哥伦比亚", code: "co", iso: "CO"},
+            {name: "科摩罗", code: "km", iso: "KM"},
+            {name: "刚果(布)", code: "cg", iso: "CG"},
+            {name: "刚果(金)", code: "cd", iso: "CD"},
+            {name: "哥斯达黎加", code: "cr", iso: "CR"},
+            {name: "克罗地亚", code: "hr", iso: "HR"},
+            {name: "古巴", code: "cu", iso: "CU"},
+            {name: "塞浦路斯", code: "cy", iso: "CY"},
+            {name: "捷克", code: "cz", iso: "CZ"},
+            
+            // D
+            {name: "丹麦", code: "dk", iso: "DK"},
+            {name: "吉布提", code: "dj", iso: "DJ"},
+            {name: "多米尼克", code: "dm", iso: "DM"},
+            {name: "多米尼加", code: "do", iso: "DO"},
+            
+            // E
+            {name: "厄瓜多尔", code: "ec", iso: "EC"},
+            {name: "埃及", code: "eg", iso: "EG"},
+            {name: "萨尔瓦多", code: "sv", iso: "SV"},
+            {name: "赤道几内亚", code: "gq", iso: "GQ"},
+            {name: "厄立特里亚", code: "er", iso: "ER"},
+            {name: "爱沙尼亚", code: "ee", iso: "EE"},
+            {name: "斯威士兰", code: "sz", iso: "SZ"},
+            {name: "埃塞俄比亚", code: "et", iso: "ET"},
+            
+            // F
+            {name: "斐济", code: "fj", iso: "FJ"},
+            {name: "芬兰", code: "fi", iso: "FI"},
+            {name: "法国", code: "fr", iso: "FR"},
+            
+            // G
+            {name: "加蓬", code: "ga", iso: "GA"},
+            {name: "冈比亚", code: "gm", iso: "GM"},
+            {name: "格鲁吉亚", code: "ge", iso: "GE"},
+            {name: "德国", code: "de", iso: "DE"},
+            {name: "加纳", code: "gh", iso: "GH"},
+            {name: "希腊", code: "gr", iso: "GR"},
+            {name: "格林纳达", code: "gd", iso: "GD"},
+            {name: "危地马拉", code: "gt", iso: "GT"},
+            {name: "几内亚", code: "gn", iso: "GN"},
+            {name: "几内亚比绍", code: "gw", iso: "GW"},
+            {name: "圭亚那", code: "gy", iso: "GY"},
+            
+            // H
+            {name: "海地", code: "ht", iso: "HT"},
+            {name: "洪都拉斯", code: "hn", iso: "HN"},
+            {name: "匈牙利", code: "hu", iso: "HU"},
+            
+            // I
+            {name: "冰岛", code: "is", iso: "IS"},
+            {name: "印度", code: "in", iso: "IN"},
+            {name: "印度尼西亚", code: "id", iso: "ID"},
+            {name: "伊朗", code: "ir", iso: "IR"},
+            {name: "伊拉克", code: "iq", iso: "IQ"},
+            {name: "爱尔兰", code: "ie", iso: "IE"},
+            {name: "以色列", code: "il", iso: "IL"},
+            {name: "意大利", code: "it", iso: "IT"},
+            {name: "科特迪瓦", code: "ci", iso: "CI"},
+            
+            // J
+            {name: "牙买加", code: "jm", iso: "JM"},
+            {name: "日本", code: "jp", iso: "JP"},
+            {name: "约旦", code: "jo", iso: "JO"},
+            
+            // K
+            {name: "哈萨克斯坦", code: "kz", iso: "KZ"},
+            {name: "肯尼亚", code: "ke", iso: "KE"},
+            {name: "基里巴斯", code: "ki", iso: "KI"},
+            {name: "朝鲜", code: "kp", iso: "KP"},
+            {name: "韩国", code: "kr", iso: "KR"},
+            {name: "科威特", code: "kw", iso: "KW"},
+            {name: "吉尔吉斯斯坦", code: "kg", iso: "KG"},
+            
+            // L
+            {name: "老挝", code: "la", iso: "LA"},
+            {name: "拉脱维亚", code: "lv", iso: "LV"},
+            {name: "黎巴嫩", code: "lb", iso: "LB"},
+            {name: "莱索托", code: "ls", iso: "LS"},
+            {name: "利比里亚", code: "lr", iso: "LR"},
+            {name: "利比亚", code: "ly", iso: "LY"},
+            {name: "列支敦士登", code: "li", iso: "LI"},
+            {name: "立陶宛", code: "lt", iso: "LT"},
+            {name: "卢森堡", code: "lu", iso: "LU"},
+            
+            // M
+            {name: "马达加斯加", code: "mg", iso: "MG"},
+            {name: "马拉维", code: "mw", iso: "MW"},
+            {name: "马来西亚", code: "my", iso: "MY"},
+            {name: "马尔代夫", code: "mv", iso: "MV"},
+            {name: "马里", code: "ml", iso: "ML"},
+            {name: "马耳他", code: "mt", iso: "MT"},
+            {name: "马绍尔群岛", code: "mh", iso: "MH"},
+            {name: "毛里塔尼亚", code: "mr", iso: "MR"},
+            {name: "毛里求斯", code: "mu", iso: "MU"},
+            {name: "墨西哥", code: "mx", iso: "MX"},
+            {name: "密克罗尼西亚", code: "fm", iso: "FM"},
+            {name: "摩尔多瓦", code: "md", iso: "MD"},
+            {name: "摩纳哥", code: "mc", iso: "MC"},
+            {name: "蒙古", code: "mn", iso: "MN"},
+            {name: "黑山", code: "me", iso: "ME"},
+            {name: "摩洛哥", code: "ma", iso: "MA"},
+            {name: "莫桑比克", code: "mz", iso: "MZ"},
+            {name: "缅甸", code: "mm", iso: "MM"},
+            
+            // N
+            {name: "纳米比亚", code: "na", iso: "NA"},
+            {name: "瑙鲁", code: "nr", iso: "NR"},
+            {name: "尼泊尔", code: "np", iso: "NP"},
+            {name: "荷兰", code: "nl", iso: "NL"},
+            {name: "新西兰", code: "nz", iso: "NZ"},
+            {name: "尼加拉瓜", code: "ni", iso: "NI"},
+            {name: "尼日尔", code: "ne", iso: "NE"},
+            {name: "尼日利亚", code: "ng", iso: "NG"},
+            {name: "北马其顿", code: "mk", iso: "MK"},
+            {name: "挪威", code: "no", iso: "NO"},
+            
+            // O
+            {name: "阿曼", code: "om", iso: "OM"},
+            
+            // P
+            {name: "巴基斯坦", code: "pk", iso: "PK"},
+            {name: "帕劳", code: "pw", iso: "PW"},
+            {name: "巴勒斯坦", code: "ps", iso: "PS"},
+            {name: "巴拿马", code: "pa", iso: "PA"},
+            {name: "巴布亚新几内亚", code: "pg", iso: "PG"},
+            {name: "巴拉圭", code: "py", iso: "PY"},
+            {name: "秘鲁", code: "pe", iso: "PE"},
+            {name: "菲律宾", code: "ph", iso: "PH"},
+            {name: "波兰", code: "pl", iso: "PL"},
+            {name: "葡萄牙", code: "pt", iso: "PT"},
+            
+            // Q
+            {name: "卡塔尔", code: "qa", iso: "QA"},
+            
+            // R
+            {name: "罗马尼亚", code: "ro", iso: "RO"},
+            {name: "俄罗斯", code: "ru", iso: "RU"},
+            {name: "卢旺达", code: "rw", iso: "RW"},
+            
+            // S
+            {name: "圣基茨和尼维斯", code: "kn", iso: "KN"},
+            {name: "圣卢西亚", code: "lc", iso: "LC"},
+            {name: "圣文森特和格林纳丁斯", code: "vc", iso: "VC"},
+            {name: "萨摩亚", code: "ws", iso: "WS"},
+            {name: "圣马力诺", code: "sm", iso: "SM"},
+            {name: "圣多美和普林西比", code: "st", iso: "ST"},
+            {name: "沙特阿拉伯", code: "sa", iso: "SA"},
+            {name: "塞内加尔", code: "sn", iso: "SN"},
+            {name: "塞尔维亚", code: "rs", iso: "RS"},
+            {name: "塞舌尔", code: "sc", iso: "SC"},
+            {name: "塞拉利昂", code: "sl", iso: "SL"},
+            {name: "新加坡", code: "sg", iso: "SG"},
+            {name: "斯洛伐克", code: "sk", iso: "SK"},
+            {name: "斯洛文尼亚", code: "si", iso: "SI"},
+            {name: "所罗门群岛", code: "sb", iso: "SB"},
+            {name: "索马里", code: "so", iso: "SO"},
+            {name: "南非", code: "za", iso: "ZA"},
+            {name: "南苏丹", code: "ss", iso: "SS"},
+            {name: "西班牙", code: "es", iso: "ES"},
+            {name: "斯里兰卡", code: "lk", iso: "LK"},
+            {name: "苏丹", code: "sd", iso: "SD"},
+            {name: "苏里南", code: "sr", iso: "SR"},
+            {name: "瑞典", code: "se", iso: "SE"},
+            {name: "瑞士", code: "ch", iso: "CH"},
+            {name: "叙利亚", code: "sy", iso: "SY"},
+            
+            //T
+            {name: "塔吉克斯坦", code: "tj", iso: "TJ"},
+            {name: "坦桑尼亚", code: "tz", iso: "TZ"},
+            {name: "泰国", code: "th", iso: "TH"},
+            {name: "东帝汶", code: "tl", iso: "TL"},
+            {name: "多哥", code: "tg", iso: "TG"},
+            {name: "汤加", code: "to", iso: "TO"},
+            {name: "特立尼达和多巴哥", code: "tt", iso: "TT"},
+            {name: "突尼斯", code: "tn", iso: "TN"},
+            {name: "土耳其", code: "tr", iso: "TR"},
+            {name: "土库曼斯坦", code: "tm", iso: "TM"},
+            {name: "图瓦卢", code: "tv", iso: "TV"},
+            
+            // U
+            {name: "乌干达", code: "ug", iso: "UG"},
+            {name: "乌克兰", code: "ua", iso: "UA"},
+            {name: "阿联酋", code: "ae", iso: "AE"},
+            {name: "英国", code: "gb", iso: "GB"},
+            {name: "美国", code: "us", iso: "US"},
+            {name: "乌拉圭", code: "uy", iso: "UY"},
+            {name: "乌兹别克斯坦", code: "uz", iso: "UZ"},
+            
+            // V
+            {name: "瓦努阿图", code: "vu", iso: "VU"},
+            {name: "梵蒂冈", code: "va", iso: "VA"},
+            {name: "委内瑞拉", code: "ve", iso: "VE"},
+            {name: "越南", code: "vn", iso: "VN"},
+            
+            // Y
+            {name: "也门", code: "ye", iso: "YE"},
+            
+            // Z
+            {name: "赞比亚", code: "zm", iso: "ZM"},
+            {name: "津巴布韦", code: "zw", iso: "ZW"}
+        ];
+
+        // 按名称排序
+        allCountries.sort((a, b) => a.name.localeCompare(b.name));
+
+        // 创建国旗卡片
+        function createFlagCards() {
+            const container = document.getElementById('flagsContainer');
+            container.innerHTML = '';
+            
+            allCountries.forEach(country => {
+                const card = document.createElement('div');
+                card.className = 'flag-card';
+                card.innerHTML = `
+                    <img src="https://flagcdn.com/w320/${country.code}.png" 
+                         alt="${country.name}国旗" 
+                         class="flag-img"
+                         onerror="this.src='https://flagcdn.com/w320/${country.code.toLowerCase()}.png'">
+                    <div class="country-name">${country.name}</div>
+                    <div class="country-code">${country.iso}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 搜索功能
+        document.getElementById('search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.flag-card');
+            
+            cards.forEach(card => {
+                const countryName = card.querySelector('.country-name').textContent.toLowerCase();
+                if (countryName.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // 页面加载完成后创建国旗卡片
+        document.addEventListener('DOMContentLoaded', createFlagCards);
+    </script>
+</body>
+</html>

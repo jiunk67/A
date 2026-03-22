@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>智能公告生成器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #0078d4;
+            --secondary-color: #107c10;
+            --danger-color: #d13438;
+            --warning-color: #ffaa44;
+            --light-bg: #f3f2f1;
+            --dark-text: #323130;
+            --light-text: #fff;
+            --border-color: #d2d0ce;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --hover-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark-text);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        header {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 30px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .header-left h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+        
+        .header-left p {
+            color: #605e5c;
+            font-size: 1.1rem;
+        }
+        
+        .device-indicator {
+            display: flex;
+            align-items: center;
+            background: var(--light-bg);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        
+        .device-indicator i {
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .mobile .device-indicator i { color: #0078d4; }
+        .tablet .device-indicator i { color: #107c10; }
+        .desktop .device-indicator i { color: #737373; }
+        
+        .main-content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .editor-panel, .preview-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .preview-panel {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--light-bg);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .panel-title i {
+            margin-right: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #323130;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.2);
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            min-width: 48px;
+            touch-action: manipulation;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #106ebe;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 120, 212, 0.3);
+        }
+        
+        .btn-success {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #0e6b0e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(16, 124, 16, 0.3);
+        }
+        
+        .btn-warning {
+            background: var(--warning-color);
+            color: #000;
+        }
+        
+        .btn-warning:hover {
+            background: #e69500;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #b32d2f;
+            transform: translateY(-2px);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-group .btn {
+            flex: 1;
+            min-width: 140px;
+        }
+        
+        .style-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .style-option {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .style-option:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        .style-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 120, 212, 0.05);
+        }
+        
+        .style-preview {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .preview-area {
+            flex: 1;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            background: var(--light-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .announcement {
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid;
+        }
+        
+        .announcement-title {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .announcement-date {
+            font-style: italic;
+            opacity: 0.8;
+        }
+        
+        .announcement-content {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .announcement-footer {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid;
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .toast.success {
+            background: var(--secondary-color);
+        }
+        
+        .toast.error {
+            background: var(--danger-color);
+        }
+        
+        .toast.info {
+            background: var(--primary-color);
+        }
+        
+        .history-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-top: 20px;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .history-item {
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .history-item:hover {
+            background: var(--light-bg);
+            border-color: var(--primary-color);
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .header-left h1 {
+                font-size: 1.8rem;
+            }
+            
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .editor-panel, .preview-panel {
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 16px 20px;
+                min-height: 52px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn-group .btn {
+                width: 100%;
+            }
+            
+            .style-options {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 平板优化 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .style-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .announcement {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1><i class="fas fa-bullhorn"></i> 智能公告生成器</h1>
+                <p>创建、定制并发布专业公告 - 全设备适配，极致体验</p>
+            </div>
+            <div class="device-indicator">
+                <i class="fas fa-desktop"></i>
+                <span id="device-type">检测中...</span>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="editor-panel">
+                <h2 class="panel-title"><i class="fas fa-edit"></i> 公告编辑</h2>
+                
+                <div class="form-group">
+                    <label for="title"><i class="fas fa-heading"></i> 公告标题</label>
+                    <input type="text" id="title" placeholder="输入公告标题" value="系统升级维护通知">
+                </div>
+                
+                <div class="form-group">
+                    <label for="content"><i class="fas fa-align-left"></i> 公告内容</label>
+                    <textarea id="content" placeholder="输入公告内容">尊敬的各位用户：
+
+为了提供更优质的服务，我们将于2023年10月15日（周日）凌晨2:00至6:00进行系统升级维护。
+
+维护期间，相关服务将暂时不可用。请您提前安排好工作，避免在此时段进行操作。
+
+对给您带来的不便，我们深表歉意。感谢您的理解与支持！</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="author"><i class="fas fa-user"></i> 发布单位</label>
+                    <input type="text" id="author" placeholder="输入发布单位" value="技术管理中心">
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-palette"></i> 样式模板</label>
+                    <div class="style-options">
+                        <div class="style-option selected" data-style="blue">
+                            <div class="style-preview" style="background: linear-gradient(90deg, #0078d4, #50b0ff);"></div>
+                            <div>商务蓝</div>
+                        </div>
+                        <div class="style-option" data-style="green">
+                            <div class="style-preview" style="background: linear-gradient(90deg, #107c10, #5cc55c);"></div>
+                            <div>生态绿</div>
+                        </div>
+                        <div class="style-option" data-style="red">
+                            <div class="style-preview" style="background: linear-gradient(90deg, #d13438, #ff6a6a);"></div>
+                            <div>警示红</div>
+                        </div>
+                        <div class="style-option" data-style="purple">
+                            <div class="style-preview" style="background: linear-gradient(90deg, #5c2d91, #b692f2);"></div>
+                            <div>尊贵紫</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-cogs"></i> 高级选项</label>
+                    <div style="display: flex; gap: 15px; margin-top: 10px;">
+                        <label style="display: flex; align-items: center;">
+                            <input type="checkbox" id="urgent" style="width: auto; margin-right: 8px;">
+                            紧急公告
+                        </label>
+                        <label style="display: flex; align-items: center;">
+                            <input type="checkbox" id="allowComments" style="width: auto; margin-right: 8px;" checked>
+                            允许评论
+                        </label>
+                        <label style="display: flex; align-items: center;">
+                            <input type="checkbox" id="emailNotify" style="width: auto; margin-right: 8px;">
+                            邮件通知
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="btn-group" style="margin-top: 30px;">
+                    <button class="btn btn-primary" id="previewBtn">
+                        <i class="fas fa-eye"></i> 更新预览
+                    </button>
+                    <button class="btn btn-success" id="saveBtn">
+                        <i class="fas fa-save"></i> 保存到模拟后端
+                    </button>
+                    <button class="btn btn-warning" id="resetBtn">
+                        <i class="fas fa-redo"></i> 重置
+                    </button>
+                </div>
+            </div>
+            
+            <div class="preview-panel">
+                <h2 class="panel-title"><i class="fas fa-newspaper"></i> 实时预览</h2>
+                
+                <div class="preview-area">
+                    <div class="announcement" id="announcementPreview">
+                        <!-- 公告预览将在这里动态生成 -->
+                        <div class="announcement-header" style="border-bottom-color: #0078d4; color: #0078d4;">
+                            <div class="announcement-title">系统升级维护通知</div>
+                            <div class="announcement-date">2023-10-10</div>
+                        </div>
+                        <div class="announcement-content">
+                            <p>尊敬的各位用户：</p>
+                            <p>为了提供更优质的服务，我们将于2023年10月15日（周日）凌晨2:00至6:00进行系统升级维护。</p>
+                            <p>维护期间，相关服务将暂时不可用。请您提前安排好工作，避免在此时段进行操作。</p>
+                            <p>对给您带来的不便，我们深表歉意。感谢您的理解与支持！</p>
+                        </div>
+                        <div class="announcement-footer" style="border-top-color: #0078d4; color: #0078d4;">
+                            技术管理中心
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="publishBtn">
+                        <i class="fas fa-paper-plane"></i> 模拟发布
+                    </button>
+                    <button class="btn" id="exportHtmlBtn" style="background: #605e5c; color: white;">
+                        <i class="fas fa-code"></i> 导出HTML
+                    </button>
+                    <button class="btn" id="exportJsonBtn" style="background: #e1dfdd; color: #323130;">
+                        <i class="fas fa-file-code"></i> 导出JSON
+                    </button>
+                    <button class="btn btn-danger" id="deleteBtn">
+                        <i class="fas fa-trash-alt"></i> 模拟删除
+                    </button>
+                </div>
+                
+                <div class="status-bar">
+                    <div id="charCount">字符数: 0</div>
+                    <div id="lastSaved">最后保存: 从未保存</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="history-panel">
+            <h2 class="panel-title"><i class="fas fa-history"></i> 模拟后端 - 公告历史记录</h2>
+            <div class="history-list" id="historyList">
+                <!-- 历史记录将动态加载 -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 设备检测与自适应
+        function detectDevice() {
+            const userAgent = navigator.userAgent;
+            const width = window.innerWidth;
+            let deviceType = "桌面设备";
+            let iconClass = "fas fa-desktop";
+            
+            // 移除之前的设备类
+            document.body.classList.remove("mobile", "tablet", "desktop");
+            
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)) {
+                if (width <= 768) {
+                    deviceType = "手机设备";
+                    iconClass = "fas fa-mobile-alt";
+                    document.body.classList.add("mobile");
+                } else {
+                    deviceType = "平板设备";
+                    iconClass = "fas fa-tablet-alt";
+                    document.body.classList.add("tablet");
+                }
+            } else {
+                deviceType = "桌面设备";
+                iconClass = "fas fa-desktop";
+                document.body.classList.add("desktop");
+            }
+            
+            document.getElementById("device-type").innerHTML = `<i class="${iconClass}"></i> ${deviceType}`;
+            
+            // 根据设备调整UI
+            adjustUIForDevice();
+        }
+        
+        function adjustUIForDevice() {
+            const isMobile = document.body.classList.contains("mobile");
+            const isTablet = document.body.classList.contains("tablet");
+            
+            // 调整按钮大小确保可触摸
+            const allButtons = document.querySelectorAll('.btn');
+            allButtons.forEach(btn => {
+                if (isMobile) {
+                    btn.style.minHeight = '52px';
+                    btn.style.padding = '16px 20px';
+                } else if (isTablet) {
+                    btn.style.minHeight = '50px';
+                    btn.style.padding = '15px 20px';
+                } else {
+                    btn.style.minHeight = '48px';
+                    btn.style.padding = '14px 24px';
+                }
+            });
+            
+            // 调整输入框大小
+            const allInputs = document.querySelectorAll('input, textarea, select');
+            allInputs.forEach(input => {
+                if (isMobile) {
+                    input.style.padding = '16px';
+                    input.style.fontSize = '16px'; // 防止iOS缩放
+                }
+            });
+        }
+        
+        // 模拟后端存储
+        class MockBackend {
+            constructor() {
+                this.storageKey = 'announcementGeneratorData';
+                this.loadData();
+            }
+            
+            loadData() {
+                const saved = localStorage.getItem(this.storageKey);
+                if (saved) {
+                    this.data = JSON.parse(saved);
+                } else {
+                    // 初始化模拟数据
+                    this.data = {
+                        announcements: [
+                            {
+                                id: 1,
+                                title: "系统升级维护通知",
+                                content: "为了提供更优质的服务，我们将于2023年10月15日（周日）凌晨2:00至6:00进行系统升级维护。",
+                                author: "技术管理中心",
+                                date: "2023-10-10",
+                                style: "blue",
+                                urgent: true,
+                                allowComments: true,
+                                emailNotify: false
+                            },
+                            {
+                                id: 2,
+                                title: "国庆节放假安排",
+                                content: "根据国家法定节假日安排，公司将于10月1日至10月7日放假，10月8日正常上班。",
+                                author: "人力资源部",
+                                date: "2023-09-25",
+                                style: "green",
+                                urgent: false,
+                                allowComments: true,
+                                emailNotify: true
+                            },
+                            {
+                                id: 3,
+                                title: "网络安全提醒",
+                                content: "近期网络攻击频发，请各位同事注意保护账户安全，定期更换密码，不要点击可疑链接。",
+                                author: "信息安全部",
+                                date: "2023-09-20",
+                                style: "red",
+                                urgent: true,
+                                allowComments: false,
+                                emailNotify: true
+                            }
+                        ],
+                        lastId: 3
+                    };
+                    this.saveData();
+                }
+            }
+            
+            saveData() {
+                localStorage.setItem(this.storageKey, JSON.stringify(this.data));
+            }
+            
+            // 模拟API延迟
+            simulateDelay() {
+                return new Promise(resolve => {
+                    setTimeout(resolve, Math.random() * 500 + 200);
+                });
+            }
+            
+            async getAllAnnouncements() {
+                await this.simulateDelay();
+                return [...this.data.announcements].reverse(); // 返回最新的在前
+            }
+            
+            async saveAnnouncement(announcement) {
+                await this.simulateDelay();
+                
+                const newId = ++this.data.lastId;
+                const newAnnouncement = {
+                    ...announcement,
+                    id: newId,
+                    date: new Date().toISOString().split('T')[0]
+                };
+                
+                this.data.announcements.push(newAnnouncement);
+                this.saveData();
+                return { success: true, id: newId, message: "公告保存成功" };
+            }
+            
+            async deleteAnnouncement(id) {
+                await this.simulateDelay();
+                
+                const index = this.data.announcements.findIndex(a => a.id === id);
+                if (index !== -1) {
+                    this.data.announcements.splice(index, 1);
+                    this.saveData();
+                    return { success: true, message: "公告删除成功" };
+                }
+                return { success: false, message: "未找到该公告" };
+            }
+            
+            async publishAnnouncement(id) {
+                await this.simulateDelay();
+                return { success: true, message: "公告发布成功" };
+            }
+        }
+        
+        // 应用主逻辑
+        class AnnouncementApp {
+            constructor() {
+                this.backend = new MockBackend();
+                this.currentStyle = "blue";
+                this.currentAnnouncement = null;
+                this.init();
+            }
+            
+            async init() {
+                // 初始设备检测
+                detectDevice();
+                window.addEventListener('resize', detectDevice);
+                
+                // 初始化事件监听
+                this.initEventListeners();
+                
+                // 初始化字符计数
+                this.updateCharCount();
+                
+                // 加载历史记录
+                await this.loadHistory();
+                
+                // 显示欢迎消息
+                this.showToast('智能公告生成器已就绪！', 'success');
+            }
+            
+            initEventListeners() {
+                // 样式选择
+                document.querySelectorAll('.style-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        document.querySelectorAll('.style-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        option.classList.add('selected');
+                        this.currentStyle = option.dataset.style;
+                        this.updatePreview();
+                    });
+                });
+                
+                // 输入变化
+                document.getElementById('title').addEventListener('input', () => {
+                    this.updatePreview();
+                    this.updateCharCount();
+                });
+                
+                document.getElementById('content').addEventListener('input', () => {
+                    this.updatePreview();
+                    this.updateCharCount();
+                });
+                
+                document.getElementById('author').addEventListener('input', this.updatePreview.bind(this));
+                
+                // 高级选项
+                document.getElementById('urgent').addEventListener('change', this.updatePreview.bind(this));
+                
+                // 按钮事件
+                document.getElementById('previewBtn').addEventListener('click', this.updatePreview.bind(this));
+                document.getElementById('saveBtn').addEventListener('click', this.saveAnnouncement.bind(this));
+                document.getElementById('resetBtn').addEventListener('click', this.resetForm.bind(this));
+                document.getElementById('publishBtn').addEventListener('click', this.publishAnnouncement.bind(this));
+                document.getElementById('exportHtmlBtn').addEventListener('click', this.exportAsHtml.bind(this));
+                document.getElementById('exportJsonBtn').addEventListener('click', this.exportAsJson.bind(this));
+                document.getElementById('deleteBtn').addEventListener('click', this.deleteAnnouncement.bind(this));
+            }
+            
+            updateCharCount() {
+                const content = document.getElementById('content').value;
+                const charCount = content.length;
+                document.getElementById('charCount').textContent = `字符数: ${charCount}`;
+            }
+            
+            getStyleColors(style) {
+                const styles = {
+                    blue: { primary: '#0078d4', secondary: '#50b0ff', light: '#e6f2fa' },
+                    green: { primary: '#107c10', secondary: '#5cc55c', light: '#e7f5e7' },
+                    red: { primary: '#d13438', secondary: '#ff6a6a', light: '#fcecec' },
+                    purple: { primary: '#5c2d91', secondary: '#b692f2', light: '#f2ecf9' }
+                };
+                return styles[style] || styles.blue;
+            }
+            
+            updatePreview() {
+                const title = document.getElementById('title').value || "公告标题";
+                const content = document.getElementById('content').value || "公告内容";
+                const author = document.getElementById('author').value || "发布单位";
+                const urgent = document.getElementById('urgent').checked;
+                const allowComments = document.getElementById('allowComments').checked;
+                const emailNotify = document.getElementById('emailNotify').checked;
+                
+                const colors = this.getStyleColors(this.currentStyle);
+                const today = new Date().toISOString().split('T')[0];
+                
+                // 构建公告HTML
+                let announcementHTML = `
+                    <div class="announcement-header" style="border-bottom-color: ${colors.primary}; color: ${colors.primary};">
+                        <div class="announcement-title">${this.escapeHtml(title)}</div>
+                        <div class="announcement-date">${today}</div>
+                    </div>
+                    <div class="announcement-content">
+                        ${this.formatContent(content)}
+                    </div>
+                    <div class="announcement-footer" style="border-top-color: ${colors.primary}; color: ${colors.primary};">
+                        ${this.escapeHtml(author)}
+                    </div>
+                `;
+                
+                // 添加标签
+                const tags = [];
+                if (urgent) tags.push('<span style="background: #ff4444; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 5px;">紧急</span>');
+                if (allowComments) tags.push('<span style="background: #44aa44; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 5px;">可评论</span>');
+                if (emailNotify) tags.push('<span style="background: #4444ff; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 5px;">邮件通知</span>');
+                
+                if (tags.length > 0) {
+                    announcementHTML = announcementHTML.replace('</div>', `${tags.join('')}</div>`);
+                }
+                
+                // 应用样式
+                const preview = document.getElementById('announcementPreview');
+                preview.innerHTML = announcementHTML;
+                preview.style.background = `linear-gradient(135deg, white, ${colors.light})`;
+                preview.style.borderLeft = `6px solid ${colors.primary}`;
+                
+                // 存储当前公告数据
+                this.currentAnnouncement = {
+                    title, content, author, 
+                    style: this.currentStyle,
+                    urgent, allowComments, emailNotify
+                };
+            }
+            
+            formatContent(content) {
+                // 将换行转换为段落
+                return content.split('\n\n').map(para => {
+                    if (para.trim()) {
+                        return `<p>${this.escapeHtml(para).replace(/\n/g, '<br>')}</p>`;
+                    }
+                    return '';
+                }).join('');
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            async saveAnnouncement() {
+                if (!this.currentAnnouncement) {
+                    this.showToast('请先填写公告内容', 'error');
+                    return;
+                }
+                
+                try {
+                    const result = await this.backend.saveAnnouncement(this.currentAnnouncement);
+                    this.showToast(result.message, 'success');
+                    
+                    // 更新最后保存时间
+                    const now = new Date();
+                    const timeStr = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                    document.getElementById('lastSaved').textContent = `最后保存: ${timeStr}`;
+                    
+                    // 重新加载历史
+                    await this.loadHistory();
+                } catch (error) {
+                    this.showToast('保存失败: ' + error.message, 'error');
+                }
+            }
+            
+            async publishAnnouncement() {
+                if (!this.currentAnnouncement) {
+                    this.showToast('请先填写公告内容', 'error');
+                    return;
+                }
+                
+                try {
+                    // 先保存
+                    const saveResult = await this.backend.saveAnnouncement(this.currentAnnouncement);
+                    if (!saveResult.success) throw new Error('保存失败');
+                    
+                    // 然后发布
+                    const publishResult = await this.backend.publishAnnouncement(saveResult.id);
+                    this.showToast(`公告已发布！ID: ${saveResult.id}`, 'success');
+                    
+                    // 重新加载历史
+                    await this.loadHistory();
+                } catch (error) {
+                    this.showToast('发布失败: ' + error.message, 'error');
+                }
+            }
+            
+            async deleteAnnouncement() {
+                const id = prompt("请输入要删除的公告ID:");
+                if (!id) return;
+                
+                if (!confirm(`确定要删除ID为${id}的公告吗？`)) return;
+                
+                try {
+                    const result = await this.backend.deleteAnnouncement(parseInt(id));
+                    this.showToast(result.message, result.success ? 'success' : 'error');
+                    
+                    // 重新加载历史
+                    await this.loadHistory();
+                } catch (error) {
+                    this.showToast('删除失败: ' + error.message, 'error');
+                }
+            }
+            
+            async loadHistory() {
+                try {
+                    const announcements = await this.backend.getAllAnnouncements();
+                    const historyList = document.getElementById('historyList');
+                    
+                    if (announcements.length === 0) {
+                        historyList.innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">暂无历史公告</div>';
+                        return;
+                    }
+                    
+                    let historyHTML = '';
+                    announcements.forEach(ann => {
+                        const colors = this.getStyleColors(ann.style);
+                        historyHTML += `
+                            <div class="history-item" data-id="${ann.id}">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <strong style="color: ${colors.primary}">${this.escapeHtml(ann.title)}</strong>
+                                    <small>${ann.date}</small>
+                                </div>
+                                <div style="color: #666; margin-bottom: 8px; font-size: 0.9rem;">
+                                    ${this.escapeHtml(ann.content.substring(0, 60))}${ann.content.length > 60 ? '...' : ''}
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <small>发布单位: ${this.escapeHtml(ann.author)}</small>
+                                    <div>
+                                        ${ann.urgent ? '<span style="background: #ff4444; color: white; padding: 1px 6px; border-radius: 3px; font-size: 0.7rem; margin-right: 5px;">紧急</span>' : ''}
+                                        ${ann.allowComments ? '<span style="background: #44aa44; color: white; padding: 1px 6px; border-radius: 3px; font-size: 0.7rem; margin-right: 5px;">可评论</span>' : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    historyList.innerHTML = historyHTML;
+                    
+                    // 添加历史项点击事件
+                    document.querySelectorAll('.history-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            const id = parseInt(item.dataset.id);
+                            this.loadAnnouncement(id);
+                        });
+                    });
+                } catch (error) {
+                    console.error('加载历史失败:', error);
+                }
+            }
+            
+            async loadAnnouncement(id) {
+                const announcements = await this.backend.getAllAnnouncements();
+                const announcement = announcements.find(a => a.id === id);
+                
+                if (announcement) {
+                    // 填充表单
+                    document.getElementById('title').value = announcement.title;
+                    document.getElementById('content').value = announcement.content;
+                    document.getElementById('author').value = announcement.author;
+                    document.getElementById('urgent').checked = announcement.urgent;
+                    document.getElementById('allowComments').checked = announcement.allowComments;
+                    document.getElementById('emailNotify').checked = announcement.emailNotify;
+                    
+                    // 设置样式
+                    this.currentStyle = announcement.style;
+                    document.querySelectorAll('.style-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                        if (opt.dataset.style === announcement.style) {
+                            opt.classList.add('selected');
+                        }
+                    });
+                    
+                    // 更新预览
+                    this.updatePreview();
+                    
+                    this.showToast(`已加载公告: ${announcement.title}`, 'info');
+                }
+            }
+            
+            resetForm() {
+                if (confirm('确定要重置所有内容吗？')) {
+                    document.getElementById('title').value = '';
+                    document.getElementById('content').value = '';
+                    document.getElementById('author').value = '';
+                    document.getElementById('urgent').checked = false;
+                    document.getElementById('allowComments').checked = true;
+                    document.getElementById('emailNotify').checked = false;
+                    
+                    document.querySelectorAll('.style-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                        if (opt.dataset.style === 'blue') {
+                            opt.classList.add('selected');
+                            this.currentStyle = 'blue';
+                        }
+                    });
+                    
+                    this.updatePreview();
+                    this.updateCharCount();
+                    this.showToast('表单已重置', 'info');
+                }
+            }
+            
+            exportAsHtml() {
+                if (!this.currentAnnouncement) {
+                    this.showToast('请先创建公告', 'error');
+                    return;
+                }
+                
+                const colors = this.getStyleColors(this.currentStyle);
+                const today = new Date().toISOString().split('T')[0];
+                
+                const html = `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${this.escapeHtml(this.currentAnnouncement.title)}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .announcement {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            border-left: 6px solid ${colors.primary};
+            background: linear-gradient(135deg, white, ${colors.light});
+        }
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid ${colors.primary};
+            color: ${colors.primary};
+        }
+        .announcement-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .announcement-date {
+            font-style: italic;
+            opacity: 0.8;
+        }
+        .announcement-content {
+            line-height: 1.8;
+            font-size: 1.2rem;
+            color: #333;
+        }
+        .announcement-content p {
+            margin-bottom: 20px;
+        }
+        .announcement-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid ${colors.primary};
+            text-align: right;
+            font-weight: 600;
+            color: ${colors.primary};
+        }
+        @media (max-width: 768px) {
+            .announcement {
+                padding: 20px;
+            }
+            .announcement-title {
+                font-size: 1.8rem;
+            }
+            .announcement-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="announcement">
+        <div class="announcement-header">
+            <div class="announcement-title">${this.escapeHtml(this.currentAnnouncement.title)}</div>
+            <div class="announcement-date">${today}</div>
+        </div>
+        <div class="announcement-content">
+            ${this.formatContent(this.currentAnnouncement.content)}
+        </div>
+        <div class="announcement-footer">
+            ${this.escapeHtml(this.currentAnnouncement.author)}
+        </div>
+    </div>
+</body>
+</html>`;
+                
+                const blob = new Blob([html], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `公告_${this.currentAnnouncement.title}_${today}.html`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showToast('HTML文件已导出', 'success');
+            }
+            
+            exportAsJson() {
+                if (!this.currentAnnouncement) {
+                    this.showToast('请先创建公告', 'error');
+                    return;
+                }
+                
+                const data = {
+                    ...this.currentAnnouncement,
+                    exportTime: new Date().toISOString(),
+                    version: '1.0'
+                };
+                
+                const jsonStr = JSON.stringify(data, null, 2);
+                const blob = new Blob([jsonStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `公告_${this.currentAnnouncement.title}_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showToast('JSON文件已导出', 'success');
+            }
+            
+            showToast(message, type = 'info') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = 'toast';
+                toast.classList.add(type);
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        }
+        
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new AnnouncementApp();
+            
+            // 初始更新预览
+            window.app.updatePreview();
+            
+            // 确保所有按钮都有合适的触摸目标
+            const allButtons = document.querySelectorAll('button, .style-option, .history-item');
+            allButtons.forEach(btn => {
+                btn.style.minHeight = '44px';
+                btn.style.minWidth = '44px';
+            });
+        });
+    </script>
+</body>
+</html>

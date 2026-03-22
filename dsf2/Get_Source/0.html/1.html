@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网站托管部署 | 免费一键上线</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式与CSS重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        :root {
+            --primary-color: #0078ff;
+            --primary-dark: #0056cc;
+            --secondary-color: #6c757d;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 50px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            border: 2px solid transparent;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            padding: 18px 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            font-weight: 600;
+            color: var(--dark-color);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            cursor: pointer;
+        }
+
+        /* 英雄区域 */
+        .hero {
+            padding-top: 140px;
+            padding-bottom: 100px;
+            background: linear-gradient(135deg, #f5f7ff 0%, #e3eeff 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        /* 特性展示 */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid #eee;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(0, 120, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        /* 价格区域 */
+        .pricing-toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+            gap: 15px;
+        }
+
+        .toggle-text {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 70px;
+            height: 34px;
+        }
+
+        .toggle-checkbox {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 34px;
+            transition: .4s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            border-radius: 50%;
+            transition: .4s;
+        }
+
+        .toggle-checkbox:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+
+        .toggle-checkbox:checked + .toggle-slider:before {
+            transform: translateX(36px);
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .pricing-card {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 40px 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid #eee;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card.popular {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 35px;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            font-weight: normal;
+        }
+
+        .pricing-features {
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .pricing-features li i {
+            color: var(--success-color);
+            margin-right: 10px;
+        }
+
+        /* 部署步骤 */
+        .steps-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 40px;
+            background-color: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .step:hover {
+            transform: translateX(5px);
+        }
+
+        .step-number {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 2rem;
+            font-weight: 800;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+        }
+
+        .step-content {
+            padding: 30px;
+            flex-grow: 1;
+        }
+
+        .step-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* 项目示例 */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            background-color: white;
+            transition: var(--transition);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .project-img {
+            height: 200px;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--primary-color);
+        }
+
+        .project-info {
+            padding: 25px;
+        }
+
+        .project-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        /* 页脚 */
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 70px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .footer-links h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-links h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .footer-links ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #bbb;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            width: 40px;
+            height: 40px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .pricing-card.popular {
+                transform: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+                transform: translateY(-150%);
+                opacity: 0;
+                transition: var(--transition);
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .step {
+                flex-direction: column;
+            }
+            
+            .step-number {
+                min-width: auto;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .price {
+                font-size: 2.8rem;
+            }
+            
+            .feature-card, .pricing-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-server"></i> HostDeploy
+            </a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#features">特性</a></li>
+                <li><a href="#pricing">价格</a></li>
+                <li><a href="#steps">部署指南</a></li>
+                <li><a href="#projects">示例项目</a></li>
+                <li><a href="#footer" class="btn btn-outline">免费开始</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="container">
+            <h1>专业网站托管与一键部署</h1>
+            <p>将您的网站、应用或静态页面免费托管在全球高速网络上。支持自定义域名、SSL证书、自动备份，并提供完整的CI/CD工作流。</p>
+            <div class="hero-btns">
+                <a href="#pricing" class="btn">查看托管方案</a>
+                <a href="#steps" class="btn btn-outline">学习部署步骤</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特性区域 -->
+    <section class="section" id="features">
+        <div class="container">
+            <h2 class="section-title">为什么选择我们的托管服务</h2>
+            <p class="section-subtitle">我们提供全栈解决方案，从简单的静态页面到复杂的Web应用，都能获得极致的性能与可靠性。</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>全球加速</h3>
+                    <p>通过全球CDN节点分发内容，确保用户无论身在何处都能获得毫秒级加载速度。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>自动SSL证书</h3>
+                    <p>免费提供并自动续期SSL证书，强制HTTPS连接，保障数据传输安全。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3>持续部署</h3>
+                    <p>连接Git仓库，每次推送代码自动触发构建与部署流程，实现真正的DevOps。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>实时监控</h3>
+                    <p>提供详细的流量、性能分析与错误报告，帮助您优化网站表现。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>完全响应式</h3>
+                    <p>托管平台自动优化资源，确保您的网站在所有设备上完美显示。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <h3>无限带宽</h3>
+                    <p>所有付费计划均提供无限流量，无需担心突发流量导致额外费用。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 价格区域 -->
+    <section class="section" id="pricing" style="background-color: #f8f9fa;">
+        <div class="container">
+            <h2 class="section-title">透明定价，按需选择</h2>
+            <p class="section-subtitle">从免费的个人项目到企业级应用，我们提供灵活的托管方案。</p>
+            
+            <div class="pricing-toggle">
+                <span class="toggle-text">月度计费</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" class="toggle-checkbox" id="billingToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-text">年度计费（节省20%）</span>
+            </div>
+            
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>免费版</h3>
+                    <div class="price">$0<span>/月</span></div>
+                    <p>适合个人项目与学习</p>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 1个网站项目</li>
+                        <li><i class="fas fa-check"></i> 100MB存储空间</li>
+                        <li><i class="fas fa-check"></i> 自定义子域名</li>
+                        <li><i class="fas fa-check"></i> 基础CDN加速</li>
+                        <li><i class="fas fa-times"></i> <del>自定义域名</del></li>
+                        <li><i class="fas fa-times"></i> <del>自动备份</del></li>
+                    </ul>
+                    <button class="btn btn-outline" style="width: 100%;">开始使用</button>
+                </div>
+                
+                <div class="pricing-card popular">
+                    <div class="popular-badge">最受欢迎</div>
+                    <h3>专业版</h3>
+                    <div class="price" id="proPrice">$9<span>/月</span></div>
+                    <p>适合初创公司与开发者</p>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 10个网站项目</li>
+                        <li><i class="fas fa-check"></i> 10GB存储空间</li>
+                        <li><i class="fas fa-check"></i> 自定义域名（5个）</li>
+                        <li><i class="fas fa-check"></i> 全球CDN加速</li>
+                        <li><i class="fas fa-check"></i> 自动备份（每日）</li>
+                        <li><i class="fas fa-check"></i> 基础分析报告</li>
+                    </ul>
+                    <button class="btn" style="width: 100%;">升级到专业版</button>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>企业版</h3>
+                    <div class="price" id="enterprisePrice">$29<span>/月</span></div>
+                    <p>适合高流量商业应用</p>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 无限网站项目</li>
+                        <li><i class="fas fa-check"></i> 100GB存储空间</li>
+                        <li><i class="fas fa-check"></i> 自定义域名（无限）</li>
+                        <li><i class="fas fa-check"></i> 高级CDN + DDoS防护</li>
+                        <li><i class="fas fa-check"></i> 自动备份（每小时）</li>
+                        <li><i class="fas fa-check"></i> 高级监控与分析</li>
+                    </ul>
+                    <button class="btn btn-outline" style="width: 100%;">联系销售</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 部署步骤 -->
+    <section class="section" id="steps">
+        <div class="container">
+            <h2 class="section-title">四步完成网站部署</h2>
+            <p class="section-subtitle">即使没有运维经验，也能轻松将您的网站部署到生产环境。</p>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>准备您的代码</h3>
+                        <p>将网站代码推送到Git仓库（GitHub、GitLab或Bitbucket）。我们支持所有主流前端框架（React、Vue、Angular）以及静态网站生成器（Jekyll、Hugo、Next.js）。</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>连接托管平台</h3>
+                        <p>登录HostDeploy控制台，选择您的Git仓库并授权访问。系统会自动检测项目类型并推荐最佳构建配置。</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>配置部署设置</h3>
+                        <p>设置环境变量、构建命令和输出目录。可选择添加自定义域名、启用自动SSL证书以及配置缓存策略。</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>部署与上线</h3>
+                        <p>点击部署按钮或推送代码到指定分支，系统将自动构建并部署您的网站。部署完成后，即可通过提供的URL访问。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目示例 -->
+    <section class="section" id="projects" style="background-color: #f8f9fa;">
+        <div class="container">
+            <h2 class="section-title">成功部署的示例项目</h2>
+            <p class="section-subtitle">查看其他开发者使用我们平台托管的各类网站。</p>
+            
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-img">
+                        <i class="fas fa-blog"></i>
+                    </div>
+                    <div class="project-info">
+                        <h3>个人技术博客</h3>
+                        <p>使用Hexo生成的静态博客，部署时间：2分钟，月访问量：15k</p>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-img">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="project-info">
+                        <h3>电商产品展示</h3>
+                        <p>Vue.js + Vite构建的单页应用，集成支付与商品管理系统</p>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-img">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="project-info">
+                        <h3>数据可视化仪表盘</h3>
+                        <p>React + D3.js交互式数据面板，实时数据更新与过滤功能</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#" class="footer-logo"><i class="fas fa-server"></i> HostDeploy</a>
+                    <p>我们致力于让网站部署变得简单、快速且可靠。无论您是个人开发者还是企业团队，都能在这里找到合适的解决方案。</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>产品</h4>
+                    <ul>
+                        <li><a href="#">网站托管</a></li>
+                        <li><a href="#">边缘计算</a></li>
+                        <li><a href="#">域名服务</a></li>
+                        <li><a href="#">SSL证书</a></li>
+                        <li><a href="#">网站分析</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>资源</h4>
+                    <ul>
+                        <li><a href="#">文档中心</a></li>
+                        <li><a href="#">教程视频</a></li>
+                        <li><a href="#">博客文章</a></li>
+                        <li><a href="#">状态页面</a></li>
+                        <li><a href="#">常见问题</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>联系</h4>
+                    <ul>
+                        <li><a href="#">技术支持</a></li>
+                        <li><a href="#">销售咨询</a></li>
+                        <li><a href="#">合作伙伴</a></li>
+                        <li><a href="#">举报滥用</a></li>
+                        <li><a href="#">法律条款</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 HostDeploy 网站托管平台. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+        
+        // 平滑滚动到锚点
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    // 关闭移动端菜单
+                    navLinks.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // 价格切换功能
+        const billingToggle = document.getElementById('billingToggle');
+        const proPrice = document.getElementById('proPrice');
+        const enterprisePrice = document.getElementById('enterprisePrice');
+        
+        billingToggle.addEventListener('change', function() {
+            if(this.checked) {
+                // 年度价格（节省20%）
+                proPrice.innerHTML = '$86<span>/年</span>';
+                enterprisePrice.innerHTML = '$278<span>/年</span>';
+            } else {
+                // 月度价格
+                proPrice.innerHTML = '$9<span>/月</span>';
+                enterprisePrice.innerHTML = '$29<span>/月</span>';
+            }
+        });
+        
+        // 卡片悬停效果增强
+        const featureCards = document.querySelectorAll('.feature-card');
+        featureCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.borderColor = 'var(--primary-color)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.borderColor = '#eee';
+            });
+        });
+        
+        // 步骤区域交互
+        const steps = document.querySelectorAll('.step');
+        steps.forEach(step => {
+            step.addEventListener('click', function() {
+                // 移除其他步骤的active状态
+                steps.forEach(s => s.classList.remove('active'));
+                // 添加当前步骤的active状态
+                this.classList.add('active');
+            });
+        });
+        
+        // 模拟部署按钮功能
+        const deployButtons = document.querySelectorAll('.pricing-card .btn');
+        deployButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const plan = this.closest('.pricing-card').querySelector('h3').textContent;
+                alert(`即将跳转到 ${plan} 的注册页面！\n\n此演示网站中的功能按钮已实现交互，实际产品中会导向相应的服务流程。`);
+            });
+        });
+        
+        // 页面加载动画
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s';
+            
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

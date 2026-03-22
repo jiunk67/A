@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>网络速度检测工具</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 30px; }
+        .speed-container { margin: 20px 0; }
+        .speed-label { font-size: 18px; color: #666; }
+        .speed-value { font-size: 24px; font-weight: bold; margin: 10px 0; }
+        .status { font-size: 16px; font-weight: normal; margin-left: 10px; }
+        
+        /* 速度等级颜色 */
+        .excellent { color: #27ae60; }
+        .good { color: #2ecc71; }
+        .fair { color: #f39c12; }
+        .poor { color: #e67e22; }
+        .bad { color: #e74c3c; }
+        .unknown { color: #95a5a6; }
+        
+        .test-btn { 
+            background: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            font-size: 16px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin: 10px; 
+        }
+        .test-btn:disabled { background: #bdc3c7; cursor: not-allowed; }
+        .history { 
+            margin-top: 30px; 
+            text-align: left; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+        .history-item { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            background: #f9f9f9; 
+        }
+        .timestamp { color: #7f8c8d; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h2>网络速度检测工具</h2>
+    
+    <button id="testBtn" class="test-btn" onclick="runSpeedTest()">开始检测</button>
+    
+    <div class="speed-container">
+        <div class="speed-label">下载速度</div>
+        <div id="downloadSpeed" class="speed-value unknown">
+            <span id="downloadValue">点击开始检测</span>
+            <span id="downloadStatus" class="status"></span>
+        </div>
+    </div>
+    
+    <div class="speed-container">
+        <div class="speed-label">上传速度</div>
+        <div id="uploadSpeed" class="speed-value unknown">
+            <span id="uploadValue">点击开始检测</span>
+            <span id="uploadStatus" class="status"></span>
+        </div>
+    </div>
+    
+    <div class="history">
+        <h3>检测历史记录</h3>
+        <div id="historyList"></div>
+    </div>
+
+    <script>
+        // 测试文件配置
+        const testFileUrl = 'https://httpbin.org/bytes/';
+        const testFileSize = 100000; // 100KB测试文件
+        
+        // 速度评级标准 (Mbps)
+        const speedRatings = {
+            download: {
+                excellent: 50,   // 50Mbps以上
+                good: 20,       // 20-50Mbps
+                fair: 10,       // 10-20Mbps
+                poor: 5,        // 5-10Mbps
+                bad: 0          // 0-5Mbps
+            },
+            upload: {
+                excellent: 20,   // 20Mbps以上
+                good: 10,       // 10-20Mbps
+                fair: 5,        // 5-10Mbps
+                poor: 2,        // 2-5Mbps
+                bad: 0          // 0-2Mbps
+            }
+        };
+
+        // 从localStorage加载历史记录
+        let testHistory = JSON.parse(localStorage.getItem('speedTestHistory') || '[]');
+
+        function getSpeedRating(speed, type) {
+            const ratings = speedRatings[type];
+            const numSpeed = parseFloat(speed);
+            
+            if (isNaN(numSpeed)) return { level: 'unknown', text: '无法检测' };
+            
+            if (numSpeed >= ratings.excellent) {
+                return { level: 'excellent', text: '非常快' };
+            } else if (numSpeed >= ratings.good) {
+                return { level: 'good', text: '很好' };
+            } else if (numSpeed >= ratings.fair) {
+                return { level: 'fair', text: '较好' };
+            } else if (numSpeed >= ratings.poor) {
+                return { level: 'poor', text: '一般' };
+            } else if (numSpeed >= ratings.bad) {
+                return { level: 'bad', text: '较差' };
+            } else {
+                return { level: 'bad', text: '非常差' };
+            }
+        }
+
+        function displaySpeedResult(elementId, valueElementId, statusElementId, speed, type) {
+            const rating = getSpeedRating(speed, type);
+            
+            document.getElementById(valueElementId).textContent = speed;
+            document.getElementById(statusElementId).textContent = rating.text;
+            
+            // 设置颜色
+            const container = document.getElementById(elementId);
+            container.className = 'speed-value ' + rating.level;
+        }
+
+        function displayHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            
+            if (testHistory.length === 0) {
+                historyList.innerHTML = '<p>暂无历史记录</p>';
+                return;
+            }
+            
+            // 按时间倒序显示
+            testHistory.slice().reverse().forEach(test => {
+                const downloadRating = getSpeedRating(test.download.replace(' Mbps', ''), 'download');
+                const uploadRating = getSpeedRating(test.upload.replace(' Mbps', ''), 'upload');
+                
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `
+                    <div class="timestamp">${new Date(test.timestamp).toLocaleString()}</div>
+                    <div>
+                        <strong>下载:</strong> 
+                        <span class="${downloadRating.level}">${test.download}</span> 
+                        <span class="status">(${downloadRating.text})</span>
+                    </div>
+                    <div>
+                        <strong>上传:</strong> 
+                        <span class="${uploadRating.level}">${test.upload}</span> 
+                        <span class="status">(${uploadRating.text})</span>
+                    </div>
+                `;
+                historyList.appendChild(item);
+            });
+        }
+
+        async function testDownloadSpeed() {
+            try {
+                const startTime = Date.now();
+                
+                const response = await fetch(testFileUrl + testFileSize, {
+                    method: 'GET',
+                    cache: 'no-cache'
+                });
+                
+                if (!response.ok) throw new Error('下载测试失败');
+                
+                await response.blob();
+                
+                const duration = (Date.now() - startTime) / 1000;
+                const speed = (testFileSize * 8) / duration / 1000000;
+                
+                return speed.toFixed(2);
+                
+            } catch (error) {
+                return null;
+            }
+        }
+
+        async function testUploadSpeed() {
+            try {
+                const testData = new ArrayBuffer(testFileSize);
+                const startTime = Date.now();
+                
+                const response = await fetch('https://httpbin.org/post', {
+                    method: 'POST',
+                    body: testData,
+                    headers: {
+                        'Content-Type': 'application/octet-stream'
+                    }
+                });
+                
+                if (!response.ok) throw new Error('上传测试失败');
+                
+                const duration = (Date.now() - startTime) / 1000;
+                const speed = (testFileSize * 8) / duration / 1000000;
+                
+                return speed.toFixed(2);
+                
+            } catch (error) {
+                return null;
+            }
+        }
+
+        async function runSpeedTest() {
+            const btn = document.getElementById('testBtn');
+            btn.disabled = true;
+            btn.textContent = '检测中...';
+            
+            // 更新显示状态
+            document.getElementById('downloadValue').textContent = '检测中...';
+            document.getElementById('downloadStatus').textContent = '';
+            document.getElementById('downloadSpeed').className = 'speed-value unknown';
+            
+            document.getElementById('uploadValue').textContent = '检测中...';
+            document.getElementById('uploadStatus').textContent = '';
+            document.getElementById('uploadSpeed').className = 'speed-value unknown';
+            
+            try {
+                // 测试下载速度
+                const downloadResult = await testDownloadSpeed();
+                if (downloadResult !== null) {
+                    displaySpeedResult('downloadSpeed', 'downloadValue', 'downloadStatus', 
+                                     downloadResult + ' Mbps', 'download');
+                } else {
+                    document.getElementById('downloadValue').textContent = '检测失败';
+                    document.getElementById('downloadSpeed').className = 'speed-value bad';
+                }
+                
+                // 测试上传速度
+                const uploadResult = await testUploadSpeed();
+                if (uploadResult !== null) {
+                    displaySpeedResult('uploadSpeed', 'uploadValue', 'uploadStatus', 
+                                     uploadResult + ' Mbps', 'upload');
+                } else {
+                    document.getElementById('uploadValue').textContent = '检测失败';
+                    document.getElementById('uploadSpeed').className = 'speed-value bad';
+                }
+                
+                // 保存到历史记录
+                if (downloadResult !== null && uploadResult !== null) {
+                    const testRecord = {
+                        timestamp: Date.now(),
+                        download: downloadResult + ' Mbps',
+                        upload: uploadResult + ' Mbps'
+                    };
+                    
+                    testHistory.push(testRecord);
+                    localStorage.setItem('speedTestHistory', JSON.stringify(testHistory));
+                    displayHistory();
+                }
+                
+            } catch (error) {
+                console.error('检测失败:', error);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '重新检测';
+            }
+        }
+
+        // 页面加载时显示历史记录
+        window.onload = displayHistory;
+    </script>
+</body>
+</html>
