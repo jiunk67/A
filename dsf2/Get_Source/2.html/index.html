@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开屏</title>
+    <style>
+        /* ==================== 全局样式重置 ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* ==================== 页面基础样式 ==================== */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* ==================== 跳过按钮样式 ==================== */
+        .skip-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 10;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        
+        .skip-btn:hover {
+            transform: scale(1.05);
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        /* ==================== 主图片容器 ==================== */
+        .splash-container {
+            flex: 1;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            /* 初始位置在屏幕下方 */
+            transform: translateY(100%);
+            /* 添加过渡动画 */
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        /* 页面加载后图片容器动画 */
+        body.loaded .splash-container {
+            transform: translateY(0);
+        }
+        
+        /* ==================== 启动图片样式 ==================== */
+        .splash-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .splash-image:active {
+            transform: scale(0.98);
+        }
+        
+        /* ==================== 底部应用信息区域 ==================== */
+        .app-footer {
+            padding: 15px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            /* 初始位置在屏幕下方 */
+            transform: translateY(100%);
+            /* 添加过渡动画 */
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            /* 添加点击效果过渡 */
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), 
+                        box-shadow 0.3s ease;
+        }
+        
+        /* 页面加载后底部信息动画 */
+        body.loaded .app-footer {
+            transform: translateY(0);
+        }
+        
+        /* 底部信息点击效果 */
+        .app-footer:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* ==================== 应用图标样式 ==================== */
+        .app-icon {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* ==================== 应用文本容器 ==================== */
+        .app-text {
+            flex: 1;
+        }
+        
+        /* ==================== 应用名称样式 ==================== */
+        .app-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 3px;
+            animation: fadeIn 1s ease-in;
+        }
+        
+        /* ==================== 应用描述样式 ==================== */
+        .app-desc {
+            font-size: 12px;
+            color: #666;
+            animation: fadeIn 1.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* ==================== 提示信息样式 ==================== */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        /* 点击特效元素 */
+        .click-effect {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: scale(0);
+            animation: clickAnimation 0.6s ease-out;
+        }
+        
+        @keyframes clickAnimation {
+            to { transform: scale(3); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 跳过按钮 -->
+    <button class="skip-btn" id="skipBtn">跳过</button>
+    <!-- 提示信息容器 -->
+    <div class="toast" id="toast"></div>
+    
+    <!-- 主图片区域 -->
+    <div class="splash-container">
+        <img src="橘.jpg" alt="App Splash Image" class="splash-image" id="splashImage">
+    </div>
+    
+    <!-- 底部应用信息 -->
+    <div class="app-footer" id="appFooter">
+        <img src="1.jpg" alt="App Icon" class="app-icon">
+        <div class="app-text">
+            <div class="app-name">牢橘软件库2.0</div>
+            <div class="app-desc">精选良库, 安全保障, 好用无忧</div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * 生成10-30秒之间的随机时间
+         * @return {number} 毫秒数
+         */
+        function getRandomTime() {
+            const options = [10000, 15000, 20000, 25000, 30000];
+            const randomIndex = Math.floor(Math.random() * options.length);
+            return options[randomIndex];
+        }
+        
+        // 初始化变量
+        const delay = getRandomTime();
+        let timer = setTimeout(redirect, delay);
+        const toast = document.getElementById('toast');
+        let longPressTimer;
+        let clickCount = 0;
+        let lastClickTime = 0;
+        const clickThreshold = 3;
+        const clickInterval = 1000;
+        
+        /**
+         * 显示提示信息
+         * @param {string} message 要显示的信息
+         */
+        function showToast(message) {
+            toast.textContent = message;
+            toast.style.opacity = 1;
+            toast.style.transform = 'translate(-50%, -50%) scale(1.1)';
+            setTimeout(() => {
+                toast.style.opacity = 0;
+                toast.style.transform = 'translate(-50%, -50%) scale(1)';
+            }, 1000);
+        }
+        
+        /**
+         * 创建点击特效
+         * @param {number} x 点击X坐标
+         * @param {number} y 点击Y坐标
+         */
+        function createClickEffect(x, y) {
+            const effect = document.createElement('div');
+            effect.className = 'click-effect';
+            effect.style.left = `${x - 10}px`;
+            effect.style.top = `${y - 10}px`;
+            document.body.appendChild(effect);
+            
+            setTimeout(() => {
+                effect.remove();
+            }, 600);
+        }
+        
+        // 页面加载完成后触发动画
+        document.addEventListener('DOMContentLoaded', () => {
+            // 添加loaded类触发动画
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 100);
+            
+            // 图片点击事件处理
+            document.getElementById('splashImage').addEventListener('click', function(e) {
+                createClickEffect(e.clientX, e.clientY);
+                
+                const now = Date.now();
+                if (now - lastClickTime > clickInterval) {
+                    clickCount = 0;
+                }
+                
+                clickCount++;
+                lastClickTime = now;
+                
+                showToast(`已点击 ${clickCount}/${clickThreshold}`);
+                
+                if (clickCount >= clickThreshold) {
+                    clearTimeout(timer);
+                    document.body.style.transition = 'opacity 0.3s';
+                    document.body.style.opacity = '0';
+                    setTimeout(() => {
+                        window.location.href = 'https://bi-a77112090.app.haisnap.com/66';
+                    }, 300);
+                }
+            });
+            
+            // 底部信息框点击事件
+            document.getElementById('appFooter').addEventListener('click', function() {
+                // 添加点击反馈动画
+                this.style.transform = 'translateY(0) scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(0) scale(1)';
+                }, 200);
+                
+                showToast('应用信息已点击');
+            });
+        });
+        
+        // 长按事件处理
+        document.getElementById('splashImage').addEventListener('touchstart', function(e) {
+            createClickEffect(e.touches[0].clientX, e.touches[0].clientY);
+            
+            longPressTimer = setTimeout(() => {
+                showToast('嗯？');
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            }, 500);
+        });
+        
+        document.getElementById('splashImage').addEventListener('touchend', function() {
+            clearTimeout(longPressTimer);
+        });
+        
+        // 跳过按钮点击事件
+        document.getElementById('skipBtn').addEventListener('click', function() {
+            clearTimeout(timer);
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+                redirect();
+            }, 200);
+        });
+        
+        /**
+         * 跳转函数
+         */
+        function redirect() {
+            document.body.style.transition = 'opacity 0.3s';
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = '牢橘软件库.html';
+            }, 300);
+        }
+        
+        // 跳过按钮倒计时显示
+        let countdown = Math.ceil(delay / 1000);
+        const skipBtn = document.getElementById('skipBtn');
+        skipBtn.textContent = `跳过 ${countdown}`;
+        
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                skipBtn.textContent = `跳过 ${countdown}`;
+                skipBtn.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    skipBtn.style.transform = 'scale(1)';
+                }, 100);
+            } else {
+                clearInterval(countdownInterval);
+            }
+        }, 1000);
+        
+        // 获取图片元素
+        const splashImage = document.getElementById('splashImage');
+        let isResetting = false;
+        
+        // 图片点击事件处理 - 重置跳转时间
+        splashImage.addEventListener('click', function() {
+            if (isResetting) return;
+            
+            isResetting = true;
+            clearTimeout(timer);
+            clearInterval(countdownInterval);
+            
+            timer = setTimeout(redirect, 10000);
+            countdown = 10;
+            skipBtn.textContent = `跳过 ${countdown}`;
+            
+            countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    skipBtn.textContent = `跳过 ${countdown}`;
+                    skipBtn.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        skipBtn.style.transform = 'scale(1)';
+                    }, 100);
+                } else {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+            
+            setTimeout(() => {
+                isResetting = false;
+            }, 300);
+        });
+    </script>
+</body>
+</html>
