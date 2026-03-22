@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中文与二进制转换工具</title>
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --dark-color: #202124;
+            --light-color: #ffffff;
+            --gray-color: #f1f3f4;
+            --text-color: #3c4043;
+            --error-color: #ea4335;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: var(--gray-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        body.dark-mode {
+            --gray-color: #2d2d2d;
+            --light-color: #333333;
+            --text-color: #e8eaed;
+            background-color: var(--dark-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .converter-box {
+            background-color: var(--light-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .converter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-button {
+            padding: 8px 16px;
+            background-color: var(--gray-color);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .tab-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .converters {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .converter {
+            display: none;
+        }
+
+        .converter.active {
+            display: block;
+        }
+
+        .input-area, .output-area {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+            resize: vertical;
+            font-size: 16px;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+        }
+
+        .char-count {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: #3367d6;
+        }
+
+        .btn-secondary {
+            background-color: var(--gray-color);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #dadce0;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .tools-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tool-card {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .history-panel {
+            background-color: var(--light-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-top: 20px;
+        }
+
+        .history-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            background-color: var(--gray-color);
+        }
+
+        .settings-panel {
+            background-color: var(--light-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-top: 20px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: var(--transition);
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--secondary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: var(--light-color);
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            max-width: 500px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .font-size-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        select, input[type="text"] {
+            padding: 8px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ccc;
+            background-color: var(--light-color);
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            .tools-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .buttons-row {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>中文与二进制转换工具</h1>
+            <p>轻松实现中文与二进制编码之间的互相转换</p>
+        </header>
+
+        <div class="main-content">
+            <div class="converter-box">
+                <div class="converter-header">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="chinese-to-binary">中文 → 二进制</button>
+                        <button class="tab-button" data-tab="binary-to-chinese">二进制 → 中文</button>
+                    </div>
+                </div>
+
+                <div class="converters">
+                    <div id="chinese-to-binary" class="converter active">
+                        <div class="input-area">
+                            <textarea id="chinese-input" placeholder="请输入中文文本..."></textarea>
+                            <div class="char-count">0 个字符</div>
+                        </div>
+                        <button id="chinese-to-binary-btn" class="btn">转换为二进制</button>
+                        <div class="output-area">
+                            <textarea id="binary-output" placeholder="转换后的二进制将显示在这里..." readonly></textarea>
+                            <div class="char-count">0 个字符</div>
+                        </div>
+                        <div class="buttons-row">
+                            <button id="copy-binary" class="btn btn-secondary">复制结果</button>
+                            <button id="save-binary" class="btn btn-secondary">保存为文件</button>
+                            <button id="clear-chinese" class="btn btn-secondary">清空输入</button>
+                        </div>
+                    </div>
+
+                    <div id="binary-to-chinese" class="converter">
+                        <div class="input-area">
+                            <textarea id="binary-input" placeholder="请输入二进制代码(仅包含0和1)..."></textarea>
+                            <div class="char-count">0 个字符</div>
+                        </div>
+                        <button id="binary-to-chinese-btn" class="btn">转换为中文</button>
+                        <div class="output-area">
+                            <textarea id="chinese-output" placeholder="转换后的中文将显示在这里..." readonly></textarea>
+                            <div class="char-count">0 个字符</div>
+                        </div>
+                        <div class="buttons-row">
+                            <button id="copy-chinese" class="btn btn-secondary">复制结果</button>
+                            <button id="save-chinese" class="btn btn-secondary">保存为文件</button>
+                            <button id="clear-binary" class="btn btn-secondary">清空输入</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tools-panel">
+                <div class="tool-card" id="upload-file">
+                    <h3>批量处理</h3>
+                    <p>上传文件进行批量转换</p>
+                </div>
+                <div class="tool-card" id="show-history">
+                    <h3>历史记录</h3>
+                    <p>查看最近的转换历史</p>
+                </div>
+                <div class="tool-card" id="toggle-theme">
+                    <h3>深色模式</h3>
+                    <p>切换深色/浅色主题</p>
+                </div>
+                <div class="tool-card" id="font-settings">
+                    <h3>字体设置</h3>
+                    <p>调整字体大小</p>
+                </div>
+                <div class="tool-card" id="binary-format">
+                    <h3>二进制格式</h3>
+                    <p>自定义二进制格式</p>
+                </div>
+                <div class="tool-card" id="help-info">
+                    <h3>使用帮助</h3>
+                    <p>查看工具使用方法</p>
+                </div>
+            </div>
+
+            <div id="history-panel" class="history-panel" style="display: none;">
+                <h2>转换历史</h2>
+                <div id="history-items">
+                    <!-- 历史记录项将在这里动态添加 -->
+                </div>
+                <button id="clear-history" class="btn btn-secondary" style="margin-top: 15px;">清空历史记录</button>
+            </div>
+
+            <div id="settings-panel" class="settings-panel" style="display: none;">
+                <h2>设置</h2>
+                <div class="setting-item">
+                    <span>深色模式</span>
+                    <label class="switch">
+                        <input id="dark-mode-switch" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>字体大小</span>
+                    <div class="font-size-control">
+                        <button id="decrease-font" class="btn btn-secondary">-</button>
+                        <span id="current-font-size">16px</span>
+                        <button id="increase-font" class="btn btn-secondary">+</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <span>二进制分隔符</span>
+                    <select id="binary-separator">
+                        <option value="">无分隔</option>
+                        <option value=" ">空格</option>
+                        <option value="-">连字符(-)</option>
+                        <option value=".">点(.)</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span>每组位数</span>
+                    <select id="binary-group-size">
+                        <option value="8">8位</option>
+                        <option value="16">16位</option>
+                        <option value="0">不分组</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="upload-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>上传文件进行批量转换</h2>
+            <p>选择要上传的文本文件：</p>
+            <input type="file" id="file-input" accept=".txt">
+            <div class="buttons-row" style="margin-top: 20px;">
+                <button id="upload-to-chinese" class="btn">二进制→中文</button>
+                <button id="upload-to-binary" class="btn">中文→二进制</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="format-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>自定义二进制格式</h2>
+            <div class="setting-item">
+                <span>二进制分隔符</span>
+                <select id="binary-separator-modal">
+                    <option value="">无分隔</option>
+                    <option value=" ">空格</option>
+                    <option value="-">连字符(-)</option>
+                    <option value=".">点(.)</option>
+                    <option value="custom">自定义</option>
+                </select>
+            </div>
+            <div id="custom-separator-container" style="display: none; margin-top: 10px;">
+                <input type="text" id="custom-separator" placeholder="输入自定义分隔符" maxlength="5">
+            </div>
+            <div class="setting-item">
+                <span>每组位数</span>
+                <select id="binary-group-size-modal">
+                    <option value="8">8位</option>
+                    <option value="16">16位</option>
+                    <option value="32">32位</option>
+                    <option value="0">不分组</option>
+                    <option value="custom">自定义</option>
+                </select>
+            </div>
+            <div id="custom-group-size-container" style="display: none; margin-top: 10px;">
+                <input type="number" id="custom-group-size" placeholder="输入自定义位数" min="1" max="64">
+            </div>
+            <button id="apply-format" class="btn" style="margin-top: 20px;">应用设置</button>
+        </div>
+    </div>
+
+    <div id="font-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>字体设置</h2>
+            <div class="setting-item">
+                <span>字体大小</span>
+                <div class="font-size-control">
+                    <button id="decrease-font-modal" class="btn btn-secondary">-</button>
+                    <span id="current-font-size-modal">16px</span>
+                    <button id="increase-font-modal" class="btn btn-secondary">+</button>
+                </div>
+            </div>
+            <button id="apply-font" class="btn" style="margin-top: 20px;">应用设置</button>
+        </div>
+    </div>
+    
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>使用帮助</h2>
+            <h3>主要功能</h3>
+            <p>1. 中文转二进制：输入中文文本，点击转换按钮，获得二进制编码</p>
+            <p>2. 二进制转中文：输入二进制编码，点击转换按钮，恢复中文文本</p>
+            
+            <h3>附加功能</h3>
+            <p>• 批量处理：上传文本文件进行批量转换</p>
+            <p>• 历史记录：查看最近的转换历史</p>
+            <p>• 深色模式：切换深色/浅色主题</p>
+            <p>• 字体设置：调整字体大小</p>
+            <p>• 二进制格式：自定义二进制输出格式</p>
+            <p>• 复制/保存：复制转换结果或保存为文件</p>
+            <p>• 字符计数：显示输入输出字符数量</p>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 全局变量
+            let binarySeparator = '';
+            let binaryGroupSize = 8;
+            let history = JSON.parse(localStorage.getItem('conversionHistory')) || [];
+            
+            // 获取DOM元素
+            const chineseInput = document.getElementById('chinese-input');
+            const binaryOutput = document.getElementById('binary-output');
+            const binaryInput = document.getElementById('binary-input');
+            const chineseOutput = document.getElementById('chinese-output');
+            const chineseToBinaryBtn = document.getElementById('chinese-to-binary-btn');
+            const binaryToChineseBtn = document.getElementById('binary-to-chinese-btn');
+            const copyBinaryBtn = document.getElementById('copy-binary');
+            const copyChineseBtn = document.getElementById('copy-chinese');
+            const saveBinaryBtn = document.getElementById('save-binary');
+            const saveChineseBtn = document.getElementById('save-chinese');
+            const clearChineseBtn = document.getElementById('clear-chinese');
+            const clearBinaryBtn = document.getElementById('clear-binary');
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const converters = document.querySelectorAll('.converter');
+            const textareas = document.querySelectorAll('textarea');
+            
+            // 工具卡片
+            const uploadFileCard = document.getElementById('upload-file');
+            const showHistoryCard = document.getElementById('show-history');
+            const toggleThemeCard = document.getElementById('toggle-theme');
+            const fontSettingsCard = document.getElementById('font-settings');
+            const binaryFormatCard = document.getElementById('binary-format');
+            const helpInfoCard = document.getElementById('help-info');
+            
+            // 模态框
+            const uploadModal = document.getElementById('upload-modal');
+            const formatModal = document.getElementById('format-modal');
+            const fontModal = document.getElementById('font-modal');
+            const helpModal = document.getElementById('help-modal');
+            const closeButtons = document.querySelectorAll('.close');
+            
+            // 面板
+            const historyPanel = document.getElementById('history-panel');
+            const settingsPanel = document.getElementById('settings-panel');
+            
+            // 设置相关
+            const darkModeSwitch = document.getElementById('dark-mode-switch');
+            const decreaseFontBtn = document.getElementById('decrease-font');
+            const increaseFontBtn = document.getElementById('increase-font');
+            const currentFontSize = document.getElementById('current-font-size');
+            const decreaseFontModalBtn = document.getElementById('decrease-font-modal');
+            const increaseFontModalBtn = document.getElementById('increase-font-modal');
+            const currentFontSizeModal = document.getElementById('current-font-size-modal');
+            
+            // 初始化设置
+            checkDarkMode();
+            updateCharCount();
+            
+            // 事件监听器
+            
+            // 标签切换
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    converters.forEach(conv => conv.classList.remove('active'));
+                    
+                    button.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // 中文转二进制
+            chineseToBinaryBtn.addEventListener('click', () => {
+                const chinese = chineseInput.value;
+                if (!chinese) {
+                    showNotification('请输入中文文本');
+                    return;
+                }
+                
+                const binary = chineseToBinary(chinese);
+                binaryOutput.value = formatBinaryOutput(binary);
+                updateCharCount();
+                addToHistory('中文 → 二进制', chinese, formatBinaryOutput(binary));
+            });
+            
+            // 二进制转中文
+            binaryToChineseBtn.addEventListener('click', () => {
+                let binary = binaryInput.value;
+                if (!binary) {
+                    showNotification('请输入二进制代码');
+                    return;
+                }
+                
+                // 清除所有非0和1的字符
+                binary = binary.replace(/[^01]/g, '');
+                
+                try {
+                    const chinese = binaryToChinese(binary);
+                    chineseOutput.value = chinese;
+                    updateCharCount();
+                    addToHistory('二进制 → 中文', binary, chinese);
+                } catch (error) {
+                    showNotification('转换失败，请检查二进制代码格式');
+                }
+            });
+            
+            // 复制结果
+            copyBinaryBtn.addEventListener('click', () => {
+                if (!binaryOutput.value) {
+                    showNotification('没有可复制的内容');
+                    return;
+                }
+                
+                navigator.clipboard.writeText(binaryOutput.value)
+                    .then(() => showNotification('已复制到剪贴板'))
+                    .catch(() => showNotification('复制失败，请手动复制'));
+            });
+            
+            copyChineseBtn.addEventListener('click', () => {
+                if (!chineseOutput.value) {
+                    showNotification('没有可复制的内容');
+                    return;
+                }
+                
+                navigator.clipboard.writeText(chineseOutput.value)
+                    .then(() => showNotification('已复制到剪贴板'))
+                    .catch(() => showNotification('复制失败，请手动复制'));
+            });
+            
+            // 保存文件
+            saveBinaryBtn.addEventListener('click', () => {
+                if (!binaryOutput.value) {
+                    showNotification('没有可保存的内容');
+                    return;
+                }
+                
+                saveToFile(binaryOutput.value, 'binary_output.txt');
+            });
+            
+            saveChineseBtn.addEventListener('click', () => {
+                if (!chineseOutput.value) {
+                    showNotification('没有可保存的内容');
+                    return;
+                }
+                
+                saveToFile(chineseOutput.value, 'chinese_output.txt');
+            });
+            
+            // 清空输入
+            clearChineseBtn.addEventListener('click', () => {
+                chineseInput.value = '';
+                binaryOutput.value = '';
+                updateCharCount();
+            });
+            
+            clearBinaryBtn.addEventListener('click', () => {
+                binaryInput.value = '';
+                chineseOutput.value = '';
+                updateCharCount();
+            });
+            
+            // 工具卡片点击
+            uploadFileCard.addEventListener('click', () => {
+                uploadModal.style.display = 'block';
+            });
+            
+            showHistoryCard.addEventListener('click', () => {
+                historyPanel.style.display = historyPanel.style.display === 'none' ? 'block' : 'none';
+                settingsPanel.style.display = 'none';
+                renderHistory();
+            });
+            
+            toggleThemeCard.addEventListener('click', () => {
+                toggleDarkMode();
+            });
+            
+            fontSettingsCard.addEventListener('click', () => {
+                fontModal.style.display = 'block';
+                currentFontSizeModal.textContent = getComputedStyle(textareas[0]).fontSize;
+            });
+            
+            binaryFormatCard.addEventListener('click', () => {
+                formatModal.style.display = 'block';
+                document.getElementById('binary-separator-modal').value = binarySeparator || '';
+                document.getElementById('binary-group-size-modal').value = binaryGroupSize || '8';
+            });
+            
+            helpInfoCard.addEventListener('click', () => {
+                helpModal.style.display = 'block';
+            });
+            
+            // 关闭模态框
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.parentElement.parentElement.style.display = 'none';
+                });
+            });
+            
+            window.addEventListener('click', (event) => {
+                if (event.target === uploadModal) {
+                    uploadModal.style.display = 'none';
+                } else if (event.target === formatModal) {
+                    formatModal.style.display = 'none';
+                } else if (event.target === fontModal) {
+                    fontModal.style.display = 'none';
+                } else if (event.target === helpModal) {
+                    helpModal.style.display = 'none';
+                }
+            });
+            
+            // 字符计数
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', updateCharCount);
+            });
+            
+            // 字体大小调整
+            decreaseFontBtn.addEventListener('click', () => {
+                changeFontSize(-1);
+            });
+            
+            increaseFontBtn.addEventListener('click', () => {
+                changeFontSize(1);
+            });
+            
+            decreaseFontModalBtn.addEventListener('click', () => {
+                changeFontSize(-1);
+                currentFontSizeModal.textContent = getComputedStyle(textareas[0]).fontSize;
+            });
+            
+            increaseFontModalBtn.addEventListener('click', () => {
+                changeFontSize(1);
+                currentFontSizeModal.textContent = getComputedStyle(textareas[0]).fontSize;
+            });
+            
+            // 深色模式切换
+            darkModeSwitch.addEventListener('change', () => {
+                toggleDarkMode();
+            });
+            
+            // 自定义分隔符
+            document.getElementById('binary-separator-modal').addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    document.getElementById('custom-separator-container').style.display = 'block';
+                } else {
+                    document.getElementById('custom-separator-container').style.display = 'none';
+                }
+            });
+            
+            // 自定义分组大小
+            document.getElementById('binary-group-size-modal').addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    document.getElementById('custom-group-size-container').style.display = 'block';
+                } else {
+                    document.getElementById('custom-group-size-container').style.display = 'none';
+                }
+            });
+            
+            // 应用二进制格式设置
+            document.getElementById('apply-format').addEventListener('click', () => {
+                let separator = document.getElementById('binary-separator-modal').value;
+                if (separator === 'custom') {
+                    separator = document.getElementById('custom-separator').value;
+                }
+                
+                let groupSize = document.getElementById('binary-group-size-modal').value;
+                if (groupSize === 'custom') {
+                    groupSize = document.getElementById('custom-group-size').value;
+                }
+                
+                binarySeparator = separator;
+                binaryGroupSize = parseInt(groupSize);
+                
+                // 如果有二进制输出，重新格式化
+                if (binaryOutput.value) {
+                    const binary = binaryOutput.value.replace(/[^01]/g, '');
+                    binaryOutput.value = formatBinaryOutput(binary);
+                }
+                
+                formatModal.style.display = 'none';
+                showNotification('已应用二进制格式设置');
+            });
+            
+            // 应用字体设置
+            document.getElementById('apply-font').addEventListener('click', () => {
+                fontModal.style.display = 'none';
+                showNotification('已应用字体设置');
+            });
+            
+            // 文件上传处理
+            document.getElementById('upload-to-binary').addEventListener('click', () => {
+                const fileInput = document.getElementById('file-input');
+                if (!fileInput.files.length) {
+                    showNotification('请先选择文件');
+                    return;
+                }
+                
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    chineseInput.value = content;
+                    chineseToBinaryBtn.click();
+                    uploadModal.style.display = 'none';
+                    fileInput.value = '';
+                };
+                
+                reader.onerror = function() {
+                    showNotification('文件读取失败');
+                };
+                
+                reader.readAsText(file);
+            });
+            
+            document.getElementById('upload-to-chinese').addEventListener('click', () => {
+                const fileInput = document.getElementById('file-input');
+                if (!fileInput.files.length) {
+                    showNotification('请先选择文件');
+                    return;
+                }
+                
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    binaryInput.value = content;
+                    binaryToChineseBtn.click();
+                    uploadModal.style.display = 'none';
+                    fileInput.value = '';
+                };
+                
+                reader.onerror = function() {
+                    showNotification('文件读取失败');
+                };
+                
+                reader.readAsText(file);
+            });
+            
+            // 清空历史记录
+            document.getElementById('clear-history').addEventListener('click', () => {
+                history = [];
+                localStorage.setItem('conversionHistory', JSON.stringify(history));
+                renderHistory();
+                showNotification('历史记录已清空');
+            });
+            
+            // 函数定义
+            
+            // 中文转二进制
+            function chineseToBinary(text) {
+                let binary = '';
+                for (let i = 0; i < text.length; i++) {
+                    const charCode = text.charCodeAt(i);
+                    const binaryChar = charCode.toString(2);
+                    // 确保每个字符的二进制表示都是16位
+                    binary += '0'.repeat(16 - binaryChar.length) + binaryChar;
+                }
+                return binary;
+            }
+            
+            // 二进制转中文
+            function binaryToChinese(binary) {
+                let text = '';
+                // 确保二进制长度是16的倍数
+                if (binary.length % 16 !== 0) {
+                    binary = binary.padStart(Math.ceil(binary.length / 16) * 16, '0');
+                }
+                
+                for (let i = 0; i < binary.length; i += 16) {
+                    const chunk = binary.substr(i, 16);
+                    const charCode = parseInt(chunk, 2);
+                    text += String.fromCharCode(charCode);
+                }
+                return text;
+            }
+            
+            // 格式化二进制输出
+            function formatBinaryOutput(binary) {
+                if (!binaryGroupSize || binaryGroupSize <= 0) {
+                    return binary;
+                }
+                
+                let formatted = '';
+                for (let i = 0; i < binary.length; i += binaryGroupSize) {
+                    if (i > 0 && binarySeparator) {
+                        formatted += binarySeparator;
+                    }
+                    formatted += binary.substr(i, binaryGroupSize);
+                }
+                return formatted;
+            }
+            
+            // 更新字符计数
+            function updateCharCount() {
+                const counts = document.querySelectorAll('.char-count');
+                counts[0].textContent = `${chineseInput.value.length} 个字符`;
+                counts[1].textContent = `${binaryOutput.value.replace(/[^01]/g, '').length} 个字符`;
+                counts[2].textContent = `${binaryInput.value.replace(/[^01]/g, '').length} 个字符`;
+                counts[3].textContent = `${chineseOutput.value.length} 个字符`;
+            }
+            
+            // 保存文件
+            function saveToFile(content, filename) {
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+                showNotification(`已保存为 ${filename}`);
+            }
+            
+            // 显示通知
+            function showNotification(message) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.style.opacity = '1';
+                
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                }, 3000);
+            }
+            
+            // 切换深色模式
+            function toggleDarkMode() {
+                document.body.classList.toggle('dark-mode');
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                localStorage.setItem('darkMode', isDarkMode);
+                darkModeSwitch.checked = isDarkMode;
+            }
+            
+            // 检查深色模式设置
+            function checkDarkMode() {
+                const isDarkMode = localStorage.getItem('darkMode') === 'true';
+                if (isDarkMode) {
+                    document.body.classList.add('dark-mode');
+                    darkModeSwitch.checked = true;
+                }
+            }
+            
+            // 更改字体大小
+            function changeFontSize(delta) {
+                textareas.forEach(textarea => {
+                    const currentSize = parseInt(getComputedStyle(textarea).fontSize);
+                    const newSize = Math.max(12, Math.min(24, currentSize + delta));
+                    textarea.style.fontSize = `${newSize}px`;
+                });
+                
+                currentFontSize.textContent = getComputedStyle(textareas[0]).fontSize;
+            }
+            
+            // 添加历史记录
+            function addToHistory(type, input, output) {
+                const item = {
+                    id: Date.now(),
+                    type,
+                    input: input.length > 50 ? input.substring(0, 50) + '...' : input,
+                    output: output.length > 50 ? output.substring(0, 50) + '...' : output,
+                    fullInput: input,
+                    fullOutput: output,
+                    time: new Date().toLocaleString()
+                };
+                
+                history.unshift(item);
+                
+                // 限制历史记录数量
+                if (history.length > 10) {
+                    history.pop();
+                }
+                
+                localStorage.setItem('conversionHistory', JSON.stringify(history));
+                
+                // 如果历史面板可见，更新显示
+                if (historyPanel.style.display !== 'none') {
+                    renderHistory();
+                }
+            }
+            
+            // 渲染历史记录
+            function renderHistory() {
+                const historyItems = document.getElementById('history-items');
+                historyItems.innerHTML = '';
+                
+                if (history.length === 0) {
+                    historyItems.innerHTML = '<p>暂无历史记录</p>';
+                    return;
+                }
+                
+                history.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+                        <strong>${item.type}</strong> - ${item.time}
+                        <p>输入: ${item.input}</p>
+                        <p>输出: ${item.output}</p>
+                    `;
+                    
+                    historyItem.addEventListener('click', () => {
+                        if (item.type === '中文 → 二进制') {
+                            chineseInput.value = item.fullInput;
+                            binaryOutput.value = item.fullOutput;
+                            tabButtons[0].click();
+                        } else {
+                            binaryInput.value = item.fullInput;
+                            chineseOutput.value = item.fullOutput;
+                            tabButtons[1].click();
+                        }
+                        updateCharCount();
+                        historyPanel.style.display = 'none';
+                    });
+                    
+                    historyItems.appendChild(historyItem);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>亲戚称呼计算器</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        
+        .calculator {
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 320px;
+            border: 2px solid #ccc;
+        }
+        
+        .display {
+            background-color: #f8f8f8;
+            color: #333;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 24px;
+            border-radius: 8px;
+            min-height: 80px;
+            word-wrap: break-word;
+            border: 2px solid #aaa;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.1);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        
+        button {
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 18px 5px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px #3a5a8a;
+        }
+        
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px #2a4a7a;
+        }
+        
+        .equals {
+            background-color: #28a745;
+            grid-column: span 2;
+        }
+        
+        .clear {
+            background-color: #dc3545;
+        }
+        
+        .relation-btn {
+            font-weight: bold;
+        }
+        
+        .error {
+            color: #dc3545;
+            font-size: 18px;
+        }
+        
+        .normal {
+            color: #333;
+        }
+        
+        .relation-path {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">亲戚称呼计算</div>
+        <div class="buttons">
+            <button class="relation-btn" onclick="appendRelation('爸')">爸</button>
+            <button class="relation-btn" onclick="appendRelation('妈')">妈</button>
+            <button class="relation-btn" onclick="appendRelation('爷')">爷</button>
+            <button class="relation-btn" onclick="appendRelation('奶')">奶</button>
+            <button class="relation-btn" onclick="appendRelation('公')">公</button>
+            <button class="relation-btn" onclick="appendRelation('婆')">婆</button>
+            <button class="relation-btn" onclick="appendRelation('兄')">兄</button>
+            <button class="relation-btn" onclick="appendRelation('弟')">弟</button>
+            <button class="relation-btn" onclick="appendRelation('姐')">姐</button>
+            <button class="relation-btn" onclick="appendRelation('妹')">妹</button>
+            <button class="relation-btn" onclick="appendRelation('夫')">夫</button>
+            <button class="relation-btn" onclick="appendRelation('妻')">妻</button>
+            <button class="relation-btn" onclick="appendRelation('子')">子</button>
+            <button class="relation-btn" onclick="appendRelation('女')">女</button>
+            <button class="clear" onclick="clearDisplay()">清除</button>
+            <button class="equals" onclick="calculate()">= 计算</button>
+        </div>
+    </div>
+
+    <script>
+        let currentRelation = '';
+        const display = document.getElementById('display');
+        
+        const relationMap = {
+            '爸': '爸爸',
+            '妈': '妈妈',
+            '爷': '爷爷',
+            '奶': '奶奶',
+            '公': '外公',
+            '婆': '外婆',
+            '兄': '哥哥',
+            '弟': '弟弟',
+            '姐': '姐姐',
+            '妹': '妹妹',
+            '夫': '丈夫',
+            '妻': '妻子',
+            '子': '儿子',
+            '女': '女儿',
+            
+            // 组合关系
+            '爸的爸': '爷爷',
+            '爸的妈': '奶奶',
+            '爸的兄': '伯父',
+            '爸的弟': '叔叔',
+            '爸的姐': '姑姑',
+            '爸的妹': '姑姑',
+            '爸的哥': '伯父',
+            '爸的爷': '曾祖父',
+            '爸的奶': '曾祖母',
+            
+            '妈的爸': '外公',
+            '妈的妈': '外婆',
+            '妈的兄': '舅舅',
+            '妈的弟': '舅舅',
+            '妈的姐': '姨妈',
+            '妈的妹': '姨妈',
+            '妈的爷': '外曾祖父',
+            '妈的奶': '外曾祖母',
+            
+            '兄的妻': '嫂子',
+            '弟的妻': '弟媳',
+            '姐的夫': '姐夫',
+            '妹的夫': '妹夫',
+            
+            '子的妻': '儿媳',
+            '女的夫': '女婿',
+            
+            '夫的爸': '公公',
+            '夫的妈': '婆婆',
+            '妻的爸': '岳父',
+            '妻的妈': '岳母',
+            
+            '爸的兄的子': '堂兄/堂弟',
+            '爸的兄的女': '堂姐/堂妹',
+            '爸的弟的子': '堂兄/堂弟',
+            '爸的弟的女': '堂姐/堂妹',
+            '爸的姐的子': '表兄/表弟',
+            '爸的姐的女': '表姐/表妹',
+            '爸的妹的子': '表兄/表弟',
+            '爸的妹的女': '表姐/表妹',
+            
+            '妈的兄的子': '表兄/表弟',
+            '妈的兄的女': '表姐/表妹',
+            '妈的弟的子': '表兄/表弟',
+            '妈的弟的女': '表姐/表妹',
+            '妈的姐的子': '表兄/表弟',
+            '妈的姐的女': '表姐/表妹',
+            '妈的妹的子': '表兄/表弟',
+            '妈的妹的女': '表姐/表妹',
+            
+            '爸的爸的爸': '高祖父',
+            '爸的爸的妈': '高祖母',
+            '爸的妈的爸': '外高祖父',
+            '爸的妈的妈': '外高祖母',
+            
+            '子的子': '孙子',
+            '子的女': '孙女',
+            '女的子': '外孙',
+            '女的女': '外孙女',
+            
+            '兄的子': '侄子',
+            '兄的女': '侄女',
+            '弟的子': '侄子',
+            '弟的女': '侄女',
+            '姐的子': '外甥',
+            '姐的女': '外甥女',
+            '妹的子': '外甥',
+            '妹的女': '外甥女',
+            
+            '夫的兄': '大伯子',
+            '夫的弟': '小叔子',
+            '夫的姐': '大姑子',
+            '夫的妹': '小姑子',
+            
+            '妻的兄': '内兄/大舅子',
+            '妻的弟': '内弟/小舅子',
+            '妻的姐': '大姨子',
+            '妻的妹': '小姨子'
+        };
+        
+        function appendRelation(relation) {
+            if (currentRelation.length < 12) {
+                currentRelation += (currentRelation ? '的' : '') + relation;
+                updateDisplay();
+            }
+        }
+        
+        function clearDisplay() {
+            currentRelation = '';
+            display.innerHTML = '点击按钮输入关系';
+            display.className = 'display normal';
+        }
+        
+        function updateDisplay() {
+            display.innerHTML = currentRelation;
+            display.className = 'display normal';
+        }
+        
+        function calculate() {
+            if (!currentRelation) {
+                display.innerHTML = '请输入关系';
+                display.className = 'display error';
+                return;
+            }
+            
+            try {
+                const result = getRelationship(currentRelation);
+                display.innerHTML = result + '<div class="relation-path">' + currentRelation + '</div>';
+                display.className = 'display normal';
+            } catch (error) {
+                display.innerHTML = '无法识别: ' + error.message;
+                display.className = 'display error';
+            }
+        }
+        
+        function getRelationship(relation) {
+            if (relationMap[relation]) {
+                return relationMap[relation];
+            }
+            
+            // 尝试从长到短匹配
+            const parts = relation.split('的');
+            for (let len = parts.length; len >= 1; len--) {
+                for (let i = 0; i <= parts.length - len; i++) {
+                    const part = parts.slice(i, i + len).join('的');
+                    if (relationMap[part]) {
+                        const left = parts.slice(0, i).join('的');
+                        const right = parts.slice(i + len).join('的');
+                        let result = relationMap[part];
+                        
+                        if (left) {
+                            const leftResult = getRelationship(left);
+                            if (leftResult) result = leftResult + '的' + result;
+                        }
+                        
+                        if (right) {
+                            const rightResult = getRelationship(right);
+                            if (rightResult) result = result + '的' + rightResult;
+                        }
+                        
+                        return result;
+                    }
+                }
+            }
+            
+            throw new Error('无法识别的亲属关系');
+        }
+    </script>
+</body>
+</html>

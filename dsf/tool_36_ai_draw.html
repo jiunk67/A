@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI绘图</title>
+    <!-- BOOTCDN MDUI 1.0.2 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/mdui/1.0.2/css/mdui.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
+</head>
+<body class="mdui-theme-primary-indigo mdui-theme-accent-pink mdui-loaded">
+    <!-- 顶部工具栏 -->
+    <div class="mdui-appbar mdui-appbar-fixed">
+        <div class="mdui-toolbar mdui-color-theme">
+            <i class="mdui-icon material-icons">brush</i>
+            <span class="mdui-typo-title">AI绘图</span>
+        </div>
+    </div>
+
+    <!-- 主要内容 -->
+    <div class="mdui-container" style="margin-top: 80px; padding-bottom: 40px;">
+        <!-- 参数设置卡片 -->
+        <div class="mdui-row">
+            <div class="mdui-col-md-8 mdui-col-offset-md-2">
+                <div class="mdui-card">
+                    <div class="mdui-card-primary">
+                        <div class="mdui-card-primary-title">参数设置</div>
+                    </div>
+                    
+                    <div class="mdui-card-content">
+                        <!-- 提示词 -->
+                        <div class="mdui-textfield">
+                            <label class="mdui-textfield-label">提示词 *</label>
+                            <input class="mdui-textfield-input" type="text" id="prompt" value="大树🌳" required>
+                        </div>
+
+                        <!-- 图片风格 - 单选框 -->
+                        <div class="mdui-typo-subheading mdui-m-t-4">图片风格</div>
+                        <div class="mdui-row">
+                            <div class="mdui-col-xs-6 mdui-col-sm-4">
+                                <label class="mdui-radio">
+                                    <input type="radio" name="style" value="100" checked>
+                                    <i class="mdui-radio-icon"></i>
+                                    智能匹配
+                                </label>
+                            </div>
+                            <div class="mdui-col-xs-6 mdui-col-sm-4">
+                                <label class="mdui-radio">
+                                    <input type="radio" name="style" value="1">
+                                    <i class="mdui-radio-icon"></i>
+                                    现代都市
+                                </label>
+                            </div>
+                            <div class="mdui-col-xs-6 mdui-col-sm-4">
+                                <label class="mdui-radio">
+                                    <input type="radio" name="style" value="2">
+                                    <i class="mdui-radio-icon"></i>
+                                    古风武侠
+                                </label>
+                            </div>
+                            <div class="mdui-col-xs-6 mdui-col-sm-4">
+                                <label class="mdui-radio">
+                                    <input type="radio" name="style" value="3">
+                                    <i class="mdui-radio-icon"></i>
+                                    水墨国风
+                                </label>
+                            </div>
+                            <div class="mdui-col-xs-6 mdui-col-sm-4">
+                                <label class="mdui-radio">
+                                    <input type="radio" name="style" value="4">
+                                    <i class="mdui-radio-icon"></i>
+                                    梦幻异世
+                                </label>
+                            </div>
+                            <div class="mdui-col-xs-6 mdui-col-sm-4">
+                                <label class="mdui-radio">
+                                    <input type="radio" name="style" value="5">
+                                    <i class="mdui-radio-icon"></i>
+                                    现代日漫
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 图片尺寸 - 单选框，每个选项一行 -->
+                        <div class="mdui-typo-subheading mdui-m-t-4">图片尺寸</div>
+                        <div class="mdui-row">
+                            <div class="mdui-col-xs-12">
+                                <label class="mdui-radio">
+                                    <input type="radio" name="size" value="1">
+                                    <i class="mdui-radio-icon"></i>
+                                    1080×1080
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mdui-row">
+                            <div class="mdui-col-xs-12">
+                                <label class="mdui-radio">
+                                    <input type="radio" name="size" value="2" checked>
+                                    <i class="mdui-radio-icon"></i>
+                                    1080×1512
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mdui-row">
+                            <div class="mdui-col-xs-12">
+                                <label class="mdui-radio">
+                                    <input type="radio" name="size" value="3">
+                                    <i class="mdui-radio-icon"></i>
+                                    1080×1920
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 请求方法 - 单选框 -->
+                        <div class="mdui-typo-subheading mdui-m-t-4">请求方法</div>
+                        <div class="mdui-row">
+                            <div class="mdui-col-xs-6">
+                                <label class="mdui-radio">
+                                    <input type="radio" name="method" value="GET" checked>
+                                    <i class="mdui-radio-icon"></i>
+                                    GET
+                                </label>
+                            </div>
+                            <div class="mdui-col-xs-6">
+                                <label class="mdui-radio">
+                                    <input type="radio" name="method" value="POST">
+                                    <i class="mdui-radio-icon"></i>
+                                    POST
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 智能补充 - 开关 -->
+                        <div class="mdui-typo-subheading mdui-m-t-4">智能补充提示词</div>
+                        <div class="mdui-row mdui-m-t-1">
+                            <div class="mdui-col-xs-12">
+                                <label class="mdui-switch">
+                                    <input type="checkbox" id="llm" checked>
+                                    <i class="mdui-switch-icon"></i>
+                                    <span class="mdui-m-l-3">启用智能提示词补充</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 按钮 -->
+                        <div class="mdui-row mdui-m-t-5">
+                            <div class="mdui-col-xs-6">
+                                <button class="mdui-btn mdui-btn-block mdui-color-grey mdui-ripple" onclick="reset()">
+                                    重置
+                                </button>
+                            </div>
+                            <div class="mdui-col-xs-6">
+                                <button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple mdui-btn-raised" onclick="send()">
+                                    生成图片
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 加载状态 -->
+        <div class="mdui-row mdui-m-t-4">
+            <div class="mdui-col-md-8 mdui-col-offset-md-2">
+                <div id="loading" class="mdui-card" style="display: none;">
+                    <div class="mdui-card-content mdui-text-center">
+                        <div class="mdui-spinner mdui-spinner-colorful"></div>
+                        <div class="mdui-typo mdui-m-t-3">正在生成图片，请稍候...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果展示 -->
+        <div class="mdui-row mdui-m-t-4">
+            <div class="mdui-col-xs-12">
+                <div id="result" style="display: none;">
+                    <div class="mdui-typo-headline mdui-text-center mdui-m-b-4">生成结果</div>
+                    <div class="mdui-row" id="images"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化MDUI组件
+        document.addEventListener('DOMContentLoaded', function() {
+            mdui.mutation();
+        });
+
+        async function send() {
+            const prompt = document.getElementById('prompt').value;
+            if(!prompt) {
+                mdui.snackbar('需要提示词');
+                return;
+            }
+            
+            // 获取单选框值
+            const style = document.querySelector('input[name="style"]:checked').value;
+            const size = document.querySelector('input[name="size"]:checked').value;
+            const method = document.querySelector('input[name="method"]:checked').value;
+            const llm = document.getElementById('llm').checked;
+            
+            // 显示加载
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('images').innerHTML = '';
+            
+            const params = new URLSearchParams({
+                prompt: prompt,
+                style: style,
+                size: size,
+                llm: llm,
+                type: 'json'
+            });
+            
+            const url = 'https://www.oiapi.net/api/AiDrawImage';
+            
+            try {
+                let response;
+                if(method === 'GET') {
+                    response = await fetch(url + '?' + params);
+                } else {
+                    response = await fetch(url, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        body: params
+                    });
+                }
+                
+                const data = await response.json();
+                
+                if(data.code === 1 && data.data) {
+                    let html = '';
+                    data.data.forEach(item => {
+                        html += `
+                            <div class="mdui-col-xs-12 mdui-col-sm-6 mdui-col-md-4 mdui-m-b-3">
+                                <div class="mdui-card">
+                                    <div class="mdui-card-media">
+                                        <img src="${item.url}" class="mdui-img-fluid" 
+                                             style="height: 250px; object-fit: cover;"
+                                             onerror="this.src='https://via.placeholder.com/300x400?text=图片加载失败'"/>
+                                    </div>
+                                    <div class="mdui-card-content mdui-text-center">
+                                        <div class="mdui-typo">${item.width} × ${item.height}</div>
+                                        <a href="${item.url}" target="_blank" 
+                                           class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple mdui-m-t-2">
+                                            查看原图
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('images').innerHTML = html;
+                    document.getElementById('result').style.display = 'block';
+                    
+                    // 滚动到结果区域
+                    setTimeout(() => {
+                        document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                } else {
+                    mdui.snackbar('生成失败，请重试');
+                }
+            } catch(e) {
+                mdui.snackbar('错误: ' + e.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function reset() {
+            document.getElementById('prompt').value = '大树🌳';
+            document.querySelector('input[name="style"][value="100"]').checked = true;
+            document.querySelector('input[name="size"][value="2"]').checked = true;
+            document.querySelector('input[name="method"][value="GET"]').checked = true;
+            document.getElementById('llm').checked = true;
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('images').innerHTML = '';
+        }
+
+        // 回车键发送
+        document.getElementById('prompt').addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') send();
+        });
+    </script>
+</body>
+</html>

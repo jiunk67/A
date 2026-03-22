@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>小视频</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;background:#000;font-family:sans-serif}
+  video{position:absolute;width:100%;height:100%;object-fit:cover}
+  .tip{position:absolute;top:10px;left:0;width:100%;text-align:center;color:#fff;font-size:14px;opacity:.6;pointer-events:none}
+
+  .heart{
+    position:absolute;
+    width:40px;height:40px;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff4477'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center/contain no-repeat;
+    pointer-events:none;
+    animation:fly 1s ease-out forwards;
+  }
+  @keyframes fly{
+    0%{transform:translateY(0) scale(1);opacity:1}
+    100%{transform:translateY(-120px) scale(1.6);opacity:0}
+  }
+
+  .likeBtn{
+    position:fixed;right:20px;bottom:200px;z-index:10;
+    width:44px;height:44px;border-radius:50%;
+    background:rgba(255,255,255,.2);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .likeBtn svg{width:28px;height:28px;fill:#fff;transition:fill .3s}
+  .likeBtn.liked svg{fill:#ff4477}
+
+  .collect{
+    position:fixed;right:20px;bottom:140px;z-index:10;
+    width:44px;height:44px;border-radius:50%;
+    background:rgba(255,255,255,.2);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .collect.yellow{background:#ffc107}
+  .collect svg{width:26px;height:26px;fill:#fff;transition:fill .3s}
+
+  .share{
+    position:fixed;right:20px;bottom:80px;z-index:10;
+    width:44px;height:44px;border-radius:50%;
+    background:rgba(255,255,255,.2);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .share svg{width:26px;height:26px;fill:#fff;transition:fill .3s}
+
+  .autoPlay{
+    position:fixed;right:20px;bottom:20px;z-index:10;
+    width:44px;height:44px;border-radius:50%;
+    background:rgba(255,255,255,.2);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .autoPlay svg{width:26px;height:26px;fill:#fff;transition:fill .3s}
+  .autoPlay.active{background:#4CAF50}
+
+  .menu{
+    position:fixed;left:10px;top:10px;z-index:10;
+    width:44px;height:44px;border-radius:50%;
+    background:rgba(255,255,255,.2);backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .menu svg{width:24px;height:24px;fill:#fff}
+
+  .sidebar{
+    position:fixed;left:-100%;top:0;width:80%;max-width:300px;height:100%;
+    background:#111;color:#fff;transition:left .3s;z-index:20;overflow-y:auto;
+  }
+  .sidebar.show{left:0}
+  .sidebar-header{padding:20px;border-bottom:1px solid #333;font-size:18px}
+  .sidebar-close{float:right;font-size:24px;cursor:pointer}
+  .fav-item{padding:8px;border-bottom:1px solid #222;cursor:pointer;font-size:14px;color:#ccc}
+  .fav-item video{position:static;width:100%;height:120px;object-fit:cover;border-radius:6px;margin-bottom:4px}
+  .fav-empty{padding:20px;text-align:center;color:#666}
+</style>
+<base target="_blank">
+</head>
+<body>
+<video id="v" autoplay loop playsinline></video>
+<div class="tip">上下滑动切换 · 双击点赞</div>
+
+<div class="likeBtn" id="likeBtn">
+  <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+</div>
+<div class="collect" id="collect">
+  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+</div>
+<div class="share" id="share">
+  <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+</div>
+<div class="autoPlay" id="autoPlay">
+  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+</div>
+
+<div class="menu" id="menu">
+  <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">收藏夹<span class="sidebar-close" id="close">&times;</span></div>
+  <div id="favList"></div>
+</div>
+
+<script>
+const v = document.getElementById('v');
+const likeBtn = document.getElementById('likeBtn');
+const collectBtn = document.getElementById('collect');
+const shareBtn = document.getElementById('share');
+const autoPlayBtn = document.getElementById('autoPlay');
+const menuBtn = document.getElementById('menu');
+const sidebar = document.getElementById('sidebar');
+const closeBtn = document.getElementById('close');
+const favList = document.getElementById('favList');
+
+let locked = false, next = '', currentSrc = '', liked = false, autoPlayEnabled = false;
+
+const APIS = [
+  'https://v2.xxapi.cn/api/meinv',
+  'http://api.yujn.cn/api/baisis.php?type=json',
+  'http://api.yujn.cn/api/heisis.php?type=json',
+  'http://api.yujn.cn/api/rewu.php?type=json'
+];
+
+async function getUrl() {
+  const apiUrl = APIS[Math.floor(Math.random() * APIS.length)];
+  try {
+    const r = await fetch(apiUrl);
+    if (!r.ok) throw new Error('请求失败');
+    const j = await r.json();
+    if (!j.data) throw new Error('无数据');
+    return j.data.replace('http://', 'https://');
+  } catch (e) {
+    const fallbackUrl = APIS[(APIS.indexOf(apiUrl) + 1) % APIS.length];
+    const r2 = await fetch(fallbackUrl);
+    const j2 = await r2.json();
+    return j2.data.replace('http://', 'https://');
+  }
+}
+
+async function preload() { next = await getUrl(); }
+
+async function switchVideo() {
+  if (locked || !next) return;
+  locked = true;
+  currentSrc = next;
+  v.src = currentSrc;
+  v.onloadeddata = () => {
+    locked = false;
+    v.play().catch(() => {});
+    preload();
+  };
+  updateLikeBtn(); updateCollectBtn();
+}
+preload().then(() => switchVideo());
+
+/* 自动播放：视频结束时切换 */
+v.addEventListener('ended', () => {
+  if (autoPlayEnabled) switchVideo();
+});
+
+/* 上下滑动切换 */
+let y0 = 0;
+document.addEventListener('touchstart', e => y0 = e.touches[0].clientY);
+document.addEventListener('touchend', e => {
+  const y1 = e.changedTouches[0].clientY;
+  if (Math.abs(y1 - y0) > 50) switchVideo();
+});
+
+/* 双击点赞 */
+let lastTap = 0;
+document.addEventListener('touchstart', e => {
+  const now = Date.now();
+  if (now - lastTap < 300) {
+    const x = e.touches[0].clientX, y = e.touches[0].clientY;
+    createHeart(x, y);
+    if (!liked) toggleLike();
+  }
+  lastTap = now;
+});
+
+likeBtn.addEventListener('click', toggleLike);
+
+function toggleLike() {
+  liked = !liked;
+  likeBtn.classList.toggle('liked', liked);
+}
+
+function createHeart(x, y) {
+  const h = document.createElement('div');
+  h.className = 'heart';
+  h.style.left = (x - 20) + 'px'; h.style.top = (y - 20) + 'px';
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 1000);
+}
+
+function updateLikeBtn() {
+  liked = false; likeBtn.classList.remove('liked');
+}
+
+/* 分享按钮：复制链接 */
+shareBtn.addEventListener('click', async () => {
+  if (!currentSrc) return;
+  try {
+    await navigator.clipboard.writeText(currentSrc);
+    alert('链接已复制到剪贴板！');
+  } catch (err) {
+    const textArea = document.createElement('textarea');
+    textArea.value = currentSrc;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert('链接已复制到剪贴板！');
+  }
+});
+
+/* 自动播放开关 */
+autoPlayBtn.addEventListener('click', () => {
+  autoPlayEnabled = !autoPlayEnabled;
+  autoPlayBtn.classList.toggle('active', autoPlayEnabled);
+  v.loop = !autoPlayEnabled;
+});
+
+/* 收藏相关 */
+const favKey = 'favVideos';
+function getFavs() {
+  try { return JSON.parse(localStorage.getItem(favKey)) || []; } catch (e) { return []; }
+}
+function saveFavs(list) { localStorage.setItem(favKey, JSON.stringify(list)); }
+function updateCollectBtn() {
+  collectBtn.classList.toggle('yellow', getFavs().includes(currentSrc));
+}
+collectBtn.addEventListener('click', () => {
+  if (!currentSrc) return;
+  const list = getFavs(), idx = list.indexOf(currentSrc);
+  idx === -1 ? list.push(currentSrc) : list.splice(idx, 1);
+  saveFavs(list); updateCollectBtn(); renderFavList();
+});
+function renderFavList() {
+  const list = getFavs();
+  favList.innerHTML = '';
+  if (list.length === 0) { favList.innerHTML = '<div class="fav-empty">暂无收藏</div>'; return; }
+  list.forEach(url => {
+    const item = document.createElement('div'); item.className = 'fav-item';
+    const poster = document.createElement('video');
+    poster.src = url; poster.muted = true; poster.playsInline = true; poster.preload = 'metadata';
+    item.appendChild(poster);
+    item.addEventListener('click', () => {
+      currentSrc = url; v.src = currentSrc; sidebar.classList.remove('show');
+      updateLikeBtn(); updateCollectBtn();
+    });
+    favList.appendChild(item);
+  });
+}
+menuBtn.addEventListener('click', () => { sidebar.classList.add('show'); renderFavList(); });
+closeBtn.addEventListener('click', () => sidebar.classList.remove('show'));
+</script>
+</body>
+</html>

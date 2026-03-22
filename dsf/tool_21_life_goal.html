@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>人生目标规划器</title>
+<style>
+:root{
+  --accent:#667eea;
+  --accent-light:#764ba2;
+  --bg:#f5f7fa;
+  --card:#ffffff;
+  --text:#222;
+  --sub:#666;
+  --radius:18px;
+  --font:"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --shadow-light:0 4px 20px rgba(0,0,0,.06);
+  --shadow-heavy:0 8px 40px rgba(0,0,0,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121212;
+    --card:#1e1e1e;
+    --text:#eee;
+    --sub:#aaa;
+    --shadow-light:0 4px 20px rgba(0,0,0,.35);
+    --shadow-heavy:0 8px 40px rgba(0,0,0,.5);
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font)}
+body{background:var(--bg);color:var(--text);transition:background .3s}
+header{position:sticky;top:0;z-index:10;padding:1.2rem 2rem;background:var(--bg)}
+header h1{font-size:1.5rem;font-weight:600;letter-spacing:.02em}
+header p{margin-top:.2rem;font-size:.85rem;color:var(--sub)}
+main{padding:0 1rem 5rem;max-width:680px;margin:auto}
+
+.card{background:var(--card);border-radius:var(--radius);padding:1.1rem 1.3rem;margin:.8rem 0;box-shadow:var(--shadow-light);cursor:pointer;transition:transform .25s}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-heavy)}
+.card h3{font-size:1.15rem;font-weight:600}
+.card small{font-size:.8rem;color:var(--sub);margin-top:.15rem;display:block}
+.progress-bar{background:#f0f0f0;border-radius:10px;height:8px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));border-radius:10px;transition:width .5s ease}
+.priority-badge{display:inline-block;padding:4px 12px;border-radius:12px;font-size:.75rem;font-weight:600;margin-right:8px}
+.priority-high{background:#ff6b6b;color:#fff}
+.priority-medium{background:#feca57;color:#333}
+.priority-low{background:#48dbfb;color:#fff}
+
+.empty{text-align:center;color:var(--sub);margin-top:4rem}
+.empty svg{width:60px;height:60px;margin-bottom:.8rem;fill:currentColor}
+.empty p{letter-spacing:.05em}
+
+#addBtn{position:fixed;right:1.2rem;bottom:1.2rem;width:54px;height:54px;border:none;border-radius:50%;background:var(--accent);color:#fff;font-size:28px;cursor:pointer;box-shadow:var(--shadow-light);transition:.3s}
+#addBtn:hover{background:var(--accent-light);transform:scale(1.08)}
+#addBtn:active{transform:scale(.94)}
+
+.sheet{position:fixed;left:0;bottom:0;width:100%;background:#fff;border-radius:var(--radius) var(--radius) 0 0;box-shadow:var(--shadow-heavy);padding:30px 20px 40px;transform:translateY(100%);transition:transform .35s cubic-bezier(.2,.7,.4,1);z-index:20;max-height:82vh;overflow-y:auto}
+.sheet.show{transform:translateY(0)}
+.sheet h2{margin-bottom:20px;font-size:1.25rem;font-weight:600;text-align:center}
+.sheet-close{position:absolute;top:14px;right:14px;font-size:22px;line-height:1;color:var(--sub);cursor:pointer;transition:.2s}
+.sheet-close:hover{color:var(--text);transform:scale(1.15)}
+
+.sheet input,.sheet textarea,.sheet select{
+  width:100%;padding:12px 14px;border:none;border-radius:10px;font-size:15px;
+  background:#f7f7f7;box-shadow:inset 2px 2px 5px #e0e0e0,inset -2px -2px 5px #ffffff;
+  margin-bottom:15px;color:var(--text);transition:.2s
+}
+@media (prefers-color-scheme: dark){
+  .sheet input,.sheet textarea,.sheet select{background:#252525;color:#eee;box-shadow:inset 2px 2px 5px #0f0f0f,inset -2px -2px 5px #333}
+}
+.sheet input:focus,.sheet textarea:focus,.sheet select:focus{outline:none;background:#f2f2f2}
+.sheet textarea{min-height:120px;resize:vertical}
+.sheet button{width:100%;padding:12px;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:.25s}
+.sheet #confirmBtn{background:var(--accent);color:#fff;margin-bottom:10px}
+.sheet #confirmBtn:hover{background:var(--accent-light)}
+.sheet #delBtn{background:#ff5f5f;color:#fff}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;transition:opacity .25s;pointer-events:none;z-index:19}
+.overlay.show{opacity:1;pointer-events:auto}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎯 人生目标规划器</h1>
+  <p>制定你的梦想，规划你的人生</p>
+</header>
+
+<main id="goals"></main>
+<button id="addBtn">＋</button>
+
+<!-- 底部弹窗 -->
+<div class="overlay" id="overlay"></div>
+<div class="sheet" id="sheet">
+  <span class="sheet-close" id="closeBtn">❌</span>
+  <h2 id="sheetTitle">新增目标</h2>
+  <input id="goalName" placeholder="目标名称" />
+  <textarea id="goalDesc" placeholder="目标描述"></textarea>
+  <input id="goalDate" type="date" />
+  <select id="goalPriority">
+    <option value="high">高优先级</option>
+    <option value="medium" selected>中优先级</option>
+    <option value="low">低优先级</option>
+  </select>
+  <input id="goalProgress" type="number" min="0" max="100" placeholder="进度 %" value="0" />
+  <button id="confirmBtn">确认</button>
+  <button id="delBtn" style="display:none">删除</button>
+</div>
+
+<script>
+const LS_KEY='lifeGoals';
+const goalsWrap=document.getElementById('goals');
+const addBtn=document.getElementById('addBtn');
+const overlay=document.getElementById('overlay');
+const sheet=document.getElementById('sheet');
+const closeBtn=document.getElementById('closeBtn');
+const sheetTitle=document.getElementById('sheetTitle');
+const goalName=document.getElementById('goalName');
+const goalDesc=document.getElementById('goalDesc');
+const goalDate=document.getElementById('goalDate');
+const goalPriority=document.getElementById('goalPriority');
+const goalProgress=document.getElementById('goalProgress');
+const confirmBtn=document.getElementById('confirmBtn');
+const delBtn=document.getElementById('delBtn');
+
+let currentId=null;
+goalDate.valueAsDate=new Date();
+render();
+
+addBtn.onclick=()=>openSheet();
+overlay.onclick=closeBtn.onclick=closeSheet;
+confirmBtn.onclick=()=>currentId===null?addGoal():updateGoal();
+delBtn.onclick=deleteGoal;
+
+function render(){
+  const goals=JSON.parse(localStorage.getItem(LS_KEY))||[];
+  goalsWrap.innerHTML='';
+  if(goals.length===0){
+    goalsWrap.innerHTML=`
+      <div class="empty">
+        <svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <p>还没有目标，点击下方“＋”开始规划吧</p>
+      </div>`;
+    return;
+  }
+  goals.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).forEach(g=>{
+    const daysLeft=g.deadline?Math.ceil((new Date(g.deadline)-new Date())/(1000*60*60*24)):'无限期';
+    const div=document.createElement('div');
+    div.className='card';
+    div.innerHTML=`
+      <h3>${g.name}</h3>
+      <div class="priority-badge priority-${g.priority}">${getPriorityText(g.priority)}</div>
+      <small>剩余 ${daysLeft} 天 | 创建于 ${g.createdAt.split('T')[0]}</small>
+      <div class="progress-bar"><div class="progress-fill" style="width:${g.progress}%"></div></div>
+      <small>进度 ${g.progress}%</small>
+    `;
+    div.onclick=()=>openSheet(g.id);
+    goalsWrap.appendChild(div);
+  });
+}
+function getPriorityText(p){return{high:'高优',medium:'中优',low:'低优'}[p]||''}
+function openSheet(id=null){
+  currentId=id;
+  if(id===null){
+    sheetTitle.textContent='新增目标';
+    goalName.value='';goalDesc.value='';goalDate.valueAsDate=new Date();
+    goalPriority.value='medium';goalProgress.value=0;
+    delBtn.style.display='none';
+  }else{
+    const g=(JSON.parse(localStorage.getItem(LS_KEY))||[]).find(n=>n.id==id);
+    sheetTitle.textContent='编辑目标';
+    goalName.value=g.name;goalDesc.value=g.description;goalDate.value=g.deadline;
+    goalPriority.value=g.priority;goalProgress.value=g.progress;
+    delBtn.style.display='block';
+  }
+  overlay.classList.add('show');
+  sheet.classList.add('show');
+}
+function closeSheet(){
+  overlay.classList.remove('show');
+  sheet.classList.remove('show');
+  currentId=null;
+}
+function addGoal(){
+  const n=goalName.value.trim(),d=goalDesc.value.trim(),dt=goalDate.value,p=goalPriority.value,pr=Math.min(100,Math.max(0,parseInt(goalProgress.value)||0));
+  if(!n){alert('请填写目标名称');return}
+  const goals=JSON.parse(localStorage.getItem(LS_KEY))||[];
+  goals.push({id:Date.now(),name:n,description:d,deadline:dt,priority:p,progress:pr,createdAt:new Date().toISOString()});
+  localStorage.setItem(LS_KEY,JSON.stringify(goals));
+  closeSheet();render();
+  if(pr===100) setTimeout(()=>alert(`🎉 恭喜完成目标：${n}`),300);
+}
+function updateGoal(){
+  const goals=JSON.parse(localStorage.getItem(LS_KEY))||[];
+  const idx=goals.findIndex(n=>n.id==currentId);
+  if(idx===-1)return;
+  goals[idx].name=goalName.value.trim();
+  goals[idx].description=goalDesc.value.trim();
+  goals[idx].deadline=goalDate.value;
+  goals[idx].priority=goalPriority.value;
+  goals[idx].progress=Math.min(100,Math.max(0,parseInt(goalProgress.value)||0));
+  localStorage.setItem(LS_KEY,JSON.stringify(goals));
+  closeSheet();render();
+  if(goals[idx].progress===100) setTimeout(()=>alert(`🎉 恭喜完成目标：${goals[idx].name}`),300);
+}
+function deleteGoal(){
+  let goals=JSON.parse(localStorage.getItem(LS_KEY))||[];
+  goals=goals.filter(n=>n.id!==currentId);
+  localStorage.setItem(LS_KEY,JSON.stringify(goals));
+  closeSheet();render();
+}
+</script>
+</body>
+</html>

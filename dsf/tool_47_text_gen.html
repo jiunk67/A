@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href="css/font.css">
+<head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+ <title>文字生成器</title>
+    <style>
+        body {
+            background-color: #f1f1f1;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .input-group input[type="text"],
+        .input-group input[type="number"] {
+            width: 95%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        .input-group input[type="color"] {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: none;
+            border-radius: 100%;
+        }
+
+        .btn-generate {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-generate:hover {
+            background-color: #45a049;
+        }
+
+        .output-text {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .output-text span.colored-text {
+            color: #f44336;
+        }
+      .btn-copy {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-copy:hover {
+            background-color: #1976D2;
+        }
+    
+    </style>
+    <style>
+    input {
+ border: none;
+ background-color: #fff;
+ color: #333;
+ padding:10px;
+ border-radius:5px;
+ box-shadow:02px5px rgba(0,0,0,0.1);
+}
+
+input:focus {
+ outline: none;
+ box-shadow:005px rgba(0,0,0,0.1);
+}
+
+input::placeholder {
+ color: #999;
+}
+
+input.container {
+ background-image: linear-gradient(to bottom right, #e5f8ff, #ececff);
+ border-radius:5px;
+ padding:5px;
+}
+    </style>
+</head>
+<!-- 陌白团队，欢迎加入QQ交流群717010330 -->
+<body>
+<center><div style="color:red"><h3>请勿输入过多，尽量控制在5000，如遇到无法复制，请手动复制</h3></div></center>
+    <div class="container">
+        <div class="input-group">
+            <label for="text-input">请输入文字：</label>
+            <input type="text" id="text-input" placeholder="请输入文字">
+        </div>
+        <div class="input-group">
+            <label for="loop-input">请输入循环次数：</label>
+            <input type="number" id="loop-input" placeholder="请输入循环次数">
+        </div>
+        <div class="input-group">
+            <label for="background-color-input">背景颜色：</label>
+            <input type="color" id="background-color-input" onchange="changeStyle('background-color-input')">
+        </div>
+        <div class="input-group">
+            <label for="text-color-input">文字颜色：</label>
+            <input type="color" id="text-color-input" onchange="changeStyle('text-color-input')">
+        </div>
+        <button class="btn-generate" onclick="generateText()">生成文本</button>
+        <button class="btn-copy" onclick="copyText()">一键复制</button>
+      <h4> 返回区↓</h4>
+        <div class="output-text" id="output-text"></div>
+    </div>
+
+    </div>
+
+<script>
+    function generateText() {
+        var textInput = document.getElementById("text-input");
+        var loopInput = document.getElementById("loop-input");
+        var outputText = "";
+
+        var text = textInput.value;
+        var loop = parseInt(loopInput.value);
+
+        for (var i = 1; i <= loop; i++) {
+            outputText += i + ". <span class='colored-text'>" + text + "</span><br>";
+        }
+
+        document.getElementById("output-text").innerHTML = outputText;
+    }
+
+    function changeStyle(inputId) {
+        var backgroundColorInput = document.getElementById("background-color-input");
+        var textColorInput = document.getElementById("text-color-input");
+
+        if (inputId === "background-color-input") {
+            document.body.style.backgroundColor = backgroundColorInput.value;
+        } else if (inputId === "text-color-input") {
+            document.body.style.color = textColorInput.value;
+        }
+    }
+  function copyText() {
+            var outputText = document.getElementById("output-text");
+            var range = document.createRange();
+            range.selectNode(outputText);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+        }
+    
+</script>
+</body>
+</html>
+<!-- 陌白团队，欢迎加入QQ交流群717010330 -->
+  <!DOCTYPE html>
+<html>
+<head>
+<title></title>
+ <div style="user-select:none;">
+<style>
+	body {
+	height:20px;
+}
+#scroll-to-top {
+	display: none;
+	position: fixed;
+	right:23px;
+	bottom:35px;
+	width:50px;
+	height:50px;
+	border: none;
+	background-color: #333;
+	color: #fff;
+	font-size:45px;
+	text-align: center;
+	cursor: pointer;
+	border-radius:50%;
+	z-index:999;
+}
+#scroll-to-top:hover {
+	background-color: #555;
+}
+</style>
+</head>
+<body>
+<button id="scroll-to-top">^</button>
+
+<script>
+	window.onscroll = function() {
+	scrollFunction()
+};
+
+	function scrollFunction() {
+	if (document.body.scrollTop >20 || document.documentElement.scrollTop >20) {
+	document.getElementById("scroll-to-top").style.display = "block";
+} else {
+	document.getElementById("scroll-to-top").style.display = "none";
+}
+}
+
+	document.getElementById("scroll-to-top").onclick = function() {
+	scrollToTop()
+};
+
+	function scrollToTop() {
+	document.body.scrollTop =0;
+	document.documentElement.scrollTop =0;
+}
+</script>
+</body>
+</div>
+</html>

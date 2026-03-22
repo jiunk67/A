@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快手极速刷赞助手</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff4f81, #ff6b6b, #ff8e8e);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            font-size: 36px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .version {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .settings {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.3);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #ff4f81;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(to right, #ff4f81, #ff6b6b);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 79, 129, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 79, 129, 0.6);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+            padding: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.8;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .warning {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        @media (max-width: 500px) {
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-bolt"></i>
+                <h1>快手极速刷赞助手</h1>
+            </div>
+            <div class="version">专业版 v3.8.2</div>
+        </div>
+        
+        <div class="content">
+            <div class="warning">
+                <i class="fas fa-exclamation-triangle"></i> 请勿短时间内刷赞过多，避免账号异常
+            </div>
+            
+            <div class="input-group">
+                <label for="videoUrl"><i class="fas fa-link"></i> 快手视频链接</label>
+                <input type="text" id="videoUrl" placeholder="请输入快手视频链接或分享ID">
+            </div>
+            
+            <div class="settings">
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <i class="fas fa-user-clock"></i>
+                        <span>间隔时间</span>
+                    </div>
+                    <span>3-5秒</span>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>刷赞速度</span>
+                    </div>
+                    <span>中等速度</span>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <i class="fas fa-random"></i>
+                        <span>随机延迟</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>安全模式</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <button class="btn" id="startBtn">
+                <i class="fas fa-play"></i> 开始刷赞
+            </button>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="likeCount">0</div>
+                    <div class="stat-label">已刷赞数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="timeCount">0</div>
+                    <div class="stat-label">运行时间(秒)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="speedCount">0</div>
+                    <div class="stat-label">点赞/分钟</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>本工具仅供学习交流使用 | 请遵守快手平台规则</p>
+            <p>使用本工具产生的任何问题与开发者无关</p>
+        </div>
+    </div>
+    
+    <script>
+        // 模拟刷赞功能
+        const startBtn = document.getElementById('startBtn');
+        const likeCount = document.getElementById('likeCount');
+        const timeCount = document.getElementById('timeCount');
+        const speedCount = document.getElementById('speedCount');
+        
+        let isRunning = false;
+        let likeCounter = 0;
+        let timeCounter = 0;
+        let timer;
+        
+        startBtn.addEventListener('click', function() {
+            const videoUrl = document.getElementById('videoUrl').value;
+            if (!videoUrl) {
+                alert('请输入快手视频链接！');
+                return;
+            }
+            
+            if (!isRunning) {
+                // 开始刷赞
+                isRunning = true;
+                this.innerHTML = '<i class="fas fa-stop"></i> 停止刷赞';
+                
+                // 模拟刷赞过程
+                timer = setInterval(() => {
+                    likeCounter++;
+                    timeCounter++;
+                    
+                    likeCount.textContent = likeCounter;
+                    timeCount.textContent = timeCounter;
+                    
+                    // 计算每分钟点赞速度
+                    if (timeCounter > 0) {
+                        const speed = Math.floor((likeCounter / timeCounter) * 60);
+                        speedCount.textContent = speed;
+                    }
+                    
+                    // 随机增加点赞数模拟波动
+                    if (Math.random() > 0.7) {
+                        likeCounter += Math.floor(Math.random() * 3);
+                        likeCount.textContent = likeCounter;
+                    }
+                }, 1000);
+            } else {
+                // 停止刷赞
+                isRunning = false;
+                this.innerHTML = '<i class="fas fa-play"></i> 开始刷赞';
+                clearInterval(timer);
+            }
+        });
+    </script>
+</body>
+</html>

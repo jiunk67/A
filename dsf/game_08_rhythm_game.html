@@ -1,5 +1,462 @@
-<script>
-<!--
-document.write(unescape("%3C%21DOCTYPE%20html%3E%0A%3Chtml%20xmlns%3D%22http%3A///1999/xhtml%22%3E%0A%3Chead%3E%0A%3Cmeta%20http-equiv%3D%22Content-Type%22%20content%3D%22text/html%3B%20charset%3Dutf-8%22/%3E%0A%3Cmeta%20name%3D%22renderer%22%20content%3D%22webkit%22%3E%0A%3Cmeta%20http-equiv%3D%22X-UA-Compatible%22%20content%3D%22IE%3Dedge%22%3E%0A%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2Cinitial-scale%3D1%22%3E%0A%3Ctitle%3E%u8BA1%u7B97%u5668%3C/title%3E%0A%3Cmeta%20name%3D%22Keywords%22%20content%3D%22%u8BA1%u7B97%u673A%2C%u8BA1%u7B97%u5668%2C%u8BA1%u7B97%u5668%u5728%u7EBF%22%20/%3E%0A%3Cmeta%20name%3D%22description%22%20content%3D%22%u8BA1%u7B97%u5668%u662F%u6570%u5B57%u8FD0%u7B97%u7684%u8BA1%u7B97%u673A%uFF0C%u672C%u7AD9%u63D0%u4F9B%u4E07%u80FD%u7684%u79D1%u5B66%u8BA1%u7B97%u5668%u5728%u7EBF%u4F7F%u7528%uFF0C%u53EF%u8BA1%u7B97%u6839%u53F7%u3001%u65B9%u7A0B%u3001%u51FD%u6570%u7B49%u9AD8%u7EA7%u8BA1%u7B97%u3002%22%20/%3E%0A%3Cmeta%20name%3D%22author%22%20content%3D%22%u8BA1%u7B97%u5668%22%20/%3E%0A%3Clink%20rel%3D%22stylesheet%22%20type%3D%22text/css%22%20href%3D%22http%3A//www.0756jia.com/zb_users/theme/superpage/style/style.ok.css%22%20/%3E%3Clink%20rel%3D%22stylesheet%22%20type%3D%22text/css%22%20href%3D%22css/style.css%22%20/%3E%0A%3Clink%20rel%3D%22stylesheet%22%20type%3D%22text/css%22%20href%3D%22http%3A//www.0756jia.com/zb_users/theme/superpage/fonts/iconfont.css%22%20/%3E%0A%3Clink%20rel%3D%22apple-touch-icon%22%20type%3D%22image/x-icon%22%20href%3D%22http%3A//www.0756jia.com/zb_users/upload/2021/03/202103091615273690642996.ico%22%3E%0A%3Clink%20rel%3D%22shortcut%20icon%22%20type%3D%22image/x-icon%22%20href%3D%22http%3A//www.0756jia.com/zb_users/upload/2021/03/202103091615273690642996.ico%22%3E%0A%3Clink%20rel%3D%22icon%22%20type%3D%22image/x-icon%22%20href%3D%22http%3A//www.0756jia.com/zb_users/upload/2021/03/202103091615273690642996.ico%22%3E%0A%3Cscript%20src%3D%22http%3A//www.0756jia.com/zb_system/script/jquery-2.2.4.min.js%22%20type%3D%22text/javascript%22%3E%3C/script%3E%0A%3Cscript%20src%3D%22http%3A//www.0756jia.com/zb_system/script/zblogphp.js%22%3E%3C/script%3E%0A%3Cscript%20src%3D%22http%3A//www.0756jia.com/zb_system/script/c_html_js_add.php%22%3E%3C/script%3E%0A%3Cscript%20src%3D%22http%3A//www.0756jia.com/zb_users/theme/superpage/style/js/hnysnet.js%22%3E%3C/script%3E%0A%3Clink%20href%3D%22http%3A//www.0756jia.com/jisuanqi.css%22%20rel%3D%22stylesheet%22%20type%3D%22text/css%22%3E%0A%3Cscript%3Evar%20_hmt%20%3D_hmt%20%7C%7C%5B%5D%3B%28function%28%29%20%7Bvar%20hm%20%3Ddocument.createElement%28%22script%22%29%3Bhm.src%20%3D%22https%3A//hm.baidu.com/hm.js%3F9e9fbb2ed32e01dc5668ef83a85cf976%22%3Bvar%20s%20%3Ddocument.getElementsByTagName%28%22script%22%29%5B0%5D%3Bs.parentNode.insertBefore%28hm%2Cs%29%3B%7D%29%28%29%3B%3C/script%3E%3Cstyle%3E.mw1024%2C%23navul%7Bmax-width%3A1024px%7D.content%20p%2C.content%20div%7Bmargin-bottom%3A15px%3Bfont-size%3A14px%3B%7D%3C/style%3E%0A%3C/head%3E%0A%3Cbody%3E%0A%3Cdiv%20class%3D%22main%22%3E%0A%3Cdiv%20class%3D%22mw1024%22%3E%0A%3Cdiv%20class%3D%22js-silder%22%3E%0A%3Cdiv%20class%3D%22silder-scroll%22%3E%0A%3Cdiv%20class%3D%22silder-main%22%3E%0A%3Cdiv%20id%3D%22divMain%22%3E%0A%3Cscript%20src%3D%22http%3A//www.0756jia.com/calc.js%22%3E%3C/script%3E%0A%3Cdiv%20class%3D%22qiehuankuang_1%22%20id%3D%22btns%22%3E%0A%3Cinput%20type%3D%22button%22%20value%3D%22%u666E%u901A%u8BA1%u7B97%u5668%22%20class%3D%22qiehuankuang_1_dq%22%20/%3E%0A%3Cinput%20type%3D%22button%22%20value%3D%22%u9AD8%u7EA7%u8BA1%u7B97%u5668%22%20/%3E%0A%3C/div%3E%0A%3Cdiv%20id%3D%22jisuan%22%3E%0A%3Cdiv%20class%3D%22calculator_main%22%20id%3D%22calculator%22%3E%0A%3Cdiv%20class%3D%22calculator_con%20%20current%22%3E%0A%3Cdiv%20id%3D%22calculator_base%22%20style%3D%22display%3A%20block%22%3E%3C/div%3E%0A%3Cdiv%20class%3D%22calculator_hd%22%3E%0A%3Cinput%20type%3D%22text%22%20id%3D%22resultIpt%22%20readonly%20class%3D%22resultIpt%22%20value%3D%220%22%20size%3D%2217%22%20maxlength%3D%2217%22%3E%3C/div%3E%0A%3Cdiv%20id%3D%22baseEprsPanel%22%20valign%3D%22middle%22%20width%3D%22290%22%20style%3D%22display%3Anone%22%3E%3C/div%3E%0A%3Cdiv%20class%3D%22calculator_bd%22%20id%3D%22calculator_bd%22%3E%0A%3Cul%20class%3D%22calculator_table%22%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.memory%28this%2C0%29%3B%22%3E%u5B58%u50A8%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.memory%28this%2C1%29%3B%22%3E%u53D6%u5B58%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cla_btn_org%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simpleDel%22%20onclick%3D%22calculator.remove%28%29%3B%22%3E%u9000%u683C%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cla_btn_org%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simpleClearAllBtn%22%20onclick%3D%22calculator.clearAll%28%29%3B%22%3E%u6E05%u5C4F%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.memory%28this%2C-1%29%3B%22%3E%u7D2F%u5B58%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.memory%28this%2C-2%29%3B%22%3E%u79EF%u5B58%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.memory%28this%2C2%29%3B%22%3E%u6E05%u5B58%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gray%20fontArial%22%20id%3D%22simpleDivi%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.input%28this%2C3%29%3B%22%3E%F7%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22simple7%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.input%28this%2C-1%29%3B%22%3E7%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22simple8%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.input%28this%2C-1%29%3B%22%3E8%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22simple9%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.input%28this%2C-1%29%3B%22%3E9%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gray%20fontArial%22%20id%3D%22simpleMulti%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.input%28this%2C2%29%3B%22%3Ex%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simple4%22%20onclick%3D%22calculator.input%28this%2C-1%29%3B%22%3E4%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simple5%22%20onclick%3D%22calculator.input%28this%2C-1%29%3B%22%3E5%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simple6%22%20onclick%3D%22calculator.input%28this%2C-1%29%3B%22%3E6%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gray%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simpleSubtr%22%20onclick%3D%22calculator.input%28this%2C1%29%3B%22%3E-%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simple1%22%20onclick%3D%22calculator.input%28this%2C-1%29%3B%22%3E1%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simple2%22%20onclick%3D%22calculator.input%28this%2C-1%29%3B%22%3E2%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simple3%22%20onclick%3D%22calculator.input%28this%2C-1%29%3B%22%3E3%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gray%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simpleAdd%22%20onclick%3D%22calculator.input%28this%2C0%29%3B%22%3E+%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simple0%22%20onclick%3D%22calculator.input%28this%2C-1%29%3B%22%3E0%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22simpleDot%22%20onclick%3D%22calculator.input%28this%2C-1%29%3B%22%3E.%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.input%28this%2C-3%29%3B%22%3E+/-%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_bla%20fontArial%22%20id%3D%22simpleEqual%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22calculator.input%28this%2C-2%29%3B%22%3E%3D%3C/a%3E%3C/li%3E%0A%3C/ul%3E%0A%3C/div%3E%0A%3C/div%3E%0A%3Cdiv%20class%3D%22calculator_con%22%3E%0A%3Cdiv%20class%3D%22calculator_hd%22%3E%0A%3Cinput%20type%3D%22text%22%20class%3D%22resultIpt%22%20id%3D%22gaoji%22%20name%3D%22gaoji%22%20value%3D%220%22%3E%0A%3Cdiv%20id%3D%22completeEprsPanel%22%20valign%3D%22middle%22%20width%3D%22290%22%20style%3D%22display%3Anone%22%3E%3C/div%3E%0A%3C/div%3E%0A%3Cdiv%20class%3D%22calculator_bd%22%3E%0A%3Cul%20class%3D%22complete_table_rdo%22%3E%0A%3Cli%3E%0A%3Cdiv%20class%3D%22labinp%22%3E%0A%3Cinput%20type%3D%22radio%22%20name%3D%22carry%22%20onclick%3D%22inputChangCarry%2816%29%3B%22%20id%3D%22hex%22%3E%0A%3Clabel%20for%3D%22hex%22%3E%u5341%u516D%u8FDB%u5236%3C/label%3E%3C/div%3E%0A%3Cdiv%20class%3D%22labinp%22%3E%0A%3Cinput%20type%3D%22radio%22%20name%3D%22carry%22%20onclick%3D%22inputChangCarry%2810%29%3B%22%20id%3D%22decimal%22%20checked%3D%22checked%22%20display%3D%22block%22%3E%0A%3Clabel%20for%3D%22decimal%22%3E%u5341%u8FDB%u5236%3C/label%3E%3C/div%3E%0A%3Cdiv%20class%3D%22labinp%22%3E%0A%3Cinput%20type%3D%22radio%22%20name%3D%22carry%22%20onclick%3D%22inputChangCarry%288%29%3B%22%20id%3D%22octal%22%3E%0A%3Clabel%20for%3D%22octal%22%3E%u516B%u8FDB%u5236%3C/label%3E%3C/div%3E%0A%3Cdiv%20class%3D%22labinp%22%3E%0A%3Cinput%20type%3D%22radio%22%20name%3D%22carry%22%20onclick%3D%22inputChangCarry%282%29%3B%22%20id%3D%22binary%22%3E%0A%3Clabel%20for%3D%22binary%22%3E%u4E8C%u8FDB%u5236%3C/label%3E%3C/div%3E%0A%3Cdiv%20class%3D%22labinp%22%3E%3C/div%3E%0A%3Cdiv%20class%3D%22labinp%22%3E%0A%3Cinput%20type%3D%22radio%22%20name%3D%22angle%22%20onclick%3D%22inputChangAngle%28%27d%27%29%3B%22%3E%0A%3Clabel%20for%3D%22angle%22%3E%u89D2%u5EA6%u5236%3C/label%3E%3C/div%3E%0A%3Cdiv%20class%3D%22labinp%22%3E%0A%3Cinput%20type%3D%22radio%22%20name%3D%22angle%22%20onclick%3D%22inputChangAngle%28%27r%27%29%3B%22%3E%0A%3Clabel%20for%3D%22angle%22%3E%u5F27%u5EA6%u5236%3C/label%3E%3C/div%3E%0A%3C/li%3E%0A%3Cli%3E%0A%3Cdiv%20class%3D%22labinp%22%3E%0A%3Cinput%20type%3D%22checkbox%22%20id%3D%22upperFile%22%20onclick%3D%22inputshift%28%29%3B%22%3E%0A%3Clabel%20for%3D%22upperFile%22%3E%u4E0A%u6863%u529F%u80FD%3C/label%3E%3C/div%3E%0A%3Cdiv%20class%3D%22labinp%22%3E%0A%3Cinput%20type%3D%22checkbox%22%20id%3D%22hyperbolic%22%20onclick%3D%22inputshift%28%29%3B%22%3E%0A%3Clabel%20for%3D%22hyperbolic%22%3E%u53CC%u66F2%u51FD%u6570%3C/label%3E%3C/div%3E%0A%3Cdiv%20class%3D%22ipts%22%3E%0A%3Cinput%20type%3D%22text%22%20name%3D%22bracket%22%20id%3D%22bracket%22%20readonly%20size%3D%223%22%20class%3D%22chk_text_inp%22%3E%0A%3Cinput%20type%3D%22text%22%20name%3D%22memory%22%20id%3D%22memory%22%20readonly%20size%3D%223%22%20class%3D%22chk_text_inp%22%3E%0A%3Cinput%20type%3D%22text%22%20name%3D%22operator%22%20id%3D%22operator%22%20readonly%20size%3D%223%22%20class%3D%22chk_text_inp%22%3E%3C/div%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20id%3D%22completeDel%22%20onclick%3D%22backspace%28%29%3B%22%3E%u9000%u683C%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cla_btn_org%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22document.getElementById%28%27gaoji%27%29.value%3D0%3Bdocument.getElementById%28%27completeEprsPanel%27%29.innerHTML%20%3D%20%27%27%3Bthis.blur%28%29%3B%22%3E%u6E05%u5C4F%3C/a%3E%3C/li%3E%0A%3C/ul%3E%0A%3Cul%20class%3D%22complete_table_main%22%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22putmemory%28%29%3B%22%3E%u5B58%u50A8%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22getmemory%28%29%3B%22%3E%u53D6%u5B58%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22addmemory%28%29%3B%22%3E%u7D2F%u5B58%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22multimemory%28%29%3B%22%3E%u79EF%u5B58%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22clearmemory%28%29%3B%22%3E%u6E05%u5B58%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cla_btn_org%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22clearall%28%29%3B%22%3E%u5168%u6E05%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22complete7%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputkey%28%277%27%29%3B%22%3E7%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22complete8%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputkey%28%278%27%29%3B%22%3E8%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22complete9%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputkey%28%279%27%29%3B%22%3E9%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gray%20fontArial%22%20id%3D%22completeDivi%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22operation%28%27/%27%2C6%29%3B%3B%22%3E%F7%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22operation%28%27%25%27%2C6%29%3B%22%3E%u53D6%u4F59%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22operation%28%27%26%27%2C3%29%3B%22%3E%u4E0E%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22complete4%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputkey%28%274%27%29%3B%22%3E4%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22complete5%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputkey%28%275%27%29%3B%22%3E5%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22complete6%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputkey%28%276%27%29%3B%22%3E6%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gray%20fontArial%22%20id%3D%22completeMulti%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22operation%28%27*%27%2C6%29%3B%22%3Ex%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20id%3D%22changeDecimal%22%20onclick%3D%22inputfunction%28%27floor%27%2C%27deci%27%29%3B%22%3E%u53D6%u6574%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22operation%28%27%7C%27%2C1%29%3B%22%3E%u6216%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22complete1%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputkey%28%271%27%29%3B%22%3E1%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22complete2%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputkey%28%272%27%29%3B%22%3E2%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22complete3%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputkey%28%273%27%29%3B%22%3E3%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gray%20fontArial%22%20id%3D%22completeSubtr%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22operation%28%27-%27%2C5%29%3B%22%3E-%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22operation%28%27%3C%27%2C4%29%3B%22%3E%u5DE6%u79FB%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputfunction%28%27%7E%27%2C%27%7E%27%29%3B%22%3E%u975E%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22complete0%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputkey%28%270%27%29%3B%22%3E0%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22changeSign%28%29%3B%22%3E+/-%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20fontArial%22%20id%3D%22completeDot%22%20href%3D%22javascript%3A%3B%22%20id%3D%22dian%22%20onclick%3D%22inputkey%28%27.%27%29%3B%22%3E.%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gray%20fontArial%22%20id%3D%22completeAdd%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22operation%28%27+%27%2C5%29%3B%22%3E+%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_bla%20fontArial%22%20id%3D%22completeEqual%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22result%28%29%3B%22%3E%3D%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%20%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22operation%28%27x%27%2C2%29%3B%22%3E%u5F02%u6216%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22ka%22%20onclick%3D%22inputkey%28%27a%27%29%3B%22%3EA%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22kb%22%20onclick%3D%22inputkey%28%27b%27%29%3B%22%3EB%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22kc%22%20onclick%3D%22inputkey%28%27c%27%29%3B%22%3EC%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22kd%22%20onclick%3D%22inputkey%28%27d%27%29%3B%22%3ED%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22ke%22%20onclick%3D%22inputkey%28%27e%27%29%3B%22%3EE%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%20fontArial%22%20href%3D%22javascript%3A%3B%22%20id%3D%22kf%22%20onclick%3D%22inputkey%28%27f%27%29%3B%22%3EF%3C/a%3E%3C/li%3E%0A%3C/ul%3E%0A%3Cul%20class%3D%22complete_more%22%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_dis%22%20href%3D%22javascript%3A%3B%22%20id%3D%22pi%22%20onclick%3D%22inputfunction%28%27pi%27%2C%27pi%27%29%3B%22%3EPI%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_dis%22%20href%3D%22javascript%3A%3B%22%20id%3D%22e%22%20onclick%3D%22inputfunction%28%27e%27%2C%27e%27%29%3B%22%3EE%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_dis%22%20href%3D%22javascript%3A%3B%22%20id%3D%22bt%22%20onclick%3D%22inputfunction%28%27dms%27%2C%27deg%27%29%3B%22%3Ed.ms%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22addbracket%28this%29%3B%22%3E%28%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22disbracket%28this%29%3B%22%3E%29%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20id%3D%22ln%22%20onclick%3D%22inputfunction%28%27ln%27%2C%27exp%27%29%3B%22%3EIn%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20id%3D%22log%22%20onclick%3D%22inputfunction%28%27log%27%2C%27expdec%27%29%3B%22%3Elog%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_dis%22%20href%3D%22javascript%3A%3B%22%20id%3D%22sin%22%20onclick%3D%22inputtrig%28%27sin%27%2C%27arcsin%27%2C%27hypsin%27%2C%27ahypsin%27%29%3B%22%3Esin%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_dis%22%20href%3D%22javascript%3A%3B%22%20id%3D%22cos%22%20onclick%3D%22inputtrig%28%27cos%27%2C%27arccos%27%2C%27hypcos%27%2C%27ahypcos%27%29%3B%22%3Ecos%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_dis%22%20href%3D%22javascript%3A%3B%22%20id%3D%22tan%22%20onclick%3D%22inputtrig%28%27tan%27%2C%27arctan%27%2C%27hyptan%27%2C%27ahyptan%27%29%3B%22%3Etan%3C/a%3E%3C/li%3E%0A%3Cli%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputfunction%28%27%21%27%2C%27%21%27%29%3B%22%3En%21%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22inputfunction%28%27recip%27%2C%27recip%27%29%3B%22%3E1/x%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20id%3D%22sqr%22%20onclick%3D%22inputfunction%28%27sqr%27%2C%27sqrt%27%29%3B%22%3Ex%5E2%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20id%3D%22cube%22%20onclick%3D%22inputfunction%28%27cube%27%2C%27cubt%27%29%3B%22%3Ex%5E3%3C/a%3E%0A%3Ca%20class%3D%22cal_btn%20cal_btn_gre%22%20href%3D%22javascript%3A%3B%22%20onclick%3D%22operation%28%27%5E%27%2C7%29%3B%22%3Ex%5Ey%3C/a%3E%3C/li%3E%0A%3C/ul%3E%0A%3C/div%3E%0A%3C/div%3E%0A%3C/div%3E%0A%3C/div%3E%0A%3C/div%3E%0A%3Cscript%3Ejisuanqi_run%28%29%3Bvar%20oBtns%3Ddocument.getElementById%28%27btns%27%29%3Bvar%20aLi%3DoBtns.getElementsByTagName%28%27input%27%29%3Bvar%20aLiLength%3DaLi.length%3Bvar%20oCal%3Ddocument.getElementById%28%27calculator%27%29%3Bvar%20aDiv%3DoCal.getElementsByClassName%28%27calculator_con%27%29%3Bfor%20%28var%20i%3D0%3Bi%3CaLiLength%3Bi++%29%7B%28function%28idx%29%7BaLi%5Bidx%5D.onclick%20%3Dfunction%28%29%7Bdocument.getElementById%28%27resultIpt%27%29.value%3D0%3Bdocument.getElementById%28%27gaoji%27%29.value%20%3D0%3Bfor%28var%20j%20%3D0%3Bj%3CaLiLength%3Bj++%29%7BaLi%5Bj%5D.className%3D%27btnss%27%3BaDiv%5Bj%5D.className%3D%27calculator_con%27%3B%7D%0Athis.className%3D%27qiehuankuang_1_dq%27%3BaDiv%5Bidx%5D.className%3D%27calculator_con%20current%27%3B%7D%0A%7D%29%28i%29%3B%7D%0A%3C/script%3E%20%3C/div%3E%0A%3C/div%3E%0A%3C/div%3E%0A%3C/footer%3E%3C/body%3E%0A%3C/html%3E"));
-//-->
-</script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>节奏大师/钢琴块,随机刷新按键</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: white;
+            font-family: Arial, sans-serif;
+            touch-action: manipulation;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .lane {
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border: 1px solid #ccc;
+            position: relative;
+            overflow: hidden;
+        }
+        .note {
+            width: 100%;
+            height: 100px;
+            background-color: black;
+            position: absolute;
+            top: -50px;
+            transition: top var(--fall-speed) linear;
+        }
+        .target {
+            width: 100%;
+            height: 80px;
+            background-color: gray;
+            position: absolute;
+            bottom: 0;
+        }
+        .start-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            font-size: 20px;
+            color: white;
+            background-color: lightblue;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            color: black;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        .combo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: black;
+        }
+        .difficulty-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .difficulty-panel input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100px;
+        }
+        .difficulty-panel button {
+            padding: 10px 20px;
+            background-color: yellow;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .difficulty-button, .pause-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: green;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .pause-button {
+            left: 150px;
+            background-color: orange;
+        }
+        .pause-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .pause-panel button {
+            padding: 10px 20px;
+            background-color: lightblue;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 50px;
+            color: rgba(0, 8, 8, 7.7);
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+            body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .button {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            width: 100px;
+            height: 40px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .overlay .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            color: red;
+        }
+        .overlay p {
+            font-size: 13px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+ <div class="container">         <!-- 可以复制并创建多键，默认四键 -->
+        <div class="lane" id="lane1">
+            <div class="target"></div>
+        </div>
+        <div class="lane" id="lane2">
+            <div class="target"></div>
+        </div>
+        <div class="lane" id="lane3">
+            <div class="target"></div>
+        </div>
+        <div class="lane" id="lane4">
+            <div class="target"></div>
+        </div>
+    </div>
+    <!-- 下面这行是音效 -->
+    <audio id="beepSound" src="Audio-17-12-48.mp3"></audio>
+    <button class="start-button" onclick="startCountdown()">开始</button>
+    <div class="countdown" id="countdown">3</div>
+    <div class="combo" id="combo">连击数: 0</div>
+
+    <!-- 难度选择面板 -->
+    <div class="difficulty-panel" id="difficultyPanel">难度选择：
+        <label for="fallSpeed">下落速度 (0.100-∞秒):</label>
+        <input type="number" id="fallSpeed" min="0.2" max="3" step="0.1" value="1">
+        <label for="densityMin">数量密度 (0.100-∞秒之间随机刷新):</label>
+        <input type="number" id="densityMin" min="0.2" max="3" step="0.1" value="0.2">
+        <input type="number" id="densityMax" min="0.2" max="3" step="0.1" value="3">
+        <button onclick="applyDifficulty()">确认并重新开始</button>
+    </div>
+
+    <!-- 暂停面板 -->
+    <div class="pause-panel" id="pausePanel">
+        <button onclick="resumeGame()">继续游戏</button>
+        <button onclick="restartGame()">重新开始</button>
+    </div>
+
+    <!-- 难度选择和暂停按钮 -->
+    <button class="difficulty-button" onclick="showDifficultyPanel()">难度选择</button>
+    <button class="pause-button" onclick="showPausePanel()">暂停</button>
+
+<!-- 说明介绍游戏玩法 -->
+    <button class="button">玩法介绍</button>
+    <div class="overlay">
+        <span class="close">X</span>
+        <p>手机横屏请保持竖着看说明，因为我没有添加此面板的滑动查看功能</p>
+        <p>这是一个与钢琴块和节奏大师极其相似的游戏，需要考验眼力和手速的反应能力，爱玩音游的玩家应该不会对这觉得难</p>
+        <p>无法自定义编辑按键位置，所以不能自制谱，只能通过更改难度进行随机刷新下落并点击，点击后会在右上角显示连击数，断连会重新计算</p>
+        <p>该玩法主要是没有长条键，只有普通的单点黑键，也没有更多其他音效，需自行修改，暂时没有设定单独音效，按键不能被滑动，不能和节奏大师一样用拇指滑两个按键，要求严一些</p>
+        <p>首先一开始可以直接点击开始进行游戏，也可以点击“难度选择”进行调整难度，第一个输入框是表示这个按键会以默认的1秒种准确实时下落，按键被点击可支持多指同时点击（触控），而且还支持垂直判定</p>
+        <p>第二个和第三个输入框是多少与多少秒之间的刷新速度，你想要更难的玩法就可以输入0.100这样带三位数到0.300之间，数值越小黑键越容易并行，也可以更高如1秒出现到任意秒之间内刷新黑色按键下落，放心，最极限难度的密度并没有节奏大师的难</p>
+        <p>调整难度后的黑键下落就会持续整局游戏，过程没有血条，因此可以随便玩，1秒开头刷新是对音游人来说是非常非常简单的，建议0.001秒😂（开玩笑的，随便都可以），按键下落的逻辑没有真正的完善，只要靠近灰色方框附近就可以被点击，点击后提示“完美”，缺点就是没有顺序判断，所以不会限制先按快到的按键，只要靠近下面的灰色方框就可以点击了</p>
+        <p>目前手机平板都可以正常游玩，可以横屏与竖屏玩，平板横屏状态不过按键会很扁，手机横屏玩的按键间隔很短，而且按键调整高难度时看起来是黏在一起的，平板在竖着的状态过程再横屏可能会使游戏重新开始，建议锁屏玩，本人手机无影响</p>
+        <p>横屏没有专门优化代码，所以手机横屏可降低难度，要不然不够视野看到黑色按键，除非你🐂🍺，可挑战极限</p>
+        <p>暂停键有bug😅，黑色按键下落过程再点击暂停的话，黑色按键会停留在灰色方框里，点击后正常会加分😏</p>
+        <p>游戏会在你的设备后天正常运作，在退出前请点击右上角三个点选择“退出”或选择直接删后台，祝你玩得愉快😎</p>
+    </div>
+
+<!-- ，butt是黑色按键的，note是指黑色按键的元素样式，然后可在CSS更换颜色等样式 -->
+    <script>
+        document.querySelector('.button').addEventListener('click', function() {
+            document.querySelector('.overlay').style.display = 'block';
+        });
+
+        document.querySelector('.close').addEventListener('click', function() {
+            document.querySelector('.overlay').style.display = 'none';
+        });
+    </script>
+      <script>
+        const lanes = document.querySelectorAll('.lane');
+        const countdownElement = document.getElementById('countdown');
+        const comboElement = document.getElementById('combo');
+        const difficultyPanel = document.getElementById('difficultyPanel');
+        const pausePanel = document.getElementById('pausePanel');
+        let gameStarted = false;
+        let isPaused = false;
+        let combo = 0;
+        let fallSpeed = 1; // 默认下落速度
+        let densityMin = 0.2; // 默认最小刷新间隔
+        let densityMax = 3; // 默认最大刷新间隔
+        let intervals = []; // 用于存储刷新间隔
+
+        // 显示难度选择面板
+        function showDifficultyPanel() {
+            difficultyPanel.style.display = 'flex';
+        }
+
+        // 应用难度设置
+        function applyDifficulty() {
+            fallSpeed = parseFloat(document.getElementById('fallSpeed').value);
+            densityMin = parseFloat(document.getElementById('densityMin').value);
+            densityMax = parseFloat(document.getElementById('densityMax').value);
+
+
+<!-- 没用的限制😂 -->
+
+
+            // 限制输入范围
+            if (fallSpeed < 0.2) fallSpeed = 0.2;
+            if (fallSpeed > 3) fallSpeed = 3;
+            if (densityMin < 0.2) densityMin = 0.2;
+            if (densityMin > 3) densityMin = 3;
+            if (densityMax < 0.2) densityMax = 0.2;
+            if (densityMax > 3) densityMax = 3;
+
+            difficultyPanel.style.display = 'none';
+            resetGame();
+        }
+
+        // 显示暂停面板
+        function showPausePanel() {
+            isPaused = true;
+            pausePanel.style.display = 'flex';
+            document.querySelectorAll('.note').forEach(note => {
+                note.style.transition = 'none'; // 停止移动
+            });
+        }
+
+        // 继续游戏
+        function resumeGame() {
+            isPaused = false;
+            pausePanel.style.display = 'none';
+            document.querySelectorAll('.note').forEach(note => {
+                note.style.transition = `top ${fallSpeed}s linear`; // 恢复移动
+            });
+        }
+
+        // 重新开始游戏
+        function restartGame() {
+            isPaused = false;
+            pausePanel.style.display = 'none';
+            resetGame();
+        }
+
+        // 重置游戏
+        function resetGame() {
+            gameStarted = false;
+            combo = 0;
+            comboElement.textContent = `Combo: ${combo}`;
+            lanes.forEach(lane => {
+                lane.innerHTML = '<div class="target"></div>';
+            });
+            document.querySelector('.start-button').style.display = 'block';
+            intervals.forEach(interval => clearInterval(interval)); // 清除所有刷新间隔
+            intervals = [];
+        }
+
+        // 开始倒计时
+        function startCountdown() {
+            document.querySelector('.start-button').style.display = 'none';
+            countdownElement.style.display = 'block';
+            let count = 1;
+            const countdownInterval = setInterval(() => {
+                countdownElement.textContent = count;
+                count--;
+                if (count < 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.style.display = 'none';
+                    startGame();
+                }
+            }, 100);
+        }
+
+        // 创建黑色按键
+        function createNote(lane) {
+            const note = document.createElement('div');
+            note.classList.add('note');
+            note.style.setProperty('--fall-speed', `${fallSpeed}s`); // 设置下落速度
+            lane.appendChild(note);
+            setTimeout(() => {
+                note.style.top = `${lane.clientHeight - 70}px`; // 移动到灰色方框附近
+            }, 10);
+            note.addEventListener('transitionend', () => {
+                if (lane.contains(note)) {
+                    lane.removeChild(note);
+                    resetCombo(); // 未点击成功，重置连击
+                }
+            });
+        }
+      
+      //播放音效
+      function playSound() {
+            const sound = document.getElementById('beepSound');
+            sound.currentTime = 0; // 重置音频时间，以便可以连续播放
+            sound.play();
+        }
+
+        // 处理触控事件
+        lanes.forEach(lane => {
+            lane.addEventListener('touchstart', (e) => {
+                if (!gameStarted || isPaused) return;
+                e.preventDefault(); // 阻止默认行为
+                const touches = e.changedTouches;
+                for (let i = 0; i < touches.length; i++) {
+                    const touch = touches[i];
+                    const note = lane.querySelector('.note');
+                    if (note) {
+                        const noteBottom = note.getBoundingClientRect().bottom;
+                        const targetTop = lane.querySelector('.target').getBoundingClientRect().top;
+                        if (noteBottom >= targetTop - 25) { // 接近灰色方框即可点击
+                            lane.removeChild(note);
+                            increaseCombo(); // 增加连击
+                            showFeedback(lane); // 显示“厉害”字样
+                            playSound(); // 播放音效
+                        }
+                    }
+                }
+            });
+        });
+
+        // 启动游戏
+        function startGame() {
+            gameStarted = true;
+            lanes.forEach(lane => {
+                const interval = setInterval(() => {
+                    if (!isPaused && Math.random() < 0.5) { // 随机生成黑色按键
+                        createNote(lane);
+                    }
+                }, Math.random() * (densityMax - densityMin) * 1000 + densityMin * 1000); // 随机间隔
+                intervals.push(interval); // 存储刷新间隔
+            });
+        }
+ 
+        // 显示“完美”字样
+        function showFeedback(lane) {
+            const feedback = document.createElement('div');
+            feedback.classList.add('feedback');
+            feedback.textContent = '完美';
+            lane.appendChild(feedback);
+            setTimeout(() => {
+                feedback.style.opacity = '1';
+            }, 10);
+            setTimeout(() => {
+                feedback.style.opacity = '0';
+                setTimeout(() => {
+                    lane.removeChild(feedback);
+                }, 300);
+            }, 300);
+        }
+
+        // 增加连击
+        function increaseCombo() {
+            combo++;
+            comboElement.textContent = `Combo: ${combo}`;
+        }
+
+        // 重置连击
+        function resetCombo() {
+            combo = 0;
+            comboElement.textContent = `Combo: ${combo}`;
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

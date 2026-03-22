@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史上的今天</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 标题样式 */
+        h1 {
+            color: var(--secondary-color);
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 2.2rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        /* 日期显示 */
+        #date-display {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* 图片容器 */
+        .image-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+        }
+
+        .image-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 图片样式 */
+        #history-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            transition: opacity 0.3s ease;
+        }
+
+        #history-image:hover {
+            opacity: 0.95;
+        }
+
+        /* 加载状态 */
+        #history-image:not([src]) {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 图片描述（可选） */
+        .image-caption {
+            padding: 15px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #666;
+            background: #fff;
+            border-top: 1px solid #eee;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            .image-container {
+                width: 95%;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>历史上的今天</h1>
+    <p id="date-display">日期：加载中...</p>
+    
+    <div class="image-container fade-in">
+        <a id="history-link" href="#" target="_blank">
+            <img id="history-image" src="" alt="历史上的今天图片加载中...">
+        </a>
+        <div class="image-caption">点击图片查看高清原图</div>
+    </div>
+
+    <script>
+        function getTodayDate() {
+            const today = new Date();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${today.getFullYear()}-${month}-${day}`;
+        }
+
+        function updateImage() {
+            const date = getTodayDate();
+            const apiUrl = `https://cdn.xxhzm.cn/v2api/cache/history/${date}.jpg`;
+            const imgElement = document.getElementById('history-image');
+            const linkElement = document.getElementById('history-link');
+            
+            // 显示加载状态
+            imgElement.alt = `正在加载${date}的历史图片...`;
+            document.getElementById('date-display').textContent = `日期：${date}`;
+            
+            // 预加载图片
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                imgElement.src = apiUrl;
+                linkElement.href = apiUrl;
+                imgElement.alt = `${date}的历史图片`;
+                imgElement.classList.add('fade-in');
+            };
+            tempImg.onerror = function() {
+                imgElement.alt = `无法加载${date}的历史图片`;
+            };
+            tempImg.src = apiUrl;
+        }
+
+        window.onload = function() {
+            updateImage();
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(now.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+            const delay = tomorrow - now;
+
+            setTimeout(() => {
+                updateImage();
+                setInterval(updateImage, 24 * 60 * 60 * 1000);
+            }, delay);
+        };
+    </script>
+</body>
+</html>

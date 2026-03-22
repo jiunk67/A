@@ -1,142 +1,176 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>井字棋</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            background-color: #fff;
+            border: 2px solid #000;
+            cursor: pointer;
+        }
+        .player {
+            color: blue;
+        }
+        .ai {
+            color: red;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: green;
+        }
+    </style>
 </head>
 <body>
-<style>
-*{
-  margin:0;
-  padding:0;
-  }
-html{
-  width:100vw;
-  height:100vh;
-  }
-body{
-  width:100%;
-  height:100%;
-  }
-#Canvas{
-  top:0;
-  left:0;
-  z-index:-1;
-  position:fixed;
-  background-color:#000;
-  }
+    <h1>井字棋</h1>
+    <div class="board" id="board">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+    </div>
+    <div class="result" id="result"></div>
 
-</style>
-<canvas id="Canvas"></canvas>
-<script>
-function getRandom(min,max){return Math.floor(Math.random() *(max+1-min)+min);}
-const ctx = Canvas.getContext('2d',{willReadFrequently:true});
-let dpr = devicePixelRatio;
-let ww = window.innerWidth;
-let wh = window.innerHeight;
-Canvas.width = ww * dpr;
-Canvas.height = wh * dpr;
-Canvas.style.width = ww + "px";
-Canvas.style.height = wh + "px";
-class Particle{
-  constructor(){
-    const r = Math.min(Canvas.width,Canvas.height) / 2;
-    const cx = Canvas.width / 2;
-    const cy = Canvas.height / 2;
-    const rad = getRandom(0,360) * Math.PI / 100;
-    this.size = 1 * dpr;
-    this.x = cx + r * Math.cos(rad);
-    this.y = cy + r * Math.sin(rad);
-    }
-  draw(){
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-    ctx.fillStyle = '#0066ff';
-    ctx.fill();
-    }
-  moveTo(tx,ty){
-    const duration = 500;
-    const sx = this.x,sy = this.y;
-    const xSpeed = (tx - sx) / duration;
-    const ySpeed = (ty - sy) / duration;
-    const startTime = Date.now();
-    const move=()=>{
-      const t = Date.now() - startTime;
-      const x = sx + xSpeed * t;
-      const y = sy + ySpeed * t;
-      this.x = x;
-      this.y = y;
-      if(t >= duration){
-        this.x = tx;
-        this.y = ty;
-        return;
-        }
-      requestAnimationFrame(move);
-      }
-    move();
-    }
-  }
+    <script>
+        const board = document.getElementById('board');
+        const cells = document.querySelectorAll('.cell');
+        const resultDiv = document.getElementById('result');
+        let currentPlayer = 'player';
+        let boardState = ['', '', '', '', '', '', '', '', ''];
+        const winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+            [0, 4, 8], [2, 4, 6] // diagonals
+        ];
 
-const partciles = [];
-for(let i = 0; i < 1000; i++){
-  partciles.push(new Particle());
-  }
-let text = null;
-function clear(){
-    ctx.clearRect(0, 0, Canvas.width, Canvas.height);
-    }
-function draw(){
-    clear();
-    update();
-    partciles.forEach((p)=>p.draw());
-    requestAnimationFrame(draw);
-    }
-function update(){
-    const {width, height} = Canvas;
-    const newText = new Date().toTimeString().substring(0, 8);
-    if(newText === text){
-      return;
-      }
-    clear();
-    text = newText;
-    ctx.fillStyle='black';
-    ctx.textBase ='middle';
-    ctx.font = `${70 * dpr}px 'MyCustomFont',sans-serif`;
-    ctx.fillText(text,(width - ctx.measureText(text).width) / 2,height / 2);
-    const points = getPoints();
-    clear();
-    for(let i =0 ; i < points.length; i++){
-      let  p = partciles[i];
-      if(!p){
-        p = new Particle();
-        partciles.push(p);
+        function makeMove(index) {
+            if (boardState[index] !== '' || checkWinner() !== null) {
+                return;
+            }
+            boardState[index] = currentPlayer;
+            cells[index].textContent = currentPlayer === 'player' ? 'X' : 'O';
+            cells[index].classList.add(currentPlayer);
+            const winner = checkWinner();
+            if (winner !== null) {
+                displayResult(winner);
+            } else {
+                currentPlayer = currentPlayer === 'player' ? 'ai' : 'player';
+                if (currentPlayer === 'ai') {
+                    setTimeout(() => {
+                        makeAIMove();
+                    }, 500);
+                }
+            }
         }
-      const [x,y] = points[i];
-      p.moveTo(x,y);
-      }
-    if(points.length < partciles.length){
-    partciles.splice(points.length);
-    }
-    }
-function getPoints (){
-    const {width,height,data} = ctx.getImageData(0,0,Canvas.width,Canvas.height);
-    const points = [];
-    const gap = 2 * dpr;
-    for(let i = 0; i < width; i+=gap){
-      for(let j = 0; j < height; j+=gap){
-        const index = (i + j * width) * 4;
-        const r = data[index];
-        const g = data[index + 1];
-        const b = data[index + 2];
-        const a = data[index + 3];
-        if(r===0 && g===0 && b===0 && a===255){
-          points.push([i,j]);
-          }
+
+        function makeAIMove() {
+            let bestScore = -Infinity;
+            let bestMove = null;
+            for (let i = 0; i < 9; i++) {
+                if (boardState[i] === '') {
+                    boardState[i] = 'ai';
+                    let score = minimax(boardState, 0, false);
+                    boardState[i] = '';
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = i;
+                    }
+                }
+            }
+            makeMove(bestMove);
         }
-      }
-    return points;
-    }
-  draw();
-</script>
+
+        function minimax(boardState, depth, isMaximizing) {
+            let result = checkWinner();
+            if (result !== null) {
+                return result === 'player' ? -1 : (result === 'ai' ? 1 : 0);
+            }
+            if (isMaximizing) {
+                let bestScore = -Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (boardState[i] === '') {
+                        boardState[i] = 'ai';
+                        let score = minimax(boardState, depth + 1, false);
+                        boardState[i] = '';
+                        bestScore = Math.max(score, bestScore);
+                    }
+                }
+                return bestScore;
+            } else {
+                let bestScore = Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (boardState[i] === '') {
+                        boardState[i] = 'player';
+                        let score = minimax(boardState, depth + 1, true);
+                        boardState[i] = '';
+                        bestScore = Math.min(score, bestScore);
+                    }
+                }
+                return bestScore;
+            }
+        }
+
+        function checkWinner() {
+            for (let combination of winningCombinations) {
+                if (boardState[combination[0]] !== '' &&
+                    boardState[combination[0]] === boardState[combination[1]] &&
+                    boardState[combination[1]] === boardState[combination[2]]) {
+                    return boardState[combination[0]];
+                }
+            }
+            if (!boardState.includes('')) {
+                return 'draw';
+            }
+            return null;
+        }
+
+        function displayResult(winner) {
+            if (winner === 'player') {
+                resultDiv.textContent = '玩家胜利！';
+            } else if (winner === 'ai') {
+                resultDiv.textContent = 'AI胜利！';
+            } else {
+                resultDiv.textContent = '平局！';
+            }
+            resultDiv.style.display = 'block';
+        }
+
+        cells.forEach((cell, index) => {
+            cell.addEventListener('click', () => {
+                makeMove(index);
+            });
+        });
+    </script>
 </body>
 </html>

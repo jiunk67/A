@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小海抽签</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0e6d2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+        .title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #5a4730;
+            text-align: center;
+        }
+        .signs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 35px;
+        }
+        .sign {
+            width: 80px;
+            height: 120px;
+            background-color: #8b6f47;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 8px;
+            position: relative;
+            transition: transform 0.3s;
+        }
+        .sign.flipped {
+            transform: rotateY(180deg);
+        }
+        .sign .front, .sign .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            border-radius: 8px;
+        }
+        .sign .front {
+            background-color: #8b6f47;
+        }
+        .sign .back {
+            background-color: #5a4730;
+            transform: rotateY(180deg);
+        }
+        .result {
+            margin-top: 20px;
+            background-color: #f4e4c4;
+            padding: 15px;
+            border-radius: 8px;
+            width: 80%;
+            text-align: center;
+            font-size: 1.2em;
+            display: none;
+            position: relative;
+        }
+        .info-button, .play-button {
+            position: absolute;
+            top: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #5a4730;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+        .info-button {
+            left: 20px;
+        }
+        .play-button {
+            right: 20px;
+        }
+        .info-modal, .play-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #f4e4c4;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            font-size: 1.2em;
+            overflow-y: auto; /* 允许内容滚动 */
+            max-height: 80%; /* 限制最大高度 */
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #fff;
+        }
+        .reset-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #5a4730;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .detail-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background-color: #5a4730;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+        .detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .detail-content {
+            background-color: #f4e4c4;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            font-size: 1.2em;
+            overflow-y: auto; /* 允许内容滚动 */
+            max-height: 80%; /* 限制最大高度 */
+        }
+    </style>
+</head>
+<body>
+    <div class="info-button" id="infoButton">?</div>
+    <div class="play-button" id="playButton">玩法</div>
+    <h1 class="title">小海抽签</h1>
+    <div class="signs"></div>
+    <div class="result"></div>
+    <button class="reset-button" id="resetButton" style="display: none;">重新抽签</button> <!-- 重置按钮 -->
+
+    <!-- Info Modal -->
+    <div class="info-modal" id="infoModal">
+        <div class="modal-content">
+            <span class="close-button" id="closeButton">&times;</span>
+            <h2>小海抽签说明</h2>
+            <p>小海抽签是一个简单的抽签游戏，灵感来源于小六壬六宫。</p>
+            <p>共有六支签：<strong>大安、留连、速喜、赤口、小吉、空亡</strong>，每支签都有不同的含义。</p>
+            <p>提示：如果诚心用签问事，那就请尊重它。不管好坏，一件事问一次就好！当然你抱着玩一玩的想法，怎么玩都可以，开心就好^ω^</p>
+            <p>注：抽签的灵不灵准确与否，怪作者就好不要往小六壬上埋怨！小六壬比这个抽签复杂的多，也是有准确度的！作者只是照搬了一下六宫名，抽签你就当个游戏玩吧！</p>
+            <p>开发者：小海（熊振海）</p>
+            <p>官方QQ群：478338649</p>
+        </div>
+    </div>
+
+    <!-- Play Modal -->
+    <div class="play-modal" id="playModal">
+        <div class="modal-content">
+            <span class="close-button" id="playCloseButton">&times;</span>
+            <h2>玩法说明</h2>
+            <p>小海抽签的玩法非常简单：</p>
+            <ol>
+                <li>正常抽签（抽一签）：测事情吉凶发展</li>
+                <li>寻物（抽三签）：抽完一次签点击重新抽签再弄两次〖第一签：失物所处环境状态。第二签：方向位置。（客体）第三签：方向（主体）〗</li>
+                <li>天气（抽四签）：①③签为一组当第一次落宫，②④签为一组当第二次落宫（由于本抽签游戏没有六神，测天气只能这么玩了），测局部天气第二次落宫为主第一次落宫为辅，测整天天气反之。┃┃天气意象：大安（木）：代表晴天，但可能有云层。留连（火）：代表雨天，尤其是当留连宫受生时，雨量较大。速喜（阳土）：代表晴天，天气较为稳定。赤口（金）：代表寒冷天气，可能伴有大风。小吉（水）：代表风天，天气变化较快。空亡（阴土）：代表雾天，天气阴沉</li>
+            </ol>
+                        <p>只是游戏，不是真正预测不准正常。欢迎专业人士指正和完善！更多玩法等待更新吧！</p>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="detail-modal" id="detailModal">
+        <div class="detail-content">
+            <span class="close-button" id="detailCloseButton">&times;</span>
+            <h2 id="detailTitle"></h2>
+            <p id="detailDescription"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const signs = [
+                {
+                    name: "大安",
+                    description: "解释：大吉大利，万事如意，一切顺利，心想事成。（吉）",
+                    detailedDescription: "详细解释：大安是六签中最吉利的一签，象征着平安顺利。无论做什么事情都能得到贵人相助，事半功倍。在感情上，大安代表感情稳定，婚姻美满；在事业上，大安表示事业顺利，步步高升。总之，抽到大安签，意味着未来一段时间内，一切都会朝着好的方向发展。方位：正东，五行：木，代表的物品：木制品、花草、纸张、绿色物品，代表的人：长辈、贵人、男性"
+                },
+                {
+                    name: "留连",
+                    description: "解释：事情会有波折，但最终会有好的结果，需要耐心等待。（中）（可凶可吉）",
+                    detailedDescription: "详细解释：留连签表示事情不会一帆风顺，可能会遇到一些阻碍和波折。但只要保持耐心，不急躁，最终会得到好的结果。在感情上，留连签可能意味着感情发展缓慢，需要双方共同努力；在事业上，可能表示项目进展不顺利，但只要坚持下去，最终会有收获。总之，留连签提醒我们，耐心和坚持是成功的关键。方位：正北，五行：水，代表的物品：水、黑色物品、镜子、鱼，代表的人：女性、长辈、朋友"
+                },
+                {
+                    name: "速喜",
+                    description: "解释：很快会有好消息，事情进展顺利，值得期待。（吉）",
+                    detailedDescription: "详细解释：速喜签是一个非常吉利的签，表示事情会快速进展，很快就会有好消息传来。在感情上，速喜签可能意味着感情发展迅速，很快就能确定关系；在事业上，可能表示项目顺利推进，很快就能取得成果。总之，抽到速喜签，意味着好运即将到来，值得期待。方位：正南，五行：火，代表的物品：红色物品、灯光、火焰、纸张，代表的人：年轻人、兄弟姐妹、朋友"
+                },
+                {
+                    name: "赤口",
+                    description: "解释：会有口舌之争，要注意言行，避免冲突。（凶）",
+                    detailedDescription: "详细解释：赤口签是一个不太吉利的签，表示可能会遇到口舌之争或与他人发生冲突。在感情上，赤口签可能意味着感情中会出现争吵和矛盾；在事业上，可能表示工作中会遇到人际关系的困扰。为了避免这些不好的事情发生，建议在言行上多加注意，尽量避免与他人发生冲突。总之，赤口签提醒我们要注意自己的言行，保持冷静。方位：正西，五行：金，代表的物品：白色物品、金属制品、刀剑、剪刀，代表的人：陌生人、竞争对手、上司"
+                },
+                {
+                    name: "小吉",
+                    description: "解释：事情会有一定的进展，但可能不会特别顺利，需要努力。（吉）",
+                    detailedDescription: "详细解释：小吉签表示事情会有一些进展，但不会特别顺利，需要付出更多的努力。在感情上，小吉签可能意味着感情发展平稳，但需要双方共同努力；在事业上，可能表示项目有一定的进展，但会遇到一些困难。总之，小吉签提醒我们，虽然事情不会一帆风顺，但只要努力，最终会有好的结果。方位：东南，五行：木，代表的物品：木制品、绿色物品、花草，代表的人：晚辈、下属、小孩"
+                },
+                {
+                    name: "空亡",
+                    description: "解释：事情可能会落空，需要重新考虑计划。（大凶）",
+                    detailedDescription: "详细解释：空亡签是六签中最不吉利的一签，表示事情可能会落空，甚至会一无所获。在感情上，空亡签可能意味着感情出现危机，甚至会分手；在事业上，可能表示项目失败，计划落空。总之，抽到空亡签，建议重新审视自己的计划，调整策略，避免不必要的损失。方位：西北，五行：土，代表的物品：黄色物品、土制品、石头、陶瓷，代表的人：虚幻的人、不存在的人"
+                }
+            ];
+
+            const signsContainer = document.querySelector('.signs');
+            const resultContainer = document.querySelector('.result');
+            const infoButton = document.getElementById('infoButton');
+            const playButton = document.getElementById('playButton');
+            const infoModal = document.getElementById('infoModal');
+            const playModal = document.getElementById('playModal');
+            const closeButton = document.getElementById('closeButton');
+            const playCloseButton = document.getElementById('playCloseButton');
+            const resetButton = document.getElementById('resetButton'); // 重置按钮
+            const detailModal = document.getElementById('detailModal'); // 详细解释弹窗
+            const detailCloseButton = document.getElementById('detailCloseButton'); // 关闭详细解释弹窗
+            const detailTitle = document.getElementById('detailTitle'); // 弹窗标题
+            const detailDescription = document.getElementById('detailDescription'); // 弹窗内容
+
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+
+            function createSign(sign) {
+                const div = document.createElement('div');
+                div.classList.add('sign');
+                div.dataset.name = sign.name;
+
+                const front = document.createElement('div');
+                front.classList.add('front');
+                front.textContent = '签';
+
+                const back = document.createElement('div');
+                back.classList.add('back');
+                back.textContent = sign.name;
+
+                div.appendChild(front);
+                div.appendChild(back);
+
+                return div;
+            }
+
+            function flipSign(sign) {
+                document.querySelector('.sign').classList.add('flipped');
+                showResult(sign);
+            }
+
+            function showResult(sign) {
+                resultContainer.textContent = `你抽中的签是：${sign.name}\n\n${sign.description}`;
+                resultContainer.style.display = 'block';
+                resetButton.style.display = 'block'; // 显示重置按钮
+
+                // 添加详细解释按钮
+                const detailButton = document.createElement('div');
+                detailButton.classList.add('detail-button');
+                detailButton.textContent = '?';
+                detailButton.addEventListener('click', () => {
+                    detailTitle.textContent = sign.name;
+                    detailDescription.textContent = sign.detailedDescription; // 显示详细解释
+                    detailModal.style.display = 'flex';
+                });
+                resultContainer.appendChild(detailButton);
+            }
+
+            function init() {
+                signsContainer.innerHTML = '';
+                const randomSign = signs[Math.floor(Math.random() * signs.length)]; // 随机选择一个签
+                const signElement = createSign(randomSign);
+                signElement.addEventListener('click', () => {
+                    flipSign(randomSign);
+                });
+                signsContainer.appendChild(signElement);
+            }
+
+            // 重置功能
+            resetButton.addEventListener('click', () => {
+                resultContainer.style.display = 'none';
+                resetButton.style.display = 'none';
+                resultContainer.innerHTML = ''; // 清空结果区域内容
+                init();
+            });
+
+            // Info Modal Logic
+            infoButton.addEventListener('click', () => {
+                infoModal.style.display = 'flex';
+            });
+
+            closeButton.addEventListener('click', () => {
+                infoModal.style.display = 'none';
+            });
+
+            // Play Modal Logic
+            playButton.addEventListener('click', () => {
+                playModal.style.display = 'flex';
+            });
+
+            playCloseButton.addEventListener('click', () => {
+                playModal.style.display = 'none';
+            });
+
+            // 详细解释弹窗关闭逻辑
+            detailCloseButton.addEventListener('click', () => {
+                detailModal.style.display = 'none';
+            });
+
+            init(); // 初始化页面
+        });
+    </script>
+</body>
+</html>
+

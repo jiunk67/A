@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>真·终极按钮库</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #0a0a0a;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin: 40px 0;
+            font-size: 3rem;
+            background: linear-gradient(45deg, #ff0080, #00ffcc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            padding: 20px;
+        }
+        .card {
+            background: rgba(30,30,40,0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,255,255,0.2);
+        }
+        .title {
+            color: #00ffcc;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .demo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .code {
+            background: #1a1a2e;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            margin-top: 15px;
+            color: #88ffaa;
+            display: none;
+        }
+        .card:hover .code {
+            display: block;
+        }
+        
+        /* === 开关按钮 === */
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+        .toggle input { display: none; }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(45deg, #ff4757, #ff6b81);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        input:checked + .toggle-slider {
+            background: linear-gradient(45deg, #00ffcc, #00ceff);
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+        
+        /* === 原版网关开关 === */
+        .gw-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+        }
+        .gw-switch input { opacity: 0; width: 0; height: 0; }
+        .gw-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .gw-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        .gw-switch input:checked + .gw-slider {
+            background-color: #07C160;
+        }
+        .gw-switch input:checked + .gw-slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* === 所有实用按钮 === */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 1. 渐变按钮 */
+        .gradient-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        .gradient-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* 2. 霓虹按钮 */
+        .neon-btn {
+            background: transparent;
+            border: 2px solid #00ffcc;
+            color: #00ffcc;
+            box-shadow: 0 0 10px rgba(0,255,204,0.3);
+        }
+        .neon-btn:hover {
+            background: #00ffcc;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0,255,204,0.8);
+        }
+        
+        /* 3. 3D按钮 */
+        .btn-3d {
+            background: #ff4757;
+            color: white;
+            box-shadow: 0 6px 0 #b33939,
+                        0 8px 10px rgba(0,0,0,0.3);
+            transform: translateY(0);
+        }
+        .btn-3d:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #b33939;
+        }
+        
+        /* 4. 玻璃态按钮 */
+        .glass-btn {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+        .glass-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        /* 5. 悬浮按钮 */
+        .float-btn {
+            background: white;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .float-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* 6. 边框动画 */
+        .border-animate {
+            background: transparent;
+            color: #ff6b6b;
+            position: relative;
+        }
+        .border-animate:before, 
+        .border-animate:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: #ff6b6b;
+            transition: 0.3s;
+        }
+        .border-animate:before { top: 0; left: 0; }
+        .border-animate:after { bottom: 0; right: 0; }
+        .border-animate:hover:before,
+        .border-animate:hover:after {
+            width: 100%;
+        }
+        
+        /* 7. 发光按钮 */
+        .glow-btn {
+            background: #4ecdc4;
+            color: white;
+            animation: glow 2s infinite;
+        }
+        
+        /* 8. 波纹按钮 */
+        .ripple-btn {
+            background: #3742fa;
+            color: white;
+        }
+        .ripple-btn:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255,255,255,0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        .ripple-btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        /* 9. 滑动按钮 */
+        .slide-btn {
+            background: #ffa502;
+            color: white;
+            overflow: hidden;
+        }
+        .slide-btn span {
+            display: inline-block;
+            transition: 0.3s;
+        }
+        .slide-btn:hover span {
+            transform: translateX(10px);
+        }
+        
+        /* 10. 图标按钮 */
+        .icon-btn {
+            background: #2ed573;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+        }
+        .icon-btn i {
+            transition: transform 0.3s;
+        }
+        .icon-btn:hover i {
+            transform: rotate(90deg);
+        }
+        
+        /* 11. 加载按钮 */
+        .loading-btn {
+            background: #5352ed;
+            color: white;
+        }
+        .loading-btn:hover .dot {
+            animation: loading 1s infinite;
+        }
+        .dot {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 2px;
+        }
+        
+        /* 12. 故障按钮 */
+        .glitch-btn {
+            background: #000;
+            color: #0f0;
+            font-family: monospace;
+            border: 1px solid #0f0;
+        }
+        .glitch-btn:hover {
+            animation: glitch 0.3s;
+        }
+        
+        /* 13. 金属按钮 */
+        .metal-btn {
+            background: linear-gradient(145deg, #888, #666);
+            color: white;
+            border: 2px solid #444;
+            text-shadow: 1px 1px 2px #000;
+        }
+        
+        /* 14. 橡皮按钮 */
+        .rubber-btn {
+            background: #ff6b81;
+            color: white;
+            animation: rubber 0.8s;
+        }
+        
+        /* 15. 翻转按钮 */
+        .flip-btn {
+            perspective: 1000px;
+        }
+        .flip-btn-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-btn:hover .flip-btn-inner {
+            transform: rotateX(180deg);
+        }
+        
+        /* 16. 呼吸灯按钮 */
+        .breath-btn {
+            background: #00b894;
+            color: white;
+            animation: breath 2s infinite;
+        }
+        
+        /* 动画 */
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px #4ecdc4; }
+            50% { box-shadow: 0 0 20px #4ecdc4; }
+        }
+        
+        @keyframes ripple {
+            to { transform: scale(10); opacity: 0; }
+        }
+        
+        @keyframes loading {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        @keyframes rubber {
+            0% { transform: scale3d(1, 1, 1); }
+            30% { transform: scale3d(1.25, 0.75, 1); }
+            40% { transform: scale3d(0.75, 1.25, 1); }
+            50% { transform: scale3d(1.15, 0.85, 1); }
+            65% { transform: scale3d(0.95, 1.05, 1); }
+            75% { transform: scale3d(1.05, 0.95, 1); }
+            100% { transform: scale3d(1, 1, 1); }
+        }
+        
+        @keyframes breath {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 真·按钮大全 | 直接复制用</h1>
+        
+        <div class="grid">
+            <!-- 开关按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-toggle-on"></i> 开关按钮</div>
+                <div class="demo">
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <label class="gw-switch">
+                        <input type="checkbox">
+                        <span class="gw-slider"></span>
+                    </label>
+                </div>
+                <div class="code">/* 直接复制这个样式 */</div>
+            </div>
+            
+            <!-- 渐变按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-palette"></i> 渐变按钮</div>
+                <div class="demo">
+                    <button class="btn gradient-btn">渐变效果</button>
+                </div>
+                <div class="code">background: linear-gradient(45deg, #667eea, #764ba2);</div>
+            </div>
+            
+            <!-- 霓虹按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-lightbulb"></i> 霓虹按钮</div>
+                <div class="demo">
+                    <button class="btn neon-btn">霓虹灯</button>
+                </div>
+                <div class="code">border: 2px solid #00ffcc; box-shadow: 0 0 10px rgba(0,255,204,0.3);</div>
+            </div>
+            
+            <!-- 3D按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-cube"></i> 3D按钮</div>
+                <div class="demo">
+                    <button class="btn btn-3d">3D按压</button>
+                </div>
+                <div class="code">box-shadow: 0 6px 0 #b33939, 0 8px 10px rgba(0,0,0,0.3);</div>
+            </div>
+            
+            <!-- 玻璃态 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-wine-glass"></i> 玻璃态</div>
+                <div class="demo">
+                    <button class="btn glass-btn">毛玻璃</button>
+                </div>
+                <div class="code">background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);</div>
+            </div>
+            
+            <!-- 悬浮按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-feather-alt"></i> 悬浮按钮</div>
+                <div class="demo">
+                    <button class="btn float-btn">悬浮效果</button>
+                </div>
+                <div class="code">box-shadow: 0 5px 15px rgba(0,0,0,0.1);</div>
+            </div>
+            
+            <!-- 边框动画 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-border-style"></i> 边框动画</div>
+                <div class="demo">
+                    <button class="btn border-animate">边框动画</button>
+                </div>
+                <div class="code">使用:before和:after伪元素实现边框动画</div>
+            </div>
+            
+            <!-- 发光按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-sun"></i> 发光按钮</div>
+                <div class="demo">
+                    <button class="btn glow-btn">呼吸灯</button>
+                </div>
+                <div class="code">animation: glow 2s infinite;</div>
+            </div>
+            
+            <!-- 波纹按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-water"></i> 波纹效果</div>
+                <div class="demo">
+                    <button class="btn ripple-btn">点击涟漪</button>
+                </div>
+                <div class="code">使用:after伪元素实现涟漪效果</div>
+            </div>
+            
+            <!-- 滑动按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-arrow-right"></i> 滑动效果</div>
+                <div class="demo">
+                    <button class="btn slide-btn"><span>滑动 →</span></button>
+                </div>
+                <div class="code">transform: translateX(10px);</div>
+            </div>
+            
+            <!-- 图标按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-icons"></i> 图标按钮</div>
+                <div class="demo">
+                    <button class="btn icon-btn">
+                        <i class="fas fa-rocket"></i>
+                        <span>发射</span>
+                    </button>
+                </div>
+                <div class="code">使用Flex布局，图标使用transform: rotate();</div>
+            </div>
+            
+            <!-- 加载按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-spinner"></i> 加载动画</div>
+                <div class="demo">
+                    <button class="btn loading-btn">
+                        加载中
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </button>
+                </div>
+                <div class="code">animation: loading 1s infinite;</div>
+            </div>
+            
+            <!-- 故障按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-bug"></i> 故障艺术</div>
+                <div class="demo">
+                    <button class="btn glitch-btn">GLITCH</button>
+                </div>
+                <div class="code">animation: glitch 0.3s;</div>
+            </div>
+            
+            <!-- 金属按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-hammer"></i> 金属质感</div>
+                <div class="demo">
+                    <button class="btn metal-btn">金属</button>
+                </div>
+                <div class="code">background: linear-gradient(145deg, #888, #666);</div>
+            </div>
+            
+            <!-- 橡皮按钮 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-expand-alt"></i> 橡皮效果</div>
+                <div class="demo">
+                    <button class="btn rubber-btn">弹弹弹</button>
+                </div>
+                <div class="code">animation: rubber 0.8s;</div>
+            </div>
+            
+            <!-- 呼吸灯 -->
+            <div class="card">
+                <div class="title"><i class="fas fa-heartbeat"></i> 呼吸灯</div>
+                <div class="demo">
+                    <button class="btn breath-btn">呼吸效果</button>
+                </div>
+                <div class="code">animation: breath 2s infinite;</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 波纹效果
+        document.querySelectorAll('.ripple-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size/2;
+                const y = e.clientY - rect.top - size/2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.6);
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    width: ${size}px;
+                    height: ${size}px;
+                    top: ${y}px;
+                    left: ${x}px;
+                    pointer-events: none;
+                `;
+                
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+        
+        // 添加全局动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>手机解密工具箱</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #7209b7;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark-color);
+            min-height: 100vh;
+            padding: 15px;
+            padding-bottom: 80px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* 头部样式 */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .logo-icon i {
+            font-size: 24px;
+            color: white;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* 工具卡片 */
+        .tool-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .tool-card.active {
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.2);
+        }
+        
+        .tool-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        
+        .tool-title {
+            display: flex;
+            align-items: center;
+        }
+        
+        .tool-title i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .tool-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .toggle-icon {
+            transition: var(--transition);
+        }
+        
+        .tool-card.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+        
+        .tool-body {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .tool-card.active .tool-body {
+            padding: 20px;
+            max-height: 1000px;
+        }
+        
+        /* 输入输出区域 */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        textarea, input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: #f8f9fa;
+        }
+        
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary-color);
+        }
+        
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #d63384;
+        }
+        
+        .result-area {
+            margin-top: 20px;
+        }
+        
+        .result-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .result-label i {
+            margin-right: 8px;
+            color: var(--success-color);
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        
+        .result-box.success {
+            border-color: var(--success-color);
+            background: rgba(76, 201, 240, 0.05);
+        }
+        
+        .result-box.error {
+            border-color: var(--danger-color);
+            background: rgba(247, 37, 133, 0.05);
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            padding: 10px 0;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 0;
+            color: var(--gray-color);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+        
+        /* 工具网格 */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .tool-grid-item {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .tool-grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .tool-grid-item i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .tool-grid-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .tool-grid-desc {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+        
+        /* 历史记录 */
+        .history-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .history-item .tool-name {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .history-item .time {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-bottom: 8px;
+        }
+        
+        .history-item .preview {
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* 响应式调整 */
+        @media (min-width: 768px) {
+            .tools-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+        
+        /* 工具特定样式 */
+        .key-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .key-input-group input {
+            flex: 1;
+        }
+        
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background: #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .mode-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        /* 加载动画 */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 关于页面 */
+        .about-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .about-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .feature-list {
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        .feature-list li {
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+        
+        .version {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-unlock-alt"></i>
+                </div>
+                <div>
+                    <h1>手机解密工具箱</h1>
+                    <p class="subtitle">多功能加密/编码解密工具，专为移动设备优化</p>
+                </div>
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <!-- 主页 - 工具网格 -->
+            <div id="home-page" class="page">
+                <div class="tools-grid" id="tools-grid">
+                    <!-- 工具将通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-header" onclick="toggleTool('quick-decode')">
+                        <div class="tool-title">
+                            <i class="fas fa-bolt"></i>
+                            <span class="tool-name">快速解码</span>
+                        </div>
+                        <div class="toggle-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="tool-body" id="quick-decode-body">
+                        <div class="input-group">
+                            <label for="quick-input"><i class="fas fa-keyboard"></i> 输入待解码文本</label>
+                            <textarea id="quick-input" placeholder="在此粘贴Base64、十六进制、URL编码等文本..."></textarea>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button class="btn-primary" onclick="autoDecode()">
+                                <i class="fas fa-magic"></i> 自动解码
+                            </button>
+                            <button class="btn-secondary" onclick="clearQuickInput()">
+                                <i class="fas fa-eraser"></i> 清空
+                            </button>
+                        </div>
+                        
+                        <div class="result-area">
+                            <div class="result-label">
+                                <i class="fas fa-check-circle"></i> 解码结果
+                            </div>
+                            <div class="result-box" id="quick-result">
+                                解码结果将显示在这里...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 工具页面 (默认隐藏) -->
+            <div id="tools-page" class="page hidden">
+                <!-- 各个工具将通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 历史记录页面 (默认隐藏) -->
+            <div id="history-page" class="page hidden">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            <i class="fas fa-history"></i>
+                            <span class="tool-name">解密历史</span>
+                        </div>
+                    </div>
+                    <div class="tool-body">
+                        <div id="history-list">
+                            <!-- 历史记录将通过JavaScript动态生成 -->
+                        </div>
+                        <div class="button-group">
+                            <button class="btn-danger" onclick="clearHistory()">
+                                <i class="fas fa-trash"></i> 清空历史
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 关于页面 (默认隐藏) -->
+            <div id="about-page" class="page hidden">
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-unlock-alt"></i>
+                    </div>
+                    <h2>手机解密工具箱</h2>
+                    <p>一款专为移动设备设计的多功能解密工具，支持多种常见编码和加密算法的解密。</p>
+                    
+                    <div class="feature-list">
+                        <h3>主要功能：</h3>
+                        <ul>
+                            <li><strong>Base64解码</strong> - 标准Base64和URL安全Base64</li>
+                            <li><strong>URL解码</strong> - 百分号编码URL解码</li>
+                            <li><strong>十六进制解码</strong> - 十六进制字符串转文本</li>
+                            <li><strong>二进制解码</strong> - 二进制字符串转文本</li>
+                            <li><strong>ROT13解密</strong> - 简单的字母替换密码</li>
+                            <li><strong>凯撒密码破解</strong> - 尝试所有25种偏移</li>
+                            <li><strong>摩斯电码解码</strong> - 支持多种分隔符格式</li>
+                            <li><strong>哈希查询</strong> - 简单彩虹表匹配常见哈希</li>
+                            <li><strong>JSON解码</strong> - 格式化JSON数据</li>
+                        </ul>
+                    </div>
+                    
+                    <p>本工具完全在浏览器中运行，不发送任何数据到服务器，保护您的隐私安全。</p>
+                    
+                    <div class="version">
+                        <p>版本 1.0.0 | 2023年12月</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="switchPage('home-page')">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="#" class="nav-item" onclick="switchPage('tools-page')">
+            <i class="fas fa-tools"></i>
+            <span>工具</span>
+        </a>
+        <a href="#" class="nav-item" onclick="switchPage('history-page')">
+            <i class="fas fa-history"></i>
+            <span>历史</span>
+        </a>
+        <a href="#" class="nav-item" onclick="switchPage('about-page')">
+            <i class="fas fa-info-circle"></i>
+            <span>关于</span>
+        </a>
+    </nav>
+
+    <script>
+        // 工具定义
+        const tools = [
+            {
+                id: 'base64',
+                name: 'Base64解码',
+                icon: 'fas fa-code',
+                description: 'Base64编码文本解码',
+                category: 'encoding'
+            },
+            {
+                id: 'url',
+                name: 'URL解码',
+                icon: 'fas fa-link',
+                description: 'URL百分号编码解码',
+                category: 'encoding'
+            },
+            {
+                id: 'hex',
+                name: '十六进制解码',
+                icon: 'fas fa-hashtag',
+                description: '十六进制字符串转文本',
+                category: 'encoding'
+            },
+            {
+                id: 'binary',
+                name: '二进制解码',
+                icon: 'fas fa-digital-tachograph',
+                description: '二进制字符串转文本',
+                category: 'encoding'
+            },
+            {
+                id: 'rot13',
+                name: 'ROT13解密',
+                icon: 'fas fa-exchange-alt',
+                description: 'ROT13密码解密',
+                category: 'cipher'
+            },
+            {
+                id: 'caesar',
+                name: '凯撒密码',
+                icon: 'fas fa-key',
+                description: '凯撒密码破解(所有偏移)',
+                category: 'cipher'
+            },
+            {
+                id: 'morse',
+                name: '摩斯电码',
+                icon: 'fas fa-wave-square',
+                description: '摩斯电码解码',
+                category: 'cipher'
+            },
+            {
+                id: 'json',
+                name: 'JSON解码',
+                icon: 'fas fa-brackets-curly',
+                description: 'JSON格式化与解码',
+                category: 'encoding'
+            },
+            {
+                id: 'hash',
+                name: '哈希查询',
+                icon: 'fas fa-fingerprint',
+                description: 'MD5/SHA1哈希查询',
+                category: 'crypto'
+            }
+        ];
+
+        // 摩斯电码字典
+        const morseDict = {
+            '.-': 'A', '-...': 'B', '-.-.': 'C', '-..': 'D', '.': 'E',
+            '..-.': 'F', '--.': 'G', '....': 'H', '..': 'I', '.---': 'J',
+            '-.-': 'K', '.-..': 'L', '--': 'M', '-.': 'N', '---': 'O',
+            '.--.': 'P', '--.-': 'Q', '.-.': 'R', '...': 'S', '-': 'T',
+            '..-': 'U', '...-': 'V', '.--': 'W', '-..-': 'X', '-.--': 'Y',
+            '--..': 'Z', '-----': '0', '.----': '1', '..---': '2', '...--': '3',
+            '....-': '4', '.....': '5', '-....': '6', '--...': '7', '---..': '8',
+            '----.': '9', '.-.-.-': '.', '--..--': ',', '..--..': '?',
+            '-.-.--': '!', '-....-': '-', '-..-.': '/', '.--.-.': '@',
+            '-.--.': '(', '-.--.-': ')', '': ' '
+        };
+
+        // 简单彩虹表
+        const rainbowTable = {
+            'md5': {
+                'd41d8cd98f00b204e9800998ecf8427e': '空字符串',
+                '5d41402abc4b2a76b9719d911017c592': 'hello',
+                '098f6bcd4621d373cade4e832627b4f6': 'test',
+                'e10adc3949ba59abbe56e057f20f883e': '123456',
+                '25d55ad283aa400af464c76d713c07ad': '12345678',
+                '827ccb0eea8a706c4c34a16891f84e7b': '12345',
+                'fcea920f7412b5da7be0cf42b8c93759': '123456789',
+                'c4ca4238a0b923820dcc509a6f75849b': '1',
+                'c81e728d9d4c2f636f067f89cc14862c': '2',
+                'eccbc87e4b5ce2fe28308fd9f2a7baf3': '3',
+            },
+            'sha1': {
+                'da39a3ee5e6b4b0d3255bfef95601890afd80709': '空字符串',
+                'aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d': 'hello',
+                'a94a8fe5ccb19ba61c4c0873d391e987982fbbd3': 'test',
+                '7c4a8d09ca3762af61e59520943dc26494f8941b': '123456',
+                '7c222fb2927d828af22f592134e8932480637c0d': '12345678',
+            }
+        };
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', function() {
+            initToolsGrid();
+            initToolsPage();
+            loadHistory();
+            
+            // 为快速解码区域添加示例
+            document.getElementById('quick-input').value = 'SGVsbG8gV29ybGQh';
+        });
+
+        // 初始化工具网格
+        function initToolsGrid() {
+            const toolsGrid = document.getElementById('tools-grid');
+            toolsGrid.innerHTML = '';
+            
+            tools.forEach(tool => {
+                const toolElement = document.createElement('div');
+                toolElement.className = 'tool-grid-item';
+                toolElement.setAttribute('onclick', `openTool('${tool.id}')`);
+                toolElement.innerHTML = `
+                    <i class="${tool.icon}"></i>
+                    <div class="tool-grid-name">${tool.name}</div>
+                    <div class="tool-grid-desc">${tool.description}</div>
+                `;
+                toolsGrid.appendChild(toolElement);
+            });
+        }
+
+        // 初始化工具页面
+        function initToolsPage() {
+            const toolsPage = document.getElementById('tools-page');
+            
+            tools.forEach(tool => {
+                const toolCard = document.createElement('div');
+                toolCard.className = 'tool-card';
+                toolCard.id = `tool-${tool.id}`;
+                
+                // 为每个工具创建界面
+                let toolBody = '';
+                
+                switch(tool.id) {
+                    case 'base64':
+                        toolBody = createBase64Tool();
+                        break;
+                    case 'url':
+                        toolBody = createURLTool();
+                        break;
+                    case 'hex':
+                        toolBody = createHexTool();
+                        break;
+                    case 'binary':
+                        toolBody = createBinaryTool();
+                        break;
+                    case 'rot13':
+                        toolBody = createROT13Tool();
+                        break;
+                    case 'caesar':
+                        toolBody = createCaesarTool();
+                        break;
+                    case 'morse':
+                        toolBody = createMorseTool();
+                        break;
+                    case 'json':
+                        toolBody = createJSONTool();
+                        break;
+                    case 'hash':
+                        toolBody = createHashTool();
+                        break;
+                }
+                
+                toolCard.innerHTML = `
+                    <div class="tool-header" onclick="toggleTool('${tool.id}')">
+                        <div class="tool-title">
+                            <i class="${tool.icon}"></i>
+                            <span class="tool-name">${tool.name}</span>
+                        </div>
+                        <div class="toggle-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="tool-body" id="${tool.id}-body">
+                        ${toolBody}
+                    </div>
+                `;
+                
+                toolsPage.appendChild(toolCard);
+            });
+        }
+
+        // 创建Base64工具界面
+        function createBase64Tool() {
+            return `
+                <div class="input-group">
+                    <label for="base64-input"><i class="fas fa-keyboard"></i> 输入Base64编码文本</label>
+                    <textarea id="base64-input" placeholder="例如: SGVsbG8gV29ybGQh">SGVsbG8gV29ybGQh</textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="decodeBase64()">
+                        <i class="fas fa-unlock"></i> 解码
+                    </button>
+                    <button class="btn-secondary" onclick="encodeBase64()">
+                        <i class="fas fa-lock"></i> 编码
+                    </button>
+                    <button class="btn-secondary" onclick="clearTool('base64')">
+                        <i class="fas fa-eraser"></i> 清空
+                    </button>
+                </div>
+                
+                <div class="result-area">
+                    <div class="result-label">
+                        <i class="fas fa-check-circle"></i> 结果
+                    </div>
+                    <div class="result-box" id="base64-result">
+                        解码结果将显示在这里...
+                    </div>
+                </div>
+            `;
+        }
+
+        // 创建URL工具界面
+        function createURLTool() {
+            return `
+                <div class="input-group">
+                    <label for="url-input"><i class="fas fa-keyboard"></i> 输入URL编码文本</label>
+                    <textarea id="url-input" placeholder="例如: https%3A%2F%2Fexample.com%2Fpath%3Fquery%3Dvalue">https%3A%2F%2Fexample.com%2Fpath%3Fquery%3Dvalue</textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="decodeURL()">
+                        <i class="fas fa-unlock"></i> 解码
+                    </button>
+                    <button class="btn-secondary" onclick="encodeURL()">
+                        <i class="fas fa-lock"></i> 编码
+                    </button>
+                    <button class="btn-secondary" onclick="clearTool('url')">
+                        <i class="fas fa-eraser"></i> 清空
+                    </button>
+                </div>
+                
+                <div class="result-area">
+                    <div class="result-label">
+                        <i class="fas fa-check-circle"></i> 结果
+                    </div>
+                    <div class="result-box" id="url-result">
+                        解码结果将显示在这里...
+                    </div>
+                </div>
+            `;
+        }
+
+        // 创建十六进制工具界面
+        function createHexTool() {
+            return `
+                <div class="input-group">
+                    <label for="hex-input"><i class="fas fa-keyboard"></i> 输入十六进制文本 (可带0x前缀或空格)</label>
+                    <textarea id="hex-input" placeholder="例如: 48656c6c6f20576f726c64 或 0x48656c6c6f">48656c6c6f20576f726c64</textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="decodeHex()">
+                        <i class="fas fa-unlock"></i> 解码
+                    </button>
+                    <button class="btn-secondary" onclick="encodeHex()">
+                        <i class="fas fa-lock"></i> 编码
+                    </button>
+                    <button class="btn-secondary" onclick="clearTool('hex')">
+                        <i class="fas fa-eraser"></i> 清空
+                    </button>
+                </div>
+                
+                <div class="result-area">
+                    <div class="result-label">
+                        <i class="fas fa-check-circle"></i> 结果
+                    </div>
+                    <div class="result-box" id="hex-result">
+                        解码结果将显示在这里...
+                    </div>
+                </div>
+            `;
+        }
+
+        // 创建二进制工具界面
+        function createBinaryTool() {
+            return `
+                <div class="input-group">
+                    <label for="binary-input"><i class="fas fa-keyboard"></i> 输入二进制文本 (每8位一组，可用空格分隔)</label>
+                    <textarea id="binary-input" placeholder="例如: 01001000 01100101 01101100 01101100 01101111">01001000 01100101 01101100 01101100 01101111</textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="decodeBinary()">
+                        <i class="fas fa-unlock"></i> 解码
+                    </button>
+                    <button class="btn-secondary" onclick="encodeBinary()">
+                        <i class="fas fa-lock"></i> 编码
+                    </button>
+                    <button class="btn-secondary" onclick="clearTool('binary')">
+                        <i class="fas fa-eraser"></i> 清空
+                    </button>
+                </div>
+                
+                <div class="result-area">
+                    <div class="result-label">
+                        <i class="fas fa-check-circle"></i> 结果
+                    </div>
+                    <div class="result-box" id="binary-result">
+                        解码结果将显示在这里...
+                    </div>
+                </div>
+            `;
+        }
+
+        // 创建ROT13工具界面
+        function createROT13Tool() {
+            return `
+                <div class="input-group">
+                    <label for="rot13-input"><i class="fas fa-keyboard"></i> 输入ROT13加密文本</label>
+                    <textarea id="rot13-input" placeholder="例如: Uryyb Jbeyq!">Uryyb Jbeyq!</textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="decodeROT13()">
+                        <i class="fas fa-unlock"></i> 解密
+                    </button>
+                    <button class="btn-secondary" onclick="encodeROT13()">
+                        <i class="fas fa-lock"></i> 加密
+                    </button>
+                    <button class="btn-secondary" onclick="clearTool('rot13')">
+                        <i class="fas fa-eraser"></i> 清空
+                    </button>
+                </div>
+                
+                <div class="result-area">
+                    <div class="result-label">
+                        <i class="fas fa-check-circle"></i> 结果
+                    </div>
+                    <div class="result-box" id="rot13-result">
+                        解密结果将显示在这里...
+                    </div>
+                </div>
+            `;
+        }
+
+        // 创建凯撒密码工具界面
+        function createCaesarTool() {
+            return `
+                <div class="input-group">
+                    <label for="caesar-input"><i class="fas fa-keyboard"></i> 输入凯撒密码加密文本</label>
+                    <textarea id="caesar-input" placeholder="例如: Khoor Zruog!">Khoor Zruog!</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="caesar-shift">偏移量 (1-25，0为自动尝试所有偏移)</label>
+                    <input type="number" id="caesar-shift" min="0" max="25" value="0">
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="decodeCaesar()">
+                        <i class="fas fa-unlock"></i> 解密
+                    </button>
+                    <button class="btn-secondary" onclick="clearTool('caesar')">
+                        <i class="fas fa-eraser"></i> 清空
+                    </button>
+                </div>
+                
+                <div class="result-area">
+                    <div class="result-label">
+                        <i class="fas fa-check-circle"></i> 结果
+                    </div>
+                    <div class="result-box" id="caesar-result">
+                        解密结果将显示在这里...
+                    </div>
+                </div>
+            `;
+        }
+
+        // 创建摩斯电码工具界面
+        function createMorseTool() {
+            return `
+                <div class="input-group">
+                    <label for="morse-input"><i class="fas fa-keyboard"></i> 输入摩斯电码 (用空格分隔字符，/ 或 | 分隔单词)</label>
+                    <textarea id="morse-input" placeholder="例如: .... . .-.. .-.. --- / .-- --- .-. .-.. -..">.... . .-.. .-.. --- / .-- --- .-. .-.. -..</textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="decodeMorse()">
+                        <i class="fas fa-unlock"></i> 解密
+                    </button>
+                    <button class="btn-secondary" onclick="encodeMorse()">
+                        <i class="fas fa-lock"></i> 加密
+                    </button>
+                    <button class="btn-secondary" onclick="clearTool('morse')">
+                        <i class="fas fa-eraser"></i> 清空
+                    </button>
+                </div>
+                
+                <div class="result-area">
+                    <div class="result-label">
+                        <i class="fas fa-check-circle"></i> 结果
+                    </div>
+                    <div class="result-box" id="morse-result">
+                        解密结果将显示在这里...
+                    </div>
+                </div>
+            `;
+        }
+
+        // 创建JSON工具界面
+        function createJSONTool() {
+            return `
+                <div class="input-group">
+                    <label for="json-input"><i class="fas fa-keyboard"></i> 输入JSON文本</label>
+                    <textarea id="json-input" placeholder='例如: {"name":"John","age":30,"city":"New York"}'>{"name":"John","age":30,"city":"New York"}</textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="decodeJSON()">
+                        <i class="fas fa-unlock"></i> 格式化
+                    </button>
+                    <button class="btn-secondary" onclick="clearTool('json')">
+                        <i class="fas fa-eraser"></i> 清空
+                    </button>
+                </div>
+                
+                <div class="result-area">
+                    <div class="result-label">
+                        <i class="fas fa-check-circle"></i> 结果
+                    </div>
+                    <div class="result-box" id="json-result">
+                        格式化结果将显示在这里...
+                    </div>
+                </div>
+            `;
+        }
+
+        // 创建哈希查询工具界面
+        function createHashTool() {
+            return `
+                <div class="input-group">
+                    <label for="hash-input"><i class="fas fa-keyboard"></i> 输入哈希值 (MD5或SHA1)</label>
+                    <textarea id="hash-input" placeholder="例如: 5d41402abc4b2a76b9719d911017c592">5d41402abc4b2a76b9719d911017c592</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="hash-type">哈希类型</label>
+                    <select id="hash-type">
+                        <option value="md5">MD5</option>
+                        <option value="sha1">SHA1</option>
+                    </select>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="lookupHash()">
+                        <i class="fas fa-search"></i> 查询
+                    </button>
+                    <button class="btn-secondary" onclick="clearTool('hash')">
+                        <i class="fas fa-eraser"></i> 清空
+                    </button>
+                </div>
+                
+                <div class="result-area">
+                    <div class="result-label">
+                        <i class="fas fa-check-circle"></i> 结果
+                    </div>
+                    <div class="result-box" id="hash-result">
+                        查询结果将显示在这里...
+                    </div>
+                </div>
+            `;
+        }
+
+        // 页面切换
+        function switchPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // 显示目标页面
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            // 更新导航激活状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 根据页面ID设置对应的导航项为激活状态
+            let navIndex = 0;
+            switch(pageId) {
+                case 'home-page': navIndex = 0; break;
+                case 'tools-page': navIndex = 1; break;
+                case 'history-page': navIndex = 2; break;
+                case 'about-page': navIndex = 3; break;
+            }
+            
+            document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
+            
+            // 如果是历史页面，刷新历史记录
+            if (pageId === 'history-page') {
+                loadHistory();
+            }
+        }
+
+        // 打开工具
+        function openTool(toolId) {
+            // 切换到工具页面
+            switchPage('tools-page');
+            
+            // 滚动到对应工具
+            setTimeout(() => {
+                const toolElement = document.getElementById(`tool-${toolId}`);
+                if (toolElement) {
+                    toolElement.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // 展开工具
+                    if (!toolElement.classList.contains('active')) {
+                        toggleTool(toolId);
+                    }
+                }
+            }, 100);
+        }
+
+        // 切换工具展开状态
+        function toggleTool(toolId) {
+            const toolCard = document.getElementById(`tool-${toolId}`);
+            const toolBody = document.getElementById(`${toolId}-body`);
+            
+            if (toolCard.classList.contains('active')) {
+                toolCard.classList.remove('active');
+                toolBody.style.maxHeight = '0';
+                setTimeout(() => {
+                    toolBody.style.padding = '0';
+                }, 300);
+            } else {
+                toolCard.classList.add('active');
+                toolBody.style.padding = '20px';
+                toolBody.style.maxHeight = toolBody.scrollHeight + 'px';
+            }
+        }
+
+        // Base64解码
+        function decodeBase64() {
+            const input = document.getElementById('base64-input').value.trim();
+            const resultBox = document.getElementById('base64-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入Base64编码文本', 'error');
+                return;
+            }
+            
+            try {
+                // 尝试标准Base64解码
+                const decoded = atob(input);
+                showResult(resultBox, decoded, 'success');
+                addToHistory('Base64解码', input, decoded);
+            } catch (e) {
+                try {
+                    // 尝试URL安全Base64解码
+                    const decoded = atob(input.replace(/-/g, '+').replace(/_/g, '/'));
+                    showResult(resultBox, decoded, 'success');
+                    addToHistory('Base64解码(URL安全)', input, decoded);
+                } catch (e2) {
+                    showResult(resultBox, 'Base64解码失败: 无效的Base64编码', 'error');
+                }
+            }
+        }
+
+        // Base64编码
+        function encodeBase64() {
+            const input = document.getElementById('base64-input').value.trim();
+            const resultBox = document.getElementById('base64-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入要编码的文本', 'error');
+                return;
+            }
+            
+            try {
+                const encoded = btoa(input);
+                showResult(resultBox, encoded, 'success');
+                addToHistory('Base64编码', input, encoded);
+            } catch (e) {
+                showResult(resultBox, 'Base64编码失败: 包含非ASCII字符', 'error');
+            }
+        }
+
+        // URL解码
+        function decodeURL() {
+            const input = document.getElementById('url-input').value.trim();
+            const resultBox = document.getElementById('url-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入URL编码文本', 'error');
+                return;
+            }
+            
+            try {
+                const decoded = decodeURIComponent(input);
+                showResult(resultBox, decoded, 'success');
+                addToHistory('URL解码', input, decoded);
+            } catch (e) {
+                try {
+                    const decoded = decodeURI(input);
+                    showResult(resultBox, decoded, 'success');
+                    addToHistory('URL解码', input, decoded);
+                } catch (e2) {
+                    showResult(resultBox, 'URL解码失败: 无效的URL编码', 'error');
+                }
+            }
+        }
+
+        // URL编码
+        function encodeURL() {
+            const input = document.getElementById('url-input').value.trim();
+            const resultBox = document.getElementById('url-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入要编码的文本', 'error');
+                return;
+            }
+            
+            try {
+                const encoded = encodeURIComponent(input);
+                showResult(resultBox, encoded, 'success');
+                addToHistory('URL编码', input, encoded);
+            } catch (e) {
+                showResult(resultBox, 'URL编码失败', 'error');
+            }
+        }
+
+        // 十六进制解码
+        function decodeHex() {
+            const input = document.getElementById('hex-input').value.trim();
+            const resultBox = document.getElementById('hex-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入十六进制文本', 'error');
+                return;
+            }
+            
+            // 清理输入
+            let cleanInput = input.replace(/0x/g, '').replace(/\s/g, '');
+            
+            // 检查是否为有效的十六进制
+            if (!/^[0-9a-fA-F]+$/.test(cleanInput)) {
+                showResult(resultBox, '无效的十六进制字符串', 'error');
+                return;
+            }
+            
+            // 确保长度为偶数
+            if (cleanInput.length % 2 !== 0) {
+                cleanInput = '0' + cleanInput;
+            }
+            
+            try {
+                let result = '';
+                for (let i = 0; i < cleanInput.length; i += 2) {
+                    const hex = cleanInput.substr(i, 2);
+                    result += String.fromCharCode(parseInt(hex, 16));
+                }
+                
+                showResult(resultBox, result, 'success');
+                addToHistory('十六进制解码', input, result);
+            } catch (e) {
+                showResult(resultBox, '十六进制解码失败: ' + e.message, 'error');
+            }
+        }
+
+        // 十六进制编码
+        function encodeHex() {
+            const input = document.getElementById('hex-input').value.trim();
+            const resultBox = document.getElementById('hex-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入要编码的文本', 'error');
+                return;
+            }
+            
+            try {
+                let result = '';
+                for (let i = 0; i < input.length; i++) {
+                    const hex = input.charCodeAt(i).toString(16).padStart(2, '0');
+                    result += hex + ' ';
+                }
+                
+                showResult(resultBox, result.trim(), 'success');
+                addToHistory('十六进制编码', input, result.trim());
+            } catch (e) {
+                showResult(resultBox, '十六进制编码失败', 'error');
+            }
+        }
+
+        // 二进制解码
+        function decodeBinary() {
+            const input = document.getElementById('binary-input').value.trim();
+            const resultBox = document.getElementById('binary-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入二进制文本', 'error');
+                return;
+            }
+            
+            // 清理输入
+            const cleanInput = input.replace(/\s/g, '');
+            
+            // 检查是否为有效的二进制
+            if (!/^[01]+$/.test(cleanInput)) {
+                showResult(resultBox, '无效的二进制字符串', 'error');
+                return;
+            }
+            
+            // 确保长度是8的倍数
+            if (cleanInput.length % 8 !== 0) {
+                showResult(resultBox, '二进制字符串长度必须是8的倍数', 'error');
+                return;
+            }
+            
+            try {
+                let result = '';
+                for (let i = 0; i < cleanInput.length; i += 8) {
+                    const byte = cleanInput.substr(i, 8);
+                    result += String.fromCharCode(parseInt(byte, 2));
+                }
+                
+                showResult(resultBox, result, 'success');
+                addToHistory('二进制解码', input, result);
+            } catch (e) {
+                showResult(resultBox, '二进制解码失败: ' + e.message, 'error');
+            }
+        }
+
+        // 二进制编码
+        function encodeBinary() {
+            const input = document.getElementById('binary-input').value.trim();
+            const resultBox = document.getElementById('binary-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入要编码的文本', 'error');
+                return;
+            }
+            
+            try {
+                let result = '';
+                for (let i = 0; i < input.length; i++) {
+                    const binary = input.charCodeAt(i).toString(2).padStart(8, '0');
+                    result += binary + ' ';
+                }
+                
+                showResult(resultBox, result.trim(), 'success');
+                addToHistory('二进制编码', input, result.trim());
+            } catch (e) {
+                showResult(resultBox, '二进制编码失败', 'error');
+            }
+        }
+
+        // ROT13解密
+        function decodeROT13() {
+            const input = document.getElementById('rot13-input').value.trim();
+            const resultBox = document.getElementById('rot13-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入ROT13加密文本', 'error');
+                return;
+            }
+            
+            try {
+                let result = '';
+                for (let i = 0; i < input.length; i++) {
+                    const char = input.charAt(i);
+                    if (/[a-z]/.test(char)) {
+                        result += String.fromCharCode((char.charCodeAt(0) - 97 + 13) % 26 + 97);
+                    } else if (/[A-Z]/.test(char)) {
+                        result += String.fromCharCode((char.charCodeAt(0) - 65 + 13) % 26 + 65);
+                    } else {
+                        result += char;
+                    }
+                }
+                
+                showResult(resultBox, result, 'success');
+                addToHistory('ROT13解密', input, result);
+            } catch (e) {
+                showResult(resultBox, 'ROT13解密失败: ' + e.message, 'error');
+            }
+        }
+
+        // ROT13加密
+        function encodeROT13() {
+            // ROT13是对称加密，加密和解密是同一个操作
+            decodeROT13();
+        }
+
+        // 凯撒密码解密
+        function decodeCaesar() {
+            const input = document.getElementById('caesar-input').value.trim();
+            const shift = parseInt(document.getElementById('caesar-shift').value) || 0;
+            const resultBox = document.getElementById('caesar-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入凯撒密码加密文本', 'error');
+                return;
+            }
+            
+            try {
+                if (shift === 0) {
+                    // 尝试所有偏移
+                    let results = [];
+                    for (let s = 1; s <= 25; s++) {
+                        let result = '';
+                        for (let i = 0; i < input.length; i++) {
+                            const char = input.charAt(i);
+                            if (/[a-z]/.test(char)) {
+                                result += String.fromCharCode((char.charCodeAt(0) - 97 - s + 26) % 26 + 97);
+                            } else if (/[A-Z]/.test(char)) {
+                                result += String.fromCharCode((char.charCodeAt(0) - 65 - s + 26) % 26 + 65);
+                            } else {
+                                result += char;
+                            }
+                        }
+                        results.push(`偏移 ${s}: ${result}`);
+                    }
+                    
+                    const allResults = results.join('\n');
+                    showResult(resultBox, allResults, 'success');
+                    addToHistory('凯撒密码破解(所有偏移)', input, allResults.substring(0, 100) + '...');
+                } else {
+                    // 使用指定偏移
+                    let result = '';
+                    for (let i = 0; i < input.length; i++) {
+                        const char = input.charAt(i);
+                        if (/[a-z]/.test(char)) {
+                            result += String.fromCharCode((char.charCodeAt(0) - 97 - shift + 26) % 26 + 97);
+                        } else if (/[A-Z]/.test(char)) {
+                            result += String.fromCharCode((char.charCodeAt(0) - 65 - shift + 26) % 26 + 65);
+                        } else {
+                            result += char;
+                        }
+                    }
+                    
+                    showResult(resultBox, result, 'success');
+                    addToHistory(`凯撒密码解密(偏移${shift})`, input, result);
+                }
+            } catch (e) {
+                showResult(resultBox, '凯撒密码解密失败: ' + e.message, 'error');
+            }
+        }
+
+        // 摩斯电码解码
+        function decodeMorse() {
+            const input = document.getElementById('morse-input').value.trim();
+            const resultBox = document.getElementById('morse-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入摩斯电码', 'error');
+                return;
+            }
+            
+            try {
+                // 标准化分隔符
+                const normalized = input.replace(/\|/g, ' / ').replace(/\s+/g, ' ');
+                
+                // 分割单词
+                const words = normalized.split(' / ');
+                let result = '';
+                
+                for (let word of words) {
+                    const chars = word.split(' ');
+                    for (let char of chars) {
+                        if (char in morseDict) {
+                            result += morseDict[char];
+                        } else if (char) {
+                            result += '?';
+                        }
+                    }
+                    result += ' ';
+                }
+                
+                showResult(resultBox, result.trim(), 'success');
+                addToHistory('摩斯电码解码', input, result.trim());
+            } catch (e) {
+                showResult(resultBox, '摩斯电码解码失败: ' + e.message, 'error');
+            }
+        }
+
+        // 摩斯电码编码
+        function encodeMorse() {
+            const input = document.getElementById('morse-input').value.trim().toUpperCase();
+            const resultBox = document.getElementById('morse-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入要编码的文本', 'error');
+                return;
+            }
+            
+            try {
+                // 反转摩斯电码字典
+                const reverseMorse = {};
+                for (const [code, char] of Object.entries(morseDict)) {
+                    reverseMorse[char] = code;
+                }
+                
+                let result = '';
+                for (let i = 0; i < input.length; i++) {
+                    const char = input.charAt(i);
+                    if (char === ' ') {
+                        result += '/ ';
+                    } else if (char in reverseMorse && reverseMorse[char]) {
+                        result += reverseMorse[char] + ' ';
+                    } else {
+                        result += '? ';
+                    }
+                }
+                
+                showResult(resultBox, result.trim(), 'success');
+                addToHistory('摩斯电码编码', input, result.trim());
+            } catch (e) {
+                showResult(resultBox, '摩斯电码编码失败: ' + e.message, 'error');
+            }
+        }
+
+        // JSON解码/格式化
+        function decodeJSON() {
+            const input = document.getElementById('json-input').value.trim();
+            const resultBox = document.getElementById('json-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入JSON文本', 'error');
+                return;
+            }
+            
+            try {
+                const parsed = JSON.parse(input);
+                const formatted = JSON.stringify(parsed, null, 2);
+                showResult(resultBox, formatted, 'success');
+                addToHistory('JSON格式化', input, formatted);
+            } catch (e) {
+                showResult(resultBox, 'JSON解析失败: ' + e.message, 'error');
+            }
+        }
+
+        // 哈希查询
+        function lookupHash() {
+            const input = document.getElementById('hash-input').value.trim().toLowerCase();
+            const hashType = document.getElementById('hash-type').value;
+            const resultBox = document.getElementById('hash-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入哈希值', 'error');
+                return;
+            }
+            
+            if (hashType === 'md5' && input in rainbowTable.md5) {
+                const result = `找到匹配: ${rainbowTable.md5[input]}`;
+                showResult(resultBox, result, 'success');
+                addToHistory('MD5哈希查询', input, rainbowTable.md5[input]);
+            } else if (hashType === 'sha1' && input in rainbowTable.sha1) {
+                const result = `找到匹配: ${rainbowTable.sha1[input]}`;
+                showResult(resultBox, result, 'success');
+                addToHistory('SHA1哈希查询', input, rainbowTable.sha1[input]);
+            } else {
+                const result = `未在彩虹表中找到匹配的${hashType.toUpperCase()}哈希值`;
+                showResult(resultBox, result, 'error');
+                addToHistory(`${hashType.toUpperCase()}哈希查询`, input, '未找到匹配');
+            }
+        }
+
+        // 自动解码
+        function autoDecode() {
+            const input = document.getElementById('quick-input').value.trim();
+            const resultBox = document.getElementById('quick-result');
+            
+            if (!input) {
+                showResult(resultBox, '请输入要解码的文本', 'error');
+                return;
+            }
+            
+            let result = '尝试自动解码...\n\n';
+            let decoded = false;
+            
+            // 尝试Base64
+            try {
+                const base64Result = atob(input);
+                result += `✅ Base64解码成功:\n${base64Result}\n\n`;
+                decoded = true;
+            } catch (e) {}
+            
+            // 尝试URL解码
+            if (input.includes('%')) {
+                try {
+                    const urlResult = decodeURIComponent(input);
+                    result += `✅ URL解码成功:\n${urlResult}\n\n`;
+                    decoded = true;
+                } catch (e) {}
+            }
+            
+            // 尝试十六进制
+            const cleanHex = input.replace(/0x/g, '').replace(/\s/g, '');
+            if (/^[0-9a-fA-F]+$/.test(cleanHex) && cleanHex.length % 2 === 0) {
+                try {
+                    let hexResult = '';
+                    for (let i = 0; i < cleanHex.length; i += 2) {
+                        const hex = cleanHex.substr(i, 2);
+                        hexResult += String.fromCharCode(parseInt(hex, 16));
+                    }
+                    result += `✅ 十六进制解码成功:\n${hexResult}\n\n`;
+                    decoded = true;
+                } catch (e) {}
+            }
+            
+            // 尝试ROT13
+            if (/^[A-Za-z\s!?.,]+$/.test(input)) {
+                let rot13Result = '';
+                for (let i = 0; i < input.length; i++) {
+                    const char = input.charAt(i);
+                    if (/[a-z]/.test(char)) {
+                        rot13Result += String.fromCharCode((char.charCodeAt(0) - 97 + 13) % 26 + 97);
+                    } else if (/[A-Z]/.test(char)) {
+                        rot13Result += String.fromCharCode((char.charCodeAt(0) - 65 + 13) % 26 + 65);
+                    } else {
+                        rot13Result += char;
+                    }
+                }
+                if (rot13Result !== input) {
+                    result += `✅ ROT13解码成功:\n${rot13Result}\n\n`;
+                    decoded = true;
+                }
+            }
+            
+            if (!decoded) {
+                result += '❌ 无法自动识别编码类型，请手动选择工具。';
+            }
+            
+            showResult(resultBox, result, decoded ? 'success' : 'error');
+            if (decoded) {
+                addToHistory('自动解码', input, result.substring(0, 200) + '...');
+            }
+        }
+
+        // 清空工具
+        function clearTool(toolId) {
+            document.getElementById(`${toolId}-input`).value = '';
+            document.getElementById(`${toolId}-result`).innerHTML = '结果将显示在这里...';
+            document.getElementById(`${toolId}-result`).className = 'result-box';
+            
+            if (toolId === 'caesar') {
+                document.getElementById('caesar-shift').value = '0';
+            }
+        }
+
+        // 清空快速输入
+        function clearQuickInput() {
+            document.getElementById('quick-input').value = '';
+            document.getElementById('quick-result').innerHTML = '解码结果将显示在这里...';
+            document.getElementById('quick-result').className = 'result-box';
+        }
+
+        // 显示结果
+        function showResult(element, text, type) {
+            element.textContent = text;
+            element.className = 'result-box';
+            
+            if (type === 'success') {
+                element.classList.add('success');
+            } else if (type === 'error') {
+                element.classList.add('error');
+            }
+        }
+
+        // 历史记录功能
+        function addToHistory(toolName, input, output) {
+            const history = getHistory();
+            
+            const historyItem = {
+                id: Date.now(),
+                tool: toolName,
+                input: input.substring(0, 100) + (input.length > 100 ? '...' : ''),
+                output: output.substring(0, 100) + (output.length > 100 ? '...' : ''),
+                timestamp: new Date().toLocaleString('zh-CN')
+            };
+            
+            history.unshift(historyItem);
+            
+            // 只保留最近20条记录
+            if (history.length > 20) {
+                history.pop();
+            }
+            
+            localStorage.setItem('decryptionHistory', JSON.stringify(history));
+            
+            // 如果当前在历史页面，刷新显示
+            if (!document.getElementById('history-page').classList.contains('hidden')) {
+                loadHistory();
+            }
+        }
+
+        function loadHistory() {
+            const history = getHistory();
+            const historyList = document.getElementById('history-list');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: var(--gray-color); padding: 20px;">暂无历史记录</p>';
+                return;
+            }
+            
+            let html = '';
+            history.forEach(item => {
+                html += `
+                    <div class="history-item">
+                        <div class="tool-name">${item.tool}</div>
+                        <div class="time">${item.timestamp}</div>
+                        <div class="preview"><strong>输入:</strong> ${item.input}</div>
+                        <div class="preview"><strong>输出:</strong> ${item.output}</div>
+                    </div>
+                `;
+            });
+            
+            historyList.innerHTML = html;
+        }
+
+        function clearHistory() {
+            if (confirm('确定要清空所有历史记录吗？')) {
+                localStorage.removeItem('decryptionHistory');
+                loadHistory();
+            }
+        }
+
+        function getHistory() {
+            const history = localStorage.getItem('decryptionHistory');
+            return history ? JSON.parse(history) : [];
+        }
+    </script>
+</body>
+</html>
