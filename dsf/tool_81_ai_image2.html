@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>小匣 AI 图像生成器</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{
+  --primary:#6366f1;
+  --primary-dark:#4f46e5;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  background:linear-gradient(135deg,#a78bfa 0%,var(--primary) 100%);
+  display:flex;align-items:center;justify-content:center;min-height:100vh;
+}
+.card{
+  background:rgba(255,255,255,.75);
+  backdrop-filter:blur(10px);
+  border-radius:24px;
+  padding:40px 30px;
+  width:100%;
+  max-width:420px;
+  box-shadow:0 25px 50px -12px rgba(0,0,0,.2);
+  text-align:center;
+  animation:fadeIn .6s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+
+h2{color:var(--primary);margin-bottom:25px;font-size:26px}
+
+.input-group input{
+  width:100%;padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px;font-size:16px;
+  transition:border-color .3s,box-shadow .3s;
+}
+.input-group input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.15);outline:none}
+
+.btn{
+  width:100%;padding:14px 0;margin-top:20px;
+  background:var(--primary);color:#fff;border:none;border-radius:12px;
+  font-size:16px;cursor:pointer;position:relative;overflow:hidden;
+  transition:background .3s,transform .3s;
+}
+.btn:hover{background:var(--primary-dark);transform:translateY(-2px)}
+.btn::after{content:'';position:absolute;top:50%;left:50%;width:120%;height:120%;background:#fff3;opacity:0;border-radius:50%;transform:translate(-50%,-50%) scale(0);transition:transform .6s,opacity .6s}
+.btn:active::after{transform:translate(-50%,-50%) scale(1);opacity:1}
+
+.progress-container{margin:15px 0;border-radius:9999px;background:#e2e8f0;height:8px;overflow:hidden}
+.progress-bar{width:0;height:100%;background:linear-gradient(90deg,var(--primary),#818cf8);transition:width .4s}
+
+.image-container{
+  margin-top:25px;border-radius:16px;overflow:hidden;min-height:220px;display:flex;align-items:center;justify-content:center;
+}
+.image-container img{width:100%;border-radius:16px;animation:zoomIn .4s}
+@keyframes zoomIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+
+.skeleton{width:100%;height:220px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;border-radius:16px;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>小匣 AI 图像生成器</h2>
+
+  <div class="input-group">
+    <input id="prompt" placeholder="例如：一只猫在晒太阳" maxlength="150">
+  </div>
+
+  <button class="btn" onclick="generate()">生成图片</button>
+
+  <div class="progress-container hidden" id="progressBox">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="image-container">
+    <img id="resultImg" class="hidden" alt="生成图片">
+    <div id="skeleton" class="skeleton hidden"></div>
+  </div>
+</div>
+
+<script>
+const token = '1PNHyl1DsuF3WMgqjmggfAMJTyglnWN9H32VeEGF';
+const apiUrl = 'http://api.toolfk.com/api/text2img';
+
+async function generate() {
+  const prompt = document.getElementById('prompt').value.trim();
+  if (!prompt) {
+    alert('请输入描述文字'); return;
+  }
+
+  const progressBox = document.getElementById('progressBox');
+  const progressBar = document.getElementById('progressBar');
+  const resultImg = document.getElementById('resultImg');
+  const skeleton = document.getElementById('skeleton');
+
+  resultImg.classList.add('hidden');
+  skeleton.classList.remove('hidden');
+  progressBox.classList.remove('hidden');
+  progressBar.style.width = '0%';
+
+  // 模拟进度动画
+  let pct = 0;
+  const interval = setInterval(() => {
+    pct += 2;
+    progressBar.style.width = pct + '%';
+    if (pct >= 90) clearInterval(interval);
+  }, 60);
+
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `token=${token}&content=${encodeURIComponent(prompt)}`
+    });
+    const data = await res.json();
+    clearInterval(interval);
+    progressBar.style.width = '100%';
+
+    if (data.status === 1 && data.data) {
+      resultImg.src = data.data;
+      resultImg.onload = () => {
+        skeleton.classList.add('hidden');
+        resultImg.classList.remove('hidden');
+      };
+    } else {
+      alert('生成失败：' + (data.errmsg || '未知错误'));
+      skeleton.classList.add('hidden');
+    }
+  } catch (e) {
+    alert('网络错误，请稍后再试');
+    skeleton.classList.add('hidden');
+  } finally {
+    setTimeout(() => progressBox.classList.add('hidden'), 600);
+  }
+}
+</script>
+</body>
+</html>

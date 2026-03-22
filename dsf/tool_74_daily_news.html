@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>每日早报</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: #f8f9fa; /* 柔和的背景色 */
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+    }
+    
+    /* 顶部标题和时间容器 - 固定位置 */
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header-content {
+      flex: 1;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      font-weight: 500;
+      font-size: 2.2em;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+    
+    .date {
+      color: #7f8c8d;
+      font-size: 1.1em;
+      font-weight: 400;
+    }
+    
+    /* 刷新按钮样式 - 图标形式 */
+    .refresh-icon {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .refresh-icon:hover {
+      transform: scale(1.05) rotate(15deg);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .refresh-icon:active {
+      transform: scale(0.95);
+    }
+    
+    .refresh-icon i {
+      font-size: 22px;
+    }
+    
+    /* 图片容器 */
+    .news-image {
+      max-width: 100%;
+      max-height: 75vh;
+      margin: 0 auto;
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+      display: block;
+      cursor: zoom-in;
+    }
+    
+    .news-image:hover {
+      transform: scale(1.01);
+    }
+    
+    .loading {
+      color: #95a5a6;
+      font-size: 1.2em;
+      margin: 30px 0;
+      text-align: center;
+    }
+    
+    /* 底部信息 */
+    .footer {
+      text-align: center;
+      padding: 20px 0;
+      color: #7f8c8d;
+      font-size: 0.9em;
+      margin-top: 20px;
+    }
+    
+    .source-link {
+      color: #667eea;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .source-link:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8em;
+      }
+      
+      .date {
+        font-size: 1em;
+      }
+      
+      .refresh-icon {
+        width: 45px;
+        height: 45px;
+      }
+      
+      .news-image {
+        max-height: 65vh;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .top-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+      }
+      
+      .refresh-icon {
+        margin-top: 15px;
+      }
+      
+      h1 {
+        font-size: 1.6em;
+      }
+      
+      .date {
+        font-size: 0.95em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部标题和时间区域 -->
+  <div class="top-header">
+    <div class="header-content">
+      <h1>每日早报</h1>
+      <div class="date" id="currentDate"></div>
+    </div>
+    <!-- 刷新图标按钮 -->
+    <div class="refresh-icon" id="refreshIcon" title="刷新早报">
+      <i class="fas fa-sync-alt"></i>
+    </div>
+  </div>
+  
+  <!-- 图片容器 -->
+  <img id="newsImage"
+       class="news-image"
+       src="https://api.cenguigui.cn/api/zaobao/"
+       alt="每日早报图片"
+       onload="hideLoading()"
+       onerror="showError()">
+  
+  <div id="loadingText" class="loading">正在加载今日早报...</div>
+  
+  <!-- 底部信息 -->
+  <div class="footer">
+    数据来源: <a href="https://api.cenguigui.cn/api/zaobao/" class="source-link" target="_blank">早报API</a>
+    <p>© 2025 每日早报 | 每日资讯精选</p>
+  </div>
+
+  <script>
+    // 显示当前日期
+    const dateOptions = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric', 
+      weekday: 'long' 
+    };
+    
+    document.getElementById('currentDate').textContent =
+      new Date().toLocaleDateString('zh-CN', dateOptions);
+    
+    // 获取DOM元素
+    const newsImage = document.getElementById('newsImage');
+    const loadingText = document.getElementById('loadingText');
+    const refreshIcon = document.getElementById('refreshIcon');
+
+    function hideLoading() {
+      loadingText.style.display = 'none';
+    }
+    
+    function showError() {
+      loadingText.textContent = '图片加载失败，请检查网络或稍后再试';
+      loadingText.style.color = '#e74c3c';
+    }
+    
+    // 刷新功能
+    function refreshNews() {
+      // 添加刷新动画
+      refreshIcon.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      
+      loadingText.style.display = 'block';
+      loadingText.textContent = '正在加载最新早报...';
+      loadingText.style.color = '#95a5a6';
+      
+      // 添加时间戳防止缓存
+      newsImage.src = `https://api.cenguigui.cn/api/zaobao/?t=${Date.now()}`;
+      
+      // 图片加载完成后恢复刷新图标
+      newsImage.onload = function() {
+        refreshIcon.innerHTML = '<i class="fas fa-sync-alt"></i>';
+      };
+      
+      // 错误处理
+      newsImage.onerror = function() {
+        showError();
+        refreshIcon.innerHTML = '<i class="fas fa-sync-alt"></i>';
+      };
+    }
+    
+    // 绑定刷新事件
+    refreshIcon.addEventListener('click', refreshNews);
+    
+    // 添加键盘快捷键支持 (Ctrl+R 或 Cmd+R)
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+        e.preventDefault();
+        refreshNews();
+      }
+    });
+
+    // 点击图片放大
+    let isZoomed = false;
+    newsImage.addEventListener('click', function() {
+      if (!isZoomed) {
+        // 创建遮罩层
+        const overlay = document.createElement('div');
+        overlay.id = 'zoomOverlay';
+        overlay.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.9);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000;
+          cursor: zoom-out;
+        `;
+        
+        // 创建放大的图片
+        const zoomedImg = document.createElement('img');
+        zoomedImg.src = newsImage.src;
+        zoomedImg.style.cssText = `
+          max-width: 90%;
+          max-height: 90%;
+          border-radius: 8px;
+          cursor: zoom-out;
+        `;
+        
+        overlay.appendChild(zoomedImg);
+        document.body.appendChild(overlay);
+        
+        // 点击遮罩或图片关闭
+        overlay.addEventListener('click', closeZoom);
+        zoomedImg.addEventListener('click', closeZoom);
+        
+        // ESC键关闭
+        document.addEventListener('keydown', function escHandler(e) {
+          if (e.key === 'Escape') {
+            closeZoom();
+            document.removeEventListener('keydown', escHandler);
+          }
+        });
+        
+        isZoomed = true;
+      }
+    });
+
+    function closeZoom() {
+      const overlay = document.getElementById('zoomOverlay');
+      if (overlay) {
+        overlay.remove();
+        isZoomed = false;
+      }
+    }
+  </script>
+</body>
+</html>

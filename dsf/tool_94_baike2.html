@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百科查询</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #3a7bd5;
+            --background-color: linear-gradient(135deg, #e6e9f0, #eef1f5);
+            --text-color: #333;
+            --border-color: #e1e4e8;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --border-radius: 15px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --loading-color: rgba(74, 144, 226, 0.5);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            padding: 40px 20px;
+            background: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s ease;
+        }
+
+        .container {
+            background-color: white;
+            padding: 60px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-align: center;
+            font-size: 3.2em;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+            transition: text-shadow 0.3s ease;
+        }
+
+        input {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 35px;
+            font-size: 18px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 6px rgba(74, 144, 226, 0.3);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #result {
+            margin-top: 50px;
+            padding: 35px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: white;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: box-shadow 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            animation-delay: 0s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message {
+            font-weight: bold;
+            margin-top: 25px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .success-message {
+            color: var(--success-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+        }
+
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            input,
+            button {
+                font-size: 16px;
+                padding: 18px;
+            }
+
+            #result {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>百科查询</h1>
+        <input type="text" id="keyword" placeholder="请输入查询词条">
+        <button onclick="queryBaiduBaike()">查询</button>
+        <div id="result">
+            <div id="success-message" class="message success-message"></div>
+            <div id="error-message" class="message error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        function queryBaiduBaike() {
+            const keyword = document.getElementById('keyword').value;
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            const resultDiv = document.getElementById('result');
+
+            if (keyword.trim() === '') {
+                alert('请输入查询词条');
+                return;
+            }
+
+            resultDiv.style.opacity = '0';
+            successMessage.style.opacity = '0';
+            errorMessage.style.opacity = '0';
+
+            const apiUrl = `https://api.jkyai.top/API/bdbkcx.php?msg=${encodeURIComponent(keyword)}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 1) {
+                        successMessage.innerHTML = `
+                            <h3>查询结果</h3>
+                            <p><strong>词条：</strong>${data.data.Msg}</p>
+                            <p><strong>简介：</strong>${data.data.info}</p>
+                            <p><strong>图片：</strong><img src="${data.data.image}" alt="${data.data.Msg}" style="max-width: 100%; height: auto;"></p>
+                            `;
+                        successMessage.style.opacity = '1';
+                    } else {
+                        errorMessage.textContent = `查询失败：${data.text}`;
+                        errorMessage.style.opacity = '1';
+                    }
+                    resultDiv.style.opacity = '1';
+                })
+                .catch(error => {
+                    errorMessage.textContent = '请求失败，请检查网络或稍后重试';
+                    errorMessage.style.opacity = '1';
+                    resultDiv.style.opacity = '1';
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二十二举牌生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .input-group select {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .input-group input {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .input-group button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: #fff;
+            background-color: #3498db;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .input-group button:hover {
+            background-color: #2980b9;
+        }
+        .display-area {
+            margin-top: 30px;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .display-area img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 1.1em;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>美女举牌生成器</h1>
+        <div class="input-group">
+            <select id="api-select">
+                <option value="https://api.ovoo.cc/api/lltjp.php?msg=">接口1</option>
+                <option value="https://api.ovoo.cc/api/xjjp.php?msg=">接口2</option>
+                <option value="https://api.ovoo.cc/api/dcjp.php?msg=">接口3</option>
+                <option value="https://api.ovoo.cc/api/a3.php?msg=">接口4</option>
+                <option value="https://api.ovoo.cc/api/a5.php?msg=">接口5</option>
+            </select>
+            <input type="text" id="text-input" placeholder="请输入1-3个字的名字">
+            <button onclick="generateImage()">生成图片</button>
+        </div>
+        <div class="display-area">
+            <img id="image-output" src="" alt="生成的举牌图片">
+            <div class="error-message" id="error-message">
+                生成图片失败，请检查输入内容或稍后再试。如果问题持续存在，请检查网络连接或确认接口地址的合法性。
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function generateImage() {
+            const text = document.getElementById('text-input').value.trim();
+            const selectedApi = document.getElementById('api-select').value;
+            const imageElement = document.getElementById('image-output');
+            const errorMessage = document.getElementById('error-message');
+
+            if (!text) {
+                alert('请输入1-3个字的名字！');
+                return;
+            }
+
+            if (text.length > 3) {
+                alert('名字长度不能超过3个字！');
+                return;
+            }
+
+            try {
+                const imageUrl = `${selectedApi}${encodeURIComponent(text)}`;
+                imageElement.src = imageUrl;
+                imageElement.style.display = 'block';
+                errorMessage.style.display = 'none';
+            } catch (error) {
+                console.error('生成图片失败:', error);
+                imageElement.style.display = 'none';
+                errorMessage.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
