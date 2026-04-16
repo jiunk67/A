@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>举报打手</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 服务器连接状态 */
+        .server-status {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        .server-status.offline {
+            color: #f44336;
+        }
+
+        .server-status.offline .status-indicator {
+            background-color: #f44336;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 服务器连接状态 -->
+    <div class="server-status" id="server-status">
+        <span class="status-indicator"></span>
+        <span class="status-text">服务器，连接成功</span>
+    </div>
+    
+    <div class="payment-container">
+        <h1>举报打手</h1>
+        <p>请在下方输入您要举报的内容</p>
+        
+        <div class="form-container">
+            <form id="report-form">
+                <div class="form-group">
+                    <label for="report-content">举报内容：</label>
+                    <textarea id="report-content" name="report-content" placeholder="请详细描述您要举报的内容" rows="10" required></textarea>
+                </div>
+                
+                <style>
+                    /* 响应式设计 */
+                    @media (max-width: 768px) {
+                        .payment-container {
+                            padding: 20px 15px;
+                        }
+                        
+                        .form-container {
+                            padding: 20px 15px;
+                        }
+                        
+                        .form-group textarea {
+                            width: 100%;
+                            padding: 10px;
+                            font-size: 16px;
+                        }
+                        
+                        .btn {
+                            padding: 12px 24px;
+                            font-size: 16px;
+                        }
+                    }
+                </style>
+                
+                <button type="submit" class="btn btn-submit">提交</button>
+            </form>
+            
+            <div id="message"></div>
+        </div>
+        
+        <a href="index.html" class="btn btn-back">返回首页</a>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>

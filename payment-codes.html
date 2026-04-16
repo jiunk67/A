@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打手付款码</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 服务器连接状态 */
+        .server-status {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        .server-status.offline {
+            color: #f44336;
+        }
+
+        .server-status.offline .status-indicator {
+            background-color: #f44336;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* 收款码容器 */
+        .code-container {
+            margin: 30px auto;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .code-item {
+            margin-bottom: 40px;
+        }
+        
+        .code-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        
+        .qr-code {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <!-- 服务器连接状态 -->
+    <div class="server-status" id="server-status">
+        <span class="status-indicator"></span>
+        <span class="status-text">服务器，连接成功</span>
+    </div>
+    
+    <div class="payment-container">
+        <h1>打手付款码</h1>
+        <p>请选择对应的打手付款码进行付款</p>
+        
+        <div class="code-container">
+            <div class="code-item">
+                <h2 class="code-title">董事长</h2>
+                <div class="qr-code">
+                    <img src="./fk.png" alt="董事长收款码" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+            </div>
+            
+            <div class="code-item">
+                <h2 class="code-title">小晨</h2>
+                <div class="qr-code">
+                    <img src="./fk2.jpg" alt="小晨收款码" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+        
+        <a href="payment.html" class="btn btn-back">返回付款页面</a>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>
